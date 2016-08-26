@@ -1,0 +1,92 @@
+<div class="modal-header">
+    <h3 class="modal-title">{{data.title}}</h3>
+</div>
+
+<div class="modal-body">
+    <div class="row">
+        <div class="col-md-4">
+            <ol class="stepList" style="margin-left:-20px;">
+                <li style="font-size:12px" ng-repeat="stepName in stepNames" ng-show="stepName.length > 0"><span>{{stepName}}&nbsp;</span><i
+                        class="icon-ok" ng-show="step > $index + 1"></i></li>
+            </ol>
+        </div>
+        <div class="col-md-8">
+            <form class="form-horizontal">
+                <div ng-show="step<=steps">
+                    <span>{{stepsCurrent}} of {{stepsActual}}</span>
+                    {{cap[selectedCapability].description}}
+                </div>
+                <br/><br/>
+
+                <div ng-show="step==0">
+                    Choose:
+                    <select ng-model="selectedCapability" ng-change="test()">
+                        <option ng-repeat="cp in capabilities" ng-value="cp.name">{{cp.name}}</option>
+                    </select>
+                </div>
+                <div ng-show="step<=steps && step > 0">
+                    <div ng-repeat="(key, v) in cap[selectedCapability].input" style="border-top: 1px solid black;"
+                         ng-if="v.type != 'auto'" ng-show="step == ($index + 1)">
+                        <h3>{{key}}</h3>
+                        <span>{{v.description}}</span>
+                        <br/><br/>
+
+                        <div ng-if="v.type == 'area'">
+                            <div select-area selected-area="values[$index]"></div>
+                        </div>
+                        <div ng-if="v.type == 'species'">
+                            <div select-species selected-q="values[$index]"></div>
+                        </div>
+                        <div ng-if="v.type == 'double'">
+                            <input style="width:300px" type="number" max="{{v.constraints.max}}"
+                                   min="{{v.constraints.min}}"
+                                   ng-model="values[$index]">
+                        </div>
+                        <div ng-if="v.type == 'layer'">
+                            <div select-layers selected-layers="values[$index]"
+                                 min-count="v.constraints.min"
+                                 max-count="v.constraints.max"
+                                 mandatory="v.constraints.mandatory"
+                                 environmental="v.constrains.environmental"
+                                 contextual="v.constrains.contextual"
+                                 analysis="v.constrains.analysis"
+                            ></div>
+                        </div>
+                        <div ng-if="v.type == 'boolean'">
+                            <input type="checkbox" ng-model="values[$index]">
+                        </div>
+                        <div ng-if="v.type == 'int'">
+                            <input style="width:300px" type="number" max="{{v.constraints.max}}"
+                                   min="{{v.constraints.min}}"
+                                   ng-model="values[$index]">
+                        </div>
+                        <div ng-if="v.type == 'list' && v.constraints.selection == 'single'">
+                            <select ng-model="values[$index]">
+                                <option ng-repeat="x in v.constraints.content" ng-value="x">{{x}}</option>
+                            </select>
+                        </div>
+                        <div ng-if="v.type == 'list' && v.constraints.selection != 'single'">
+                            <select ng-model="values[$index]" multiple>
+                                <option ng-repeat="x in v.constraints.content" ng-value="x">{{x}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div ng-show="step > steps">
+                    <h3>Wait for task to complete</h3>
+
+                    <div>{{status}}</div>
+                    <textarea ng-model="logText "
+                              style="height:300px;width:100%;overflow:scroll;display:block"></textarea>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button class="btn" type="button" ng-click="cancel()">Cancel</button>
+    <button class="btn" type="button" ng-click="back()" ng-disabled="step == 1">< Back</button>
+    <button class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="isDisabled()">Next ></button>
+</div>

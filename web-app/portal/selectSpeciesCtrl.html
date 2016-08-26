@@ -1,0 +1,59 @@
+<input type="checkbox" ng-model="spatiallyValid">Include spatially-valid records
+<br/>
+<input type="checkbox" ng-model="spatiallySuspect">Include spatially-suspect records
+<br/><br/>
+<input type="checkbox" ng-model="includeExpertDistributions">Include Expert Distribution areas
+
+<br/><br/>
+<input type="radio" ng-model="speciesOption" value="allSpecies" ng-change="changeOption()">All species</input>
+<br/>
+<input type="radio" ng-model="speciesOption" value="searchSpecies"
+       ng-change="changeOption()">Search for a species by scientific or common name</input>
+<br/>
+
+<div ng-if="speciesOption == 'searchSpecies'" style="margin-left:15px">
+    <br/><input type="checkbox" ng-checked="useScientificNames">Use the scientific names supplied with the records
+    <br/><br/><input style="width:400px" id="speciesAutoComplete" species-auto-complete on-custom="setQ">
+    <br/>For example: "Macropus rufus" or "Red Kangaroo"
+    <br/><br/>
+</div>
+
+<input type="radio" ng-model="speciesOption" value="importList"
+       ng-change="changeOption()">Create new species list (TODO)</input>
+<br/>
+
+<div ng-if="speciesOption == 'importList'" style="margin-left:15px">
+    <br/>Open lists to create a new list. (TODO)
+    <button class="btn" ng-click="openSpeciesList()">
+        Open list
+    </button>
+    <br/><br/>
+</div>
+
+<input type="radio" ng-model="speciesOption" value="speciesList" ng-change="changeOption()">Use species list</input>
+<br/>
+
+<div ng-if="speciesOption == 'speciesList'" style="margin-left:15px">
+    <div lists-list on-custom="setQ"></div>
+    <br/>
+</div>
+
+<input type="radio" ng-model="speciesOption" value="importPoints" ng-change="changeOption()">Import points</input>
+<br/>
+
+<div ng-if="speciesOption == 'importPoints'" style="margin-left:15px">
+    <br/>Open sandbox to import points. (TODO)
+    <button class="btn" ng-click="openSandbox()">
+        Open sandbox
+    </button>
+    <br/><br/>
+</div>
+
+<input type="radio" ng-model="speciesOption" value="sandboxPoints"
+       ng-change="changeOption()">Use imported points (TODO)</input>
+<br/>
+
+<div ng-if="speciesOption == 'sandboxPoints'" style="margin-left:15px">
+    <div sandbox-list on-custom="setQ"></div>
+    <br/>
+</div>

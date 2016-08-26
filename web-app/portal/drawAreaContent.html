@@ -1,0 +1,37 @@
+<div>
+    <br/>
+    {{config}}
+    <br/>
+    <span>Draw {{type}} on the map.</span>
+    <br/>
+
+    <div ng-show="type == 'pointOnLayer'">
+        <label style="width:120px">Select contextual layer from search</label><input style="width:300px"
+                                                                                     layer-auto-complete
+                                                                                     contextual="true"
+                                                                                     on-custom="selectLayer">
+        <br/>
+        <span>Point: {{intersectPoint}}</span>
+        <br/>
+        <span>Selected layer: {{intersect.layer.name}}</span>
+        <br/>
+        <span>Selected area: {{intersect.data.value}}</span>
+    </div>
+
+    <div ng-show="type != 'pointOnLayer'">
+        <textarea ng-model="selectedArea.wkt" style="width:350px;height:200px" readonly></textarea>
+        <br/>
+        <button class="btn" ng-click="enableDrawing()"
+                ng-disabled="selectedArea.wkt.length == 0">Delete and redraw
+        </button>
+    </div>
+    <div ng-show="type == 'pointOnLayer'">
+        <button class="btn" ng-click="enableDrawing()"
+                ng-disabled="selectedArea.wkt.length == 0">Delete and redraw
+        </button>
+    </div>
+    <br/>
+    <button class="btn btn-default" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-default" ng-click="ok()">Next ></button>
+    <br/>
+</div>

@@ -1,0 +1,36 @@
+<div style="padding:20px">
+    <div class="modal-title">Area report - {{areaName}}<br/><br/></div>
+
+    <div class="container">
+        <table class="table table-bordered table-striped">
+            <tbody style="height:300px;overflow:scroll;display:block">
+            <tr ng-repeat="item in items">
+                <td>{{item.name}}</td>
+                <td style="text-align:right">{{item.value}}</td>
+                <td>
+                    <button ng-show="item.query !== undefined && (item.occurrences === undefined || !item.occurrences)"
+                            class="btn btn-xs" ng-click="list(item)">list
+                    </button>
+                </td>
+                <td>
+                    <button ng-show="item.query !== undefined && (item.map === undefined || item.map)" class="btn btn-xs"
+                            ng-click="map(item)">Map all
+                    </button>
+                </td>
+                <td>
+                    <button ng-show="item.query !== undefined && (item.map === undefined || item.map)" class="btn btn-xs"
+                            ng-click="sample(item)">Sample
+                    </button>
+                </td>
+                <td><a ng-show="item.query !== undefined && (item.occurrences === undefined || item.occurrences)"
+                       target="_blank" href="{{item.query.bs}}/occurrences/search?q={{item.formattedQ}}">View Records</a>
+                    <br/><a ng-show="item.link" target="_blank" href="{{item.link}}">{{item.linkName}}</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="cancel()">Close</button>
+    </div>
+</div>

@@ -1,0 +1,19 @@
+<div class="row" name="nearestLocality">
+    <br/>
+    Nearest locality
+    <br/>
+    <br/>
+
+    <div>
+        <span>Nearest 10</span>
+
+        <div ng-repeat="x in points" style="font-size:10px">
+            {{x.name}}, {{x.geometry}}, {{x.distance}}
+            <br/>
+        </div>
+        <button class="btn" ng-click="enableDrawing()"
+                ng-disabled="selectedArea.wkt.length == 0">Delete and click on a new point
+        </button>
+    </div>
+    <button class="btn" ng-click="cancel()">Delete and close</button>
+</div>

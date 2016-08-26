@@ -1,0 +1,31 @@
+<div class="modal-header">
+    <h3 class="modal-title">{{data.title}}</h3>
+</div>
+
+<div class="modal-body">
+    <div>
+        {{data.info}}
+        <br/>
+        <br/>
+
+        <div style="height:300px;overflow:scroll">
+            <table class="table table-bordered table-striped">
+                <tbody style="height:300px;overflow:scroll;display:block">
+                <tr ng-repeat="x in summary">
+                    <td ng-repeat="i in x">
+                        {{i}}
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <a download="{{data.filename}}"
+       ng-href="{{exportUrl}}" ng-disabled="{{exportUrl == null}}">
+        Export
+    </a>
+</div>
+
+<div class="modal-footer">
+    <button class="btn" type="button" ng-click="cancel()">Close</button>
+</div>

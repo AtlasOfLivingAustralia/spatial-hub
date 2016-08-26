@@ -1,0 +1,31 @@
+<div class="row" name="envelope">
+    <br/>
+    Environmental Envelope
+    <br/>
+    <br/>
+    <span>search for a layer to add</span><input layer-auto-complete environmental="true" contextual="true"
+                                                 on-custom="addLayer">
+
+    <br/>
+
+    <div>
+        <div ng-repeat="x in layers">
+            <span>{{x.name}}</span>&nbsp<span>, min: {{x.min}}</span>&nbsp<span>, max: {{x.max}}</span>&nbsp<span>, count: {{x.count}}</span>
+            <br/>
+        </div>
+
+        <form class="form-horizontal">
+            min:
+            <input ng-model="selection.min">
+            <br/>
+            max:
+            <input ng-model="selection.max">
+            <br/>
+            <button class="btn" ng-click="update()">update count</button>
+            <button class="btn" ng-click="updateDisplay()">update display</button>
+            <button class="btn" ng-click="removeLayer()">remove layer</button>
+        </form>
+    </div>
+    <button class="btn" ng-click="cancel()">close</button>
+    <button class="btn" ng-click="save()">save</button>
+</div>

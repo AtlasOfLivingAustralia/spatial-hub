@@ -1,0 +1,18 @@
+<table>
+    <thead>
+        <td></td>
+        <td>Group</td>
+        <td># Leaves</td>
+        <td>Study name</td>
+        <td>Study Id</td>
+    </thead>
+    <tbody>
+        <tr ng-repeat="tree in trees">
+            <td><input type="checkbox" ng-change="change(tree)" ng-model="trees[$index].checked"></td>
+            <td>{{tree.group}}</td>
+            <td>{{tree.leaves}}</td>
+            <td>{{tree.name}}</td>
+            <td>{{tree.id}}</td>
+        </tr>
+    </tbody>
+</table>

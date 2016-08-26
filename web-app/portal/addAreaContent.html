@@ -1,0 +1,83 @@
+<div class="modal-title">Add area - {{areaname}}</div>
+
+<div class="modal-content" style="padding:20px">
+    <div ng-show="step == 'default'" style="padding:10px">
+        <span>Select method to define area.{{area}}</span><br/>
+
+        <br/><span>Interact with the map</span><br/>
+        <input type="radio" ng-model="area" name="addArea_area" value="drawBoundingBox">Draw bounding box<br/>
+        <input type="radio" ng-model="area" name="addArea_area" value="drawPolygon">Draw polygon<br/>
+        <input type="radio" ng-model="area" name="addArea_area" value="drawPointRadius">Draw point and radius<br/>
+        <input type="radio" ng-model="area" name="addArea_area"
+               value="pointOnLayer">Select area from polygonal layer<br/>
+
+        <br/><span>Searching</span><br/>
+        <input type="radio" ng-model="area" name="addArea_area"
+               value="addressRadius">Radius centered on street address<br/>
+        <input type="radio" ng-model="area" name="addArea_area" value="pointRadius">Create radius from point<br/>
+        <input type="radio" ng-model="area" name="addArea_area" value="gazetteer">Gazetteer polygon<br/>
+
+        <br/><span>Preset areas</span><br/>
+        <input type="radio" ng-model="area" name="addArea_area" value="preset_World">World<br/>
+        <input type="radio" ng-model="area" name="addArea_area" value="preset_Australia">Australia<br/>
+        <input type="radio" ng-model="area" name="addArea_area" value="preset_Current_extent">Current extent<br/>
+
+        <br/><label>Import</label><br/>
+        <input type="radio" ng-model="area" value="importShapefile">Import Shapefile (TODO)<br/>
+        <input type="radio" ng-model="area" value="importKML">Import KML (TODO)<br/>
+
+        <br/><span>Other</span><br/>
+        <input type="radio" ng-model="area" name="addArea_area"
+               value="environmentalEnvelope">Define environmental envelope<br/>
+        <input type="radio" ng-model="area" name="addArea_area" value="wkt">Enter area coordinates (WKT)<br/>
+        <input type="radio" ng-model="area" value="importShapefile">Merge map areas (TODO)<br/>
+    </div>
+
+    <div ng-show="step == 'addressRadius'">
+        <br/><label style="width: 150px">search address</label>
+        <google-places location="location" area="selectedArea.name"></google-places>
+        <br/><label style="width: 150px" for="radius">radius (km)</label>
+        <input style="width: 150px" id="radius" ng-model="circle.radius">
+        <br/>
+    </div>
+
+    <div ng-show="step == 'pointRadius'">
+        <div class="form-group row">
+            <label style="width: 150px">area name</label>
+            <input ng-model="selectedArea.name"><br/>
+            <label style="width: 150px" for="longitude">longitude</label>
+            <input style="width: 150px" type="number" min='-180' max="180" id="longitude" ng-model="circle.longitude">
+            <br/>
+            <label style="width: 150px" for="latitude">latitude</label>
+            <input style="width: 150px" type="number" min='-90' max="90" id="latitude" ng-model="circle.latitude">
+            <br/>
+            <label style="width: 150px" for="radius2">radius (km)</label>
+            <input style="width: 150px" id="radius2" ng-model="circle.radius">
+            <br/>
+        </div>
+    </div>
+
+    <div ng-show="step == 'gazetteer'">
+        <label style="width: 150px" for="gazAutoComplete">search gazetteer</label>
+        <input gaz-auto-complete id="gazAutoComplete" on-custom="setPid" userobjects="false">
+        <br/><label style="width: 150px" for="locationRadius">location radius (km)</label>
+        <input type="number" id="locationRadius" ng-model="locationRadius" value="10">
+    </div>
+
+    <div ng-show="step == 'importShapefile'">
+    </div>
+
+    <div ng-show="step == 'importKML'">
+    </div>
+
+    <div ng-show="step == 'wkt'">
+        <label style="width: 150px">area name</label><input ng-model="selectedArea.name">
+        <br/><label style="width: 150px;vertical-align:top">wkt</label><textarea ng-model="selectedArea.wkt"></textarea>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button class="btn" type="button" ng-click="step = 'default'">< Back</button>
+    <button class="btn" type="button" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-primary" type="button" ng-click="ok()">Next ></button>
+</div>

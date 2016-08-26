@@ -1,0 +1,52 @@
+<div class="container">
+    <form>
+        <div class="form-group">
+            <div class="input-group">
+                <div class="input-group-addon"><i class="fa fa-search"></i></div>
+                <input type="text" class="form-control" placeholder="Search Lists" ng-model="searchLists">
+            </div>
+        </div>
+    </form>
+
+    <div>
+        <table class="table table-bordered table-striped">
+            <thead style="display:block">
+            <tr>
+                <td></td>
+                <td>
+                    <a href="#" ng-click="sortType = 'listName'; sortReverse = !sortReverse">
+                        listName
+                        <span ng-show="sortType == 'listName' && !sortReverse" class="fa fa-caret-down"></span>
+                        <span ng-show="sortType == 'listName' && sortReverse" class="fa fa-caret-up"></span>
+                <td>
+                    <a href="#" ng-click="sortType = 'fullName'; sortReverse = !sortReverse">
+                        fullName
+                        <span ng-show="sortType == 'fullName' && !sortReverse" class="fa fa-caret-down"></span>
+                        <span ng-show="sortType == 'fullName' && sortReverse" class="fa fa-caret-up"></span>
+                    </a></td>
+                </a></td>
+                <td><a href="#" ng-click="sortType = 'updated'; sortReverse = !sortReverse">
+                    last updated
+                    <span ng-show="sortType == 'updated' && !sortReverse" class="fa fa-caret-down"></span>
+                    <span ng-show="sortType == 'updated' && sortReverse" class="fa fa-caret-up"></span>
+                </a></td>
+                <td>
+                    <a href="#" ng-click="sortType = 'count'; sortReverse = !sortReverse">
+                        number of records
+                        <span ng-show="sortType == 'count' && !sortReverse" class="fa fa-caret-down"></span>
+                        <span ng-show="sortType == 'count' && sortReverse" class="fa fa-caret-up"></span>
+                    </a></td>
+            </tr>
+            </thead>
+            <tbody style="height:300px;overflow:scroll;display:block">
+            <tr ng-repeat="item in items | orderBy:sortType:sortReverse | filter:searchLists">
+                <td><input type="checkbox" ng-model="item.selected" ng-click="select(item)"></td>
+                <td>{{ item.listName }}</td>
+                <td>{{ item.fullName }}</td>
+                <td>{{ item.lastUpdated }}</td>
+                <td>{{ item.itemCount }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,18 @@
+<div class="modal-header">
+    <h3 class="modal-title">Area Report</h3>
+</div>
+
+<div class="modal-body">
+    <div>
+        <form class="form-horizontal">
+            <div ng-show="step == '1'">
+                <div select-area on-custom="setArea" selected-area="selectedArea"></div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button class="btn" type="button" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="isDisabled()">Next ></button>
+</div>

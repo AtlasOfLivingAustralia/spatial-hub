@@ -1,0 +1,274 @@
+<div
+        style="padding-left:15px;">
+    <form class="form-horizontal" ng-show="selected.layer">
+        <h4 style="margin-left: -15px;">{{selected.layer.name}}</h4>
+
+        <div class="form-group row">
+            <label for="selectedLayerName" style=";width:70px">Layer name</label>
+            <input style="width:300px" type="text" id="selectedLayerName"
+                   ng-model="selected.layer.name"/>
+        </div>
+
+        <div class="form-group row" ng-show="selected.layer.layertype == 'species'">
+            <label style=";width:70px">Display as</label>
+            <input type="radio" ng-model="selected.layer.colorType" ng-change="setColorType('grid')"
+                   value="grid">
+            <label style="padding-right:30px">Density grid</label>
+            <input type="radio" ng-model="selected.layer.colorType" ng-change="setColorType('-1')"
+                   value="-1">
+            <label>Points</label>
+        </div>
+
+        <div class="form-group row"
+             ng-show="selected.layer.layertype == 'species' && selected.layer.colorType != 'grid'">
+            <label style=";width:70px">Facet</label>
+            <select style=";width:300px" id='facet' ng-model="selected.layer.facet"
+                    ng-change="updateFacet()">
+                <option value="-1">User defined colour</option>
+                <option ng-repeat="x in selected.layer.list" value="{{x.facet}}"
+                        ng-disabled="{{x.separator}}">
+                    {{x.name}}
+                </option>
+            </select>
+        </div>
+
+        <div class="form-group row" ng-show="selected.layer.layertype == 'species' && selected.layer.colorType=='-1' &&
+                                        selected.layer.facet!='-1'">
+            <input style="width:200px" type="text" ng-model="facetFilter"/>
+            <button ng-click="facetFilter=''" class="btn btn-xs"
+                    ng-disabled="facetFilter == ''">clear filter
+            </button>
+            <table class="table" style="width:370px;height:200px;overflow:scroll;display:block">
+                <tr ng-repeat="x in selected.layer.facetList[selected.layer.facet] | filter:facetFilter">
+                    <td style="width:20px"><input type="checkbox" ng-model="x.selected"
+                                                  ng-change="updateSelection()"></td>
+                    <td style="width:230px">{{x.name}}</td>
+                    <td style="width:100px">{{x.count}}</td>
+                    <td style="background-color:#{{formatColor(x)}};width:20px">&nbsp</td>
+                </tr>
+            </table>
+
+            <div style="float:right;padding-right:30px" class="btn-group">
+                <button class="btn btn-xs" ng-click="facetClearSelection()"
+                        ng-disabled="!facetsSelected()">Clear selection
+                </button>
+                <button class="btn btn-xs" ng-click="facetNewLayer()"
+                        ng-disabled="!facetsSelected()">Create layer
+                </button>
+            </div>
+        </div>
+
+        <div ng-show="(selected.layer.layertype == 'species' && selected.layer.colorType=='-1' &&
+                                        selected.layer.facet=='-1') || selected.layer.layertype == 'area'"
+             class="form-group row">
+            <grid id="cpGrid" style="padding-left:2px;width:280px;display:block">
+                <rows class="noborder">
+                    <row>
+                        <div style="background-color:#8b0000" height="12px"
+                             ng-click="setColor('8b0000')">&nbsp;</div>
+
+                        <div style="background-color:#FF0000" height="12px"
+                             ng-click="setColor('FF0000')">&nbsp;</div>
+
+                        <div style="background-color:#CD5C5C" height="12px"
+                             ng-click="setColor('CD5C5C')">&nbsp;</div>
+
+                        <div style="background-color:#E9967A" height="12px"
+                             ng-click="setColor('E9967A')">&nbsp;</div>
+
+                        <div style="background-color:#8B4513" height="12px"
+                             ng-click="setColor('8B4513')">&nbsp;</div>
+
+                        <div style="background-color:#D2691E" height="12px"
+                             ng-click="setColor('D2691E')">&nbsp;</div>
+
+                        <div style="background-color:#F4A460" height="12px"
+                             ng-click="setColor('F4A460')">&nbsp;</div>
+
+                        <div style="background-color:#FFA500" height="12px"
+                             ng-click="setColor('FFA500')">&nbsp;</div>
+
+                        <div style="background-color:#006400" height="12px"
+                             ng-click="setColor('006400')">&nbsp;</div>
+
+                        <div style="background-color:#008000" height="12px"
+                             ng-click="setColor('008000')">&nbsp;</div>
+
+                        <div style="background-color:#00FF00" height="12px"
+                             ng-click="setColor('00FF00')">&nbsp;</div>
+
+                        <div style="background-color:#90EE90" height="12px"
+                             ng-click="setColor('90EE90')">&nbsp;</div>
+
+                        <div style="background-color:#191970" height="12px"
+                             ng-click="setColor('191970')">&nbsp;</div>
+
+                        <div style="background-color:#0000FF" height="12px"
+                             ng-click="setColor('0000FF')">&nbsp;</div>
+
+                        <div style="background-color:#9999FF" height="12px"
+                             ng-click="setColor('9999FF')">&nbsp;</div>
+
+                        <div style="background-color:#B0CFDE" height="12px"
+                             ng-click="setColor('B0CFDE')">&nbsp;</div>
+                    </row>
+                    <row>
+                        <div style="background-color:#4682B4" height="12px"
+                             ng-click="setColor('4682B4')">&nbsp;</div>
+
+                        <div style="background-color:#5F9EA0" height="12px"
+                             ng-click="setColor('5F9EA0')">&nbsp;</div>
+
+                        <div style="background-color:#00FFFF" height="12px"
+                             ng-click="setColor('00FFFF')">&nbsp;</div>
+
+                        <div style="background-color:#B0E0E6" height="12px"
+                             ng-click="setColor('B0E0E6')">&nbsp;</div>
+
+                        <div style="background-color:#556B2F" height="12px"
+                             ng-click="setColor('556B2F')">&nbsp;</div>
+
+                        <div style="background-color:#BDB76B" height="12px"
+                             ng-click="setColor('BDB76B')">&nbsp;</div>
+
+                        <div style="background-color:#FFFF00" height="12px"
+                             ng-click="setColor('FFFF00')">&nbsp;</div>
+
+                        <div style="background-color:#FFE4B5" height="12px"
+                             ng-click="setColor('FFE4B5')">&nbsp;</div>
+
+                        <div style="background-color:#4B0082" height="12px"
+                             ng-click="setColor('4B0082')">&nbsp;</div>
+
+                        <div style="background-color:#800080" height="12px"
+                             ng-click="setColor('800080')">&nbsp;</div>
+
+                        <div style="background-color:#FF00FF" height="12px"
+                             ng-click="setColor('FF00FF')">&nbsp;</div>
+
+                        <div style="background-color:#DDA0DD" height="12px"
+                             ng-click="setColor('DDA0DD')">&nbsp;</div>
+
+                        <div style="background-color:#000000" height="12px"
+                             ng-click="setColor('000000')">&nbsp;</div>
+
+                        <div style="background-color:#777777" height="12px"
+                             ng-click="setColor('777777')">&nbsp;</div>
+
+                        <div style="background-color:#BBBBBB" height="12px"
+                             ng-click="setColor('BBBBBB')">&nbsp;</div>
+
+                        <div style="background-color:#FFFFFF" height="12px"
+                             ng-click="setColor('FFFFFF')">&nbsp;</div>
+                    </row>
+                </rows>
+            </grid>
+
+            <div width="100%"
+                 style="padding-left:10px; float:right; margin-top:-40px;height:40px;width:40px;margin-right:30px">
+                <div style="background-color:#{{selected.layer.color}};height:30px">&nbsp;</div>
+            </div>
+        </div>
+        <br/>
+
+        <div class="form-group row"
+             ng-show="selected.layer.layertype == 'species' && selected.layer.colorType!='grid'">
+            <label style="float:left;width:70px" for="size">Size</label>
+
+            <div style="float:left;width:200px" id="size" ui-slider min="1" max="10"
+                 ng-model="selected.layer.size"></div>
+            <span style="float:left;width:15px">&nbsp;</span>
+            <span style="float:left">{{selected.layer.size}}</span>
+        </div>
+
+        <div class="form-group row">
+            <label style="float:left;width:70px" for="opacity">Opacity</label>
+
+            <div style="float:left;width:200px" id="opacity" ui-slider min="0" max="100"
+                 ng-model="selected.layer.opacity"></div>
+            <span style="float:left;width:15px">&nbsp;</span>
+            <span style="float:left">{{selected.layer.opacity}}%</span>
+        </div>
+
+        <div class="form-group row"
+             ng-show="selected.layer.layertype == 'grid' || selected.layer.layertype == 'contextual'">
+            <button class="btn btn-xs" ng-click="showLegend()">show legend</button>
+            <button class="btn btn-xs" ng-click="hideLegend()">hide legend</button>
+            <button class="btn btn-xs" ng-click="popupLegend()">popup legend</button>
+        </div>
+
+        <div class="form-group row" ng-show="wmsLegendVisible()">
+            <div ng-show="selected.layer.layertype != 'grid'">
+                <input style="width:200px" type="text" ng-model="selected.layer.contextualFilter"/>
+                <button ng-click="updateContextualList()" class="btn btn-xs">apply filter</button>
+                <button ng-click="clearContextualFilter()" class="btn btn-xs">clear filter</button>
+                <table class="table" style="width:370px;overflow:scroll;display:block">
+                    <tr ng-repeat="x in selected.layer.contextualList | filter:selected.layer.contextualFilter"
+                        ng-click="contextualHighlight(x.name)">
+                        <td style="width:20px">
+                            <input type="checkbox"
+                                   ng-model="x.selected"
+                                   ng-change="contextualSelectionChange(x)">
+                        </td>
+                        <td style="width:250px">{{x.name}}</td>
+                        <td style="width:30px">
+                            <i style="float:right" class="icon-zoom-in" ng-click="zoom(x)"></i>
+                        </td>
+                    </tr>
+                </table>
+
+                <div style="float:left;padding-left:15px" class="btn-group">
+                    <button class="btn btn-xs"
+                            ng-click="contextualPageBack()" style="float:left"><
+                    </button>
+                    <input style="float:left;width:50px" type="text"
+                           ng-model="selected.layer.contextualPage" ng-min="1"
+                           ng-max="selected.layer.contextualMaxPage">
+                    <input type="text" style="float:left;width:50px"
+                           value=" / {{selected.layer.contextualMaxPage}}" disabled="true"/>
+                    <button style="float:left" class="btn btn-xs"
+                            ng-click="contextualPageForward()">>
+                    </button>
+                </div>
+
+                <div style="float:right;padding-right:30px" class="btn-group">
+                    <button class="btn btn-xs"
+                            ng-click="contextualClearHighlight()">Clear highlight
+                    </button>
+                    <button class="btn btn-xs"
+                            ng-click="contextualClearSelection()">Clear selection
+                    </button>
+                    <button class="btn btn-xs" ng-click="contextualCreateArea()">Create area</button>
+                </div>
+            </div>
+
+            <img ng-src="{{selected.layer.leaflet.legendurl}}">
+        </div>
+
+        <div class="form-group row"
+             ng-show="selected.layer.layertype == 'species' && selected.layer.colorType != 'grid'">
+
+            <input style="margin-left:70px" type="checkbox" id="uncertainty"
+                   ng-change="setUncertainty(chkUncertainty)" ng-model="chkUncertainty">
+            <label for="uncertainty"
+                   style="width:300px">Display spatial uncertainty as a circle</label>
+        </div>
+
+        <div class="form-group row"
+             ng-if="selected.layer.layertype == 'species' && selected.layer.scatterplotUrl !== undefined">
+
+            <div id="chartDivBack" class="chartDiv" style="background-repeat:no-repeat">
+                <div id="chartDiv" class="chartDiv"
+                     ng-mousedown="doMouseDown($event)"
+                     ng-mousemove="doMouseDrag($event)"
+                     ng-mouseup="doMouseUp($event)"
+                     style="background-repeat:no-repeat;background-image:url('{{selected.layer.scatterplotUrl}}')"></div>
+            </div>
+            <div id="rband"
+                 ng-mousedown="doMouseDown($event)"
+                 ng-mousemove="doMouseDrag($event)"
+                 ng-mouseup="doMouseUp($event)"></div>
+
+        </div>
+    </form>
+</div>

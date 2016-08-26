@@ -1,0 +1,35 @@
+<div class="modal-header">
+    <h3 class="modal-title">Phylogenetic Diversity</h3>
+</div>
+
+<div class="modal-body">
+    <div class="row">
+        <div class="col-md-4">
+            <ol class="stepList" style="margin-left:-20px;">
+                <li style="font-size:12px" ng-repeat="stepName in stepNames"><span>{{stepName}}&nbsp;</span><i
+                        class="icon-ok" ng-show="step > $index + 1"></i></li>
+            </ol>
+        </div>
+        <div class="col-md-8">
+            <form class="form-horizontal">
+                <div ng-show="step == '1'">
+                    <div select-area on-custom="setArea" selected-area="selectedArea" multi="true"></div>
+                </div>
+
+                <div ng-show="step == '2'">
+                    <div select-phylo selected-phylo="selectedPhylo"></div>
+                </div>
+
+                <div ng-show="step == '3'">
+                    <div select-species on-custom="setQ" selected-q="selectedQ"></div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button class="btn" type="button" ng-click="cancel()">Cancel</button>
+    <button class="btn" type="button" ng-click="back()" ng-disabled="step == 1">< Back</button>
+    <button class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="isDisabled()">Next ></button>
+</div>

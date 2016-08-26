@@ -1,0 +1,28 @@
+<div style="padding:20px">
+    <div class="modal-title">Tabulate<br/><br/></div>
+
+    <div class="container">
+        Layer 1
+        <select ng-model="layer1">
+            <option ng-repeat="x in tlayers" ng-value="x.id">{{x.name}}</option>
+        </select>
+        <br/>
+        Layer 2
+        <select ng-model="layer2">
+            <option ng-repeat="x in tlayers" ng-value="x.id">{{x.name}}</option>
+        </select>
+        <br/>
+        <br/>
+        Type
+        <select ng-model="type">
+            <option ng-repeat="x in types" ng-value="x">{{x}}</option>
+        </select>
+        <br/>
+        {{msg}}
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="cancel()">Cancel</button>
+        <button class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="isDisabled()">Next ></button>
+    </div>
+</div>

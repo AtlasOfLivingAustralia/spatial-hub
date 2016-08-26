@@ -1,0 +1,57 @@
+<div class="modal-header">
+    <h3 class="modal-title">Add Species</h3>
+</div>
+
+<div class="modal-body">
+    <div>
+        <form class="form-horizontal">
+            <span>{{sel}}</span>
+
+            <div ng-show="step == '1'">
+                <div select-area on-custom="setArea" selected-area="selectedArea"></div>
+            </div>
+
+            <div ng-show="step == '2'">
+                <div>
+                    <label style=";width:70px">Facet</label>
+                    <select style=";width:300px" id='facet' ng-model="facet"
+                            ng-change="resetFacet()">
+                        <option ng-repeat="x in facets" value="{{x.facet}}"
+                                ng-disabled="{{x.separator}}">
+                            {{x.name}}
+                        </option>
+                    </select>
+                </div>
+
+                <input style="width:200px" type="text" ng-model="facetFilter"/>
+                <button ng-click="offset = 0; updateFacet()" class="btn btn-xs"
+                        ng-disabled="facetFilter == ''">apply filter (case sensitive)
+                </button>
+                <button ng-click="clearFilter()" class="btn btn-xs"
+                        ng-disabled="facetFilter != ''">clear filter
+                </button>
+                <table class="table" style="width:370px;height:200px;overflow:scroll;display:block">
+                    <tr ng-repeat="x in facetList">
+                        <td style="width:20px"><input type="checkbox" ng-model="x.selected"
+                                                      ng-change="updateSelection()"></td>
+                        <td style="width:230px">{{x.label}}</td>
+                        <td style="width:100px">{{x.count}}</td>
+                        <td style="background-color:#{{formatColor(x)}};width:20px">&nbsp</td>
+                    </tr>
+                </table>
+                <button ng-click="previousPage()" class="btn btn-xs" ng-disabled="offset == 0"><</button>
+                <span>Page {{(offset / pageSize) + 1}} of {{maxPages}}</span>
+                <button ng-click="nextPage()" class="btn btn-xs" ng-disabled="offset + pageSize >= max">></button>
+
+                <button ng-click="clearSelection()" class="btn btn-xs">Clear selection</button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button class="btn" type="button" ng-click="cancel()">Cancel</button>
+    <button class="btn" type="button" ng-click="back()" ng-disabled="step == 1">< Back</button>
+    <button class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="isDisabled()">Next ></button>
+</div>
