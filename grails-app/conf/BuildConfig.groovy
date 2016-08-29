@@ -6,6 +6,7 @@ grails.project.work.dir = "target/work"
 grails.project.target.level = 1.7
 grails.project.source.level = 1.7
 //grails.project.war.file = "target/${appName}-${appVersion}.war"
+grails.plugin.location."sandbox-hub" = "../sandbox-hub"
 
 grails.server.port.http = 8081
 
@@ -65,7 +66,7 @@ grails.project.dependency.resolution = {
         compile ':cache:1.1.7'
 
         // plugins needed at runtime but not for compilation
-        runtime ":resources:1.2.8"
+        runtime ":resources:1.2.14"
         // Uncomment these (or add new ones) to enable additional resources capabilities
         //runtime ":zipped-resources:1.0.1"
         //runtime ":cached-resources:1.1"
@@ -81,7 +82,9 @@ grails.project.dependency.resolution = {
         //compile ":handlebars-asset-pipeline:1.3.0.1"
 
         //runtime ":ala-bootstrap3:1.3"
-        runtime ":ala-bootstrap2:2.4.2"
-        runtime ":ala-auth:1.3.2-SNAPSHOT"
+        runtime ":ala-bootstrap3:1.6"
+        runtime ":ala-auth:1.3.4"
+//        runtime ":ala-bootstrap2:2.4.2"
+//        runtime ":ala-auth:1.3.2-SNAPSHOT"
     }
 }
