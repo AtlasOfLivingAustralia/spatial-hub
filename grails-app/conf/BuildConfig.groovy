@@ -5,8 +5,8 @@ grails.project.test.reports.dir = "target/test-reports"
 grails.project.work.dir = "target/work"
 grails.project.target.level = 1.7
 grails.project.source.level = 1.7
-//grails.project.war.file = "target/${appName}-${appVersion}.war"
 grails.plugin.location."sandbox-hub" = "../sandbox-hub"
+grails.project.war.file = "target/${appName}-${appVersion}.war"
 
 grails.server.port.http = 8081
 
