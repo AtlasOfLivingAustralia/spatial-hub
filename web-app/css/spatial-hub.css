@@ -229,3 +229,10 @@ form input[type=checkbox] {
 /*******************************/
 /* scatterplot end             */
 /*******************************/
+
+/** google places **/
+
+.pac-container {
+    z-index: 1050;
+}
+/** google places end**/
