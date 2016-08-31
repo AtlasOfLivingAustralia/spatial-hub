@@ -5,7 +5,7 @@ grails.project.test.reports.dir = "target/test-reports"
 grails.project.work.dir = "target/work"
 grails.project.target.level = 1.7
 grails.project.source.level = 1.7
-grails.plugin.location."sandbox-hub" = "../sandbox-hub"
+//grails.plugin.location."sandbox-hub" = "../sandbox-hub"
 grails.project.war.file = "target/${appName}-${appVersion}.war"
 
 grails.server.port.http = 8081
@@ -67,6 +67,9 @@ grails.project.dependency.resolution = {
 
         // plugins needed at runtime but not for compilation
         runtime ":resources:1.2.14"
+        runtime (":jquery-ui:1.10.4") {
+            excludes 'jquery'
+        }
         // Uncomment these (or add new ones) to enable additional resources capabilities
         //runtime ":zipped-resources:1.0.1"
         //runtime ":cached-resources:1.1"
@@ -82,7 +85,9 @@ grails.project.dependency.resolution = {
         //compile ":handlebars-asset-pipeline:1.3.0.1"
 
         //runtime ":ala-bootstrap3:1.3"
-        runtime ":ala-bootstrap3:1.6"
+        runtime(":ala-bootstrap3:1.6") {
+            excludes 'jquery'
+        }
         runtime ":ala-auth:1.3.4"
 //        runtime ":ala-bootstrap2:2.4.2"
 //        runtime ":ala-auth:1.3.2-SNAPSHOT"

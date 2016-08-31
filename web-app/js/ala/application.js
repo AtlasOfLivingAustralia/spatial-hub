@@ -42,7 +42,7 @@ $(function () {
     var responsiveCssFile = $("#responsiveCss").attr("href"); // remember set href
     $(".toggleResponsive").click(function (e) {
         e.preventDefault();
-        $(this).find("i").toggleClass("icon-resize-small icon-resize-full");
+        $(this).find("i").toggleClass("glyphicon-resize-small glyphicon-resize-full");
         var currentHref = $("#responsiveCss").attr("href");
         if (currentHref) {
             $("#responsiveCss").attr("href", ""); // set to desktop (fixed)

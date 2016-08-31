@@ -7,9 +7,9 @@
             <input type="radio" ng-model="selection.name" value="{{x.name}}"
                    ng-change="select(x.key)">
             {{x.name}}
-            <a style="float:right" ng-show="x.link != null" class="icon-info-sign"
+            <a style="float:right" ng-show="x.link != null" class="glyphicon glyphicon-info-sign"
                href="{{x.link}}" target="_blank">&nbsp;</a>
-            <i style="float:right" ng-show="x.url != null" class="icon-info-sign"
+            <i style="float:right" ng-show="x.url != null" class="glyphicon glyphicon-info-sign"
                ng-click="info(x.url)"></i>
         </li>
     </ul>
@@ -18,7 +18,7 @@
 <br>
 
 <div style="float:right">
-    <button class="btn btn-sm" ng-click="addWMSLayer()">Add WMS Layer</button>
-    <button class="btn btn-sm" ng-click="downloadMap()">Download map</button>
-    <button class="btn btn-sm" ng-click="resetMap()">Reset map</button>
+    <button class="btn btn-sm btn-default" ng-click="addWMSLayer()">Add WMS Layer</button>
+    <button class="btn btn-sm btn-default" ng-click="downloadMap()">Download map</button>
+    <button class="btn btn-sm btn-default" ng-click="resetMap()">Reset map</button>
 </div>

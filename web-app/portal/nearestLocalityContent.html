@@ -11,9 +11,9 @@
             {{x.name}}, {{x.geometry}}, {{x.distance}}
             <br/>
         </div>
-        <button class="btn" ng-click="enableDrawing()"
+        <button class="btn btn-default" ng-click="enableDrawing()"
                 ng-disabled="selectedArea.wkt.length == 0">Delete and click on a new point
         </button>
     </div>
-    <button class="btn" ng-click="cancel()">Delete and close</button>
+    <button class="btn btn-default" ng-click="cancel()">Delete and close</button>
 </div>

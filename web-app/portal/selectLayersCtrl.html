@@ -15,8 +15,8 @@
     <br/>
     <input type="file" id="file" name="file"/>
     <br/>
-    <button class="btn" ng-click="mode = ''">cancel</button>
-    <button class="btn" ng-click="upload()">Upload</button>
+    <button class="btn btn-default" ng-click="mode = ''">cancel</button>
+    <button class="btn btn-default" ng-click="upload()">Upload</button>
     <br/>
 
 </div>
@@ -24,8 +24,8 @@
 <div ng-show="mode == 'pasteLayers'">
     <textarea ng-model="pasteLayersTxt" style="height:200px;width:90%" name="pasteLayers"></textarea>
     <br/>
-    <button class="btn" ng-click="mode = ''">cancel</button>
-    <button class="btn" ng-click="addList(pasteLayersTxt);mode = ''">add</button>
+    <button class="btn btn-default" ng-click="mode = ''">cancel</button>
+    <button class="btn btn-default" ng-click="addList(pasteLayersTxt);mode = ''">add</button>
 </div>
 
 <div ng-show="mode == ''">
@@ -75,7 +75,7 @@
                             ng-src="images/icon_{{layer.type == 'e' ? 'grid':'contextual'}}-layer.png"></td>
                     <td style="width:300px">{{ layer.classification}}</td>
                     <td style="width:300px">{{ layer.name }}</td>
-                    <td style="float:right" class="icon-info-sign" ng-click="info(layer)"></td>
+                    <td style="float:right" class="glyphicon glyphicon-info-sign" ng-click="info(layer)"></td>
                     <td style="width:10px;"
                         class="{{ layer.dist <= 0.1 ? 'bk-green' : (layer.dist <= 0.3 ? 'bk-yellow' : (layer.dist <= 1 ? 'bk-red' : 'bk-white'))}}">
                         &nbsp
@@ -85,7 +85,7 @@
             </table>
 
             <div style="float:left">
-                <button class="btn btn-xs" ng-click="clearSelection()">Clear selection</button>
+                <button class="btn btn-xs btn-default" ng-click="clearSelection()">Clear selection</button>
                 <a download="layerList.txt"
                    ng-href="{{exportUrl}}" ng-disabled="{{exportUrl == null}}">
                     Export

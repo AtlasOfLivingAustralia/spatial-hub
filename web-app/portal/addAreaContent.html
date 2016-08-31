@@ -1,6 +1,8 @@
-<div class="modal-title">Add area - {{areaname}}</div>
+<div class="modal-header">
+    <h4 class="modal-title">Add area - {{areaname}}</h4>
+</div>
 
-<div class="modal-content" style="padding:20px">
+<div class="modal-body" style="padding:20px">
     <div ng-show="step == 'default'" style="padding:10px">
         <span>Select method to define area.{{area}}</span><br/>
 
@@ -77,7 +79,7 @@
 </div>
 
 <div class="modal-footer">
-    <button class="btn" type="button" ng-click="step = 'default'">< Back</button>
-    <button class="btn" type="button" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-default" type="button" ng-click="step = 'default'">< Back</button>
+    <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
     <button class="btn btn-primary" type="button" ng-click="ok()">Next ></button>
 </div>

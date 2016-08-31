@@ -35,7 +35,7 @@
         <div class="form-group row" ng-show="selected.layer.layertype == 'species' && selected.layer.colorType=='-1' &&
                                         selected.layer.facet!='-1'">
             <input style="width:200px" type="text" ng-model="facetFilter"/>
-            <button ng-click="facetFilter=''" class="btn btn-xs"
+            <button ng-click="facetFilter=''" class="btn btn-xs btn-default"
                     ng-disabled="facetFilter == ''">clear filter
             </button>
             <table class="table" style="width:370px;height:200px;overflow:scroll;display:block">
@@ -49,10 +49,10 @@
             </table>
 
             <div style="float:right;padding-right:30px" class="btn-group">
-                <button class="btn btn-xs" ng-click="facetClearSelection()"
+                <button class="btn btn-xs btn-default" ng-click="facetClearSelection()"
                         ng-disabled="!facetsSelected()">Clear selection
                 </button>
-                <button class="btn btn-xs" ng-click="facetNewLayer()"
+                <button class="btn btn-xs btn-default" ng-click="facetNewLayer()"
                         ng-disabled="!facetsSelected()">Create layer
                 </button>
             </div>
@@ -192,16 +192,16 @@
 
         <div class="form-group row"
              ng-show="selected.layer.layertype == 'grid' || selected.layer.layertype == 'contextual'">
-            <button class="btn btn-xs" ng-click="showLegend()">show legend</button>
-            <button class="btn btn-xs" ng-click="hideLegend()">hide legend</button>
-            <button class="btn btn-xs" ng-click="popupLegend()">popup legend</button>
+            <button class="btn btn-xs btn-default" ng-click="showLegend()">show legend</button>
+            <button class="btn btn-xs btn-default" ng-click="hideLegend()">hide legend</button>
+            <button class="btn btn-xs btn-default" ng-click="popupLegend()">popup legend</button>
         </div>
 
         <div class="form-group row" ng-show="wmsLegendVisible()">
             <div ng-show="selected.layer.layertype != 'grid'">
                 <input style="width:200px" type="text" ng-model="selected.layer.contextualFilter"/>
-                <button ng-click="updateContextualList()" class="btn btn-xs">apply filter</button>
-                <button ng-click="clearContextualFilter()" class="btn btn-xs">clear filter</button>
+                <button ng-click="updateContextualList()" class="btn btn-xs btn-default">apply filter</button>
+                <button ng-click="clearContextualFilter()" class="btn btn-xs btn-default">clear filter</button>
                 <table class="table" style="width:370px;overflow:scroll;display:block">
                     <tr ng-repeat="x in selected.layer.contextualList | filter:selected.layer.contextualFilter"
                         ng-click="contextualHighlight(x.name)">
@@ -212,13 +212,13 @@
                         </td>
                         <td style="width:250px">{{x.name}}</td>
                         <td style="width:30px">
-                            <i style="float:right" class="icon-zoom-in" ng-click="zoom(x)"></i>
+                            <i style="float:right" class="glyphicon glyphicon-zoom-in" ng-click="zoom(x)"></i>
                         </td>
                     </tr>
                 </table>
 
                 <div style="float:left;padding-left:15px" class="btn-group">
-                    <button class="btn btn-xs"
+                    <button class="btn btn-xs btn-default"
                             ng-click="contextualPageBack()" style="float:left"><
                     </button>
                     <input style="float:left;width:50px" type="text"
@@ -226,19 +226,19 @@
                            ng-max="selected.layer.contextualMaxPage">
                     <input type="text" style="float:left;width:50px"
                            value=" / {{selected.layer.contextualMaxPage}}" disabled="true"/>
-                    <button style="float:left" class="btn btn-xs"
+                    <button style="float:left" class="btn btn-xs btn-default"
                             ng-click="contextualPageForward()">>
                     </button>
                 </div>
 
                 <div style="float:right;padding-right:30px" class="btn-group">
-                    <button class="btn btn-xs"
+                    <button class="btn btn-xs btn-default"
                             ng-click="contextualClearHighlight()">Clear highlight
                     </button>
-                    <button class="btn btn-xs"
+                    <button class="btn btn-xs btn-default"
                             ng-click="contextualClearSelection()">Clear selection
                     </button>
-                    <button class="btn btn-xs" ng-click="contextualCreateArea()">Create area</button>
+                    <button class="btn btn-xs btn-default" ng-click="contextualCreateArea()">Create area</button>
                 </div>
             </div>
 

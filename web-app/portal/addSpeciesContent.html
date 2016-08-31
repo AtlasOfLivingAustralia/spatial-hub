@@ -7,7 +7,7 @@
         <div class="col-md-4">
             <ol class="stepList" style="margin-left:-20px;">
                 <li style="font-size:12px" ng-repeat="stepName in stepNames"><span>{{stepName}}&nbsp;</span><i
-                        class="icon-ok" ng-show="step > $index + 1"></i></li>
+                        class="glyphicon glyphicon-ok" ng-show="step > $index + 1"></i></li>
             </ol>
         </div>
         <div class="col-md-8">
@@ -26,7 +26,7 @@
 </div>
 
 <div class="modal-footer">
-    <button class="btn" type="button" ng-click="cancel()">Cancel</button>
-    <button class="btn" type="button" ng-click="back()" ng-disabled="step == 1">< Back</button>
+    <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-default" type="button" ng-click="back()" ng-disabled="step == 1">< Back</button>
     <button class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="isDisabled()">Next ></button>
 </div>

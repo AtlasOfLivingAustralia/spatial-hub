@@ -1,6 +1,8 @@
-<div style="padding:20px">
+<div class="modal-header">
     <div class="modal-title">Area report - {{areaName}}<br/><br/></div>
+</div>
 
+<div class="modal-body">
     <div class="container">
         <table class="table table-bordered table-striped">
             <tbody style="height:300px;overflow:scroll;display:block">
@@ -9,16 +11,16 @@
                 <td style="text-align:right">{{item.value}}</td>
                 <td>
                     <button ng-show="item.query !== undefined && (item.occurrences === undefined || !item.occurrences)"
-                            class="btn btn-xs" ng-click="list(item)">list
+                            class="btn btn-xs btn-default" ng-click="list(item)">list
                     </button>
                 </td>
                 <td>
-                    <button ng-show="item.query !== undefined && (item.map === undefined || item.map)" class="btn btn-xs"
+                    <button ng-show="item.query !== undefined && (item.map === undefined || item.map)" class="btn btn-xs btn-default"
                             ng-click="map(item)">Map all
                     </button>
                 </td>
                 <td>
-                    <button ng-show="item.query !== undefined && (item.map === undefined || item.map)" class="btn btn-xs"
+                    <button ng-show="item.query !== undefined && (item.map === undefined || item.map)" class="btn btn-xs btn-default"
                             ng-click="sample(item)">Sample
                     </button>
                 </td>
@@ -29,8 +31,8 @@
             </tbody>
         </table>
     </div>
+</div>
 
-    <div class="modal-footer">
-        <button class="btn btn-primary" type="button" ng-click="cancel()">Close</button>
-    </div>
+<div class="modal-footer">
+    <button class="btn btn-primary" type="button" ng-click="cancel()">Close</button>
 </div>
