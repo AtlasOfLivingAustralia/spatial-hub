@@ -45,7 +45,7 @@
 </div>
 </div>
 
-<script>
+<r:script disposition="defer">
 
     var spApp = angular.module('spApp', ["leaflet-directive", 'ngAnimate', 'ui.bootstrap', 'ui.sortable', 'ui.slider',
                 'biocache-service', 'facet-auto-complete-service', 'gaz-auto-complete-service', 'layer-distances-service',
@@ -66,10 +66,19 @@
                 'sp-options-directive', 'add-facet-ctrl',
                 'phylo-service', 'select-phylo-directive', 'phylo-ctrl',
                 'export-map-ctrl', 'export-area-ctrl',
-                'species-info-ctrl', 'tabulate-ctrl', 'tool-area-report-ctrl'])
+                'species-info-ctrl', 'tabulate-ctrl', 'tool-area-report-ctrl', 'sand-box-ctrl',
+                'ngAria', 'ngTouch', 'ala.sandbox.components',
+                'ala.sandbox.keepalive', 'ala.sandbox.preview', 'chieffancypants.loadingBar', 'ngFileUpload'])
             .factory("ConfigService", [function () {
                 return {}
             }])
+
+    spApp.value('sandboxConfig', SANDBOX_CONFIG);
+    spApp.value('existing', 1 );
+
+    spApp.config(['cfpLoadingBarProvider', function(cfpLoadingBarProvider) {
+        cfpLoadingBarProvider.includeSpinner = false;
+    }]);
 
     fetchData().then(bootstrapApplication);
 
@@ -119,14 +128,15 @@
 
 
 
-</script>
+</r:script>
 
+<g:render template="/configjs" plugin="sandbox-hub"/>
 
 </body>
 
 <head>
 
-    <script>
+    <r:script>
 
         SpatialPortalConfig = {
             biocacheUrl: '${config.biocache.url}',
@@ -144,7 +154,7 @@
             hoverLayers: [],
             proxyUrl: '${createLink(controller:'portal', action:'proxy')}'
         }
-    </script>
+    </r:script>
 
 
     <meta charset="utf-8">
@@ -157,7 +167,7 @@
 
     <script type="text/javascript"
             src="https://maps.google.com/maps/api/js?sensor=false&libraries=places&language=en-US"></script>
-    <r:require modules="portal"></r:require>
+    <r:require modules="portal, preview"></r:require>
 
 </head>
 </html>

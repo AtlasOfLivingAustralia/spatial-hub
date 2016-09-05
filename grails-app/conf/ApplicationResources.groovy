@@ -6,11 +6,11 @@ modules = {
     }
 
     bootstrap {
-        dependsOn 'core'
-        resource url:grailsApplication.config.headerAndFooter.baseURL + '/js/bootstrap.min.js'
+        dependsOn 'core', 'jquery'
+        resource url:grailsApplication.config.headerAndFooter.baseURL + '/js/bootstrap.min.js', disposition: 'head'
         // ala-bootstrap3 references css file from ALA wordpress site. Therefore css finds it difficult to reference font icons.
         // this will make referencing fonts easy.
-        resource url: [dir: 'node_modules/bootstrap/dist/css/', file: 'bootstrap.min.css'], attrs:[media:'screen, projection, print']
+        resource url: [dir: 'node_modules/bootstrap/dist/css/', file: 'bootstrap.min.css'], attrs:[media:'screen, projection, print'], disposition: 'head'
     }
 
     // END ala-bootstrap3 plugin change
@@ -27,40 +27,43 @@ modules = {
     }
 
     dependencies {
-        dependsOn('jquery', 'jquery-ui', 'leaflet')
-
+        dependsOn('jquery', 'jquery-ui', 'leaflet', 'font-awesome')
         resource url: [dir: 'js/ala', file: 'html5.js'], disposition: 'head'
         resource url: [dir: 'js', file: 'Google.js'], disposition: 'head'
-
         resource url: [dir: 'js', file: 'leaflet.label.js'], disposition: 'head'
         resource url: [dir: 'js', file: 'jquery.csv.js'], disposition: 'head'
         resource url: [dir: 'js', file: 'leaflet-geodesy.js'], disposition: 'head'
-
-
-
         resource url: [dir: 'css', file: 'leaflet.label.css'], disposition: 'head'
-        resource url: [dir: 'css', file: 'font-awesome-4.3.0.css'], disposition: 'head'
         resource url: [dir: 'css', file: 'spatial-hub.css'], disposition: 'head'
     }
 
     angular {
         dependsOn('ala', 'dependencies')
-        resource url: [dir: 'node_modules/angular', file: 'angular.js'], disposition: 'head'
+        resource url: [dir: 'node_modules/angular', file: 'angular.min.js'], disposition: 'head'
+        resource url: [dir: 'node_modules/angular', file: 'angular-csp.css']
+    }
+
+    'angular-ui-bootstrap' {
+        dependsOn('angular')
+        resource url: [dir: 'node_modules/angular-ui-bootstrap/dist', file: 'ui-bootstrap-csp.css']
+        resource url: [dir: 'node_modules/angular-ui-bootstrap/dist', file: 'ui-bootstrap-tpls.js']
+    }
+
+    'angular-ui-dependencies'{
+        dependsOn('angular', 'angular-ui-bootstrap')
+        resource url: [dir: 'node_modules/angular-animate', file: 'angular-animate.js']
+        resource url: [dir: 'node_modules/angular-touch', file: 'angular-touch.js']
     }
 
     'angular-libs' {
-        dependsOn('angular')
-        resource url: [dir: 'node_modules/angular-ui-bootstrap/dist', file: 'ui-bootstrap-csp.css']
-        resource url: [dir: 'node_modules/angular', file: 'angular-csp.css']
-        resource url: [dir: 'node_modules/angular-ui-bootstrap/dist', file: 'ui-bootstrap-tpls.js']
+        dependsOn('angular', 'leaflet')
         resource url: [dir: 'node_modules/angular-leaflet-directive/dist', file: 'angular-leaflet-directive.min.js']
-        resource url: [dir: 'node_modules/angular-animate', file: 'angular-animate.js']
         resource url: [dir: 'js', file: 'slider.js']
         resource url: [dir: 'js', file: 'sortable.js']
     }
 
     portal {
-        dependsOn('angular-libs')
+        dependsOn('jquery', 'bootstrap', 'angular', 'angular-ui-bootstrap', 'angular-ui-dependencies', 'angular-libs', 'leaflet')
         resource url: [dir: 'js/portal', file: 'infoPanel.js']
         resource url: [dir: 'js/portal/controller', file: 'addAreaCtrl.js']
         resource url: [dir: 'js/portal/controller', file: 'addLayerCtrl.js']
@@ -86,6 +89,7 @@ modules = {
         resource url: [dir: 'js/portal/controller', file: 'speciesInfoCtrl.js']
         resource url: [dir: 'js/portal/controller', file: 'tabulateCtrl.js']
         resource url: [dir: 'js/portal/controller', file: 'toolAreaReportCtrl.js']
+        resource url: [dir: 'js/portal/controller', file: 'sandBoxCtrl.js']
 
         resource url: [dir: 'js/portal/directive', file: 'areaListSelect.js']
         resource url: [dir: 'js/portal/directive', file: 'gazAutoComplete.js']

@@ -83,13 +83,10 @@ grails.project.dependency.resolution = {
         //compile ":less-asset-pipeline:1.5.3"
         //compile ":coffee-asset-pipeliney:1.5.0"
         //compile ":handlebars-asset-pipeline:1.3.0.1"
-
-        //runtime ":ala-bootstrap3:1.3"
         runtime(":ala-bootstrap3:1.6") {
             excludes 'jquery'
         }
         runtime ":ala-auth:1.3.4"
-//        runtime ":ala-bootstrap2:2.4.2"
-//        runtime ":ala-auth:1.3.2-SNAPSHOT"
+        runtime ":sandbox-hub:0.1"
     }
 }

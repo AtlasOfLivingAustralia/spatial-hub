@@ -12,8 +12,7 @@
 
     <title><g:layoutTitle/></title>
 
-    %{--<r:require modules="bootstrap"/>--}%
-    %{--<r:require modules="ala"/>--}%
+    <r:require modules="bootstrap, ala" />
 
     <r:layoutResources/>
     <g:layoutHead/>

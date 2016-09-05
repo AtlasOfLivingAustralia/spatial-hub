@@ -109,7 +109,9 @@
                         }
                     },
 
-                    add: function (id) {
+                    add: function (id, bs) {
+                        bs = bs || SpatialPortalConfig.biocacheServiceUrl
+
                         id.uid = uid
                         uid = uid + 1
 
@@ -161,7 +163,7 @@
                                 name: uid + ': ' + id.name,
                                 type: 'wms',
                                 visible: true,
-                                url: SpatialPortalConfig.biocacheServiceUrl + '/webportal/wms/reflect?',
+                                url: bs + '/webportal/wms/reflect?',
                                 layertype: 'species',
                                 opacity: 80,
                                 layerParams: {
