@@ -19,6 +19,11 @@ modules = {
         resource url: [dir: 'node_modules/jquery/dist', file: 'jquery.min.js'], disposition: 'head'
     }
 
+    'bootbox' {
+        resource url: [dir: 'node_modules/ngbootbox', file: 'ngBootbox.js'], disposition: 'defer'
+        resource url: [dir: 'node_modules/bootbox', file: 'bootbox.min.js'], disposition: 'defer'
+    }
+
     leaflet {
         resource url: [dir: 'node_modules/leaflet/dist/', file: 'leaflet.js'], disposition: 'head'
         resource url: [dir: 'node_modules/leaflet/dist/', file: 'leaflet.css'], disposition: 'head'
@@ -63,7 +68,8 @@ modules = {
     }
 
     portal {
-        dependsOn('jquery', 'bootstrap', 'angular', 'angular-ui-bootstrap', 'angular-ui-dependencies', 'angular-libs', 'leaflet')
+        dependsOn('jquery', 'bootstrap', 'angular', 'angular-ui-bootstrap', 'angular-ui-dependencies', 'angular-libs',
+                'leaflet', 'bootbox')
         resource url: [dir: 'js/portal', file: 'infoPanel.js']
         resource url: [dir: 'js/portal/controller', file: 'addAreaCtrl.js']
         resource url: [dir: 'js/portal/controller', file: 'addLayerCtrl.js']

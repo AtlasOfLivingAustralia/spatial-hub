@@ -1,7 +1,7 @@
 (function (angular) {
     'use strict';
     angular.module('lists-list-directive', ['lists-service', 'map-service'])
-        .directive('listsList', ['$http', 'ListsService', 'MapService', function ($http, ListsService, MapService) {
+        .directive('listsList', ['$http', 'ListsService', 'MapService', '$rootScope', function ($http, ListsService, MapService, $rootScope) {
 
             var sortType = 'updated'
             var sortReverse = false
@@ -14,15 +14,26 @@
                     scope.items = []
 
                     scope.setItems = function (data) {
-                        for (var i = 0; i < data.length; i++) {
+                        if (data.length) {
+                            for (var i = 0; i < data.length; i++) {
+                                scope.items.push({
+                                    dataResourceUid: data[i].dataResourceUid,
+                                    listName: data[i].listName,
+                                    lastUpdated: data[i].lastUpdated,
+                                    itemCount: data[i].itemCount,
+                                    fullName: data[i].fullName,
+                                    selected: false
+                                })
+                            }
+                        } else if (data.dataResourceUid) {
                             scope.items.push({
-                                dataResourceUid: data[i].dataResourceUid,
-                                listName: data[i].listName,
-                                lastUpdated: data[i].lastUpdated,
-                                itemCount: data[i].itemCount,
-                                fullName: data[i].fullName,
+                                dataResourceUid: data.dataResourceUid,
+                                listName: data.listName,
+                                lastUpdated: data.lastUpdated,
+                                itemCount: data.itemCount,
+                                fullName: data.fullName,
                                 selected: false
-                            })
+                            });
                         }
                     }
 
@@ -30,9 +41,20 @@
                         MapService.add(scope.selection);
                     }
 
-                    ListsService.list().then(function (data) {
-                        scope.setItems(data)
-                    })
+                    if ($rootScope.importOpt == 'importSpecies') {
+                        //var selectedItems = ListsService.items(resp.data.druid);
+                        var druid = ListsService.getCache();
+                        ListsService.list(druid).then(function (data) {
+                            scope.setItems(data);
+                            if (data.dataResourceUid) {
+                                scope.add(scope.getItem(data.dataResourceUid));
+                            }
+                        });
+                    } else {
+                        ListsService.list().then(function (data) {
+                            scope.setItems(data)
+                        });
+                    }
 
                     scope.selection = {}
 
@@ -51,7 +73,13 @@
                             item.selected = true
                             scope.selection = item
 
-                            scope.custom()({q: ["data_resource_uid:" + item.dataResourceUid], name: item.listName})
+                            ListsService.items(item.dataResourceUid).then(function(data){
+                                var listIds = data.map(function(i){
+                                                        return "(lsid:" + i.lsid + ")";
+                                                     }).join(' OR ');
+                                scope.custom()({q: [listIds], name: item.listName})
+                            })
+                            
                         }
                     }
 

@@ -14,6 +14,8 @@ class PortalController {
     AuthService authService
     def grailsApplication
 
+    static final APP_CONSTANT = 'SPATIAL_PORTAL'
+
     def index() {
         def userId = authService.getUserId()
         render(view: "index", model: [config: grailsApplication.config, userId: userId])
@@ -40,6 +42,42 @@ class PortalController {
             render [:] as JSON
 
         render JSON.parse(r) as JSON
+    }
+
+    def addNewSpecies() {
+
+        if (!authService.getUserId()) {
+            log.info("UnAuthorized user trying to add new species.")
+            response.setStatus(401)
+            def error = [status: 401, error: "You must be logged in before you can create a new species."]
+            render error as JSON
+        } else {
+
+            def userEmail = authService.getEmail();
+
+            def json = request.getJSON()
+
+            json.putAt("listType", APP_CONSTANT)
+
+            def url = grailsApplication.config.lists.url
+            if (!url.endsWith("/")) {
+                url += "/"
+            }
+
+            def r = webService.doPostJsonWithAuthentication(url + "ws/speciesList/", json)
+
+            if (r == null) {
+                def status = response.setStatus(500)
+                def error = [status: status, error: 'Unknown error when creating list']
+                render error as JSON
+            } else if (r.error) {
+                response.setStatus(r.statusCode)
+                render r as JSON
+            } else {
+                response.setStatus(200)
+                render r as JSON
+            }
+        }
     }
 
     def q() {

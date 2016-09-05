@@ -31,7 +31,10 @@ import javax.servlet.http.HttpServletResponse
  */
 class WebService {
 
-    // Used to avoid a circular dependency during initialisation
+  //  def userService
+    def authService
+
+   // Used to avoid a circular dependency during initialisation
     def getUserService() {
         return grailsApplication.mainContext.userService
     }
@@ -342,6 +345,49 @@ class WebService {
             def error = [error     : "Failed calling web service. ${e.getMessage()} URL= ${url}.",
                          statusCode: conn?.responseCode ?: "",
                          detail    : conn?.errorStream?.text]
+            log.error(error, e)
+            return error
+        }
+    }
+
+    def doPostJsonWithAuthentication(String url, Map postBody) {
+        def conn = null
+        def charEncoding = 'utf-8'
+        try {
+
+            HttpClient client = new HttpClient();
+            PostMethod post = new PostMethod(url);
+
+            post.setRequestHeader("Authorization", grailsApplication.config.api_key);
+
+            def userId = authService.getUserId()
+            if (userId) {
+                post.setRequestHeader(grailsApplication.config.app.http.header.userId, userId)
+                post.setRequestHeader("Cookie", "ALA-Auth=" + java.net.URLEncoder.encode(authService.getEmail(), "UTF-8"));
+            }
+
+            StringRequestEntity requestEntity = new StringRequestEntity((postBody as JSON).toString())
+
+            post.setRequestEntity(requestEntity)
+            int result = client.executeMethod(post);
+            String response = post.getResponseBodyAsString();
+
+            if (result == 200 || result == 201) {
+                return JSON.parse(response)
+            } else {
+                response.setStatus(result)
+                return [error: response,
+                        statusCode: result,
+                        detail : "Error response thrown from species list app."]
+            }
+        } catch (SocketTimeoutException e) {
+            def error = [error: "Timed out calling web service. URL= ${url}.", statusCode: 500, detail : e.getMessage()]
+            log.error(error, e)
+            return error
+        } catch (Exception e) {
+            def error = [error     : "Failed calling web service. ${e.getMessage()} URL= ${url}.",
+                         statusCode: 500,
+                         detail    : e.getMessage()]
             log.error(error, e)
             return error
         }

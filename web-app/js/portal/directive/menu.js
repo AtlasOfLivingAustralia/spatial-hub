@@ -19,6 +19,11 @@
                     scope.toggleAnimation = function () {
                         $scope.animationsEnabled = !$scope.animationsEnabled;
                     };
+
+                    scope.setScopeOption = function(data) {
+                        $rootScope.importOpt = data;
+                    }
+
                 }
             };
         }])
