@@ -149,7 +149,7 @@ security.cas.appServerName = 'http://local.ala.org.au:8081'
 security.cas.casServerUrlPrefix = 'https://auth.ala.org.au/cas'
 security.cas.casProperties = 'casServerLoginUrl,serverName,centralServer,casServerName,uriFilterPattern,uriExclusionFilter,authenticateOnlyIfLoggedInFilterPattern,casServerLoginUrlPrefix,gateway,casServerUrlPrefix,contextPath'
 auth.admin_role = "ROLE_ADMIN"
-
+app.http.header.userId = "X-ALA-userId"
 
 headerAndFooter.baseURL = 'http://www2.ala.org.au/commonui-bs3'
 ala.baseURL = 'http://www.ala.org.au'
@@ -157,7 +157,8 @@ bie.baseURL = 'http://bie.ala.org.au'
 bie.searchPath = '/search'
 
 layersService.url = 'http://spatial-test.ala.org.au/spatial-service'
-lists.url = 'http://lists.ala.org.au'
+//lists.url = 'http://lists.ala.org.au'
+lists.url = 'http://dev.ala.org.au:8082/specieslist-webapp'
 collections.url = 'http://collections.ala.org.au'
 sandbox.url = 'http://sandbox.ala.org.au/ala-hub'
 sandboxService.url = 'http://sandbox.ala.org.au/biocache-service'

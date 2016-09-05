@@ -1,8 +1,8 @@
 (function (angular) {
     'use strict';
-    angular.module('select-species-directive', ['map-service'])
-        .directive('selectSpecies', ['MapService', '$timeout', '$rootScope',
-            function (MapService, $timeout, $rootScope) {
+    angular.module('select-species-directive', ['map-service', 'lists-service'])
+        .directive('selectSpecies', ['MapService', 'ListsService', '$timeout', '$rootScope',
+            function (MapService, ListsService, $timeout, $rootScope) {
 
                 return {
                     scope: {
@@ -18,24 +18,62 @@
                         scope.spatiallySuspect = $rootScope.getValue(scope.name, 'spatiallySuspect', false);
                         scope.useScientificNames = $rootScope.getValue(scope.name, 'useScientificNames', false);
                         scope.includeExpertDistributions = $rootScope.getValue(scope.name, 'includeExpertDistributions', true);
-                        scope.speciesOption = $rootScope.getValue(scope.name, 'speciesOption', 'searchSpecies');
 
-                        scope.selectedQ.q = $rootScope.getValue(scope.name, 'q', [])
-                        scope.selectedQ.name = $rootScope.getValue(scope.name, 'name', '')
-
-                        $rootScope.addToSave(scope)
-
-                        scope.openSpeciesList = function () {
-                            $timeout(function () {
-                                $rootScope.openIframe(ListsService.url() + '', 'Import species list', 'Import species list and close this window when successful.')
-                            }, 0)
+                        if ($rootScope.importOpt == 'importSpecies') {
+                            scope.speciesOption = $rootScope.getValue(scope.name, 'speciesOption', 'importList');
+                        } else {
+                            scope.speciesOption = $rootScope.getValue(scope.name, 'speciesOption', 'searchSpecies');
                         }
+                        scope.selectedQ.q = $rootScope.getValue(scope.name, 'q', []);
+                        scope.selectedQ.name = $rootScope.getValue(scope.name, 'name', '');
+
+                        $rootScope.addToSave(scope);
+
+                        scope.importOpt = $rootScope.importOpt;
+
+                        scope.importUseListOpt = "false";
+
+                        if (scope.importOpt == 'importSpecies') {
+                            scope.importUseListOpt = "true";
+                        }
+
+                        scope.addNewSpecies = function (newListName, newListDescription, newItems, makePrivate) {
+                            ListsService.newSpecies(newListName, newListDescription, newItems, makePrivate).then(function (resp) {
+                                if (resp.status == 200) {
+                                    //bootbox.alert("Successfully created new species list.<br><br>Status code:" + resp.status + "<br>" + resp.data.message)
+                                    if (scope.importOpt == 'importSpecies') {
+                                       // var selectedItems = ListsService.items(resp.data.druid);
+                                       // ListsService.setCache(selectedItems)
+                                        ListsService.setCache(resp.data.druid);
+                                        scope.importUseListOpt = false;
+                                      //  scope.selectedQ.q = setQ(q)
+                                    }
+                                    scope.speciesOption = 'speciesList';
+                                    scope.changeOption();
+
+                                } else {
+                                    bootbox.alert("Error in creating new species.<br><br>Status code: " + resp.status + "<br>" +  resp.data.error)
+                                }
+                            })
+                        };
+
+                        scope.uploadCSV = function(newListName, newListDescription, makePrivate){
+                            var f = document.getElementById('file').files[0],
+                              r = new FileReader();
+                            r.onloadend = function(e){
+                                var data = e.target.result;
+                                var items = data.split('\n');
+                                var filteredItems = items.filter(function(e){return e})
+                                scope.addNewSpecies(newListName, newListDescription, filteredItems, makePrivate)
+                            }
+                            r.readAsBinaryString(f);
+                        };
 
                         scope.openSandbox = function () {
                             $timeout(function () {
                                 $rootScope.openIframe(SpatialPortalConfig.sandboxServiceUrl, 'Import points', 'Use the sandbox to import points and close this window when successful.')
                             }, 0)
-                        }
+                        };
 
 
                         scope.setQ = function (query) {
@@ -52,8 +90,8 @@
 
                             scope.selectedQ.q = query.q.concat(gs)
                             scope.selectedQ.name = query.name
-                            scope.selectedQ.bs = query.bs
-                            scope.selectedQ.ws = query.ws
+                            scope.selectedQ.bs = SpatialPortalConfig.biocacheServiceUrl; //query.bs
+                            scope.selectedQ.ws = SpatialPortalConfig.biocacheUrl; //query.ws
                         }
 
                         scope.clearQ = function () {
