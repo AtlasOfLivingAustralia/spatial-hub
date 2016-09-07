@@ -94,8 +94,6 @@
                     })
                 }
 
-                $scope.setBaseMap()
-
                 $scope.invalidate = function () {
                     leafletData.getMap().then(function (map) {
                         map.invalidateSize()

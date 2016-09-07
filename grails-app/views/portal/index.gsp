@@ -2,7 +2,7 @@
 <html lang="en">
 <body>
 
-<div style="width:400px" class="pull-left" ng-controller="LayoutCtrl">
+<div style="width:400px" class="pull-left" ng-controller="LayoutCtrl" id="left-panel">
 
     <div ng-show="panelMode == 'default'">
 
@@ -36,13 +36,12 @@
 
 </div>
 
-<div style="margin-left:400px">
+<div style="margin-left:400px" id="right-panel">
     <div class="row" style="margin:0px" ng-controller="BasicTilesController as basicTilesController">
         <leaflet id="map" lf-center="australia" layers="layers" controls="controls" bounds="bounds" defaults="defaults"
                  width="100%" height="480px">
         </leaflet>
     </div>
-</div>
 </div>
 
 <r:script disposition="defer">
