@@ -33,6 +33,24 @@
                         }
                     });
                 },
+                constructSearchResultUrl: function (query, fqs, pageSize, offset, facet) {
+                    facet = facet || false
+                    pageSize = pageSize === undefined ? 1 : pageSize
+                    offset = offset || 0
+                    var fqList = (fqs === undefined ? '' : '&fq=' + this.joinAndEncode(fqs))
+                    return query.ws + "/occurrences/search?facet=" + facet + "&pageSize=" + pageSize + "&startIndex=" + offset +"&q=" + this.getQString(query) + fqList
+                },
+                searchForOccurrences: function (query, fqs, pageSize, offset, facet) {
+                    facet = facet || false
+                    pageSize = pageSize === undefined ? 1 : pageSize
+                    offset = offset || 0
+                    var fqList = (fqs === undefined ? '' : '&fq=' + this.joinAndEncode(fqs))
+                    return $http.get(query.bs + "/occurrences/search?facet=" + facet + "&pageSize=" + pageSize + "&startIndex=" + offset +"&q=" + this.getQString(query) + fqList).then(function (response) {
+                        if (response.data !== undefined) {
+                            return response.data;
+                        }
+                    });
+                },
                 facet: function (facet, query) {
                     return $http.get(query.bs + "/webportal/legend?cm=" + facet + "&q=" + this.getQString(query) + "&type=application/json").then(function (response) {
                         return response.data;
