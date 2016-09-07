@@ -35,6 +35,6 @@
     "leaflet-draw": "^0.2.3",
     "jquery": "^2.1.1",
     "bootstrap": "^3.3.4",
-    "ngbootbox": "^0.1.2"
+    "ngbootbox": "^3.x.x"
   }
 }

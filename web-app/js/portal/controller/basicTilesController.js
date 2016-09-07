@@ -19,6 +19,13 @@
                     },
                     layers: {
                         baselayers: {
+                            //first baselayer is the default base layer
+                            google_hybrid: {
+                                name: 'Hybrid',
+                                layerType: 'HYBRID',
+                                type: 'google'
+                            },
+                            
                             outline: {
                                 name: 'Outline',
                                 type: 'wms',
@@ -33,19 +40,14 @@
                                 url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
                                 type: 'xyz'
                             },
-                            google_satellite: {
-                                name: 'Satellite',
-                                layerType: 'SATELLITE',
-                                type: 'google'
-                            },
-                            google_hybrid: {
-                                name: 'Hybrid',
-                                layerType: 'HYBRID',
-                                type: 'google'
-                            },
                             google_roadmaps: {
                                 name: 'Streets',
                                 layerType: 'ROADMAP',
+                                type: 'google'
+                            },
+                            google_satellite: {
+                                name: 'Satellite',
+                                layerType: 'SATELLITE',
                                 type: 'google'
                             }
                         },
@@ -92,6 +94,8 @@
                     })
                 }
 
+                $scope.setBaseMap()
+
                 $scope.invalidate = function () {
                     leafletData.getMap().then(function (map) {
                         map.invalidateSize()
@@ -137,7 +141,6 @@
                 }
 
                 $scope.moveLayer = function (layer, newIndex) {
-                    var delta = Object.keys($scope.layers.baselayers).length;
                     leafletData.getMap().then(function (map) {
                         leafletData.getLayers().then(function (leafletLayers) {
                             var ly;
@@ -297,11 +300,6 @@
                             new L.Control.InfoPanel({
                                 data: []
                             }).addTo(map);
-
-
-                            map.on('baselayerchange', function (e) {
-                                var i
-                            })
 
                             map.on('draw:created', function (e) {
                                 var layer = e.layer;
