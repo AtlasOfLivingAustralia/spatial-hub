@@ -84,11 +84,9 @@
                                 }
                             }
 
+                            delete leafletLayers[layers[i].uid]
+
                             layers.splice(i, 1)
-
-                            delete leafletLayers[uid]
-
-                            break;
                         }
                     },
                     remove: function (uid) {

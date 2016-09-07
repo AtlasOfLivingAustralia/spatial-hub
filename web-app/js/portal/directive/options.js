@@ -44,7 +44,14 @@
                         }
 
                         scope.resetMap = function () {
-                            MapService.resetMap()
+                            //remove layers
+                            MapService.removeAll()
+                            
+                            //set zoom
+                            MapService.leafletScope.resetZoom()
+                            
+                            //set base layer
+                            MapService.leafletScope.setBaseMap('google_hybrid')
                         }
 
                         scope.open = function (type) {

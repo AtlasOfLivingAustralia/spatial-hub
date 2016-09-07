@@ -116,7 +116,8 @@
 
                 $scope.resetZoom = function () {
                     leafletData.getMap().then(function (map) {
-                        map.center(b);
+                        map.panTo(L.latLng(-25, 132))
+                        map.setZoom(4)
                     });
                 }
 
