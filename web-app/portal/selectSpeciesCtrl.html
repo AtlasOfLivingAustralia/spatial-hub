@@ -6,7 +6,6 @@
 
 <br/><br/>
 
-<div ng-show="importOpt == 'addSpecies'">
 <input type="radio" ng-model="speciesOption" value="allSpecies" ng-change="changeOption()">All species</input>
 <br/>
 <input type="radio" ng-model="speciesOption" value="searchSpecies"
@@ -19,49 +18,21 @@
     <br/>For example: "Macropus rufus" or "Red Kangaroo"
     <br/><br/>
 </div>
-</div>
+
 <input type="radio" ng-model="speciesOption" value="importList"
        ng-change="changeOption()">Create new species list</input>
-<br/>
 
 <div ng-if="speciesOption == 'importList'" style="margin-left:15px">
-
-    <span style="color:#2e6da4">Step 1 - Enter new list details</span>
-    <div class="well">
-        List Name:<br><input type="text" ng-model="newListName" style="width: 60%" /><br>
-        List Description:<br> <input type="text" ng-model="newListDescription" value="" /><br>
-        Make Private: <input type="checkbox" ng-model="makePrivate" value="false" /><br>
-    </div>
-
-    <br>
-    <span style="color:#2e6da4">Step 2 - Enter new species lists items</span>
-
-   <div class="well">
-       <div>
-       <span style="color:#2e6da4">Option 1</span><br>
-       Enter scientific name separated by new line<br>
-       <textarea type="text" rows="4" class="form-control" ng-model="newItems" ng-list="&#10;" ng-trim="false"></textarea>
-       <button class="btn btn-primary" type="button" ng-click="addNewSpecies(newListName, newListDescription, newItems, makePrivate)">Add</button>
-       </div>
-
-       <br>
-       <div>
-       <span style="color:#2e6da4">Option 2</span>
-       <div class="input-group">
-           Upload using CSV file<br>
-           <input type="file" id="file" name="file" ng-model="file" />
-           <button ng-click="uploadCSV(newListName, newListDescription, makePrivate)">Add</button>
-       </div>
-       </div>
-   </div>
-
-   <br/>
-
+    <i>List: <b>{{speciesListName}}</b></i>
+    <button style="margin-left:30px" class="btn btn-default" ng-click="openSpeciesList()">
+        Import species list
+    </button>
+    <br/>
 </div>
 
-<input type="radio" ng-model="speciesOption" value="speciesList" ng-change="changeOption()" ng-disabled="importUseListOpt=='true'">Use species list</input>
-
 <br/>
+
+<input type="radio" ng-model="speciesOption" value="speciesList" ng-change="changeOption()">Use species list</input>
 
 <div ng-if="speciesOption == 'speciesList'" style="margin-left:15px">
     <div lists-list on-custom="setQ"></div>
@@ -69,19 +40,18 @@
 </div>
 
 <br/>
-<br/>
 <input type="radio" ng-model="speciesOption" value="importPoints" ng-change="changeOption()">Import points</input>
 
-<div ng-if="speciesOption == 'importPoints'" style="margin-left:15px">
-    <br/>Open sandbox to import points.
-    <button class="btn btn-default" ng-click="openSandbox()">
-        Open sandbox
+<div ng-if="speciesOption == 'importPoints'" style="margin-left:25px;margin-top:10px">
+    <i>Dataset: <b>{{sandboxName}}</b></i>
+    <button style="margin-left:30px" class="btn btn-default" ng-click="openSandbox()">
+        Import points
     </button>
-    <br/><br/>
 </div>
+<br/>
 
 <input type="radio" ng-model="speciesOption" value="sandboxPoints"
-       ng-change="changeOption()">Use imported points (TODO)</input>
+       ng-change="changeOption()">Use imported points</input>
 <br/>
 
 <div ng-if="speciesOption == 'sandboxPoints'" style="margin-left:15px">

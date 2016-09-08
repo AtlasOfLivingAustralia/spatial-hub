@@ -358,8 +358,6 @@ class WebService {
             HttpClient client = new HttpClient();
             PostMethod post = new PostMethod(url);
 
-            post.setRequestHeader("Authorization", grailsApplication.config.api_key);
-
             def userId = authService.getUserId()
             if (userId) {
                 post.setRequestHeader(grailsApplication.config.app.http.header.userId, userId)

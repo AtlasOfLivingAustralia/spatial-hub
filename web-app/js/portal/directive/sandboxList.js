@@ -19,6 +19,7 @@
                     scope.setItems = function (data) {
                         for (var i = 0; i < data.length; i++) {
                             scope.sandboxItems.push({
+                                //TODO: enable access to multiple sandbox instances
                                 uid: data[i].uid,
                                 name: data[i].name,
                                 lastUpdated: data[i].lastUpdated,

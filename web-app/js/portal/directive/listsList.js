@@ -41,20 +41,9 @@
                         MapService.add(scope.selection);
                     }
 
-                    if ($rootScope.importOpt == 'importSpecies') {
-                        //var selectedItems = ListsService.items(resp.data.druid);
-                        var druid = ListsService.getCache();
-                        ListsService.list(druid).then(function (data) {
-                            scope.setItems(data);
-                            if (data.dataResourceUid) {
-                                scope.add(scope.getItem(data.dataResourceUid));
-                            }
-                        });
-                    } else {
-                        ListsService.list().then(function (data) {
-                            scope.setItems(data)
-                        });
-                    }
+                    ListsService.list().then(function (data) {
+                        scope.setItems(data)
+                    });
 
                     scope.selection = {}
 

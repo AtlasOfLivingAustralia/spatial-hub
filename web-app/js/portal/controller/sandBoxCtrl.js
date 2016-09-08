@@ -18,8 +18,8 @@
     'use strict';
     angular.module('sand-box-ctrl', ['map-service', 'biocache-service', 'layers-service', 'ala.sandbox.preview'])
         .controller('SandBoxCtrl', ['$scope', '$controller', 'MapService', '$timeout', '$rootScope', '$uibModalInstance',
-            'BiocacheService', 'LayersService',
-            function ($scope, $controller, MapService, $timeout, $rootScope, $uibModalInstance, BiocacheService, LayersService) {
+            'BiocacheService', 'LayersService', 'data',
+            function ($scope, $controller, MapService, $timeout, $rootScope, $uibModalInstance, BiocacheService, LayersService, inputData) {
                 var setWatchFlag = false
                 $scope.name = 'sandBoxCtrl'
                 $scope.cancel = function (data) {
@@ -41,15 +41,24 @@
 
                             child.$watch('preview.uploadStatus', function (newValue) {
                                 if(newValue == 'COMPLETE'){
-                                    BiocacheService.newLayer({
-                                        q: 'data_resource_uid:"' + dataResourceUid + '"',
+                                    var q = {
+                                        q: ['data_resource_uid:"' + dataResourceUid + '"'],
+                                        name: datasetName,
                                         bs: SpatialPortalConfig.sandboxServiceUrl,
                                         ws: SpatialPortalConfig.sandboxUrl
-                                    }, undefined, datasetName).then(function (data) {
-                                        MapService.add(data, SpatialPortalConfig.sandboxServiceUrl)
-                                    });
+                                    }
+                                    if (inputData != undefined && inputData.setQ != undefined) {
+                                        inputData.setQ(q)
+                                    } else {
+                                        BiocacheService.newLayer(q, undefined, datasetName).then(function (data) {
+                                            MapService.add(data, SpatialPortalConfig.sandboxServiceUrl)
+                                        });
+                                    }
                                     
                                     $scope.cancel();
+                                } else if(newValue == 'FAILED') {
+                                    alert('failed to import')
+                                    $scope.cancel()
                                 }
                             });
 

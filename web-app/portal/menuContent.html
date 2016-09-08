@@ -6,7 +6,7 @@
                 Add to map <span class="caret"></span>
             </button>
             <ul uib-dropdown-menu role="menu" aria-labelledby="menu-add">
-                <li role="menuitem"><a href="#" ng-click="setScopeOption('addSpecies'); open('addSpecies')">Species</a></li>
+                <li role="menuitem"><a href="#" ng-click="open('addSpecies')">Species</a></li>
                 <li role="menuitem"><a href="#" ng-click="open('addArea')">Area</a></li>
                 <li role="menuitem"><a href="#" ng-click="open('addLayer')">Layer</a></li>
                 <li role="menuitem"><a href="#" ng-click="open('addFacet')">Facet</a></li>
@@ -62,7 +62,7 @@
             </button>
             <ul uib-dropdown-menu role="menu" aria-labelledby="menu-import">
                 <li role="menuitem"><a href="#" ng-click="open('sandBox')">Points</a></li>
-                <li role="menuitem"><a href="#" ng-click="setScopeOption('importSpecies'); open('addSpecies')">Species List</a></li>
+                <li role="menuitem"><a href="#" ng-click="open('addSpecies', {speciesOption: 'speciesList'})">Species List</a></li>
                 <li role="menuitem"><a href="#" ng-click="">Areas (TODO)</a></li>
                 <li role="menuitem"><a href="#" ng-click="">Restore prior analysis (TODO)</a></li>
             </ul>

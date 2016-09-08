@@ -20,10 +20,6 @@
                         $scope.animationsEnabled = !$scope.animationsEnabled;
                     };
 
-                    scope.setScopeOption = function(data) {
-                        $rootScope.importOpt = data;
-                    }
-
                     scope.hidePanel = function () {
                         $("#left-panel")[0].style.marginLeft="-410px"
                         $("#right-panel")[0].style.marginLeft="0px"

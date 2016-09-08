@@ -96,6 +96,7 @@ modules = {
         resource url: [dir: 'js/portal/controller', file: 'tabulateCtrl.js']
         resource url: [dir: 'js/portal/controller', file: 'toolAreaReportCtrl.js']
         resource url: [dir: 'js/portal/controller', file: 'sandBoxCtrl.js']
+        resource url: [dir: 'js/portal/controller', file: 'createSpeciesListCtrl.js']
 
         resource url: [dir: 'js/portal/directive', file: 'areaListSelect.js']
         resource url: [dir: 'js/portal/directive', file: 'gazAutoComplete.js']

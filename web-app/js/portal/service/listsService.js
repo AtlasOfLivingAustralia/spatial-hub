@@ -24,7 +24,7 @@
                         }
                     });
                 },
-                newSpecies: function (name, description, items, makePrivate) {
+                createList: function (name, description, items, makePrivate) {
 
                     //items is a list of string... convert this to an array of map
                     var itemLists = items.map(function(item) {
@@ -38,10 +38,10 @@
                         "isPrivate": makePrivate
                     }
                     return $http.post("portal/addNewSpecies", list, {withCredentials: true}).then(function (resp) {
-                        $log.error("Successfully call in list service: " + resp.status + " " + resp.data.message);
+                        $log.debug("Successfully call in list service: " + resp.status + " " + resp.data.message);
                         return resp;
                     }, function (resp) {
-                        $log.error("Error in calling list service: " + resp.status + " " + resp.data.error);
+                        $log.debug("Error in calling list service: " + resp.status + " " + resp.data.error);
                         return resp;
                     });
                 },
@@ -52,12 +52,6 @@
                 },
                 url: function () {
                     return SpatialPortalConfig.listsUrl
-                },
-                setCache: function (value) {
-                    cache.put('listServiceCache', value);
-                },
-                getCache: function (key) {
-                    return cache.get('listServiceCache');
                 }
             };
         }])
