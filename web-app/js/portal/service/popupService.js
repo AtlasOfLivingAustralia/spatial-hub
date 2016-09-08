@@ -34,7 +34,7 @@
                             popupScope.intersects = intersects
                             popupScope.olist = occurrences
                             var html = $compile( content )(popupScope)
-                            popup = L.popup({maxWidth: 500, maxHeight: 400, minWidth: 300})
+                            popup = L.popup({maxWidth: 500, maxHeight: 400, minWidth: 300, autoPanPadding: 10})
                                 .setLatLng(latlng)
                                 .setContent(html[0])
                                 .openOn(map);
@@ -209,7 +209,7 @@
                                             layers.push(layer.id)
                                             break;
                                         case "area":
-                                            intersects.push({layername: 'Area', value: layer.name})
+                                            // todo: add logic to check if an area is clicked
                                             break;
                                         case "species":
                                             speciesLayers.push(layer)
@@ -227,9 +227,6 @@
                             }
 
                             occurrenceList = new OccurrenceList(speciesLayers)
-                            if(layers.length){
-                                addPopupToMap(latlng, map, templatePromise, intersects, occurrenceList)
-                            }
                         })
                     },
                     getIntersects: function (layers, latlng) {

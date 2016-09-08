@@ -51,12 +51,18 @@
                         }
 
                         scope.cancel = function () {
+                            // used by click info popup to check if click came while drawing polygon
+                            $rootScope.areaCtrlAreaValue = undefined;
+                            
                             scope.deleteDrawing()
 
                             $rootScope.closePanel()
                         }
 
                         scope.ok = function (data) {
+                            // used by click info popup to check if click came while drawing polygon
+                            $rootScope.areaCtrlAreaValue = undefined;
+
                             scope.addToMap()
 
                             scope.deleteDrawing()

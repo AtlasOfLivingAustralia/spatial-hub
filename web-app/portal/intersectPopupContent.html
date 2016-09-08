@@ -95,7 +95,7 @@
             <div class="panel-body">
                 <div class="row" ng-repeat="layer in intersects">
                     <div class="col-sm-8">{{layer.layername}}</div>
-                    <div class="col-sm-4">{{layer.value}}</div>
+                    <div class="col-sm-4">{{layer.value}} <span ng-show="layer.units != 'dimensionless'">{{layer.units}}</span></div>
                 </div>
             </div>
         </div>

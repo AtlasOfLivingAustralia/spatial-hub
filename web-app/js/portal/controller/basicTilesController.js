@@ -338,7 +338,9 @@
 
                             map.on('click',function (e) {
                                 var latlng = e.latlng
-                                popupService.click(latlng)
+                                if($rootScope.areaCtrlAreaValue != 'drawPolygon'){
+                                    popupService.click(latlng)
+                                }
                             });
                         })
                     });
