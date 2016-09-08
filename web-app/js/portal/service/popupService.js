@@ -55,6 +55,7 @@
                     this.index = 0
                     this.layers = undefined
                     this.config = SpatialPortalConfig
+                    this.zoomedToRecord = false
                     
                     this.getFirstOccurrence = function (layer) {
                         if(isFirstOccurrence){
@@ -139,15 +140,15 @@
                     this.getLatLngFq = function (latlng) {
                         var zoom = leafletMap && leafletMap.getZoom(),
                             fq = []
-                        if(zoom > 10){
-                            fq.push("latitude:[" + (latlng.lat- 0.01) + " TO " + (latlng.lat+ 0.01) + "]")
-                            fq.push("longitude:[" + (latlng.lng- 0.01) + " TO " + (latlng.lng+ 0.01) + "]")
-                        } else if(zoom > 5){
-                            fq.push("latitude:[" + (latlng.lat- 0.1) + " TO " + (latlng.lat+ 0.1) + "]")
-                            fq.push("longitude:[" + (latlng.lng- 0.1) + " TO " + (latlng.lng+ 0.1) + "]")
-                        } if(zoom >= 0){
+                        if(zoom >= 0 && zoom < 5){
                             fq.push("latitude:[" + (latlng.lat- 0.5) + " TO " + (latlng.lat+ 0.5) + "]")
                             fq.push("longitude:[" + (latlng.lng- 0.5) + " TO " + (latlng.lng+ 0.5) + "]")
+                        } else if(zoom >= 5 && zoom <10){
+                            fq.push("latitude:[" + (latlng.lat- 0.1) + " TO " + (latlng.lat+ 0.1) + "]")
+                            fq.push("longitude:[" + (latlng.lng- 0.1) + " TO " + (latlng.lng+ 0.1) + "]")
+                        } else if(zoom >= 10){
+                            fq.push("latitude:[" + (latlng.lat- 0.01) + " TO " + (latlng.lat+ 0.01) + "]")
+                            fq.push("longitude:[" + (latlng.lng- 0.01) + " TO " + (latlng.lng+ 0.01) + "]")
                         }
 
                         return fq
@@ -165,10 +166,10 @@
                     }
 
                     this.zoomToRecord = function () {
+                        self.zoomedToRecord = true
                         var occ = self.occurrences[0]
                         var lattng = L.latLng(occ.decimalLatitude, occ.decimalLongitude)
                         mapService.leafletScope.zoomToPoint(lattng, 10)
-                        leafletMap.closePopup()
                     }
                     
                     layers.forEach(function (layer) {
