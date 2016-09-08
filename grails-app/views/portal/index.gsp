@@ -49,7 +49,7 @@
     var spApp = angular.module('spApp', ["leaflet-directive", 'ngAnimate', 'ui.bootstrap', 'ui.sortable', 'ui.slider',
                 'biocache-service', 'facet-auto-complete-service', 'gaz-auto-complete-service', 'layer-distances-service',
                 'layers-auto-complete-service', 'layers-service', 'layout-service', 'lists-service', 'map-service',
-                'predefined-areas-service', 'predefined-layer-lists-service', 'sandbox-service', 'species-auto-complete-service',
+                'predefined-areas-service', 'predefined-layer-lists-service', 'sandbox-service', 'species-auto-complete-service', 'popup-service',
                 'area-list-select-directive', 'gaz-auto-complete-directive', 'google-places', 'layer-auto-complete-directive',
                 'layer-list-select-directive', 'layer-list-upload-directive', 'lists-list-directive', 'sandbox-list-directive',
                 'sp-menu-directive',
@@ -140,6 +140,7 @@
         SpatialPortalConfig = {
             biocacheUrl: '${config.biocache.url}',
             biocacheServiceUrl: '${config.biocacheService.url}',
+            bieUrl: '${config.bie.baseURL}',
             layersServiceUrl: '${config.layersService.url}',
             listsUrl: '${config.lists.url}',
             sandboxUrl: '${config.sandbox.url}',

@@ -41,6 +41,11 @@
                     radius: '10'
                 })
 
+                $scope.$watch('area', function (newValue) {
+                    // used by click info popup to check if click came while drawing polygon
+                    $rootScope.areaCtrlAreaValue = newValue;
+                })
+
                 $rootScope.addToSave($scope)
 
                 $scope.ok = function (data) {

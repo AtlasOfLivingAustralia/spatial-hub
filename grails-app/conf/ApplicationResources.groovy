@@ -127,6 +127,7 @@ modules = {
         resource url: [dir: 'js/portal/service', file: 'predefinedLayerListsService.js']
         resource url: [dir: 'js/portal/service', file: 'sandboxService.js']
         resource url: [dir: 'js/portal/service', file: 'speciesAutoCompleteService.js']
+        resource url: [dir: 'js/portal/service', file: 'popupService.js']
 
         resource url: [dir: 'js/portal', file: 'util.js']
         resource url: [dir: 'js/portal', file: 'wellknown.js']

@@ -17,10 +17,6 @@
                 }
                 var selected = {layer: null};
                 var uid = 1
-                //var leafletScope = {}
-
-                //$("#map").height($(window).height() - $('.navbar-header').height());
-//                map.invalidateSize();
 
                 return {
                     mappedLayers: layers,

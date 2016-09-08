@@ -1,9 +1,9 @@
 (function (angular) {
     'use strict';
-    angular.module('basic-tiles-controller', ['leaflet-directive', 'map-service'])
-        .controller('BasicTilesController', ["$scope", "$rootScope", "leafletData", "leafletBoundsHelpers",
-            "MapService", '$timeout', 'leafletHelpers',
-            function ($scope, $rootScope, leafletData, leafletBoundsHelpers, MapService, $timeout, leafletHelpers) {
+    angular.module('basic-tiles-controller', ['leaflet-directive', 'map-service', 'popup-service'])
+        .controller('BasicTilesController', ["$scope", "$rootScope", "$http", "leafletData", "leafletBoundsHelpers",
+            "MapService", '$timeout', 'leafletHelpers', 'PopupService',
+            function ($scope, $rootScope, $http, leafletData, leafletBoundsHelpers, MapService, $timeout, leafletHelpers, popupService) {
 
                 angular.extend($scope, {
                     layercontrol: {
@@ -111,6 +111,12 @@
                     }
                     leafletData.getMap().then(function (map) {
                         map.fitBounds(b);
+                    });
+                }
+
+                $scope.zoomToPoint = function (latlng, level) {
+                    leafletData.getMap().then(function (map) {
+                        map.setView(latlng, level)
                     });
                 }
 
@@ -325,6 +331,13 @@
                                     $scope.$emit('setWkt', [wkt]);
                                 }
 
+                            });
+
+                            map.on('click',function (e) {
+                                var latlng = e.latlng
+                                if($rootScope.areaCtrlAreaValue != 'drawPolygon'){
+                                    popupService.click(latlng)
+                                }
                             });
                         })
                     });

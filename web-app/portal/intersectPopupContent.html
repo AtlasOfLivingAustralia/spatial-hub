@@ -1,0 +1,103 @@
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-default" ng-show="olist.occurrences.length">
+            <div class="panel-heading" ng-show="!olist.zoomedToRecord">
+                <h3>Occurrence record ({{olist.index + 1}} of {{olist.total}})</h3>
+            </div>
+            <div class="panel-body" ng-repeat="oc in olist.occurrences">
+                <div class="row" ng-show="oc.thumbnailUrl">
+                    <div class="col-sm-12">
+                        <a ng-href="{{oc.largeImageUrl}}" target="_blank">
+                            <img class="img-thumbnail" ng-src="{{oc.thumbnailUrl}}" alt="Click to view large image">
+                        </a>
+                    </div>
+                </div>
+                <div class="row" ng-show="oc.layername">
+                    <div class="col-sm-6">Layer</div>
+                    <div class="col-sm-6">{{oc.layername}}</div>
+                </div>
+                <div class="row" ng-show="oc.scientificName">
+                    <div class="col-sm-6">Scientific name</div>
+                    <div class="col-sm-6"><a ng-href="{{olist.config.bieUrl}}/species/{{oc.speciesGuid}}"
+                                             target="_blank">
+                        {{oc.scientificName}}</a>
+                    </div>
+                </div>
+                <div class="row" ng-show="oc.kingdom">
+                    <div class="col-sm-6">Kingdom</div>
+                    <div class="col-sm-6"><a
+                            ng-href="{{olist.config.bieUrl}}/species/{{oc.kingdom}}" target="_blank">{{oc.kingdom}}</a>
+                    </div>
+                </div>
+                <div class="row" ng-show="oc.family">
+                    <div class="col-sm-6">Family</div>
+                    <div class="col-sm-6"><a ng-href="{{olist.config.bieUrl}}/species/{{oc.family}}" target="_blank">
+                        {{oc.family}}</a>
+                    </div>
+                </div>
+                <div class="row" ng-show="oc.dataProviderName">
+                    <div class="col-sm-6">Data provider</div>
+                    <div class="col-sm-6"><a
+                            ng-href="{{olist.config.collectionsUrl}}/public/show/{{oc.dataProviderUid}}"
+                            target="_blank">
+                        {{oc.dataProviderName}}</a>
+                    </div>
+                </div>
+                <div class="row" ng-show="oc.point00001">
+                    <div class="col-sm-6">Latitude & Longitude</div>
+                    <div class="col-sm-6">{{oc.point00001}}</div>
+                </div>
+                <div class="row" ng-show="oc.coordinateUncertaintyInMeters">
+                    <div class="col-sm-6">Spatial uncertainty in metres</div>
+                    <div class="col-sm-6">
+                        {{oc.coordinateUncertaintyInMeters}}
+                    </div>
+                </div>
+                <div class="row" ng-show="oc.month || oc.year">
+                    <div class="col-sm-6">Date</div>
+                    <div class="col-sm-6">
+                        <span ng-show="oc.month">{{oc.month}} / </span><span ng-show="oc.year">{{oc.year}}</span>
+                    </div>
+                </div>
+                <!--todo: add ad hoc group-->
+                <div class="row">
+                    <div class="col-sm-12">
+                        &nbsp;
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="btn-group" role="group" aria-label="..."  ng-show="!olist.zoomedToRecord">
+                            <button type="button" class="btn btn-default btn-xs" title="Previous occurrence"
+                                    ng-click="olist.getPrevOccurrence()"><i class="glyphicon glyphicon-arrow-left"></i>
+                            </button>
+                            <button type="button" class="btn btn-default btn-xs" title="Next occurrence"
+                                    ng-click="olist.getNextOccurrence()"><i class="glyphicon glyphicon-arrow-right"></i>
+                            </button>
+                        </div>
+                        <div class="btn btn-xs btn-default" ng-click="olist.viewRecord()" title="View details of this record">
+                            View record
+                        </div>
+                        <div class="btn btn-xs btn-default" ng-click="olist.zoomToRecord()" title="Zoom to the selected record" ng-show="!olist.zoomedToRecord">
+                            Zoom to record
+                        </div>
+                        <div class="btn btn-xs btn-default" ng-click="olist.listRecords()" title="List records at this point for this layer" ng-show="!olist.zoomedToRecord">
+                            List records at this point
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default" ng-show="intersects.length">
+            <div class="panel-heading">
+                <h3 class="panel-title">Layer values</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row" ng-repeat="layer in intersects">
+                    <div class="col-sm-8">{{layer.layername}}</div>
+                    <div class="col-sm-4">{{layer.value}} <span ng-show="layer.units != 'dimensionless'">{{layer.units}}</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
