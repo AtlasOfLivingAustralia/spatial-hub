@@ -50,6 +50,14 @@
                         return response.data
                     })
                 },
+                getItemsQ: function (listId) {
+                    return this.items(listId).then (function (data) {
+                        var itemQ = data.filter(function(i) { return i.lsid != null }).map(function(i){
+                            return "(lsid:" + i.lsid + ")";
+                        }).join(' OR ');
+                        return itemQ
+                    })
+                },
                 url: function () {
                     return SpatialPortalConfig.listsUrl
                 }

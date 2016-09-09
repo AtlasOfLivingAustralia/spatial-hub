@@ -49,11 +49,8 @@
                     $scope.newItems = $scope.newItems.replace('\t','\n').replace(',','\n').replace(';','\n').split('\n');
                     ListsService.createList($scope.newListName, $scope.newListDescription, $scope.newItems, $scope.makePrivate).then(function (resp) {
                         if (resp.status == 200) {
-                            ListsService.items(resp.data.druid).then(function(data){
-                                var listIds = data.filter(function(i) { return i.lsid != null }).map(function(i){
-                                    return "(lsid:" + i.lsid + ")";
-                                }).join(' OR ');
-
+                            ListsService.getItemsQ(resp.data.druid).then(function(data){
+                                var listIds = data;
                                 if (listIds.length == 0) {
                                     bootbox.alert("No matching species found.")
                                 } else {

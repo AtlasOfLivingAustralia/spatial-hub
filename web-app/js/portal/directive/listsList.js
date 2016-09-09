@@ -62,10 +62,8 @@
                             item.selected = true
                             scope.selection = item
 
-                            ListsService.items(item.dataResourceUid).then(function(data){
-                                var listIds = data.map(function(i){
-                                                        return "(lsid:" + i.lsid + ")";
-                                                     }).join(' OR ');
+                            ListsService.getItemsQ(item.dataResourceUid).then(function(data){
+                                var listIds = data;
                                 scope.custom()({q: [listIds], name: item.listName})
                             })
                             
