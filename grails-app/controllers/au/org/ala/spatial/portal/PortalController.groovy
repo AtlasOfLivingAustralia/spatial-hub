@@ -31,6 +31,44 @@ class PortalController {
         render JSON.parse(r) as JSON
     }
 
+    def shp() {
+        def mFile = request.getFile('shapeFile')
+        def params = [:]
+
+        def r = webService.doPostMultiPart(grailsApplication.config.layersService.url + "/shape/upload/shp", params, mFile)
+
+        if (!r) {
+            render [:] as JSON
+        } else if (r.error) {
+            render r as JSON
+        } else {
+            def shapeFileId = r.remove('shp_id')
+            def area = r.collect {key, value ->
+                [id:(key), values:(value)]
+            }
+            def msg = [shapeId: shapeFileId, area: area]
+            render msg as JSON
+        }
+    }
+
+    def createObj() {
+
+        def userId = authService.userId
+
+        if (userId) {
+            def json = request.getJSON()
+
+            json.putAt('user_id', userId)
+            json.putAt('api_key', grailsApplication.config.api_key)
+
+            def r = webService.doPostJSON(grailsApplication.config.layersService.url + "/shape/upload/shp/${json.getAt('shpId')}/${json.getAt('featureIdx')}", json)
+
+            render JSON.parse(r) as JSON
+        } else {
+            render [:] as JSON
+        }
+    }
+
     def createTask() {
         def json = request.getJSON()
 

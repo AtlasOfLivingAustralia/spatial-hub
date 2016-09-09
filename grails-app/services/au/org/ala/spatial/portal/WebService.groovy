@@ -17,11 +17,18 @@ package au.org.ala.spatial.portal
 
 import grails.converters.JSON
 import org.apache.commons.httpclient.HttpClient
+import org.apache.commons.httpclient.HttpException
 import org.apache.commons.httpclient.methods.PostMethod
 import org.apache.commons.httpclient.methods.StringRequestEntity
+import org.apache.commons.httpclient.methods.multipart.ByteArrayPartSource
+import org.apache.commons.httpclient.methods.multipart.FilePart
+import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity
+import org.apache.commons.httpclient.methods.multipart.Part
+import org.apache.commons.httpclient.methods.multipart.PartSource
 import org.codehaus.groovy.grails.web.converters.exceptions.ConverterException
 import org.codehaus.groovy.grails.web.servlet.HttpHeaders
 import org.springframework.http.MediaType
+import org.springframework.web.multipart.commons.CommonsMultipartFile
 
 import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletResponse
@@ -40,6 +47,8 @@ class WebService {
     }
 
     def grailsApplication
+
+    static int MAX_BYTE_SIZE = 10485760 //10MB
 
     def get(String url, boolean includeUserId) {
         def conn = null
@@ -373,20 +382,99 @@ class WebService {
             if (result == 200 || result == 201) {
                 return JSON.parse(response)
             } else {
-                response.setStatus(result)
-                return [error: response,
+                def error = [error: response,
                         statusCode: result,
-                        detail : "Error response thrown from species list app."]
+                        detail : "Error response thrown. URL = ${url}. ${response}"]
+                log.error(error)
+                return error
             }
-        } catch (SocketTimeoutException e) {
-            def error = [error: "Timed out calling web service. URL= ${url}.", statusCode: 500, detail : e.getMessage()]
+        } catch (IOException e) {
+            def error = [error: "Error reading from request or response. URL= ${url}.", statusCode: 500, detail: e.getMessage()]
             log.error(error, e)
             return error
+        } catch (HttpException e) {
+                def error = [error: "Error connecting to to URL= ${url}.", statusCode: 500, detail : e.getMessage()]
+                log.error(error, e)
+                return error
         } catch (Exception e) {
             def error = [error     : "Failed calling web service. ${e.getMessage()} URL= ${url}.",
                          statusCode: 500,
                          detail    : e.getMessage()]
             log.error(error, e)
+            return error
+        }
+    }
+
+
+    def doPostMultiPart(String url, Map params, CommonsMultipartFile mFile) {
+
+     //   def user = authService.getUserForUserId(authService.userId)
+        def userId = authService.userId //user.userName
+        int status
+        if (userId) {
+            try {
+                //def user = authService.getUserForUserId(userId)
+                //def userId = userId
+
+                PartSource ps = new ByteArrayPartSource(mFile.getOriginalFilename(), mFile.getBytes())
+
+                //File newFile = new File(mFile.getOriginalFilename())
+                //mFile.transferTo(newFile)
+
+                //Part part = new FilePart('files', newFile, mFile.fileItem.contentType, 'ISO-8859-1')
+               // Part part = new FilePart('files', ps, mFile.fileItem.contentType, 'ISO-8859-1')
+                Part part = new FilePart('files', ps, mFile.fileItem.contentType, 'UTF-8')
+
+                Part[] parts = [part].toArray()
+
+                PostMethod postMethod = new PostMethod(url);
+
+                params.each { key, value ->
+                    if (value) {
+                        postMethod.setParameter(key, value)
+                    }
+                }
+
+                postMethod.setRequestEntity(
+                        new MultipartRequestEntity(parts, postMethod.getParams())
+                );
+                postMethod.setRequestHeader('Authorization', grailsApplication.config.api_key)
+                postMethod.setRequestHeader(grailsApplication.config.app.http.header.userId, userId)
+                HttpClient client = new HttpClient();
+                status = client.executeMethod(postMethod);
+
+                String responseStr = postMethod.getResponseBodyAsString(MAX_BYTE_SIZE)
+
+                if (status == 200 || status == 201) {
+                    return JSON.parse(responseStr)
+                } else {
+                    def error = [error     : responseStr,
+                            statusCode: status,
+                            detail    : "Error response thrown from web service. URL= ${url}. ${responseStr}"]
+                    log.error(error)
+                    return error
+                }
+            } catch (IOException e) {
+                def error = [error: "Error reading from request or response. URL= ${url}.", statusCode: 500, detail: e.getMessage()]
+                log.error(error, e)
+                return error
+            } catch (HttpException e) {
+                def error = [error: "Error connecting to to URL= ${url}.", statusCode: 500, detail : e.getMessage()]
+                log.error(error, e)
+                return error
+            } catch (Exception e) {
+                def error = [error     : "Failed calling web service. ${e.getMessage()} URL= ${url}.",
+                             statusCode: 500,
+                             detail    : e.getMessage()]
+                log.error(error, e)
+                return error
+            }
+
+        } else {
+            def error = [error: "User not logged in",
+                    statusCode: 401,
+                    detail : "Error response thrown from upload"]
+            log.error(error)
             return error
         }
     }

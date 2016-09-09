@@ -76,8 +76,10 @@
                             }
                             $scope.addToMap()
                             $scope.cancel()
-                        } else if ($scope.area == 'importShapefile') {
-                        } else if ($scope.area == 'importKML') {
+                        } else if ($scope.area == 'importShapefile' || $scope.area == 'importKML') {
+                            $scope.uploadProgress = 0;
+                            $scope.myAreaName = "My Area";
+                        //} else if ($scope.area == 'importKML') {
                         } else if ($scope.area == 'environmentalEnvelope') {
                             $scope.cancel({noOpen: true})
                             $rootScope.openPanel('envelope', $scope.area)
@@ -100,7 +102,15 @@
                         } else if ($scope.area.startsWith('preset_')) {
                             //n/a
                         } else if ($scope.area == 'importShapefile') {
+                            var featureIdx = $scope.selectedShapeFileArea.id;
+                            LayersService.createObject($scope.fileName, $scope.myAreaName, $scope.shapeId, featureIdx).then(function(response){
+                                LayersService.getObject(response.data.id).then(function (data) {
+                                    data.data.layertype = 'area';
+                                    MapService.add(data.data);
+                                })
+                            });
                         } else if ($scope.area == 'importKML') {
+
                         } else if ($scope.area == 'environmentalEnvelope') {
                             //n/a
                         } else if ($scope.area == 'wkt') {
@@ -154,6 +164,68 @@
                     $scope.setWkt(Util.createCircle(coords[1] * 1, coords[0] * 1, $scope.locationRadius * 1000))
                     //$scope.showWkt()
                 }
+
+                $scope.selectShpArea = function (selectedIndex, area) {
+                    angular.forEach($scope.areaList, function(area, index) {
+                        if (selectedIndex != index)
+                            area.selected = false;
+                    });
+                    $scope.selectedShapeFileArea = area;
+                }
+
+                $scope.uploadFile = function (file) {
+                    LayersService.uploadAreaFile(file, $scope.area).then(function(response) {
+
+                        $scope.fileName =  file.name;
+                        if ($scope.area == 'importShapefile') {
+                            $scope.shapeId = response.data.shapeId;
+                            $scope.areaHeader = [];
+                            if (response.data.area.length > 0) {
+                                $scope.areaHeader = Object.keys(response.data.area[0].values);
+                                //$scope.areaHeader = $.map(response.data.area[0].values, function(v, i){
+                                //    return i;
+                                //});
+                            }
+                            $scope.areaList = response.data.area;
+                        } else if ($scope.area == 'importKML') {
+                            $scope.ok()
+                        }
+                        file.result = response.data;
+                    }, function(response) {
+                        $scope.errorMsg = response.status + ': ' + response.data;
+                    }, function (evt) {
+                        $scope.uploadProgress = parseInt(100.0 * evt.loaded / evt.total);
+                    });
+ /*                   if (file) {
+                        file.upload = Upload.upload({
+                            url: "portal/shp/",
+                            data: {shapeFile: file}
+                        });
+
+                        file.upload.then(function (response) {
+                            $timeout(function () {
+                                $scope.shapeId = response.data.shapeId;
+                                $scope.areaHeader = [];
+                                if (response.data.area.length > 0) {
+                                    $scope.areaHeader = Object.keys(response.data.area[0].values);
+                                    //$scope.areaHeader = $.map(response.data.area[0].values, function(v, i){
+                                    //    return i;
+                                    //});
+                                }
+                                $scope.areaList = response.data.area;
+                                file.result = response.data;
+                            });
+                        }, function (response) {
+                            if (response.status > 0)
+                                $scope.errorMsg = response.status + ': ' + response.data;
+                            
+                        }, function (evt) {
+                            file.progress = Math.min(100, parseInt(100.0 *
+                                evt.loaded / evt.total));
+                        });
+                    }*/
+                }
+
 
                 $scope.showWkt = function () {
                     //validate wkt

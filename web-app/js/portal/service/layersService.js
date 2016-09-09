@@ -1,7 +1,7 @@
 (function (angular) {
     'use strict';
-    angular.module('layers-service', [])
-        .factory('LayersService', ['$http', function ($http) {
+    angular.module('layers-service', ['ngFileUpload'])
+        .factory('LayersService', ['$http', 'Upload', function ($http, Upload) {
             var layers = []
 
             $http.get(SpatialPortalConfig.layersServiceUrl + "/fields/search?q=").then(function (data) {
@@ -47,7 +47,36 @@
                 },
                 getAreaDownloadUrl: function (pid, type, filename) {
                     return SpatialPortalConfig.layersServiceUrl + "/shape/" + type + "/" + pid + "?filename=" + encodeURIComponent(filename)
+                },
+                uploadAreaFile: function(file, type) {
+                    var uploadURL = "";
+                    if (type == 'importShapefile') {
+                        uploadURL = "portal/shp";
+                    } else if (type == 'importKML') {
+                        uploadURL = "portal/shp";
+                    }
+
+                    file.upload = Upload.upload({
+                        url: uploadURL,
+                        data: {shapeFile: file}
+                    });
+                    return file.upload.then(function (response) {
+                        return response;
+                     }, function (response) {
+                        return response;
+                    }, function (evt) {
+                        return evt;
+                    });
+                },
+                createObject: function(name, description, shpId, featureIdx) {
+                    var param = {
+                        name: name,
+                        description: description,
+                        shpId: shpId,
+                        featureIdx: featureIdx
+                    };
+                    return $http.post('portal/createObj', param);
                 }
-            };
+            }
         }])
 }(angular));

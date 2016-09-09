@@ -65,6 +65,7 @@ modules = {
         resource url: [dir: 'node_modules/angular-leaflet-directive/dist', file: 'angular-leaflet-directive.min.js']
         resource url: [dir: 'js', file: 'slider.js']
         resource url: [dir: 'js', file: 'sortable.js']
+        resource url: [dir: 'node_modules/ng-file-upload/dist', file: 'ng-file-upload.js']
     }
 
     portal {
