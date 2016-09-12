@@ -14,6 +14,7 @@
                 $rootScope.addToSave($scope)
 
                 $scope.status = ''
+                $scope.inputData = data
 
                 $scope.selectedCapability = data !== undefined ? data.processName : ''
                 $scope.capabilities = []
