@@ -34,6 +34,16 @@
                         return list
                     },
 
+                    speciesLayers: function () {
+                        var list = []
+                        for (var i = 0; i < layers.length; i++) {
+                            if (layers[i].q !== undefined) {
+                                list.push(layers[i])
+                            }
+                        }
+                        return list
+                    },
+
                     zoom: function (uid) {
                         for (var i = 0; i < layers.length; i++) {
                             if (layers[i].uid === uid) {
@@ -279,6 +289,15 @@
 
                     getLayer: function (id) {
                         return leafletLayers[id]
+                    },
+
+                    getFullLayer: function (uid) {
+                        for (var i = 0; i < layers.length; i++) {
+                            if (layers[i].uid === uid) {
+                                return layers[i]
+                            }
+                        }
+                        return null
                     },
 
                     select: function (id) {

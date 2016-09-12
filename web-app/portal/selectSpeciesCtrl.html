@@ -6,7 +6,12 @@
 
 <br/><br/>
 
-<input type="radio" ng-model="speciesOption" value="allSpecies" ng-change="changeOption()">All species</input>
+<div ng-repeat="layer in speciesLayers">
+    <input type="radio" ng-model="$parent.speciesOption" ng-value="layer.uid" ng-change="changeOption()">{{layer.name}}</input>
+    <br/>
+</div>
+
+<input type="radio" ng-model="speciesOption" value="allSpecies" ng-change="changeOption()" name="">All species</input>
 <br/>
 <input type="radio" ng-model="speciesOption" value="searchSpecies"
        ng-change="changeOption()">Search for a species by scientific or common name</input>
