@@ -26,6 +26,7 @@
                     layers = [],
                     speciesLayers = [],
                     occurrences = [],
+                    areaLayers = [],
                     occurrenceList
                 function addPopupToMap(latlng, map, templatePromise, intersects, occurrences) {
                     if(addPopupFlag){
@@ -195,6 +196,7 @@
                         layers.splice(0, layers.length)
                         occurrences.splice(0, occurrences.length)
                         speciesLayers.splice(0, speciesLayers.length)
+                        areaLayers.splice(0, areaLayers.length)
                         leafletData.getMap().then(function (map) {
                             leafletMap = map
                             mapService.mappedLayers && mapService.mappedLayers.forEach(function (layer) {
@@ -205,7 +207,7 @@
                                             layers.push(layer.id)
                                             break;
                                         case "area":
-                                            // todo: add logic to check if an area is clicked
+                                            areaLayers.push(layer)
                                             break;
                                         case "species":
                                             speciesLayers.push(layer)
@@ -222,26 +224,31 @@
                                 })
                             }
 
+                            if(areaLayers.length){
+                                areaLayers.forEach(function (layer) {
+                                    self.getAreaIntersects(layer, latlng).then(function (resp) {
+                                        if(resp.data.name){
+                                            addPopupToMap(loc, leafletMap, templatePromise, intersects, occurrenceList)
+                                            intersects.push({ layername: 'Area', value: resp.data.name})
+                                        }
+                                    })
+                                })
+                            }
+
                             occurrenceList = new OccurrenceList(speciesLayers)
                         })
                     },
                     getIntersects: function (layers, latlng) {
-                        if(layers.length){
-                            var url = SpatialPortalConfig.layersServiceUrl + "/intersect/"+ layers.join(',') + "/" + latlng.lat + "/" + latlng.lng;
-                            return $http.get(url)
+                        if(typeof layers  === "string"){
+                            layers = [layers]
                         }
-                    },
-                    getAreaIntersects: function (layers, latlng) {
-                        if(layers.length){
-                            layers.forEach(function (layer) {
-                                var url = SpatialPortalConfig.layersServiceUrl + "/object/intersect/"+ layers.pid + "/" + latlng.lat + "/" + latlng.lng;
-                                $http.get(url).then(function (data) {
-                                    if(data.name){
 
-                                    }
-                                })
-                            })
-                        }
+                        var url = SpatialPortalConfig.layersServiceUrl + "/intersect/"+ layers.join(',') + "/" + latlng.lat + "/" + latlng.lng;
+                        return $http.get(url)
+                    },
+                    getAreaIntersects: function (layer, latlng) {
+                        var url = SpatialPortalConfig.layersServiceUrl + "/object/intersect/"+ layer.pid + "/" + latlng.lat + "/" + latlng.lng;
+                        return $http.get(url)
                     }
                 }
             }])
