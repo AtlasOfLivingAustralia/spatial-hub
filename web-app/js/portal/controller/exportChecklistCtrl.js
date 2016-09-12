@@ -1,22 +1,31 @@
 (function (angular) {
     'use strict';
     angular.module('export-checklist-ctrl', ['biocache-service', 'map-service'])
-        .controller('ExportChecklistCtrl', ['$scope', 'MapService', '$timeout', '$rootScope', '$uibModalInstance', 'BiocacheService',
-            function ($scope, MapService, $timeout, $rootScope, $uibModalInstance, BiocacheService) {
+        .controller('ExportChecklistCtrl', ['$scope', 'MapService', '$timeout', '$rootScope', '$uibModalInstance', 'BiocacheService', 'data',
+            function ($scope, MapService, $timeout, $rootScope, $uibModalInstance, BiocacheService, config) {
 
                 $scope.name = 'exportChecklistCtrl'
                 $scope.stepNames = ['select area']
-                $scope.step = $rootScope.getValue($scope.name, 'step', 1);
-                $scope.selectedArea = $rootScope.getValue($scope.name, 'selectedArea', {
-                    area: {
-                        q: [],
-                        wkt: '',
-                        bbox: [],
-                        name: '',
-                        wms: '',
-                        legend: ''
-                    }
-                })
+                if(config && config.step){
+                    $scope.step = config.step
+                } else {
+                    $scope.step = $rootScope.getValue($scope.name, 'step', 1);
+                }
+
+                if(config && config.selectedArea){
+                    $scope.selectedArea = config.selectedArea
+                } else {
+                    $scope.selectedArea = $rootScope.getValue($scope.name, 'selectedArea', {
+                        area: {
+                            q: [],
+                            wkt: '',
+                            bbox: [],
+                            name: '',
+                            wms: '',
+                            legend: ''
+                        }
+                    })
+                }
 
                 $rootScope.addToSave($scope)
 

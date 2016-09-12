@@ -19,24 +19,31 @@
                     }
 
                     scope.info = function (url, title, notes) {
-                        $scope.$parent.openIframe(url, title, notes)
+                        scope.$parent.openIframe(url, title, notes)
                     }
 
                     scope.deleteAll = function () {
-                        for (var i = 0; i < $scope.list.length; i++) {
-                            $scope.delete($scope.list[i].uid)
+                        var uids = [], i
+                        for (i = 0; i < scope.list.length; i++) {
+                            uids.push(scope.list[i].uid)
                         }
+
+                        for ( i = 0; i < uids.length; i++) {
+                            MapService.remove(uids[i])
+                        }
+
+                        scope.selectControls()
                     }
 
                     scope.showAll = function () {
-                        for (var i = 0; i < $scope.list.length; i++) {
-                            MapService.setVisible($scope.list[i].uid, true)
+                        for (var i = 0; i < scope.list.length; i++) {
+                            MapService.setVisible(scope.list[i].uid, true)
                         }
                     }
 
                     scope.hideAll = function () {
-                        for (var i = 0; i < $scope.list.length; i++) {
-                            MapService.setVisible($scope.list[i].uid, false)
+                        for (var i = 0; i < scope.list.length; i++) {
+                            MapService.setVisible(scope.list[i].uid, false)
                         }
                     }
 
@@ -81,6 +88,15 @@
                         LayoutService.enable('legend')
                         MapService.select(layer)
                     }
+
+                    $rootScope.$on('quicklinks.call', function (event, type, item) {
+                        switch (type){
+                            case 'metadata':
+                                scope.info(item)
+                                break
+                        }
+
+                    })
                 }
             };
         }])

@@ -46,18 +46,27 @@
                     for (k in c) {
                         value = c[k]
                         var v
-                        if (value.type == 'area') {
-                            v = {
-                                area: {
-                                    qid: '',
-                                    pid: '',
-                                    name: '',
-                                    wms: '',
-                                    legend: ''
+                            if (value.type == 'area') {
+                            if(data && data.selectedArea){
+                                v = data.selectedArea
+                            } else {
+                                v = {
+                                    area: {
+                                        qid: '',
+                                        pid: '',
+                                        name: '',
+                                        wms: '',
+                                        legend: ''
+                                    }
                                 }
                             }
                         } else if (value.type == 'species') {
-                            v = {qid: '', name: '', bs: '', ws: ''}
+                            if(data && data.selectedQ){
+                                v = data.selectedQ
+                                $scope.preselectedSpeciesOption = 'selectedSpecies'
+                            } else {
+                                v = {qid: '', name: '', bs: '', ws: ''}
+                            }
                         } else if (value.type == 'layer') {
                             v = {layers: []}
                         } else if (value.type == 'boolean') {

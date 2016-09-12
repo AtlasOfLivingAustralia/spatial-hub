@@ -9,16 +9,22 @@
 <div ng-show="importOpt == 'addSpecies'">
 <input type="radio" ng-model="speciesOption" value="allSpecies" ng-change="changeOption()">All species</input>
 <br/>
-<input type="radio" ng-model="speciesOption" value="searchSpecies"
-       ng-change="changeOption()">Search for a species by scientific or common name</input>
-<br/>
+    <div ng-show="showAutoComplete">
+        <input type="radio" ng-model="speciesOption" value="searchSpecies"
+               ng-change="changeOption()">Search for a species by scientific or common name</input>
+        <br/>
 
-<div ng-if="speciesOption == 'searchSpecies'" style="margin-left:15px">
-    <br/><input type="checkbox" ng-checked="useScientificNames">Use the scientific names supplied with the records
-    <br/><br/><input style="width:400px" id="speciesAutoComplete" species-auto-complete on-custom="setQ">
-    <br/>For example: "Macropus rufus" or "Red Kangaroo"
-    <br/><br/>
-</div>
+        <div ng-if="speciesOption == 'searchSpecies'" style="margin-left:15px">
+            <br/><input type="checkbox" ng-checked="useScientificNames">Use the scientific names supplied with the records
+            <br/><br/><input style="width:400px" id="speciesAutoComplete" species-auto-complete on-custom="setQ" ng-model="selectedQ.name">
+            <br/>For example: "Macropus rufus" or "Red Kangaroo"
+            <br/><br/>
+        </div>
+    </div>
+    <div ng-show="!showAutoComplete">
+        <input type="radio" ng-model="speciesOption" value="selectedSpecies"
+               ng-change="changeOption()">My species - {{predefinedQ.name}}</input>
+    </div>
 </div>
 <input type="radio" ng-model="speciesOption" value="importList"
        ng-change="changeOption()">Create new species list</input>

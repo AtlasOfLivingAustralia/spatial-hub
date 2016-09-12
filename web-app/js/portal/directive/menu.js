@@ -20,7 +20,7 @@
                         $scope.animationsEnabled = !$scope.animationsEnabled;
                     };
 
-                    scope.setScopeOption = function(data) {
+                    $rootScope.setScopeOption = scope.setScopeOption = function(data) {
                         $rootScope.importOpt = data;
                     }
 

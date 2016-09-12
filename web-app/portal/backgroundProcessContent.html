@@ -35,7 +35,7 @@
                             <div select-area selected-area="values[$index]"></div>
                         </div>
                         <div ng-if="v.type == 'species'">
-                            <div select-species selected-q="values[$index]"></div>
+                            <div select-species selected-q="values[$index]" preselected-species-option="selectedSpecies"></div>
                         </div>
                         <div ng-if="v.type == 'double'">
                             <input style="width:300px" type="number" max="{{v.constraints.max}}"

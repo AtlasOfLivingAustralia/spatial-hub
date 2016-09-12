@@ -2,30 +2,42 @@
     'use strict';
     angular.module('select-species-directive', ['map-service', 'lists-service'])
         .directive('selectSpecies', ['MapService', 'ListsService', '$timeout', '$rootScope',
-            function (MapService, ListsService, $timeout, $rootScope) {
+            function (MapService, ListsService, $timeout, $rootScope, dialogConfig) {
 
                 return {
                     scope: {
                         custom: '&onCustom',
                         selectedQ: '=selectedQ',
+                        preselectedSpeciesOption: '=preselectedSpeciesOption'
                     },
                     templateUrl: 'portal/' + 'selectSpeciesCtrl.html',
                     link: function (scope, element, attrs) {
 
                         scope.name = 'selectSpecies'
-
+                        scope.showAutoComplete = true
                         scope.spatiallyValid = $rootScope.getValue(scope.name, 'spatiallyValid', true);
                         scope.spatiallySuspect = $rootScope.getValue(scope.name, 'spatiallySuspect', false);
                         scope.useScientificNames = $rootScope.getValue(scope.name, 'useScientificNames', false);
                         scope.includeExpertDistributions = $rootScope.getValue(scope.name, 'includeExpertDistributions', true);
 
-                        if ($rootScope.importOpt == 'importSpecies') {
-                            scope.speciesOption = $rootScope.getValue(scope.name, 'speciesOption', 'importList');
+                        if(!scope.preselectedSpeciesOption){
+                            if ($rootScope.importOpt == 'importSpecies') {
+                                scope.speciesOption = $rootScope.getValue(scope.name, 'speciesOption', 'importList');
+                            } else {
+                                scope.speciesOption = $rootScope.getValue(scope.name, 'speciesOption', 'searchSpecies');
+                            }
                         } else {
-                            scope.speciesOption = $rootScope.getValue(scope.name, 'speciesOption', 'searchSpecies');
+                            scope.speciesOption = scope.preselectedSpeciesOption
                         }
-                        scope.selectedQ.q = $rootScope.getValue(scope.name, 'q', []);
-                        scope.selectedQ.name = $rootScope.getValue(scope.name, 'name', '');
+
+                        if(scope.selectedQ && scope.selectedQ.name && scope.selectedQ.q){
+                            scope.predefinedQ = scope.selectedQ
+                            scope.showAutoComplete = false
+                        } else {
+                            scope.selectedQ.q = $rootScope.getValue(scope.name, 'q', []);
+                            scope.selectedQ.name = $rootScope.getValue(scope.name, 'name', '');
+
+                        }
 
                         $rootScope.addToSave(scope);
 
@@ -90,8 +102,8 @@
 
                             scope.selectedQ.q = query.q.concat(gs)
                             scope.selectedQ.name = query.name
-                            scope.selectedQ.bs = SpatialPortalConfig.biocacheServiceUrl; //query.bs
-                            scope.selectedQ.ws = SpatialPortalConfig.biocacheUrl; //query.ws
+                            scope.selectedQ.bs = query.bs
+                            scope.selectedQ.ws = query.ws
                         }
 
                         scope.clearQ = function () {
@@ -114,6 +126,8 @@
                                 scope.clearQ()
                             } else if (scope.speciesOption == 'sandboxPoints') {
                                 scope.clearQ()
+                            } else if(scope.speciesOption == 'selectedSpecies'){
+                                scope.setQ(scope.predefinedQ)
                             }
                         }
                     }

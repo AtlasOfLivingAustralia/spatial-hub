@@ -2,23 +2,33 @@
     'use strict';
     angular.module('export-area-ctrl', ['biocache-service', 'map-service', 'layers-service'])
         .controller('ExportAreaCtrl', ['$scope', 'MapService', '$timeout', '$rootScope', '$uibModalInstance', 'BiocacheService',
-            'LayersService',
-            function ($scope, MapService, $timeout, $rootScope, $uibModalInstance, BiocacheService, LayersService) {
+            'LayersService', 'data',
+            function ($scope, MapService, $timeout, $rootScope, $uibModalInstance, BiocacheService, LayersService, config) {
 
                 $scope.name = 'exportAreaCtrl'
                 $scope.stepNames = ['area to export', 'export type']
 
-                $scope.step = $rootScope.getValue($scope.name, 'step', 1);
-                $scope.selectedArea = $rootScope.getValue($scope.name, 'selectedArea', {
-                    area: {
-                        q: [],
-                        wkt: '',
-                        bbox: [],
-                        name: '',
-                        wms: '',
-                        legend: ''
-                    }
-                })
+                if(config && config.step){
+                    $scope.step = config.step
+                } else {
+                    $scope.step = $rootScope.getValue($scope.name, 'step', 1);
+                }
+
+                if(config && config.selectedArea){
+                    $scope.selectedArea = config.selectedArea
+                } else {
+                    $scope.selectedArea = $rootScope.getValue($scope.name, 'selectedArea', {
+                        area: {
+                            q: [],
+                            wkt: '',
+                            bbox: [],
+                            name: '',
+                            wms: '',
+                            legend: ''
+                        }
+                    })
+                }
+
                 $scope.type = $rootScope.getValue($scope.name, 'type', 'shp')
 
                 $rootScope.addToSave($scope)

@@ -350,7 +350,7 @@
                     $scope.invalidate()
                     $timeout(function () {
                         $scope.setupTriggers()
-                    }, 5000)
+                    }, 500)
                 }, 0)
 
             }])

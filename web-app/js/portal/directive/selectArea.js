@@ -16,12 +16,11 @@
                     scope: {
                         custom: '&onCustom',
                         selectedArea: '=selectedArea',
-                        includeDefaultAreas: '=includeDefaultAreas'
+                        // includeDefaultAreas: '=includeDefaultAreas'
                     },
                     link: function (scope, element, attrs) {
 
                         scope.name = 'selectArea'
-
                         scope.layerAreas = $.map(MapService.areaLayers(), function (x) {
                             return {
                                 name: x.name,
@@ -44,8 +43,23 @@
                                 }
                             })
                         }
+                        
+                        function selectPredefinedArea(name) {
+                            scope.layerAreas.forEach(function (layer) {
+                                if(name === layer.name){
+                                    scope.selectedArea.area = layer
+                                }
+                            })
+                        }
+                        if(scope.selectedArea && scope.selectedArea.area && scope.selectedArea.area.name){
+                            selectPredefinedArea(scope.selectedArea.area.name)
+                        } else {
+                            scope.selectedArea.area = $rootScope.getValue(scope.name, 'selectedArea', scope.defaultAreas[0])
+                            if(!scope.selectedArea.area && scope.defaultAreas.length){
+                                scope.selectedArea.area = scope.defaultAreas[0]
+                            }
+                        }
 
-                        scope.selectedArea.area = $rootScope.getValue(scope.name, 'selectedArea', scope.defaultAreas[0])
                         $rootScope.addToSave(scope)
 
 

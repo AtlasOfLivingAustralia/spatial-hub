@@ -2,21 +2,27 @@
     'use strict';
     angular.module('tool-area-report-ctrl', ['map-service', 'biocache-service', 'layers-service'])
         .controller('ToolAreaReportCtrl', ['$scope', 'MapService', '$timeout', '$rootScope', '$uibModalInstance',
-            'BiocacheService', 'LayersService',
-            function ($scope, MapService, $timeout, $rootScope, $uibModalInstance, BiocacheService, LayersService) {
+            'BiocacheService', 'LayersService', 'data',
+            function ($scope, MapService, $timeout, $rootScope, $uibModalInstance, BiocacheService, LayersService, config) {
 
                 $scope.name = 'toolAreaReportCtrl'
                 $scope.step = 1
-                $scope.selectedArea = $rootScope.getValue($scope.name, 'selectedArea', {
-                    area: {
-                        q: [],
-                        wkt: '',
-                        bbox: [],
-                        name: '',
-                        wms: '',
-                        legend: ''
-                    }
-                })
+
+                if(config && config.selectedArea){
+                    $scope.selectedArea = config.selectedArea
+                } else {
+                    $scope.selectedArea = $rootScope.getValue($scope.name, 'selectedArea', {
+                        area: {
+                            q: [],
+                            wkt: '',
+                            bbox: [],
+                            name: '',
+                            wms: '',
+                            legend: ''
+                        }
+                    })
+                }
+
                 $rootScope.addToSave($scope)
 
                 $scope.hide = function () {

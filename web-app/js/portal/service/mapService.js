@@ -33,6 +33,18 @@
                         }
                         return list
                     },
+                    
+                    groupLayersByType: function () {
+                        var groups = {}
+                        layers.forEach(function (layer) {
+                            if(!groups[layer.layertype]){
+                                groups[layer.layertype] = []
+                            }
+
+                            groups[layer.layertype].push(layer)
+                        })
+                        return groups
+                    },
 
                     zoom: function (uid) {
                         for (var i = 0; i < layers.length; i++) {
@@ -73,36 +85,40 @@
                         }
                     },
                     removeAll: function () {
-                        for (var i = layers.length - 1; i >= 0; i--) {
+                        var layer
+                        while(layer = layers.pop()){
                             for (var k = 0; k < SpatialPortalConfig.hoverLayers.length; k++) {
-                                if (SpatialPortalConfig.hoverLayers[k] == layers[i].layer.id) {
+                                if (layer.layer && (SpatialPortalConfig.hoverLayers[k] == layer.layer.id)) {
                                     SpatialPortalConfig.hoverLayers.splice(k, 1)
                                 }
                             }
 
-                            layers.splice(i, 1)
-
                             delete leafletLayers[uid]
-
-                            break;
                         }
+
+                        $rootScope.$emit('mapservice.layerchanged')
                     },
                     remove: function (uid) {
+                        var deleteIndex
                         for (var i = 0; i < layers.length; i++) {
                             if (layers[i].uid === uid) {
                                 for (var k = 0; k < SpatialPortalConfig.hoverLayers.length; k++) {
-                                    if (SpatialPortalConfig.hoverLayers[k] == layers[i].layer.id) {
+                                    if (layers[i].layer && (SpatialPortalConfig.hoverLayers[k] == layers[i].layer.id)) {
                                         SpatialPortalConfig.hoverLayers.splice(k, 1)
                                     }
                                 }
 
-                                layers.splice(i, 1)
-
+                                deleteIndex = i
                                 delete leafletLayers[uid]
-
                                 break;
                             }
                         }
+
+                        if(deleteIndex != undefined){
+                            layers.splice(deleteIndex, 1)
+                        }
+
+                        $rootScope.$emit('mapservice.layerchanged')
                     },
 
                     add: function (id, bs) {
@@ -269,7 +285,9 @@
                                 SpatialPortalConfig.hoverLayers.push(selected.layer.id)
                             }
                         }
+
                         console.log(selected.layer.leaflet)
+                        $rootScope.$emit('mapservice.layerchanged', selected.layer)
 
                         leafletLayers[selected.layer.uid] = selected.layer.leaflet
 
@@ -285,6 +303,7 @@
 
                     select: function (id) {
                         selected.layer = id
+                        $rootScope.$emit('mapservice.layerchanged', selected.layer)
                     },
                     objectSld: function (item) {
 //                        var r = item.red.toString(16); if (r.length == 1) r = '0' + r;
@@ -313,6 +332,37 @@
                             pid: pid,
                             metadata: metadata
                         }
+                    },
+                    getSpeciesLayerQuery: function (layer) {
+                        var query = {q: [], name: '', bs: '', ws: ''}
+                        query.name = layer.name
+                        query.bs = layer.bs
+                        query.ws = layer.ws
+                        query.q.push(layer.q)
+
+                        return query
+                    },
+                    getAreaLayerQuery: function (layer) {
+                        var query = {
+                            area: {
+                                q: [],
+                                wkt: '',
+                                bbox: [],
+                                pid: '',
+                                name: '',
+                                wms: '',
+                                legend: ''
+                            }
+                        }
+                        query.area.q = layer.q
+                        query.area.wkt = layer.wkt
+                        query.area.bbox = layer.bbox
+                        query.area.pid = layer.pid
+                        query.area.name = layer.name
+                        query.area.wms = layer.wms
+                        query.area.legend = layer.legend
+                        
+                        return query
                     }
                 }
             }])

@@ -1,15 +1,30 @@
 (function (angular) {
     'use strict';
     angular.module('export-sample-ctrl', ['map-service']).
-    controller('ExportSampleCtrl', ['$scope', 'MapService', '$timeout', '$rootScope', '$uibModalInstance',
-        function ($scope, MapService, $timeout, $rootScope, $uibModalInstance) {
+    controller('ExportSampleCtrl', ['$scope', 'MapService', '$timeout', '$rootScope', '$uibModalInstance', 'data',
+        function ($scope, MapService, $timeout, $rootScope, $uibModalInstance, dialogConfig) {
 
             $scope.name = 'ExportSampleCtrl'
             $scope.stepNames = ['select area', 'select species', 'select layers', 'reason for download']
-            $scope.step = $rootScope.getValue($scope.name, 'step', 1);
-            $scope.selectedQ = $rootScope.getValue($scope.name, 'selectedQ', {q: [], name: '', bs: '', ws: ''})
-            $scope.selectedArea = $rootScope.getValue($scope.name, 'selectedArea', {
-                area: {
+
+            if(dialogConfig && dialogConfig.step) {
+                $scope.step = dialogConfig.step
+            } else {
+                $scope.step = $rootScope.getValue($scope.name, 'step', 1);
+            }
+
+            if(dialogConfig && dialogConfig.selectedQ){
+                $scope.preselectedSpeciesOption = dialogConfig.speciesOption
+                $scope.selectedQ = dialogConfig.selectedQ
+            } else {
+                $scope.selectedQ = $rootScope.getValue($scope.name, 'selectedQ', {q: [], name: '', bs: '', ws: ''})
+            }
+
+
+            if(dialogConfig && dialogConfig.selectedArea){
+                $scope.selectedArea = dialogConfig.selectedArea
+            } else {
+                $scope.selectedArea = $rootScope.getValue($scope.name, 'selectedArea', { area: {
                     q: [],
                     wkt: '',
                     bbox: [],
@@ -17,9 +32,22 @@
                     name: '',
                     wms: '',
                     legend: ''
+                    }
+                })
+
+                $scope.selectedArea = $scope.selectedArea || { area: {
+                        q: [],
+                        wkt: '',
+                        bbox: [],
+                        pid: '',
+                        name: '',
+                        wms: '',
+                        legend: ''
+                    }
                 }
-            })
+            }
             $scope.selectedLayers = $rootScope.getValue($scope.name, 'selectedLayers', {layers: []});
+            $scope.selectedLayers = $scope.selectedLayers || {layers: []}
 
             $scope.reasonTypeId = $rootScope.getValue($scope.name, 'reasonTypeId', 10);
             $scope.email = $rootScope.getValue($scope.name, 'email', '');
