@@ -76,13 +76,13 @@
 
                     var sampleUrl = SpatialPortalConfig.biocacheServiceUrl + '/occurrences/index/download?reasonTypeId=' + $scope.reasonTypeId +
                         '&q=' + $scope.selectedQ.q.join('&fq=')
-                    if ($scope.selectedArea.area.q.length > 0) {
+                    if ($scope.selectedArea.area.q && ($scope.selectedArea.area.q.length > 0)) {
                         sampleUrl = sampleUrl + '&fq=' + $scope.selectedArea.area.q
                     }
-                    if ($scope.selectedArea.area.wkt.length > 0) {
+                    if ( $scope.selectedArea.area.wkt && ($scope.selectedArea.area.wkt.length > 0)) {
                         sampleUrl = sampleUrl + '&wkt=' + $scope.selectedArea.area.wkt
                     }
-                    if ($scope.selectedLayers.length > 0) {
+                    if ($scope.selectedLayers && ($scope.selectedLayers.length > 0)) {
                         sampleUrl = sampleUrl + '&extra=' & $scope.selectedLayers.join(',')
                     }
 

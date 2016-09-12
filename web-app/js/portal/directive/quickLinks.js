@@ -64,6 +64,7 @@
                                                 break;
                                             case 'area':
                                                 data.step = 1;
+                                                data.selectedQ =  mapService.getAllSpeciesQuery()
                                                 data.selectedArea = mapService.getAreaLayerQuery($scope.area)
                                                 $scope.openModal('exportSample', data)
                                                 break;
@@ -91,6 +92,17 @@
                                         break;
                                     case 'classification':
                                         data  = {opening: true, processName: 'Classification'}
+                                        data.overrideValues = {
+                                            Classification: {
+                                                input: {
+                                                    area: {
+                                                        constraints: {
+                                                            default: mapService.getAreaLayerQuery($scope.area)
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
                                         data.selectedArea = mapService.getAreaLayerQuery($scope.area)
                                         $scope.openModal('backgroundProcess', data)
                                         break;
@@ -117,6 +129,32 @@
 
                                                 $scope.openModal('backgroundProcess', data)
                                                 break;
+                                            case 'speciesarea':
+                                                data = {opening: true, processName: 'ScatterplotCreate' }
+                                                data.overrideValues = {
+                                                    ScatterplotCreate: {
+                                                        input: {
+                                                            species1: {
+                                                                constraints: {
+                                                                    default: mapService.getSpeciesLayerQuery($scope.species)
+                                                                }
+                                                            },
+                                                            species2: {
+                                                                constraints: {
+                                                                    default: mapService.getSpeciesLayerQuery($scope.species)
+                                                                }
+                                                            },
+                                                            area: {
+                                                                constraints: {
+                                                                    default:  mapService.getAreaLayerQuery($scope.area)
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                $scope.openModal('backgroundProcess', data)
+                                                break;
                                         }
                                         break;
                                     case 'prediction':
@@ -134,10 +172,31 @@
                                                         }
                                                     }
                                                 }
+                                                $scope.openModal('backgroundProcess', data)
+                                                break;
+                                            case 'speciesarea':
+                                                data = {opening: true, processName: 'Maxent'}
+                                                data.overrideValues = {
+                                                        Maxent: {
+                                                        input: {
+                                                            species: {
+                                                                constraints: {
+                                                                    default: mapService.getSpeciesLayerQuery($scope.species)
+                                                                }
+                                                            },
+                                                            area: {
+                                                                constraints: {
+                                                                    default:  mapService.getAreaLayerQuery($scope.area)
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                $scope.openModal('backgroundProcess', data)
                                                 break;
                                         }
-                                        $scope.openModal('backgroundProcess', data)
-                                        break
+                                        break;
                                     case 'pointstogrid':
                                         switch (inputs){
                                             case 'species':
@@ -153,14 +212,36 @@
                                                         }
                                                     }
                                                 }
+                                                $scope.openModal('backgroundProcess', data)
+                                                break;
+                                            case 'speciesarea':
+                                                data = {opening: true, processName: 'PointsToGrid'}
+                                                data.overrideValues = {
+                                                    PointsToGrid: {
+                                                        input: {
+                                                            species: {
+                                                                constraints: {
+                                                                    default: mapService.getSpeciesLayerQuery($scope.species)
+                                                                }
+                                                            },
+                                                            area: {
+                                                                constraints: {
+                                                                    default:  mapService.getAreaLayerQuery($scope.area)
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                $scope.openModal('backgroundProcess', data)
                                                 break;
                                         }
-                                        $scope.openModal('backgroundProcess', {opening: true, processName: 'PointsToGrid'})
+
                                         break
                                     case 'gdm':
+                                        // todo
                                         break
                                     case 'facet':
-                                        $('#facet').show().focus().trigger('mousedown')
+                                        // cannot consistently drop down a select box programmatically in all browsers
                                         break
                                     case '':
                                         break

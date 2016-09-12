@@ -27,7 +27,8 @@
                                 q: x.q,
                                 wkt: x.wkt,
                                 pid: x.pid,
-                                area_km: x.area_km
+                                area_km: x.area_km,
+                                uid: x.uid
                             }
                         })
 
@@ -44,15 +45,15 @@
                             })
                         }
                         
-                        function selectPredefinedArea(name) {
+                        function selectPredefinedArea(uid) {
                             scope.layerAreas.forEach(function (layer) {
-                                if(name === layer.name){
+                                if(uid === layer.uid){
                                     scope.selectedArea.area = layer
                                 }
                             })
                         }
                         if(scope.selectedArea && scope.selectedArea.area && scope.selectedArea.area.name){
-                            selectPredefinedArea(scope.selectedArea.area.name)
+                            selectPredefinedArea(scope.selectedArea.area.uid)
                         } else {
                             scope.selectedArea.area = $rootScope.getValue(scope.name, 'selectedArea', scope.defaultAreas[0])
                             if(!scope.selectedArea.area && scope.defaultAreas.length){

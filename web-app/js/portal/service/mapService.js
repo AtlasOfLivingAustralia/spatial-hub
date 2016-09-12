@@ -366,26 +366,29 @@
 
                         return query
                     },
+                    getAllSpeciesQuery: function (layer) {
+                        var query = {q: [], name: '', bs: '', ws: ''}
+                        query.name = 'All species'
+                        query.bs = SpatialPortalConfig.biocacheServiceUrl
+                        query.ws = SpatialPortalConfig.biocacheUrl
+                        query.q.push('*:*')
+                        query.selectOption = 'allSpecies'
+
+                        return query
+                    },
                     getAreaLayerQuery: function (layer) {
                         var query = {
                             area: {
-                                q: [],
-                                wkt: '',
-                                bbox: [],
-                                pid: '',
-                                name: '',
-                                wms: '',
-                                legend: ''
                             }
                         }
-                        query.area.q = layer.q
-                        query.area.wkt = layer.wkt
-                        query.area.bbox = layer.bbox
-                        query.area.pid = layer.pid
-                        query.area.name = layer.name
-                        query.area.wms = layer.wms
-                        query.area.legend = layer.legend
-                        
+                        query.area.q = layer.q || []
+                        query.area.wkt = layer.wkt || ''
+                        query.area.bbox = layer.bbox || []
+                        query.area.pid = layer.pid || ''
+                        query.area.name = layer.name || ''
+                        query.area.wms = layer.wms || ''
+                        query.area.legend = layer.legend || ''
+                        query.area.uid = layer.uid
                         return query
                     }
                 }

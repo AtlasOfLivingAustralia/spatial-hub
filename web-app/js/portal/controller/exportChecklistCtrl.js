@@ -49,7 +49,7 @@
                         //}
 
                         var q = ''
-                        if ($scope.selectedArea.area.q.length > 0) {
+                        if ($scope.selectedArea.area.q && ($scope.selectedArea.area.q.length > 0)) {
                             q = $scope.selectedArea.area.q
                         }
                         if ($scope.selectedArea.area.wkt.length > 0) {
@@ -58,7 +58,11 @@
 
                         console.log(q)
 
-                        BiocacheService.speciesList(q).then(function (data) {
+                        var query = {
+                            q: q,
+                            bs: SpatialPortalConfig.biocacheServiceUrl
+                        }
+                        BiocacheService.speciesList(query).then(function (data) {
 
                             console.log(data)
 
