@@ -98,15 +98,63 @@
                                         switch (inputs) {
                                             case 'species':
                                                 data = {opening: true, processName: 'ScatterplotCreate' }
-                                                data.speciesOption = $scope.species.uid
+                                                data.overrideValues = {
+                                                    ScatterplotCreate: {
+                                                        input: {
+                                                            species1: {
+                                                                constraints: {
+                                                                    default: mapService.getSpeciesLayerQuery($scope.species)
+                                                                }
+                                                            },
+                                                            species2: {
+                                                                constraints: {
+                                                                    default: mapService.getSpeciesLayerQuery($scope.species)
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
                                                 $scope.openModal('backgroundProcess', data)
                                                 break;
                                         }
                                         break;
                                     case 'prediction':
-                                        $scope.openModal('backgroundProcess', {opening: true, processName: 'Maxent'})
+                                        switch (inputs){
+                                            case 'species':
+                                                data = {opening: true, processName: 'Maxent'}
+                                                data.overrideValues = {
+                                                    Maxent: {
+                                                        input: {
+                                                            species: {
+                                                                constraints: {
+                                                                    default: mapService.getSpeciesLayerQuery($scope.species)
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                break;
+                                        }
+                                        $scope.openModal('backgroundProcess', data)
                                         break
                                     case 'pointstogrid':
+                                        switch (inputs){
+                                            case 'species':
+                                                data = {opening: true, processName: 'PointsToGrid'}
+                                                data.overrideValues = {
+                                                    PointsToGrid: {
+                                                        input: {
+                                                            species: {
+                                                                constraints: {
+                                                                    default: mapService.getSpeciesLayerQuery($scope.species)
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                break;
+                                        }
                                         $scope.openModal('backgroundProcess', {opening: true, processName: 'PointsToGrid'})
                                         break
                                     case 'gdm':

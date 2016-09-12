@@ -230,6 +230,18 @@
                             var url = SpatialPortalConfig.layersServiceUrl + "/intersect/"+ layers.join(',') + "/" + latlng.lat + "/" + latlng.lng;
                             return $http.get(url)
                         }
+                    },
+                    getAreaIntersects: function (layers, latlng) {
+                        if(layers.length){
+                            layers.forEach(function (layer) {
+                                var url = SpatialPortalConfig.layersServiceUrl + "/object/intersect/"+ layers.pid + "/" + latlng.lat + "/" + latlng.lng;
+                                $http.get(url).then(function (data) {
+                                    if(data.name){
+
+                                    }
+                                })
+                            })
+                        }
                     }
                 }
             }])

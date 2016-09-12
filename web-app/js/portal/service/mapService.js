@@ -360,6 +360,9 @@
                         query.bs = layer.bs
                         query.ws = layer.ws
                         query.q.push(layer.q)
+                        if (layer.fq && layer.fq.length > 0) {
+                            query.q = query.q.concat(layer.fq)
+                        }
 
                         return query
                     },
