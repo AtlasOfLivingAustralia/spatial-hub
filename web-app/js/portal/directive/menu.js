@@ -1,7 +1,7 @@
 (function (angular) {
     'use strict';
     angular.module('sp-menu-directive', []).directive('spMenu',
-        ["$rootScope", function ($rootScope) {
+        ["$rootScope", 'MapService', function ($rootScope, MapService) {
             return {
                 scope: {
                     custom: '&onCustom'
@@ -20,10 +20,19 @@
                         $scope.animationsEnabled = !$scope.animationsEnabled;
                     };
 
-                    $rootScope.setScopeOption = scope.setScopeOption = function(data) {
-                        $rootScope.importOpt = data;
+                    scope.hidePanel = function () {
+                        $("#left-panel")[0].style.marginLeft="-410px"
+                        $("#right-panel")[0].style.marginLeft="0px"
+                        $("#restore-left-panel").show()
+                        MapService.leafletScope.invalidate()
                     }
-
+                    
+                    scope.showPanel = function () {
+                        $("#restore-left-panel").hide()
+                        $("#left-panel")[0].style.marginLeft="0px"
+                        $("#right-panel")[0].style.marginLeft="400px"
+                        MapService.leafletScope.invalidate()
+                    }
                 }
             };
         }])

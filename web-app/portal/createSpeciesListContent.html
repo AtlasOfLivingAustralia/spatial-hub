@@ -1,0 +1,36 @@
+<div class="modal-header">
+    <h3 class="modal-title">Create a species list</h3>
+</div>
+
+<div class="modal-body" style="padding:20px">
+
+    <div ng-show="step == '1'" style="padding:10px">
+        Create a list of species
+        <br/>
+        <div>
+            Enter scientific names separated by new line, tab, comma or semicolon<br>
+            <textarea type="text" rows=4 class="form-control" ng-model="newItems" ng-trim="false"></textarea>
+
+            <br/>
+            <div class="well" >
+                <span >Choose a CSV file to upload</span>
+                <input type="file" id="file" name="file" ng-model="file" />
+                <button class="btn btn-xs" ng-click="uploadCSV()">Upload CSV</button>
+            </div>
+        </div>
+        <br/>
+    </div>
+
+    <div ng-show="step == '2'">
+        List Name: <input type="text" ng-model="newListName" style="width: 60%" /><br>
+        List Description: <input type="text" ng-model="newListDescription" value="" /><br>
+        Make Private: <input type="checkbox" ng-model="makePrivate" value="false" /><br>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-default" type="button" ng-click="step = '1'" ng-disabled="step == '1'">< Back</button>
+    <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="newItems.length == 0">Next ></button>
+</div>
+

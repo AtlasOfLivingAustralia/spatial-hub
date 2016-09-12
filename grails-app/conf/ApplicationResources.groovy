@@ -67,6 +67,7 @@ modules = {
         resource url: [dir: 'node_modules/angular-leaflet-directive/dist', file: 'angular-leaflet-directive.js']
         resource url: [dir: 'js', file: 'slider.js']
         resource url: [dir: 'js', file: 'sortable.js']
+        resource url: [dir: 'node_modules/ng-file-upload/dist', file: 'ng-file-upload.js']
     }
 
     portal {
@@ -100,6 +101,8 @@ modules = {
         resource url: [dir: 'js/portal/controller', file: 'toolAreaReportCtrl.js']
         resource url: [dir: 'js/portal/controller', file: 'sandBoxCtrl.js']
 //        resource url: [dir: 'js/portal/controller', file: 'quickLinksCtrl.js']
+        resource url: [dir: 'js/portal/controller', file: 'createSpeciesListCtrl.js']
+
 
         resource url: [dir: 'js/portal/directive', file: 'areaListSelect.js']
         resource url: [dir: 'js/portal/directive', file: 'gazAutoComplete.js']

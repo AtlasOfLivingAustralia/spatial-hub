@@ -31,6 +31,44 @@ class PortalController {
         render JSON.parse(r) as JSON
     }
 
+    def shp() {
+        def mFile = request.getFile('shapeFile')
+        def params = [:]
+
+        def r = webService.doPostMultiPart(grailsApplication.config.layersService.url + "/shape/upload/shp", params, mFile)
+
+        if (!r) {
+            render [:] as JSON
+        } else if (r.error) {
+            render r as JSON
+        } else {
+            def shapeFileId = r.remove('shp_id')
+            def area = r.collect {key, value ->
+                [id:(key), values:(value)]
+            }
+            def msg = [shapeId: shapeFileId, area: area]
+            render msg as JSON
+        }
+    }
+
+    def createObj() {
+
+        def userId = authService.userId
+
+        if (userId) {
+            def json = request.getJSON()
+
+            json.putAt('user_id', userId)
+            json.putAt('api_key', grailsApplication.config.api_key)
+
+            def r = webService.doPostJSON(grailsApplication.config.layersService.url + "/shape/upload/shp/${json.getAt('shpId')}/${json.getAt('featureIdx')}", json)
+
+            render JSON.parse(r) as JSON
+        } else {
+            render [:] as JSON
+        }
+    }
+
     def createTask() {
         def json = request.getJSON()
 
@@ -46,38 +84,32 @@ class PortalController {
 
     def addNewSpecies() {
 
+        def r = [:]
+
         if (!authService.getUserId()) {
             log.info("UnAuthorized user trying to add new species.")
             response.setStatus(401)
-            def error = [status: 401, error: "You must be logged in before you can create a new species."]
-            render error as JSON
+            r = [status: 401, error: "You must be logged in before you can create a new species."]
         } else {
-
-            def userEmail = authService.getEmail();
-
             def json = request.getJSON()
 
             json.putAt("listType", APP_CONSTANT)
 
             def url = grailsApplication.config.lists.url
-            if (!url.endsWith("/")) {
-                url += "/"
-            }
 
-            def r = webService.doPostJsonWithAuthentication(url + "ws/speciesList/", json)
+            r = webService.doPostJsonWithAuthentication(url + "/ws/speciesList/", json)
 
             if (r == null) {
                 def status = response.setStatus(500)
-                def error = [status: status, error: 'Unknown error when creating list']
-                render error as JSON
+                r = [status: status, error: 'Unknown error when creating list']
             } else if (r.error) {
                 response.setStatus(r.statusCode)
-                render r as JSON
             } else {
                 response.setStatus(200)
-                render r as JSON
             }
         }
+
+        render r as JSON
     }
 
     def q() {

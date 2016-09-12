@@ -9,7 +9,7 @@
                     templateUrl: 'portal/optionsContent.html',
                     link: function (scope, element, attrs) {
                         scope.selection = {
-                            name: "Outline"
+                            name: "google_hybrid"
                         }
 
                         scope.baselayers = [
@@ -23,8 +23,8 @@
                                 link: 'http://www.openstreetmap.org/about'
                             },
                             {
-                                key: 'google_satellite',
-                                name: 'Satellite',
+                                key: 'google_roadmaps',
+                                name: 'Streets',
                                 url: 'http://www.google.com/intl/en_au/help/terms_maps.html'
                             },
                             {
@@ -33,8 +33,8 @@
                                 url: 'http://www.google.com/intl/en_au/help/terms_maps.html'
                             },
                             {
-                                key: 'google_roadmaps',
-                                name: 'Streets',
+                                key: 'google_satellite',
+                                name: 'Satellite',
                                 url: 'http://www.google.com/intl/en_au/help/terms_maps.html'
                             }
                         ]
@@ -44,7 +44,14 @@
                         }
 
                         scope.resetMap = function () {
-                            MapService.resetMap()
+                            //remove layers
+                            MapService.removeAll()
+                            
+                            //set zoom
+                            MapService.leafletScope.resetZoom()
+                            
+                            //set base layer
+                            MapService.leafletScope.setBaseMap('google_hybrid')
                         }
 
                         scope.open = function (type) {

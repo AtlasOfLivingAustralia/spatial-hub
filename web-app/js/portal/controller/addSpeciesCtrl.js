@@ -1,8 +1,8 @@
 (function (angular) {
     'use strict';
     angular.module('add-species-ctrl', ['map-service', 'biocache-service'])
-        .controller('AddSpeciesCtrl', ['$scope', 'MapService', '$timeout', '$rootScope', '$uibModalInstance', 'BiocacheService',
-            function ($scope, MapService, $timeout, $rootScope, $uibModalInstance, BiocacheService) {
+        .controller('AddSpeciesCtrl', ['$scope', 'MapService', '$timeout', '$rootScope', '$uibModalInstance', 'BiocacheService', 'data',
+            function ($scope, MapService, $timeout, $rootScope, $uibModalInstance, BiocacheService, inputData) {
 
                 $scope.name = 'addSpeciesCtrl'
 
@@ -20,6 +20,8 @@
                     }
                 })
                 $rootScope.addToSave($scope)
+
+                $scope.inputData = inputData
 
                 $scope.hide = function () {
                     $uibModalInstance.close({hide: true});

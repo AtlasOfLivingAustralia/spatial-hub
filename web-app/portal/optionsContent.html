@@ -4,13 +4,10 @@
 <form>
     <ul ng-repeat="x in baselayers" class="list-group">
         <li class="list-group-item">
-            <input type="radio" ng-model="selection.name" value="{{x.name}}"
-                   ng-change="select(x.key)">
+            <input type="radio" ng-model="selection.name" value="{{x.key}}" ng-change="select(x.key)">
             {{x.name}}
-            <a style="float:right" ng-show="x.link != null" class="glyphicon glyphicon-info-sign"
-               href="{{x.link}}" target="_blank">&nbsp;</a>
-            <i style="float:right" ng-show="x.url != null" class="glyphicon glyphicon-info-sign"
-               ng-click="info(x.url)"></i>
+            <a style="float:right" ng-show="x.link != null" class="glyphicon glyphicon-info-sign" href="{{x.link}}" target="_blank"></a>
+            <a style="float:right" ng-show="x.url != null" class="glyphicon glyphicon-info-sign" href="{{x.url}}" target="_blank"></a>
         </li>
     </ul>
 </form>

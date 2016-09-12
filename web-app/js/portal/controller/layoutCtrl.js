@@ -11,10 +11,9 @@
                     if (top !== undefined) {
                         if (top[2][component] !== undefined && top[2][component][param] !== undefined) {
                             return top[2][component][param]
-                        } else {
-                            return defaultValue
                         }
                     }
+                    return defaultValue
                 }
 
                 $rootScope.saveValues = function () {

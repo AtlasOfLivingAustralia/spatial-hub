@@ -46,6 +46,16 @@
                         return groups
                     },
 
+                    speciesLayers: function () {
+                        var list = []
+                        for (var i = 0; i < layers.length; i++) {
+                            if (layers[i].q !== undefined) {
+                                list.push(layers[i])
+                            }
+                        }
+                        return list
+                    },
+
                     zoom: function (uid) {
                         for (var i = 0; i < layers.length; i++) {
                             if (layers[i].uid === uid) {
@@ -93,7 +103,9 @@
                                 }
                             }
 
-                            delete leafletLayers[uid]
+                            delete leafletLayers[layers[i].uid]
+
+                            layers.splice(i, 1)
                         }
 
                         $rootScope.$emit('mapservice.layerchanged')
@@ -299,6 +311,15 @@
 
                     getLayer: function (id) {
                         return leafletLayers[id]
+                    },
+
+                    getFullLayer: function (uid) {
+                        for (var i = 0; i < layers.length; i++) {
+                            if (layers[i].uid === uid) {
+                                return layers[i]
+                            }
+                        }
+                        return null
                     },
 
                     select: function (id) {

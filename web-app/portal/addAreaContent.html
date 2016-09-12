@@ -25,8 +25,8 @@
         <input type="radio" ng-model="area" name="addArea_area" value="preset_Current_extent">Current extent<br/>
 
         <br/><label>Import</label><br/>
-        <input type="radio" ng-model="area" value="importShapefile">Import Shapefile (TODO)<br/>
-        <input type="radio" ng-model="area" value="importKML">Import KML (TODO)<br/>
+        <input type="radio" ng-model="area" value="importShapefile">Import Shapefile<br/>
+        <input type="radio" ng-model="area" value="importKML">Import KML<br/>
 
         <br/><span>Other</span><br/>
         <input type="radio" ng-model="area" name="addArea_area"
@@ -66,11 +66,43 @@
         <input type="number" id="locationRadius" ng-model="locationRadius" value="10">
     </div>
 
-    <div ng-show="step == 'importShapefile'">
+    <div ng-show="step == 'importShapefile' || step == 'importKML'">
+        <label style="width: 100px" for="myAreaName">Area Name</label>
+        <input type="text" style="width:50%" id="myAreaName" ng-model="myAreaName" value="My Area" >
+        <button class="btn btn-primary" ngf-select="uploadFile($file)">Import shape file</button>
+        <uib-progressbar animate="false" value="uploadProgress" type="success"><b>{{uploadProgress}}%</b></uib-progressbar>
+        <br/>
+
+        <div ng-show="step == 'importShapefile'">
+            <table class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                    <td></td>
+                    <td ng-repeat="header in areaHeader" >
+                        <a href="#" ng-click="sortType = header">
+                        {{header}}
+                        <!--<span ng-show="sortType == 'updated' && !sortReverse" class="fa fa-caret-down"></span>
+                        <span ng-show="sortType == 'updated' && sortReverse" class="fa fa-caret-up"></span>-->
+                    </a></td>
+                </tr>
+                </thead>
+               <!-- <tbody style="height:300px;overflow:scroll;display:block">-->
+                <tbody style="height:200px;overflow:scroll;">
+<!--                <tr><td><input type="checkbox" ng-model="item.selected" ng-click="select(area)"></td><td ng-repeat="area in areaList"></td>-->
+                <tr ng-repeat="area in areaList">
+                    <td><input type="checkbox" ng-click="selectShpArea($index, area)" ng-model="area.selected"></td>
+                    <td ng-repeat="header in areaHeader">
+                        {{area.values[header]}}
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <div ng-show="step == 'importKML'">
-    </div>
+   <!-- <div ng-show="step == 'importKML'">
+
+    </div>-->
 
     <div ng-show="step == 'wkt'">
         <label style="width: 150px">area name</label><input ng-model="selectedArea.name">

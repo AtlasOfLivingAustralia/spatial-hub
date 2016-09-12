@@ -2,7 +2,7 @@
 <html lang="en">
 <body>
 
-<div style="width:400px" class="pull-left" ng-controller="LayoutCtrl">
+<div style="width:400px" class="pull-left" ng-controller="LayoutCtrl" id="left-panel">
 
     <div ng-show="panelMode == 'default'">
 
@@ -36,14 +36,13 @@
 
 </div>
 
-<div style="margin-left:400px">
+<div style="margin-left:400px" id="right-panel">
     <div class="row" style="margin:0px" ng-controller="BasicTilesController as basicTilesController">
         <leaflet id="map" lf-center="australia" layers="layers" controls="controls" bounds="bounds" defaults="defaults"
                  width="100%" height="480px">
             <leaflet-quick-links></leaflet-quick-links>
         </leaflet>
     </div>
-</div>
 </div>
 
 <r:script disposition="defer">
@@ -68,8 +67,8 @@
                 'phylo-service', 'select-phylo-directive', 'phylo-ctrl',
                 'export-map-ctrl', 'export-area-ctrl',
                 'species-info-ctrl', 'tabulate-ctrl', 'tool-area-report-ctrl', 'sand-box-ctrl',
-                'ngAria', 'ngTouch', 'ala.sandbox.components',
-                'ala.sandbox.keepalive', 'ala.sandbox.preview', 'chieffancypants.loadingBar', 'ngFileUpload'])
+                'ngAria', 'ngTouch', 'ala.sandbox.components','create-species-list-ctrl',
+                'ala.sandbox.preview', 'chieffancypants.loadingBar', 'ngFileUpload'])
             .factory("ConfigService", [function () {
                 return {}
             }])

@@ -131,25 +131,21 @@
                             }
                         })
 
-                        fqs = self.getLatLngFq(loc)
+                        fqs = self.getLatLngFq(loc, layer.size)
                         q.fqs.push.apply(q.fqs, fqs)
 
                         return q
                     }
 
-                    this.getLatLngFq = function (latlng) {
-                        var zoom = leafletMap && leafletMap.getZoom(),
-                            fq = []
-                        if(zoom >= 0 && zoom < 5){
-                            fq.push("latitude:[" + (latlng.lat- 0.5) + " TO " + (latlng.lat+ 0.5) + "]")
-                            fq.push("longitude:[" + (latlng.lng- 0.5) + " TO " + (latlng.lng+ 0.5) + "]")
-                        } else if(zoom >= 5 && zoom <10){
-                            fq.push("latitude:[" + (latlng.lat- 0.1) + " TO " + (latlng.lat+ 0.1) + "]")
-                            fq.push("longitude:[" + (latlng.lng- 0.1) + " TO " + (latlng.lng+ 0.1) + "]")
-                        } else if(zoom >= 10){
-                            fq.push("latitude:[" + (latlng.lat- 0.01) + " TO " + (latlng.lat+ 0.01) + "]")
-                            fq.push("longitude:[" + (latlng.lng- 0.01) + " TO " + (latlng.lng+ 0.01) + "]")
-                        }
+                    this.getLatLngFq = function (latlng, dotradius) {
+                        var fq = []
+                        dotradius = dotradius * 1 + 3
+                        var px = leafletMap.latLngToContainerPoint(latlng)
+                        var ll = leafletMap.containerPointToLatLng(L.point(px.x+dotradius, px.y+dotradius))
+                        var lonSize = Math.abs(latlng.lng - ll.lng);
+                        var latSize = Math.abs(latlng.lat - ll.lat);
+                        fq.push("latitude:[" + (latlng.lat- latSize) + " TO " + (latlng.lat+ latSize) + "]")
+                        fq.push("longitude:[" + (latlng.lng- lonSize) + " TO " + (latlng.lng+ lonSize) + "]")
 
                         return fq
                     }

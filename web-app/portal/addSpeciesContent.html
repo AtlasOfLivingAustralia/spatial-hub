@@ -1,5 +1,5 @@
 <div class="modal-header">
-    <h3 class="modal-title"><span ng-if="importOpt == 'addSpecies'">Add</span><span ng-if="importOpt == 'importSpecies'">Import</span> Species</h3>
+    <h3 class="modal-title">Add Species</h3>
 </div>
 
 <div class="modal-body">
@@ -13,7 +13,7 @@
         <div class="col-md-10">
             <form class="form-horizontal">
                 <div ng-show="step == '1'">
-                    <div select-species on-custom="setQ" selected-q="selectedQ"></div>
+                    <div select-species on-custom="setQ" selected-q="selectedQ" input-data="inputData"></div>
                 </div>
 
                 <div ng-show="step == '2'">

@@ -8,7 +8,8 @@
                     scope: {
                         custom: '&onCustom',
                         selectedQ: '=selectedQ',
-                        preselectedSpeciesOption: '=preselectedSpeciesOption'
+                        preselectedSpeciesOption: '=preselectedSpeciesOption',
+                        inputData: '=inputData'
                     },
                     templateUrl: 'portal/' + 'selectSpeciesCtrl.html',
                     link: function (scope, element, attrs) {
@@ -20,7 +21,7 @@
                         scope.useScientificNames = $rootScope.getValue(scope.name, 'useScientificNames', false);
                         scope.includeExpertDistributions = $rootScope.getValue(scope.name, 'includeExpertDistributions', true);
 
-                        if(!scope.preselectedSpeciesOption){
+                        if (!scope.preselectedSpeciesOption) {
                             if ($rootScope.importOpt == 'importSpecies') {
                                 scope.speciesOption = $rootScope.getValue(scope.name, 'speciesOption', 'importList');
                             } else {
@@ -30,108 +31,145 @@
                             scope.speciesOption = scope.preselectedSpeciesOption
                         }
 
-                        if(scope.selectedQ && scope.selectedQ.name && scope.selectedQ.q){
+                        if (scope.selectedQ && scope.selectedQ.name && scope.selectedQ.q) {
                             scope.predefinedQ = scope.selectedQ
                             scope.showAutoComplete = false
-                        } else {
-                            scope.selectedQ.q = $rootScope.getValue(scope.name, 'q', []);
-                            scope.selectedQ.name = $rootScope.getValue(scope.name, 'name', '');
 
-                        }
+                            if (scope.inputData !== undefined && scope.inputData.speciesOption !== undefined) {
+                                scope.speciesOption = $rootScope.getValue(scope.name, 'speciesOption', scope.inputData.speciesOption);
 
-                        $rootScope.addToSave(scope);
+                            } else {
+                                scope.selectedQ.q = $rootScope.getValue(scope.name, 'q', []);
+                                scope.selectedQ.name = $rootScope.getValue(scope.name, 'name', '');
 
-                        scope.importOpt = $rootScope.importOpt;
+                            }
 
-                        scope.importUseListOpt = "false";
-
-                        if (scope.importOpt == 'importSpecies') {
-                            scope.importUseListOpt = "true";
-                        }
-
-                        scope.addNewSpecies = function (newListName, newListDescription, newItems, makePrivate) {
-                            ListsService.newSpecies(newListName, newListDescription, newItems, makePrivate).then(function (resp) {
-                                if (resp.status == 200) {
-                                    //bootbox.alert("Successfully created new species list.<br><br>Status code:" + resp.status + "<br>" + resp.data.message)
-                                    if (scope.importOpt == 'importSpecies') {
-                                       // var selectedItems = ListsService.items(resp.data.druid);
-                                       // ListsService.setCache(selectedItems)
-                                        ListsService.setCache(resp.data.druid);
-                                        scope.importUseListOpt = false;
-                                      //  scope.selectedQ.q = setQ(q)
-                                    }
-                                    scope.speciesOption = 'speciesList';
-                                    scope.changeOption();
-
-                                } else {
-                                    bootbox.alert("Error in creating new species.<br><br>Status code: " + resp.status + "<br>" +  resp.data.error)
+                            if (scope.selectedQ === undefined) {
+                                scope.selectedQ = {
+                                    q: [],
+                                    bs: null,
+                                    ws: null,
+                                    name: $rootScope.getValue(scope.name, 'name', '')
                                 }
-                            })
-                        };
-
-                        scope.uploadCSV = function(newListName, newListDescription, makePrivate){
-                            var f = document.getElementById('file').files[0],
-                              r = new FileReader();
-                            r.onloadend = function(e){
-                                var data = e.target.result;
-                                var items = data.split('\n');
-                                var filteredItems = items.filter(function(e){return e})
-                                scope.addNewSpecies(newListName, newListDescription, filteredItems, makePrivate)
                             }
-                            r.readAsBinaryString(f);
-                        };
+                            scope.sandboxName = ''
+                            scope.speciesListName = ''
 
-                        scope.openSandbox = function () {
-                            $timeout(function () {
-                                $rootScope.openIframe(SpatialPortalConfig.sandboxServiceUrl, 'Import points', 'Use the sandbox to import points and close this window when successful.')
-                            }, 0)
-                        };
+                            $rootScope.addToSave(scope);
 
+                            scope.speciesLayers = MapService.speciesLayers()
 
-                        scope.setQ = function (query) {
-                            var includeTrue = scope.spatiallyValid
-                            var includeFalse = scope.spatiallySuspect
-                            var gs = ["-*:*"]
-                            if (includeTrue && !includeFalse) {
-                                gs = ["geospatial_kosher:true"]
-                            } else if (!includeTrue && includeFalse) {
-                                gs = ["geospatial_kosher:false"]
-                            } else if (includeTrue && includeFalse) {
-                                gs = ["geospatial_kosher:*"]
+                            //select existing layer if selectedQ matches
+                            if (scope.selectedQ.q.length > 0) {
+                                for (var i = 0; i < scope.speciesLayers.length; i++) {
+                                    var layer = scope.speciesLayers[i]
+                                    var q = [layer.q]
+                                    if (layer.fq !== undefined && layer.fq.length > 0) q = q.concat(layer.fq)
+
+                                    if (scope.speciesLayers[i].name == scope.selectedQ.name &&
+                                        scope.speciesLayers[i].bs == scope.selectedQ.bs &&
+                                        q.length == scope.selectedQ.q.length) {
+                                        //check q
+                                        var match = 0
+                                        for (var j = 0; j < q.length; j++) {
+                                            if (q[j] == scope.selectedQ.q[j]) {
+                                                match++
+                                            }
+                                        }
+                                        if (match == q.length) {
+                                            scope.speciesOption = scope.speciesLayers[i].uid
+                                        }
+                                    }
+                                }
                             }
 
-                            scope.selectedQ.q = query.q.concat(gs)
-                            scope.selectedQ.name = query.name
-                            scope.selectedQ.bs = query.bs
-                            scope.selectedQ.ws = query.ws
-                        }
+                            scope.openSandbox = function () {
+                                $timeout(function () {
+                                    $rootScope.openModal('sandBox', {setQ: scope.setSandboxQ})
+                                }, 0)
+                            };
 
-                        scope.clearQ = function () {
-                            scope.setQ({q: [], name: ''})
-                        }
+                            scope.setSandboxQ = function (query) {
+                                scope.setQ(query)
 
-                        scope.changeOption = function () {
-                            if (scope.speciesOption == 'allSpecies') {
-                                scope.setQ({
-                                    q: ["*:*"], name: 'All species', bs: SpatialPortalConfig.biocacheServiceUrl,
-                                    ws: SpatialPortalConfig.biocacheUrl
-                                })
-                            } else if (scope.speciesOption == 'searchSpecies') {
-                                scope.clearQ()
-                            } else if (scope.speciesOption == 'importList') {
-                                scope.clearQ()
-                            } else if (scope.speciesOption == 'speciesList') {
-                                scope.clearQ()
-                            } else if (scope.speciesOption == 'importPoints') {
-                                scope.clearQ()
-                            } else if (scope.speciesOption == 'sandboxPoints') {
-                                scope.clearQ()
-                            } else if(scope.speciesOption == 'selectedSpecies'){
-                                scope.setQ(scope.predefinedQ)
+                                scope.sandboxName = query.name
+                            }
+
+                            scope.openSpeciesList = function () {
+                                $timeout(function () {
+                                    $rootScope.openModal('createSpeciesList', {setQ: scope.setSpeciesListQ})
+                                }, 0)
+                            }
+
+                            scope.setSpeciesListQ = function (query) {
+                                scope.setQ(query)
+
+                                scope.speciesListName = query.name
+                            }
+
+                            scope.setQ = function (query) {
+                                if (query.q.length == 0) {
+                                    scope.selectedQ.q = []
+                                    scope.selectedQ.name = ''
+                                    scope.selectedQ.bs = undefined
+                                    scope.selectedQ.ws = undefined
+                                } else {
+                                    var includeTrue = scope.spatiallyValid
+                                    var includeFalse = scope.spatiallySuspect
+                                    var gs = ["-*:*"]
+                                    if (includeTrue && !includeFalse) {
+                                        gs = ["geospatial_kosher:true"]
+                                    } else if (!includeTrue && includeFalse) {
+                                        gs = ["geospatial_kosher:false"]
+                                    } else if (includeTrue && includeFalse) {
+                                        gs = ["geospatial_kosher:*"]
+                                    }
+
+                                    scope.selectedQ.q = query.q.concat(gs)
+                                    scope.selectedQ.name = query.name
+                                    scope.selectedQ.bs = query.bs
+                                    scope.selectedQ.ws = query.ws
+                                    if (scope.selectedQ.bs === undefined) scope.selectedQ.bs = SpatialPortalConfig.biocacheServiceUrl
+                                    if (scope.selectedQ.ws === undefined) scope.selectedQ.ws = SpatialPortalConfig.biocacheUrl
+                                }
+                            }
+
+                            scope.clearQ = function () {
+                                scope.setQ({q: [], name: ''})
+                                scope.sandboxName = ''
+                                scope.speciesListName = ''
+                            }
+
+                            scope.changeOption = function () {
+                                if (scope.speciesOption == 'allSpecies') {
+                                    scope.setQ({
+                                        q: ["*:*"], name: 'All species', bs: SpatialPortalConfig.biocacheServiceUrl,
+                                        ws: SpatialPortalConfig.biocacheUrl
+                                    })
+                                } else if (scope.speciesOption == 'searchSpecies') {
+                                    scope.clearQ()
+                                } else if (scope.speciesOption == 'importList') {
+                                    scope.clearQ()
+                                    scope.openSpeciesList()
+                                } else if (scope.speciesOption == 'speciesList') {
+                                    scope.clearQ()
+                                } else if (scope.speciesOption == 'importPoints') {
+                                    scope.clearQ()
+                                    scope.openSandbox()
+                                } else if (scope.speciesOption == 'sandboxPoints') {
+                                    scope.clearQ()
+                                } else if (MapService.getLayer(scope.speciesOption)) {
+                                    scope.clearQ()
+                                    var layer = MapService.getFullLayer(scope.speciesOption)
+                                    var q = [layer.q]
+                                    if (layer.fq !== undefined && layer.fq.length > 0) q = q.concat(layer.fq)
+                                    scope.setQ({q: q, bs: layer.bs, ws: layer.ws, name: layer.name})
+                                }
+
+
                             }
                         }
                     }
                 }
-
             }])
 }(angular));
