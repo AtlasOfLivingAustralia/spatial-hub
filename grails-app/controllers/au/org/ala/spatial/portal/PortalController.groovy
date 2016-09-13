@@ -51,6 +51,24 @@ class PortalController {
         }
     }
 
+    def kml() {
+        def mFile = request.getFile('shapeFile')
+        def params = [:]
+        params.put("name", request.getParameterValues("name"))
+        params.put("description", request.getParameterValues("description"))
+
+        def r = webService.doPostMultiPart(grailsApplication.config.layersService.url + "/shape/upload/kml", params, mFile)
+
+        if (!r) {
+            render [:] as JSON
+        } else if (r.error) {
+            render r as JSON
+        } else {
+            def msg = r.collect({key, value -> [id: value]})
+            render msg as JSON
+        }
+    }
+
     def createObj() {
 
         def userId = authService.userId

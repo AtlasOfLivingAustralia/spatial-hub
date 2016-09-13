@@ -413,25 +413,16 @@ class WebService {
         int status
         if (userId) {
             try {
-                //def user = authService.getUserForUserId(userId)
-                //def userId = userId
-
                 PartSource ps = new ByteArrayPartSource(mFile.getOriginalFilename(), mFile.getBytes())
-
-                //File newFile = new File(mFile.getOriginalFilename())
-                //mFile.transferTo(newFile)
-
-                //Part part = new FilePart('files', newFile, mFile.fileItem.contentType, 'ISO-8859-1')
-               // Part part = new FilePart('files', ps, mFile.fileItem.contentType, 'ISO-8859-1')
                 Part part = new FilePart('files', ps, mFile.fileItem.contentType, 'UTF-8')
 
                 Part[] parts = [part].toArray()
 
                 PostMethod postMethod = new PostMethod(url);
 
-                params.each { key, value ->
+               params.each { key, value ->
                     if (value) {
-                        postMethod.setParameter(key, value)
+                        postMethod.setParameter(key, value[0])
                     }
                 }
 
