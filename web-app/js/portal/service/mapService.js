@@ -33,6 +33,18 @@
                         }
                         return list
                     },
+                    
+                    groupLayersByType: function () {
+                        var groups = {}
+                        layers.forEach(function (layer) {
+                            if(!groups[layer.layertype]){
+                                groups[layer.layertype] = []
+                            }
+
+                            groups[layer.layertype].push(layer)
+                        })
+                        return groups
+                    },
 
                     speciesLayers: function () {
                         var list = []
@@ -83,9 +95,10 @@
                         }
                     },
                     removeAll: function () {
-                        for (var i = layers.length - 1; i >= 0; i--) {
+                        var layer
+                        while(layer = layers.pop()){
                             for (var k = 0; k < SpatialPortalConfig.hoverLayers.length; k++) {
-                                if (SpatialPortalConfig.hoverLayers[k] == layers[i].layer.id) {
+                                if (layer.layer && (SpatialPortalConfig.hoverLayers[k] == layer.layer.id)) {
                                     SpatialPortalConfig.hoverLayers.splice(k, 1)
                                 }
                             }
@@ -94,23 +107,30 @@
 
                             layers.splice(i, 1)
                         }
+
+                        $rootScope.$emit('mapservice.layerchanged')
                     },
                     remove: function (uid) {
+                        var deleteIndex
                         for (var i = 0; i < layers.length; i++) {
                             if (layers[i].uid === uid) {
                                 for (var k = 0; k < SpatialPortalConfig.hoverLayers.length; k++) {
-                                    if (SpatialPortalConfig.hoverLayers[k] == layers[i].layer.id) {
+                                    if (layers[i].layer && (SpatialPortalConfig.hoverLayers[k] == layers[i].layer.id)) {
                                         SpatialPortalConfig.hoverLayers.splice(k, 1)
                                     }
                                 }
 
-                                layers.splice(i, 1)
-
+                                deleteIndex = i
                                 delete leafletLayers[uid]
-
                                 break;
                             }
                         }
+
+                        if(deleteIndex != undefined){
+                            layers.splice(deleteIndex, 1)
+                        }
+
+                        $rootScope.$emit('mapservice.layerchanged')
                     },
 
                     add: function (id, bs) {
@@ -277,7 +297,9 @@
                                 SpatialPortalConfig.hoverLayers.push(selected.layer.id)
                             }
                         }
+
                         console.log(selected.layer.leaflet)
+                        $rootScope.$emit('mapservice.layerchanged', selected.layer)
 
                         leafletLayers[selected.layer.uid] = selected.layer.leaflet
 
@@ -302,6 +324,7 @@
 
                     select: function (id) {
                         selected.layer = id
+                        $rootScope.$emit('mapservice.layerchanged', selected.layer)
                     },
                     objectSld: function (item) {
 //                        var r = item.red.toString(16); if (r.length == 1) r = '0' + r;
@@ -330,6 +353,43 @@
                             pid: pid,
                             metadata: metadata
                         }
+                    },
+                    getSpeciesLayerQuery: function (layer) {
+                        var query = {q: [], name: '', bs: '', ws: ''}
+                        query.name = layer.name
+                        query.bs = layer.bs
+                        query.ws = layer.ws
+                        query.q.push(layer.q)
+                        if (layer.fq && layer.fq.length > 0) {
+                            query.q = query.q.concat(layer.fq)
+                        }
+
+                        return query
+                    },
+                    getAllSpeciesQuery: function (layer) {
+                        var query = {q: [], name: '', bs: '', ws: ''}
+                        query.name = 'All species'
+                        query.bs = SpatialPortalConfig.biocacheServiceUrl
+                        query.ws = SpatialPortalConfig.biocacheUrl
+                        query.q.push('*:*')
+                        query.selectOption = 'allSpecies'
+
+                        return query
+                    },
+                    getAreaLayerQuery: function (layer) {
+                        var query = {
+                            area: {
+                            }
+                        }
+                        query.area.q = layer.q || []
+                        query.area.wkt = layer.wkt || ''
+                        query.area.bbox = layer.bbox || []
+                        query.area.pid = layer.pid || ''
+                        query.area.name = layer.name || ''
+                        query.area.wms = layer.wms || ''
+                        query.area.legend = layer.legend || ''
+                        query.area.uid = layer.uid
+                        return query
                     }
                 }
             }])

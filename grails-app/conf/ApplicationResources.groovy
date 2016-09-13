@@ -25,7 +25,7 @@ modules = {
     }
 
     leaflet {
-        resource url: [dir: 'node_modules/leaflet/dist/', file: 'leaflet.js'], disposition: 'head'
+        resource url: [dir: 'node_modules/leaflet/dist/', file: 'leaflet-src.js'], disposition: 'head'
         resource url: [dir: 'node_modules/leaflet/dist/', file: 'leaflet.css'], disposition: 'head'
         resource url: [dir: 'node_modules/leaflet-draw/dist/', file: 'leaflet.draw.js'], disposition: 'head'
         resource url: [dir: 'node_modules/leaflet-draw/dist/', file: 'leaflet.draw.css'], disposition: 'head'
@@ -44,7 +44,8 @@ modules = {
 
     angular {
         dependsOn('ala', 'dependencies')
-        resource url: [dir: 'node_modules/angular', file: 'angular.min.js'], disposition: 'head'
+//        resource url: [dir: 'node_modules/angular', file: 'angular.min.js'], disposition: 'head'
+        resource url: [dir: 'node_modules/angular', file: 'angular.js'], disposition: 'head'
         resource url: [dir: 'node_modules/angular', file: 'angular-csp.css']
     }
 
@@ -62,7 +63,8 @@ modules = {
 
     'angular-libs' {
         dependsOn('angular', 'leaflet')
-        resource url: [dir: 'node_modules/angular-leaflet-directive/dist', file: 'angular-leaflet-directive.min.js']
+//        resource url: [dir: 'node_modules/angular-leaflet-directive/dist', file: 'angular-leaflet-directive.min.js']
+        resource url: [dir: 'node_modules/angular-leaflet-directive/dist', file: 'angular-leaflet-directive.js']
         resource url: [dir: 'js', file: 'slider.js']
         resource url: [dir: 'js', file: 'sortable.js']
         resource url: [dir: 'node_modules/ng-file-upload/dist', file: 'ng-file-upload.js']
@@ -72,6 +74,7 @@ modules = {
         dependsOn('jquery', 'bootstrap', 'angular', 'angular-ui-bootstrap', 'angular-ui-dependencies', 'angular-libs',
                 'leaflet', 'bootbox')
         resource url: [dir: 'js/portal', file: 'infoPanel.js']
+        resource url: [dir: 'js/portal', file: 'quickLinks.js']
         resource url: [dir: 'js/portal/controller', file: 'addAreaCtrl.js']
         resource url: [dir: 'js/portal/controller', file: 'addLayerCtrl.js']
         resource url: [dir: 'js/portal/controller', file: 'addSpeciesCtrl.js']
@@ -97,7 +100,9 @@ modules = {
         resource url: [dir: 'js/portal/controller', file: 'tabulateCtrl.js']
         resource url: [dir: 'js/portal/controller', file: 'toolAreaReportCtrl.js']
         resource url: [dir: 'js/portal/controller', file: 'sandBoxCtrl.js']
+//        resource url: [dir: 'js/portal/controller', file: 'quickLinksCtrl.js']
         resource url: [dir: 'js/portal/controller', file: 'createSpeciesListCtrl.js']
+
 
         resource url: [dir: 'js/portal/directive', file: 'areaListSelect.js']
         resource url: [dir: 'js/portal/directive', file: 'gazAutoComplete.js']
@@ -114,6 +119,7 @@ modules = {
         resource url: [dir: 'js/portal/directive', file: 'selectLayers.js']
         resource url: [dir: 'js/portal/directive', file: 'selectSpecies.js']
         resource url: [dir: 'js/portal/directive', file: 'speciesAutoComplete.js']
+        resource url: [dir: 'js/portal/directive', file: 'quickLinks.js']
 
         resource url: [dir: 'js/portal/service', file: 'biocacheService.js']
         resource url: [dir: 'js/portal/service', file: 'facetAutocompleteService.js']

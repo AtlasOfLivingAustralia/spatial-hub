@@ -131,9 +131,21 @@ tr, .table > tbody > tr > td {
     padding: 0px;
 }
 
+/** leaflet css **/
 .leaflet-control-layers {
     display: none;
 }
+
+.leaflet-control-quicklinks {
+    box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+    background: #fff;
+    border-radius: 5px;
+}
+
+.leaflet-control-quicklinks-body{
+    padding: 10px;
+}
+/** END leaflet css **/
 
 table {
     margin-bottom: 0px;
@@ -236,3 +248,33 @@ form input[type=checkbox] {
     z-index: 1050;
 }
 /** google places end**/
+
+.layer-intersection-panel-body{
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.leaflet-quick-links-text{
+    white-space: nowrap;
+    max-width: 100px;
+    overflow: hidden;              /* "overflow" value must be different from "visible" */
+    text-overflow: ellipsis;
+    display:inline-block;
+    vertical-align: middle;
+}
+ol.leaflet-quick-links{
+    padding-left: 20px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+ol.leaflet-quick-links li {
+    font-size: 12px;
+}
+
+.leaflet-quick-links-heading {
+    border-bottom: solid #efeeee 1px;
+    padding-bottom: 5px;
+    padding-left: 5px;
+    margin-bottom: 5px;
+}

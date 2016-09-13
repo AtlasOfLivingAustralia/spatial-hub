@@ -40,6 +40,7 @@
     <div class="row" style="margin:0px" ng-controller="BasicTilesController as basicTilesController">
         <leaflet id="map" lf-center="australia" layers="layers" controls="controls" bounds="bounds" defaults="defaults"
                  width="100%" height="480px">
+            <leaflet-quick-links></leaflet-quick-links>
         </leaflet>
     </div>
 </div>
@@ -53,7 +54,7 @@
                 'area-list-select-directive', 'gaz-auto-complete-directive', 'google-places', 'layer-auto-complete-directive',
                 'layer-list-select-directive', 'layer-list-upload-directive', 'lists-list-directive', 'sandbox-list-directive',
                 'sp-menu-directive',
-                'select-area-directive', 'select-layers-directive', 'select-species-directive', 'species-auto-complete-directive',
+                'select-area-directive', 'select-layers-directive', 'select-species-directive', 'species-auto-complete-directive', 'leaflet-quick-links-directive',
                 'add-area-ctrl', 'add-layer-ctrl', 'add-species-ctrl', 'area-report-ctrl', 'background-process-ctrl',
                 'basic-tiles-controller', 'csv-ctrl', 'export-checklist-ctrl',
                 'export-sample-ctrl', 'layout-ctrl', 'modal-iframe-instance-ctrl',

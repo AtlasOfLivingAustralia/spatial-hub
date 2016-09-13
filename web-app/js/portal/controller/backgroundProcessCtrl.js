@@ -3,7 +3,7 @@
     angular.module('background-process-ctrl', ['map-service', 'biocache-service', 'layers-service'])
         .controller('BackgroundProcessCtrl', ['$scope', 'MapService', '$timeout', '$rootScope', '$uibModalInstance',
             'BiocacheService', '$http', 'LayersService', 'data',
-            function ($scope, MapService, $timeout, $rootScope, $uibModalInstance, BiocacheService, $http, LayersService, data) {
+            function ($scope, MapService, $timeout, $rootScope, $uibModalInstance, BiocacheService, $http, LayersService, inputData) {
 
                 $scope.name = 'BackgroundProcessCtrl'
 
@@ -15,14 +15,19 @@
 
                 $scope.status = ''
 
-                $scope.selectedCapability = data !== undefined ? data.processName : ''
+                $scope.selectedCapability = inputData !== undefined ? inputData.processName : ''
                 $scope.capabilities = []
                 $scope.cap = {}
                 $http.get(LayersService.url() + '/capabilities').then(function (data) {
-                    var k
+                    var k, merged
                     for (k in data.data) {
-                        $scope.capabilities.push(data.data[k])
-                        $scope.cap[data.data[k].name] = data.data[k]
+                        merged = data.data[k]
+                        if(inputData.overrideValues){
+                            merged = angular.merge(merged, inputData.overrideValues[k])
+                        }
+
+                        $scope.capabilities.push(merged)
+                        $scope.cap[data.data[k].name] = merged
                     }
 
                     if ($scope.selectedCapability.length > 0) {
@@ -47,7 +52,7 @@
                         value = c[k]
                         var v
                         if (value.type == 'area') {
-                            v = {
+                            v = value.constraints.default ||  {
                                 area: {
                                     qid: '',
                                     pid: '',
@@ -57,7 +62,7 @@
                                 }
                             }
                         } else if (value.type == 'species') {
-                            v = {qid: '', name: '', bs: '', ws: ''}
+                            v = value.constraints.default || {qid: '', name: '', bs: '', ws: ''}
                         } else if (value.type == 'layer') {
                             v = {layers: []}
                         } else if (value.type == 'boolean') {
