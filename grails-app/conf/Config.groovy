@@ -170,3 +170,5 @@ userObjectsField = 'cl1082'
 biocache.url = 'http://biocache.ala.org.au'
 biocacheService.url = 'http://biocache.ala.org.au/ws'
 geoserver.url = 'http://spatial-test.ala.org.au/geoserver'
+
+//google.apikey=
