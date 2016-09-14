@@ -236,6 +236,13 @@
                                 if (ly.setParams) {
                                     var p = ly.wmsParams
                                     p.ENV = params.ENV
+                                    p.uppercase = false
+                                    if(params.fq && params.fq.length){
+                                        p.fq = params.fq
+                                    } else {
+                                        p.fq = undefined
+                                    }
+
                                     if (p.sld_body !== undefined) {
                                         p.sld_body = params.sld_body
                                     }

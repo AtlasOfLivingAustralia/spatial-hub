@@ -254,6 +254,11 @@
                    style="width:300px">Display spatial uncertainty as a circle</label>
         </div>
 
+        <div class="row"
+             ng-show="selected.layer.layertype == 'species'">
+            <playback callback="registerPlayback(playback)" year-start="{{yearMax}}" year-end="{{yearMin}}" class="col-sm-12"></playback>
+        </div>
+
         <div class="form-group row"
              ng-if="selected.layer.layertype == 'species' && selected.layer.scatterplotUrl !== undefined">
 

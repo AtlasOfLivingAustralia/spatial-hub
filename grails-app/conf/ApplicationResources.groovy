@@ -29,6 +29,7 @@ modules = {
         resource url: [dir: 'node_modules/leaflet/dist/', file: 'leaflet.css'], disposition: 'head'
         resource url: [dir: 'node_modules/leaflet-draw/dist/', file: 'leaflet.draw.js'], disposition: 'head'
         resource url: [dir: 'node_modules/leaflet-draw/dist/', file: 'leaflet.draw.css'], disposition: 'head'
+        resource url: [dir: 'js', file: 'leaflet.util.getParamString.js'], disposition: 'head'
     }
 
     dependencies {
@@ -120,6 +121,7 @@ modules = {
         resource url: [dir: 'js/portal/directive', file: 'selectSpecies.js']
         resource url: [dir: 'js/portal/directive', file: 'speciesAutoComplete.js']
         resource url: [dir: 'js/portal/directive', file: 'quickLinks.js']
+        resource url: [dir: 'js/portal/directive', file: 'playback.js']
 
         resource url: [dir: 'js/portal/service', file: 'biocacheService.js']
         resource url: [dir: 'js/portal/service', file: 'facetAutocompleteService.js']

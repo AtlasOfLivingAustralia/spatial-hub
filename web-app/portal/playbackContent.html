@@ -1,0 +1,43 @@
+<div class="row">
+    <div class="col-sm-12">
+        <div class="btn-group" data-toggle="buttons" >
+            <label class="btn btn-default btn-sm active" ng-click="setType('year')">
+                <input type="radio" autocomplete="off" ng-checked="type === 'year'" value="year"> Yearly
+            </label>
+            <label class="btn btn-default btn-sm"  ng-click="setType('month')">
+                <input type="radio" autocomplete="off" ng-checked="type === 'month'" value="month"> Monthly
+            </label>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="btn btn-sm btn-default" ng-class="{active: play}" ng-click="onPlay()"><i
+                class="glyphicon glyphicon-play"></i></div>
+        <div class="btn btn-sm btn-default" ng-class="{active: pause}" ng-click="onPause()"><i
+                class="glyphicon glyphicon-pause"></i></div>
+        <div class="btn btn-sm btn-default" ng-class="{active: stop}" ng-click="onStop()"><i
+                class="glyphicon glyphicon-stop"></i></div>
+        <div class="btn btn-sm btn-default" ng-class="{active: repeat}" ng-click="onRepeat()"><i
+                class="glyphicon glyphicon-repeat"></i></div>
+    </div>
+</div>
+<div class="row" ng-show="type == 'year'">
+    <div class="col-sm-12">
+        <div style="width:90%" ui-slider ng-model="yearRange" range="true" min="{{yearStart}}" max="{{yearEnd}}"></div>
+        <div>{{yearRange[0]}} - {{yearRange[1]}}</div>
+        <div ng-show="play || pause">{{yearRangeMin}} - {{yearRangeMax}}</div>
+    </div>
+</div>
+<div class="row" ng-show="type == 'month'">
+    <div class="col-sm-12">
+        <div style="width:90%" ui-slider ng-model="monthRange" range="true" min="{{monthStart}}" max="{{monthEnd}}"></div>
+        <div ng-bind="monthRangeMessage()"></div>
+        <div ng-show="play || pause" ng-bind="monthAnimationMessage()"></div>
+    </div>
+</div>
+
+<div>
+    <input type="number" value="1" min="1" max="12" ng-model="stepSize">
+    <input type="number" value="1" min="0" ng-model="timeout">
+</div>
