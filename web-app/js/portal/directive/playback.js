@@ -66,14 +66,17 @@
                     scope.pause = false
                     scope.stop = false
                     scope.type = attrs.type || 'year'
+                    scope.options = false
 
                     scope.onPlay = function () {
                         if (!scope.play) {
                             scope.pause = scope.stop = false
                             scope.play = true
-
+                            scope.clearSteps()
                             nextStep()
                         }
+
+                        event && blurButton(event.target)
                     };
 
                     scope.onStop = function (data) {
@@ -86,6 +89,7 @@
                         scope.$emit('playback.stop', data)
 
                         scope.stop = false
+                        event && blurButton(event.target)
                     }
 
                     scope.onPause = function () {
@@ -94,23 +98,33 @@
                             scope.pause = true
                             promiseTimeout && $timeout.cancel(promiseTimeout)
                         }
+
+                        event && blurButton(event.target)
                     };
 
                     scope.onRepeat = function () {
                         scope.repeat = !scope.repeat
+
+                        event && blurButton(event.target)
+                    }
+
+                    scope.onOptions = function () {
+                        scope.options = !scope.options
+
+                        event && event.target && event.target.blur()
                     }
 
                     scope.clearSteps = function () {
-                        scope.yearStepSize = attrs.yearStepSize || 10
+                        scope.yearStepSize = scope.yearStepSize || attrs.yearStepSize || 10
                         scope.yearRangeMin = scope.yearRange[0]
                         scope.yearRangeMax = scope.yearRange[0] + scope.yearStepSize
                         scope.yearRangeNextMin = scope.yearRangeMin
                         scope.yearRangeNextMax = scope.yearRangeMax
 
 
-                        scope.monthStepSize = attrs.monthStepSize || 1
-                        scope.monthRangeMin = scope.monthStart
-                        scope.monthRangeMax = scope.monthStart + scope.monthStepSize
+                        scope.monthStepSize = scope.monthStepSize || attrs.monthStepSize || 1
+                        scope.monthRangeMin =  scope.monthRange[0]
+                        scope.monthRangeMax =  scope.monthRange[0] + scope.monthStepSize
                         scope.monthRangeNextMin = scope.monthRangeMin
                         scope.monthRangeNextMax = scope.monthRangeMax
                     }
@@ -145,6 +159,16 @@
                         }
                     }
 
+                    function blurButton(target) {
+                        var $tar = $(target)
+                        if($tar.hasClass('btn')){
+                            $tar.blur()
+                        } else {
+                            $tar.parent('.btn').blur()
+                        }
+
+                    }
+
                     function nextStep() {
                         var data = {
                                 type: scope.type
@@ -156,6 +180,8 @@
                                 if(scope.yearRangeNextMax > scope.yearRange[1]){
                                     fireEnd = true
                                     scope.clearSteps()
+                                    data.min = scope.yearRangeMin
+                                    data.max = scope.yearRangeMax
                                 } else {
                                     data.min = scope.yearRangeMin = scope.yearRangeNextMin
                                     data.max = scope.yearRangeMax = scope.yearRangeNextMax
@@ -167,6 +193,8 @@
                                 if(scope.monthRangeNextMax > scope.monthRange[1]){
                                     fireEnd = true
                                     scope.clearSteps()
+                                    data.min = scope.monthRangeMin
+                                    data.max = scope.monthRangeMax
                                 } else {
                                     data.min = scope.monthRangeMin = scope.monthRangeNextMin
                                     data.max = scope.monthRangeMax = scope.monthRangeNextMax
