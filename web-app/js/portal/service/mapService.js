@@ -300,6 +300,7 @@
 
                         console.log(selected.layer.leaflet)
                         $rootScope.$emit('mapservice.layerchanged', selected.layer)
+                        $rootScope.$emit('mapservice.layerselected', selected.layer)
 
                         leafletLayers[selected.layer.uid] = selected.layer.leaflet
 
@@ -325,6 +326,7 @@
                     select: function (id) {
                         selected.layer = id
                         $rootScope.$emit('mapservice.layerchanged', selected.layer)
+                        $rootScope.$emit('mapservice.layerselected', selected.layer)
                     },
                     objectSld: function (item) {
 //                        var r = item.red.toString(16); if (r.length == 1) r = '0' + r;

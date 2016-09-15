@@ -255,6 +255,11 @@
         </div>
 
         <div class="form-group row"
+             ng-show="selected.layer.layertype == 'species'">
+            <playback callback="registerPlayback(playback)" year-start="{{yearMin}}" year-end="{{yearMax}}"></playback>
+        </div>
+
+        <div class="form-group row"
              ng-if="selected.layer.layertype == 'species' && selected.layer.scatterplotUrl !== undefined">
 
             <div id="chartDivBack" class="chartDiv" style="background-repeat:no-repeat">

@@ -68,7 +68,7 @@
                 'export-map-ctrl', 'export-area-ctrl',
                 'species-info-ctrl', 'tabulate-ctrl', 'tool-area-report-ctrl', 'sand-box-ctrl',
                 'ngAria', 'ngTouch', 'ala.sandbox.components','create-species-list-ctrl',
-                'ala.sandbox.preview', 'chieffancypants.loadingBar', 'ngFileUpload'])
+                'ala.sandbox.preview', 'chieffancypants.loadingBar', 'ngFileUpload', 'playback-directive'])
             .factory("ConfigService", [function () {
                 return {}
             }])
