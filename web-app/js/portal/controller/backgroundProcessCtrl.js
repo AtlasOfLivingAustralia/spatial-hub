@@ -12,6 +12,9 @@
                 $scope.step = 0;
 
                 LayoutService.addToSave($scope)
+                $scope.stage = inputData && inputData.stage || 'input'
+                $scope.taskId = inputData && inputData.taskId
+
 
                 $scope.status = ''
 
@@ -201,6 +204,24 @@
                     }
 
                     $scope.step = $scope.step + 1
+
+                    //skip unknown steps, e.g. type='auto'
+                    while ($scope.step - 1 < $scope.values.length && $scope.values[$scope.step - 1] == null && $scope.values[$scope.step - 1] !== undefined) {
+                        $scope.step = $scope.step + 1
+                    }
+                    $scope.stepsCurrent = $scope.stepsCurrent + 1
+
+                    switch ($scope.stage){
+                        case 'input':
+                            break;
+                        case 'output':
+                            if($scope.taskId) {
+                                $scope.statusUrl = LayersService.url() + '/tasks/status/' + $scope.taskId
+                                $scope.step = $scope.steps + 1
+                                $scope.checkStatus()
+                            }
+                            break;
+                    }
                 };
 
                 $scope.finished = false

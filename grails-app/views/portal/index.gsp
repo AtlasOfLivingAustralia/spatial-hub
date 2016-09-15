@@ -66,7 +66,7 @@
                 'sp-options-directive', 'add-facet-ctrl',
                 'phylo-service', 'select-phylo-directive', 'phylo-ctrl',
                 'export-map-ctrl', 'export-area-ctrl',
-                'species-info-ctrl', 'tabulate-ctrl', 'tool-area-report-ctrl', 'sand-box-ctrl',
+                'species-info-ctrl', 'tabulate-ctrl', 'tool-area-report-ctrl', 'sand-box-ctrl', 'analysis-ctrl',
                 'ngAria', 'ngTouch', 'ala.sandbox.components','create-species-list-ctrl',
                 'ala.sandbox.preview', 'chieffancypants.loadingBar', 'ngFileUpload', 'playback-directive',
                 'colour-service', 'sessions-service', 'sessions-ctrl'])
