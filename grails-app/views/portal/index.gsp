@@ -166,8 +166,6 @@
     <meta name="layout" content="portal"/>
     <title>Atlas of Living Australia | Spatial Portal</title>
 
-    <script type="text/javascript"
-            src="https://maps.google.com/maps/api/js?sensor=false&libraries=places&language=en-US&key=${grailsApplication.config.google.apikey}"></script>
     <r:require modules="portal, preview"></r:require>
 
 </head>

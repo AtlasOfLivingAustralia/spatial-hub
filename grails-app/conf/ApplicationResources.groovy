@@ -32,8 +32,12 @@ modules = {
         resource url: [dir: 'js', file: 'leaflet.util.getParamString.js'], disposition: 'head'
     }
 
+    google {
+        resource url: "https://maps.google.com/maps/api/js?sensor=false&libraries=places&language=en-US&key=${grailsApplication.config.google.apikey}", disposition: 'head', attrs:[type:"js"]
+    }
+
     dependencies {
-        dependsOn('jquery', 'jquery-ui', 'leaflet', 'font-awesome')
+        dependsOn('jquery', 'jquery-ui', 'leaflet', 'font-awesome', 'google')
         resource url: [dir: 'js/ala', file: 'html5.js'], disposition: 'head'
         resource url: [dir: 'js', file: 'Google.js'], disposition: 'head'
         resource url: [dir: 'js', file: 'leaflet.label.js'], disposition: 'head'
@@ -63,7 +67,7 @@ modules = {
     }
 
     'angular-libs' {
-        dependsOn('angular', 'leaflet')
+        dependsOn('angular', 'leaflet', 'dependencies')
 //        resource url: [dir: 'node_modules/angular-leaflet-directive/dist', file: 'angular-leaflet-directive.min.js']
         resource url: [dir: 'node_modules/angular-leaflet-directive/dist', file: 'angular-leaflet-directive.js']
         resource url: [dir: 'js', file: 'slider.js']
@@ -101,7 +105,6 @@ modules = {
         resource url: [dir: 'js/portal/controller', file: 'tabulateCtrl.js']
         resource url: [dir: 'js/portal/controller', file: 'toolAreaReportCtrl.js']
         resource url: [dir: 'js/portal/controller', file: 'sandBoxCtrl.js']
-//        resource url: [dir: 'js/portal/controller', file: 'quickLinksCtrl.js']
         resource url: [dir: 'js/portal/controller', file: 'createSpeciesListCtrl.js']
 
 
