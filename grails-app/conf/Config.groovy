@@ -171,4 +171,5 @@ biocache.url = 'http://biocache.ala.org.au'
 biocacheService.url = 'http://biocache.ala.org.au/ws'
 geoserver.url = 'http://spatial-test.ala.org.au/geoserver'
 
+viewConfig.json = "view-config.json"
 //google.apikey=

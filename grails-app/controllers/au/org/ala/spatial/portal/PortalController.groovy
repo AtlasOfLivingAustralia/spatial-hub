@@ -152,6 +152,21 @@ class PortalController {
         fetchAndOutputUrl(target, response, request, requestBody);
     }
 
+    def viewConfig() {
+        def defaultFile = "view-config.json"
+
+        def filePath = grailsApplication.config.viewConfig.json;
+        def text = ""
+        try {
+            FileInputStream inputStream = new FileInputStream(new File(filePath))
+            text = inputStream.getText()
+        } catch (Exception e) {
+            text = grailsApplication.getParentContext().getResource("classpath:$defaultFile").getInputStream().getText()
+        }
+        def json = JSON.parse(text)
+        render (json as JSON)
+    }
+
     private String rebuildParameters(Map params) {
         StringBuilder uri = new StringBuilder();
         String delim = "?";

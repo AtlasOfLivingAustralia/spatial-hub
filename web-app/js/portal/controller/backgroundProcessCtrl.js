@@ -18,34 +18,54 @@
                 $scope.selectedCapability = inputData !== undefined ? inputData.processName : ''
                 $scope.capabilities = []
                 $scope.cap = {}
-                $http.get(LayersService.url() + '/capabilities').then(function (data) {
-                    var k, merged
-                    for (k in data.data) {
-                        merged = data.data[k]
-                        if(inputData.overrideValues){
-                            merged = angular.merge(merged, inputData.overrideValues[k])
+
+                $scope.viewConfig = null;
+                $http.get('portal/viewConfig').then(function (data) {
+                    $scope.viewConfig = data.data;
+                    $scope.buildStepViews();
+                }, function (e){
+                    $scope.viewConfig = {};
+                    $scope.buildStepViews();
+                });
+
+                $scope.buildStepViews = function() {
+                    $http.get(LayersService.url() + '/capabilities').then(function (data) {
+                        var k, merged
+                        for (k in data.data) {
+                            merged = data.data[k]
+
+                            // merge spec input values from with view-config.json
+                            if ($scope.viewConfig[k]) {
+                                angular.merge(merged, $scope.viewConfig[k])
+                                angular.merge(merged.input, $scope.viewConfig[k].input)
+                            }
+
+                            // overrideValues is set from Quick links
+                            if (inputData.overrideValues) {
+                                merged = angular.merge(merged, inputData.overrideValues[k])
+                            }
+
+                            $scope.capabilities.push(merged)
+                            $scope.cap[data.data[k].name] = merged
                         }
 
-                        $scope.capabilities.push(merged)
-                        $scope.cap[data.data[k].name] = merged
-                    }
-
-                    if ($scope.selectedCapability.length > 0) {
-                        $scope.test()
-                        $scope.ok()
-                    }
-                })
+                        if ($scope.selectedCapability.length > 0) {
+                            $scope.initValues();
+                            $scope.ok();
+                        }
+                    })
+                }
 
                 $scope.values = []
-                $scope.steps = 1
-                $scope.stepsActual = 1
-                $scope.stepsCurrent = 0
-                $scope.test = function () {
+     //         $scope.steps = 0
+    //          $scope.stepsActual = 1
+    //          $scope.stepsCurrent = 0
+                $scope.initValues = function () {
                     //defaults
                     var c = $scope.cap[$scope.selectedCapability].input
                     var i = 0
-                    $scope.stepsActual = 0
-                    $scope.stepsCurrent = 0
+    //                 $scope.stepsActual = 0
+    //                $scope.stepsCurrent = 0
                     var k
                     var value
                     for (k in c) {
@@ -78,13 +98,15 @@
                         } else {
                             v = null
                         }
-                        $scope.values[i] = $rootScope.getValue($scope.name, $scope.selectedCapability + i, v);
-                        i = i + 1
-                        if (v != null || v === undefined) {
+                        $scope.values[k] = $rootScope.getValue($scope.name, $scope.selectedCapability + k, v);
+                      //  $scope.values[i] = $rootScope.getValue($scope.name, $scope.selectedCapability + i, v);
+            //            i = i + 1
+               /*         if (v != null || v === undefined) {
                             $scope.stepsActual = $scope.stepsActual + 1
-                        }
+                        } */
                     }
-                    $scope.steps = i
+
+              //      $scope.steps = i
                 }
                 $scope.hide = function () {
                     $uibModalInstance.close({hide: true});
@@ -96,8 +118,8 @@
 
                 $scope.ok = function (data) {
 
-                    if ($scope.stepsCurrent == 0) {
-                        var sNames = []
+                    if ($scope.step == 0) {
+     /*                   var sNames = []
 
                         for (k in $scope.cap[$scope.selectedCapability].input) {
                             var i = $scope.cap[$scope.selectedCapability].input[k]
@@ -109,6 +131,31 @@
                         }
 
                         $scope.stepNames = sNames
+*/
+                        //build stepViews
+                        $scope.stepView = {};
+                        var order = 1;
+                        // if View-config.json is configured for the selected capability, use that, otherwise, use the spec capabilitt
+                        if ($scope.viewConfig[$scope.selectedCapability]) {
+                            $scope.viewConfig[$scope.selectedCapability].view.forEach(function (v) {
+                                var inputArr = v.inputs.replace(/[\])}[{(]/g,'').replace(/[\s]/g, '').split(',');
+                                $scope.stepView[order] = {name: v.name, inputArr: inputArr};
+                                order ++;
+                            });
+                        } else {
+                            for (var i in $scope.cap[$scope.selectedCapability].input) {
+                                if ($scope.cap[$scope.selectedCapability].input[i].type != "auto") {
+                                    var view = [i];//[$scope.cap[$scope.selectedCapability].input[i]]; //{step: step + 1, view: i}
+                                    //$scope.stepView[$scope.cap[$scope.selectedCapability].input[i].description] = view
+                                    $scope.stepView[order] = {name: $scope.cap[$scope.selectedCapability].input[i].description, inputArr: view};
+                                    order++;
+                                }
+
+                            };
+                        }
+
+                        $scope.stepsActual = Object.keys($scope.stepView).length;
+
                     }
 
                     if ($scope.isDisabled()) {
@@ -122,7 +169,7 @@
                         return
                     }
 
-                    if ($scope.stepsCurrent >= $scope.stepsActual) {
+                    if ($scope.step >= $scope.stepsActual) {
 
                         $scope.status = 'starting...'
 
@@ -130,27 +177,27 @@
 
                         //format inputs
                         var c = $scope.cap[$scope.selectedCapability].input
-                        var i = 0
+                      //  var i = 0
                         var inputs = {}
                         var k
                         var j
                         for (k in c) {
-                            if ($scope.values[i] !== undefined && $scope.values[i] != null) {
-                                if ($scope.values[i].area !== undefined) {
-                                    inputs[k] = { pid: $scope.values[i].area.pid, qid: $scope.values[i].area.qid }
-                                } else if ($scope.values[i].q !== undefined) {
-                                    inputs[k] = { qid: $scope.values[i].qid, ws: $scope.values[i].ws, bs: $scope.values[i].bs }
-                                } else if ($scope.values[i].layers !== undefined) {
+                            if ($scope.values[k] !== undefined && $scope.values[k] != null) {
+                                if ($scope.values[k].area !== undefined) {
+                                    inputs[k] = { pid: $scope.values[k].area.pid, qid: $scope.values[k].area.qid }
+                                } else if ($scope.values[k].q !== undefined) {
+                                    inputs[k] = { qid: $scope.values[k].qid, ws: $scope.values[k].ws, bs: $scope.values[k].bs }
+                                } else if ($scope.values[k].layers !== undefined) {
                                     var layers = []
-                                    for (j in $scope.values[i].layers) {
-                                        layers.push($scope.values[i].layers[j].id)
+                                    for (j in $scope.values[k].layers) {
+                                        layers.push($scope.values[k].layers[j].id)
                                     }
                                     inputs[k] = layers
                                 } else {
-                                    inputs[k] = $scope.values[i]
+                                    inputs[k] = $scope.values[k]
                                 }
                             }
-                            i = i + 1
+                          //  i = i + 1
                         }
 
                         console.log(inputs)
@@ -172,10 +219,10 @@
                     $scope.step = $scope.step + 1
 
                     //skip unknown steps, e.g. type='auto'
-                    while ($scope.step - 1 < $scope.values.length && $scope.values[$scope.step - 1] == null && $scope.values[$scope.step - 1] !== undefined) {
+                /*    while ($scope.step - 1 < $scope.values.length && $scope.values[$scope.step - 1] == null && $scope.values[$scope.step - 1] !== undefined) {
                         $scope.step = $scope.step + 1
                     }
-                    $scope.stepsCurrent = $scope.stepsCurrent + 1
+                    $scope.stepsCurrent = $scope.stepsCurrent + 1 */
                 };
 
                 $scope.finished = false
@@ -264,54 +311,69 @@
                 $scope.back = function () {
                     if ($scope.step > 1) {
                         $scope.step = $scope.step - 1
-                        while ($scope.step > 1 && $scope.values[$scope.step - 1] == null && $scope.values[$scope.step - 1] !== undefined) {
+
+                       /* while ($scope.step > 1 && $scope.values[$scope.step - 1] == null && $scope.values[$scope.step - 1] !== undefined) {
                             $scope.step = $scope.step - 1
                         }
-                        $scope.stepsCurrent = $scope.stepsCurrent - 1
+                        $scope.stepsCurrent = $scope.stepsCurrent - 1*/
                     }
                 };
+
+                $scope.getInputChecks = function (i) {
+                    var value = $scope.cap[$scope.selectedCapability].input[i];
+                    if (value.constraints.optional) {
+                        return false
+                    } else if (value.type == 'area') {
+                        // TODO: check length
+                        return $scope.values[i].area.length == 0
+                    } else if (value.type == 'species') {
+                        //  var v = {qid: '', name: '', bs: '', ws: ''}
+                        // TODO: q should be set with default values from search species. At the moment this is giving error.
+                        //       Once q value is fixed, the if stmt is not needed
+                        if ($scope.values[i].q) {
+                            return $scope.values[i].q.length == 0;
+                        } else {
+                            return false;
+                        }
+
+                    } else if (value.type == 'layer') {
+                        return $scope.values[i].layers.length < value.constraints.min || $scope.values[i].layers.length > value.constraints.max
+                    } else if (value.type == 'boolean') {
+                        return false
+                    } else if (value.type == 'int') {
+                        return $scope.values[i] < value.constraints.min || $scope.values[i] > value.constraints.max
+                    } else if (value.type == 'double') {
+                        return $scope.values[i] < value.constraints.min || $scope.values[i] > value.constraints.max
+                    } else if (value.type == 'list' && value.constraints.selection == 'single') {
+                        return $scope.values[i] === undefined
+                    } else if (value.type == 'list' && value.constraints.selection != 'single') {
+                        return $scope.values[i].length == 0
+                    } else {
+                        return false
+                    }
+                }
 
                 $scope.isDisabled = function () {
                     if ($scope.step == 0) {
                         return $scope.selectedCapability.length == 0
-                    } else if ($scope.stepsCurrent > $scope.stepsActual) {
+                    } else if ($scope.step > $scope.stepsActual) {
                         // return !$scope.finished
                     } else {
                         //defaults
-                        var c = $scope.cap[$scope.selectedCapability].input
-                        var i = 0
-                        var k
-                        var value
-                        for (k in c) {
-                            if (i == $scope.step - 1) {
-                                value = c[k]
-                                if (value.constraints.optional) {
-                                    return false
-                                } else if (value.type == 'area') {
-                                    return $scope.values[i].area.length == 0
-                                } else if (value.type == 'species') {
-                                    var v = {qid: '', name: '', bs: '', ws: ''}
-                                } else if (value.type == 'layer') {
-                                    return $scope.values[i].layers.length < value.constraints.min || $scope.values[i].layers.length > value.constraints.max
-                                } else if (value.type == 'boolean') {
-                                    return false
-                                } else if (value.type == 'int') {
-                                    return $scope.values[i] < value.constraints.min || $scope.values[i] > value.constraints.max
-                                } else if (value.type == 'double') {
-                                    return $scope.values[i] < value.constraints.min || $scope.values[i] > value.constraints.max
-                                } else if (value.type == 'list' && value.constraints.selection == 'single') {
-                                    return $scope.values[i] === undefined
-                                } else if (value.type == 'list' && value.constraints.selection != 'single') {
-                                    return $scope.values[i].length == 0
-                                } else {
-                                    return false
-                                }
-                            }
-                            i = i + 1
-                        }
-                    }
 
-                    return false
+                        //Get the input list from step view
+                        var iList = $scope.stepView[$scope.step].inputArr;
+
+                        for (var i in iList) {
+                            if ($scope.getInputChecks(iList[i])) {
+                                return true;
+                            }
+                        }
+
+                        return false;
+
+                    }
                 }
+
             }])
 }(angular));

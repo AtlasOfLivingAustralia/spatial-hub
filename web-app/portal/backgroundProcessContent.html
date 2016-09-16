@@ -6,17 +6,20 @@
     <div class="row">
         <div class="col-md-4">
             <ol class="stepList" style="margin-left:-20px;">
-                <li style="font-size:12px" ng-repeat="stepName in stepNames" ng-show="stepName.length > 0"><span>{{stepName}}&nbsp;</span><i
+
+           <!--     <li style="font-size:12px" ng-repeat="stepName in stepNames" ng-show="stepName.length > 0"><span>{{stepName}}&nbsp;</span><i
+                        class="glyphicon glyphicon-ok" ng-show="step > $index + 1"></i></li>-->
+                <li style="font-size:12px" ng-repeat="(key, sv) in stepView"><span>{{sv.name}}&nbsp;</span><i
                         class="glyphicon glyphicon-ok" ng-show="step > $index + 1"></i></li>
             </ol>
         </div>
+
         <div class="col-md-8">
             <form class="form-horizontal">
-                <div ng-show="step<=steps">
-                    <span>{{stepsCurrent}} of {{stepsActual}}</span>
-                    {{cap[selectedCapability].description}}
+
+                <div ng-show="step<=stepsActual">
+                    <span><h5>Step: {{step}} of {{stepsActual}} {{cap[selectedCapability].description}}</h5></span>
                 </div>
-                <br/><br/>
 
                 <div ng-show="step==0">
                     Choose:
@@ -24,56 +27,61 @@
                         <option ng-repeat="cp in capabilities" ng-value="cp.name">{{cp.name}}</option>
                     </select>
                 </div>
-                <div ng-show="step<=steps && step > 0">
-                    <div ng-repeat="(key, v) in cap[selectedCapability].input" style="border-top: 1px solid black;"
-                         ng-if="v.type != 'auto'" ng-show="step == ($index + 1)">
-                        <h3>{{key}}</h3>
-                        <span>{{v.description}}</span>
-                        <br/><br/>
+               <!-- <div ng-show="step<=steps && step > 0">-->
+                <div ng-show="stepView">
+                    <!--<div ng-repeat="(key, v) in cap[selectedCapability].input" style="border-top: 1px solid black;"
+                         ng-if="v.type != 'auto'" ng-show="step == ($index + 1)">-->
+                    <div ng-repeat="(key, sv) in stepView" ng-show="step == ($index + 1)" uib-accordion close-others="true">
+                       <!-- <h3>{{sv.name}}</h3>-->
+                        <div ng-repeat="i in sv.inputArr" ng-init="v=cap[selectedCapability].input[i]; status.open = $first" ng-if="v.type != 'auto'"
+                             uib-accordion-group class="panel-default" heading="{{v.description}}" is-open="status.open">
 
-                        <div ng-if="v.type == 'area'">
-                            <div select-area selected-area="values[$index]"></div>
-                        </div>
-                        <div ng-if="v.type == 'species'">
-                            <div select-species selected-q="values[$index]"></div>
-                        </div>
-                        <div ng-if="v.type == 'double'">
-                            <input style="width:300px" type="number" max="{{v.constraints.max}}"
-                                   min="{{v.constraints.min}}"
-                                   ng-model="values[$index]">
-                        </div>
-                        <div ng-if="v.type == 'layer'">
-                            <div select-layers selected-layers="values[$index]"
-                                 min-count="v.constraints.min"
-                                 max-count="v.constraints.max"
-                                 mandatory="v.constraints.mandatory"
-                                 environmental="v.constrains.environmental"
-                                 contextual="v.constrains.contextual"
-                                 analysis="v.constrains.analysis"
-                            ></div>
-                        </div>
-                        <div ng-if="v.type == 'boolean'">
-                            <input type="checkbox" ng-model="values[$index]">
-                        </div>
-                        <div ng-if="v.type == 'int'">
-                            <input style="width:300px" type="number" max="{{v.constraints.max}}"
-                                   min="{{v.constraints.min}}"
-                                   ng-model="values[$index]">
-                        </div>
-                        <div ng-if="v.type == 'list' && v.constraints.selection == 'single'">
-                            <select ng-model="values[$index]">
-                                <option ng-repeat="x in v.constraints.content" ng-value="x">{{x}}</option>
-                            </select>
-                        </div>
-                        <div ng-if="v.type == 'list' && v.constraints.selection != 'single'">
-                            <select ng-model="values[$index]" multiple>
-                                <option ng-repeat="x in v.constraints.content" ng-value="x">{{x}}</option>
-                            </select>
+                            <!--Values: {{values[i]}}-->
+
+                            <div ng-if="v.type == 'area'">
+                                <div select-area selected-area="values[i]"></div>
+                            </div>
+                            <div ng-if="v.type == 'species'">
+                                <div select-species selected-q="values[i]"></div>
+                            </div>
+                            <div ng-if="v.type == 'double'">
+                                <input style="width:300px" type="number" max="{{v.constraints.max}}"
+                                       min="{{v.constraints.min}}"
+                                       ng-model="values[i]">
+                            </div>
+                            <div ng-if="v.type == 'layer'">
+                                <div select-layers selected-layers="values[i]"
+                                     min-count="v.constraints.min"
+                                     max-count="v.constraints.max"
+                                     mandatory="v.constraints.mandatory"
+                                     environmental="v.constrains.environmental"
+                                     contextual="v.constrains.contextual"
+                                     analysis="v.constrains.analysis"
+                                ></div>
+                            </div>
+                            <div ng-if="v.type == 'boolean'">
+                                <input type="checkbox" ng-model="values[i]">
+                            </div>
+                            <div ng-if="v.type == 'int'">
+                                <input style="width:300px" type="number" max="{{v.constraints.max}}"
+                                       min="{{v.constraints.min}}"
+                                       ng-model="values[i]">
+                            </div>
+                            <div ng-if="v.type == 'list' && v.constraints.selection == 'single'">
+                                <select ng-model="values[i]">
+                                    <option ng-repeat="x in v.constraints.content" ng-value="x">{{x}}</option>
+                                </select>
+                            </div>
+                            <div ng-if="v.type == 'list' && v.constraints.selection != 'single'">
+                                <select ng-model="values[i]" multiple>
+                                    <option ng-repeat="x in v.constraints.content" ng-value="x">{{x}}</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div ng-show="step > steps">
+                <div ng-show="step > stepsActual">
                     <h3>Wait for task to complete</h3>
 
                     <div>{{status}}</div>
@@ -87,6 +95,6 @@
 
 <div class="modal-footer">
     <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
-    <button class="btn btn-default" type="button" ng-click="back()" ng-disabled="step == 1">< Back</button>
+    <button class="btn btn-default" type="button" ng-click="back()" ng-disabled="step == 1 || step > stepsActual">< Back</button>
     <button class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="isDisabled()">Next ></button>
 </div>
