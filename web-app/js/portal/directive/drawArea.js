@@ -1,9 +1,9 @@
 (function (angular) {
     'use strict';
-    angular.module('draw-area-directive', ['map-service', 'layers-service'])
-        .directive('drawArea', ['$rootScope', 'MapService', '$timeout', 'LayersService',
+    angular.module('draw-area-directive', ['map-service', 'layers-service', 'layout-service'])
+        .directive('drawArea', ['$rootScope', 'LayoutService', 'MapService', '$timeout', 'LayersService',
 
-            function ($rootScope, MapService, $timeout, LayersService) {
+            function ($rootScope, LayoutService, MapService, $timeout, LayersService) {
 
                 return {
                     scope: {

@@ -50,16 +50,16 @@
                         $scope.step = $scope.area
                         if ($scope.area == 'drawBoundingBox') {
                             $scope.cancel({noOpen: true})
-                            LayoutService.openPanel('area', $scope.area, {type: 'drawBox'})
+                            LayoutService.openPanel('area', $scope.area)
                         } else if ($scope.area == 'drawPolygon') {
                             $scope.cancel({noOpen: true})
-                            LayoutService.openPanel('area', $scope.area, {type: 'drawPolygon'})
+                            LayoutService.openPanel('area', $scope.area)
                         } else if ($scope.area == 'drawPointRadius') {
                             $scope.cancel({noOpen: true})
-                            LayoutService.openPanel('area', $scope.area, {type: 'drawCircle'})
+                            LayoutService.openPanel('area', $scope.area)
                         } else if ($scope.area == 'pointOnLayer') {
                             $scope.cancel({noOpen: true})
-                            LayoutService.openPanel('area', $scope.area, {type: 'layerIntersect'})
+                            LayoutService.openPanel('area', $scope.area)
                         } else if ($scope.area == 'addressRadius') {
                         } else if ($scope.area == 'pointRadius') {
                         } else if ($scope.area == 'gazetteer') {

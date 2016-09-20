@@ -111,8 +111,6 @@
 
                             layers.splice(i, 1)
                         }
-
-                        //LayoutService.$emit('mapservice.layerchanged')
                     },
                     remove: function (uid) {
                         var deleteIndex
@@ -133,8 +131,6 @@
                         if(deleteIndex != undefined){
                             layers.splice(deleteIndex, 1)
                         }
-
-                        //LayoutService.$emit('mapservice.layerchanged')
                     },
 
                     add: function (id, bs) {
@@ -303,8 +299,6 @@
                         }
 
                         console.log(selected.layer.leaflet)
-                        //LayoutService.$emit('mapservice.layerchanged', selected.layer)
-                        //LayoutService.$emit('mapservice.layerselected', selected.layer)
 
                         leafletLayers[selected.layer.uid] = selected.layer.leaflet
 
@@ -329,8 +323,6 @@
 
                     select: function (id) {
                         selected.layer = id
-                        //LayoutService.$emit('mapservice.layerchanged', selected.layer)
-                        //LayoutService.$emit('mapservice.layerselected', selected.layer)
                     },
                     objectSld: function (item) {
                         var sldBody = '<?xml version="1.0" encoding="UTF-8"?><StyledLayerDescriptor version="1.0.0" xmlns="http://www.opengis.net/sld"><NamedLayer><Name>ALA:Objects</Name><UserStyle><FeatureTypeStyle><Rule><Title>Polygon</Title><PolygonSymbolizer><Fill><CssParameter name="fill">#.colour</CssParameter></Fill></PolygonSymbolizer></Rule></FeatureTypeStyle></UserStyle></NamedLayer></StyledLayerDescriptor>'

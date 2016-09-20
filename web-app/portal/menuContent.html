@@ -42,7 +42,9 @@
                 <li role="menuitem"><a href="#"
                                        ng-click="open('backgroundProcess', {opening: true, processName: 'PointsToGrid'})">Points
                     to Grid</a></li>
-                <li role="menuitem"><a href="#" ng-click="">Generate Points (TODO)</a></li>
+                <li role="menuitem"><a href="#"
+                                       ng-click="open('backgroundProcess', {opening: true, processName: 'GeneratePoints'})">Generate
+                    Points</a></li>
                 <!--<li class="divider"></li>-->
                 <li role="menuitem"><a href="#" ng-click="open('phylo')">Phylogenetic Diversity</a></li>
                 <li role="menuitem"><a href="#"
@@ -51,7 +53,9 @@
                 <li role="menuitem"><a href="#"
                                        ng-click="open('backgroundProcess', {opening: true, processName: 'Maxent'})">Predict</a>
                 </li>
-                <li role="menuitem"><a href="#" ng-click="">GDM (TODO)</a></li>
+                <li role="menuitem"><a href="#"
+                                       ng-click="open('backgroundProcess', {opening: true, processName: 'GDMStep1'})">GDM</a>
+                </li>
             </ul>
         </div>
 
@@ -78,6 +82,8 @@
                 <li role="menuitem"><a href="#" ng-click="open('exportChecklist')">Checklist</a></li>
                 <li role="menuitem"><a href="#" ng-click="open('exportSample')">Point Sample</a></li>
                 <li role="menuitem"><a href="#" ng-click="open('exportArea')">Areas</a></li>
+                <li style="display:none" role="menuitem"><a href="#" ng-click="saveSession()" id="saveSessionButton">Save
+                    Session</a></li>
             </ul>
         </div>
 

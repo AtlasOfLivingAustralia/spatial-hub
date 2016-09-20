@@ -1,13 +1,12 @@
 (function (angular) {
     'use strict';
     angular.module('legend-directive', ['map-service', 'biocache-service', 'layers-service'])
-        .directive('spLegend', ['$timeout', 'MapService', 'BiocacheService', 'LayersService', '$http', '$rootScope',
-            function ($timeout, MapService, BiocacheService, LayersService, $http, $rootScope) {
+        .directive('spLegend', ['$timeout', 'MapService', 'BiocacheService', 'LayersService', '$http', 'LayoutService',
+            function ($timeout, MapService, BiocacheService, LayersService, $http, LayoutService) {
                 return {
                     scope: {},
                     templateUrl: 'portal/' + 'legendContent.html',
                     link: function (scope, element, attrs) {
-                        var playback
                         scope.facetFilter = ''
                         scope.fq = []
                         scope.yearMin = 1800
@@ -496,76 +495,6 @@
                                 'height': 0
                             }).hide();
                         }
-
-                        scope.updateFq = function (data) {
-                            scope.fq.splice(0, scope.fq.length)
-                            if (data && data.min != undefined && data.max != undefined) {
-                                switch (data.type) {
-                                    case 'year':
-                                        scope.fq.push("year:[" + data.min + " TO " + data.max + "]")
-                                        break;
-                                    case 'month':
-                                        scope.fq.push("month:[" + data.min + " TO " + data.max + "]")
-                                        break;
-                                }
-                            }
-                        }
-
-                        scope.registerPlayback = function (play) {
-                            if(play){
-                                playback = play
-                                play.$on('playback.increment', function (event, data) {
-                                    scope.updateFq(data)
-                                    scope.updateWMS()
-                                    console.log('emit: playback.increment', arguments)
-                                })
-
-                                play.$on('playback.stop', function (event, data) {
-                                    scope.updateFq(data)
-                                    scope.updateWMS()
-                                    console.log('emit: playback.stop', arguments)
-                                })
-                            }
-                        }
-
-
-                        function findMinAndMax(values){
-                            var result = {}
-
-                            if(values.length){
-                                values = values.sort()
-                                result.min = values[0]
-                                result.max = values[values.length - 1 ]
-                            }
-
-                            return result
-                        }
-                        
-                        scope.findMinAndMaxYear = function () {
-                            if(scope.selected.layer && scope.selected.layer.layertype == 'species'){
-                                var query = { qid: scope.selected.layer.qid, bs: scope.selected.layer.bs, ws: scope.selected.layer.ws}
-                                if(!scope.selected.layer.yearMax && !scope.selected.layer.yearMin){
-                                    BiocacheService.facet('year', query).then(function (data) {
-                                        var years = []
-                                        data && data.forEach(function (facet) {
-                                            var int = Number.parseInt(facet.name)
-                                            if(!Number.isNaN(int)){
-                                                years.push(int)
-                                            }
-                                        })
-
-                                        var minMax = findMinAndMax(years)
-                                        playback && playback.setYearRange(minMax.min, minMax.max)
-                                    })
-                                } else {
-                                    playback && playback.setYearRange(scope.selected.layer.yearMin, scope.selected.layer.yearMax)
-                                }
-                            }
-                        }
-
-                        $rootScope.$on('mapservice.layerselected', function(event, layer){
-                            scope.findMinAndMaxYear()
-                        })
                     }
 
                 }

@@ -19,6 +19,7 @@
                 showLegend: showLegend,
                 panelMode: panelMode,
                 toOpenStack: toOpenStack,
+                panelData: panelData,
                 
                 enable: function (type) {
                     if (type === 'legend') {

@@ -168,6 +168,8 @@
             url: '${createLink(controller: 'portal', action: 'index')}',
             sessionId: '${sessionId}'
         }
+
+        L.Icon.Default.imagePath = 'node_modules/leaflet/dist/images'
     </r:script>
 
 

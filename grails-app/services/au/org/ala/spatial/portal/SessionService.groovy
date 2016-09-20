@@ -56,7 +56,7 @@ class SessionService {
 
         FileUtils.writeStringToFile(saveFile(id), (data as JSON).toString())
 
-        [status: 'saved', url: grailsApplication.config.grails.serverURL + '?sessionId=' + id]
+        [status: 'saved', url: grailsApplication.config.grails.serverURL + '?ss=' + id]
     }
 
     def saveFile(id) {

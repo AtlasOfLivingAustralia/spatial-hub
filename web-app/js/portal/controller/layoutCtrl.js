@@ -7,6 +7,7 @@
                 $scope.showOptions = LayoutService.showOptions
                 $scope.showLegend = LayoutService.showLegend
                 $scope.toOpenStack = LayoutService.toOpenStack
+                $scope.panelData = LayoutService.panelData
 
                 $scope.$watch('toOpenStack', function () {
                     if (LayoutService.toOpenStack.length > 0) {
@@ -21,8 +22,8 @@
 
                 //init a saved session
                 $scope.loadSession = function () {
-                    var sessionId = /session=[0-9]*/.exec(window.location.search)
-                    if (sessionId) sessionId = sessionId[0].replace('session=', '')
+                    var sessionId = /[\?&]ss=[0-9]*/.exec(window.location.search)
+                    if (sessionId) sessionId = sessionId[0].replace('?ss=', '').replace('&ss=', '')
 
                     if (sessionId) {
                         SessionsService.get(sessionId).then(function (data) {
@@ -44,7 +45,7 @@
 
                 $timeout(function () {
                     $scope.loadSession()
-                }, 5000)
+                }, 2000)
 
             }])
 }(angular));

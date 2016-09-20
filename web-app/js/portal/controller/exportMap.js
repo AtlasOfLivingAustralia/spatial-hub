@@ -18,7 +18,7 @@
                     var i = MapService.leafletLayers[k]
                     var url = i.url
                     if (url.indexOf('?') < 0) url += '?'
-                    url += "&opacity=" + (i.opacity / 100.0)
+                    url += "&opacity=" + (i.opacity)
                     for (var j in i.layerParams) {
                         url += '&' + j + '=' + encodeURIComponent(i.layerParams[j])
                     }
