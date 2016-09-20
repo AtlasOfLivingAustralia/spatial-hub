@@ -542,22 +542,24 @@
                         }
                         
                         scope.findMinAndMaxYear = function () {
-                            var query = { qid: scope.selected.layer.qid, bs: scope.selected.layer.bs, ws: scope.selected.layer.ws}
-                            if(!scope.selected.layer.yearMax && !scope.selected.layer.yearMin){
-                                BiocacheService.facet('year', query).then(function (data) {
-                                    var years = []
-                                    data && data.forEach(function (facet) {
-                                        var int = Number.parseInt(facet.name)
-                                        if(!Number.isNaN(int)){
-                                            years.push(int)
-                                        }
-                                    })
+                            if(scope.selected.layer && scope.selected.layer.layertype == 'species'){
+                                var query = { qid: scope.selected.layer.qid, bs: scope.selected.layer.bs, ws: scope.selected.layer.ws}
+                                if(!scope.selected.layer.yearMax && !scope.selected.layer.yearMin){
+                                    BiocacheService.facet('year', query).then(function (data) {
+                                        var years = []
+                                        data && data.forEach(function (facet) {
+                                            var int = Number.parseInt(facet.name)
+                                            if(!Number.isNaN(int)){
+                                                years.push(int)
+                                            }
+                                        })
 
-                                    var minMax = findMinAndMax(years)
-                                    playback && playback.setYearRange(minMax.min, minMax.max)
-                                })
-                            } else {
-                                playback && playback.setYearRange(scope.selected.layer.yearMin, scope.selected.layer.yearMax)
+                                        var minMax = findMinAndMax(years)
+                                        playback && playback.setYearRange(minMax.min, minMax.max)
+                                    })
+                                } else {
+                                    playback && playback.setYearRange(scope.selected.layer.yearMin, scope.selected.layer.yearMax)
+                                }
                             }
                         }
 
