@@ -1,96 +1,112 @@
-<h5>Time series animation</h5>
-<div class="form-group row padding-top-5">
-    <div class="col-sm-4">
-        <label>Play time series by</label>
-    </div>
-    <div class="col-sm-8">
-        <div class="btn-group" data-toggle="buttons">
-            <label class="btn btn-default active btn-xs" ng-click="setType('year')">
-                <input type="radio" autocomplete="off" ng-checked="type === 'year'" value="year"> Year
-            </label>
-            <label class="btn btn-default btn-xs"  ng-click="setType('month')">
-                <input type="radio" autocomplete="off" ng-checked="type === 'month'" value="month"> Month
-            </label>
-        </div>
+<div>
+    <h5 style="float:left;width:150px;">Time series animation</h5>
+    <div style="float:left;margin-top:5px" class="btn btn-sm btn-default"
+         ng-class="{active: selected.layer.playback && selected.layer.playback.option}" ng-click="onOptions()"
+         title="Playback settings"><i
+            class="glyphicon glyphicon-cog"></i></div>
+
+    <div class="form-group row padding-top-5" style="float:left;padding-left:40px"
+         ng-if="selected.layer.playback && selected.layer.playback.option && (selected.layer.playback && selected.layer.playback.type == 'month' || showYear())">
+        <div class="col-sm-12 text-center">
+            <div class="btn btn-sm btn-default"
+                 ng-class="{active: selected.layer.playback && selected.layer.playback.play}" ng-click="onPlay()"
+                 title="Play time series"><i
+                    class="glyphicon glyphicon-play"></i></div>
+            <div class="btn btn-sm btn-default"
+                 ng-class="{active: selected.layer.playback && selected.layer.playback.pause}" ng-click="onPause()"
+                 title="Pause time series"><i
+                    class="glyphicon glyphicon-pause"></i></div>
+            <div class="btn btn-sm btn-default"
+                 ng-class="{active: selected.layer.playback && selected.layer.playback.stop}" ng-click="onStop()"
+                 title="Stop time series"><i
+                    class="glyphicon glyphicon-stop"></i></div>
+            <div class="btn btn-sm btn-default"
+                 ng-class="{active: selected.layer.playback && selected.layer.playback.repeat}" ng-click="onRepeat()"
+                 title="Play time series in a loop"><i
+                    class="glyphicon glyphicon-repeat"></i></div>
     </div>
 </div>
-
-<div ng-show="type == 'year'">
-    <div class="form-group row padding-top-5" >
-        <div class="col-sm-4">
-            <label>Choose year range</label>
-        </div>
-        <div class="col-sm-7 padding-top-5">
-            <div ui-slider ng-model="yearRange" range="true" min="{{yearStart}}" max="{{yearEnd}}"></div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-4"></div>
-        <div class="col-sm-8 text-center"><label>{{yearRange[0]}} - {{yearRange[1]}}</label></div>
-    </div>
 </div>
 
-<div ng-show="type == 'month'">
+<div ng-if="selected.layer.playback && selected.layer.playback.option" style="padding-top:40px">
     <div class="form-group row padding-top-5">
         <div class="col-sm-4">
-            <label>Choose month range</label>
+            <label>Play time series by</label>
+        </div>
+        <div class="col-sm-8">
+            <div class="btn-group" data-toggle="buttons">
+                <label class="btn btn-default active btn-xs" ng-click="setType('year')">
+                    <input type="radio" autocomplete="off"
+                           ng-checked="selected.layer.playback && selected.layer.playback.type === 'year'" value="year">
+                    Year
+                </label>
+                <label class="btn btn-default btn-xs" ng-click="setType('month')">
+                    <input type="radio" autocomplete="off"
+                           ng-checked="selected.layer.playback && selected.layer.playback.type === 'month'"
+                           value="month"> Month
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div ng-if="showYear()">
+        <div class="form-group row padding-top-5">
+            <div class="col-sm-4">
+                <label>Choose year range</label>
+            </div>
+            <div class="col-sm-7 padding-top-5">
+                <div ui-slider ng-model="selected.layer.playback.yearRange" range="true"
+                     min="{{selected.layer.yearMin}}" max="{{selected.layer.yearMax}}" disabled="true"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-8 text-center"><label>{{selected.layer.playback.yearRange[0]}} -
+                {{selected.layer.playback.yearRange[1]}}</label></div>
+        </div>
+    </div>
+
+    <div ng-if="type == 'month' && monthRange">
+        <div class="form-group row padding-top-5">
+            <div class="col-sm-4">
+                <label>Choose month range</label>
+            </div>
+            <div class="col-sm-7 padding-top-5">
+                <div ui-slider ng-model="selected.layer.playback.monthRange" range="true" min="1" max="12"
+                     disabled="true"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-7 text-center"><label ng-bind="monthRangeMessage()"></label></div>
+        </div>
+    </div>
+
+    <div class="form-group row padding-top-5" ng-show="showYear()">
+        <div class="col-sm-4">
+            <label>Increase year by</label>
         </div>
         <div class="col-sm-7 padding-top-5">
-            <div ui-slider ng-model="monthRange" range="true" min="{{monthStart}}" max="{{monthEnd}}"></div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-4"></div>
-        <div class="col-sm-7 text-center"><label ng-bind="monthRangeMessage()"></label></div>
-    </div>
-</div>
-
-<div class="form-group row padding-top-5">
-    <div class="col-sm-12 text-center">
-        <div class="btn btn-sm btn-default" ng-class="{active: play}" ng-click="onPlay()" title="Play time series"><i
-                class="glyphicon glyphicon-play"></i></div>
-        <div class="btn btn-sm btn-default" ng-class="{active: pause}" ng-click="onPause()" title="Pause time series"><i
-                class="glyphicon glyphicon-pause"></i></div>
-        <div class="btn btn-sm btn-default" ng-class="{active: stop}" ng-click="onStop()" title="Stop time series"><i
-                class="glyphicon glyphicon-stop"></i></div>
-        <div class="btn btn-sm btn-default" ng-class="{active: repeat}" ng-click="onRepeat()" title="Play time series in a loop"><i
-                class="glyphicon glyphicon-repeat"></i></div>
-        <div class="btn btn-sm btn-default" ng-class="{active: options}" ng-click="onOptions()" title="Playback settings"><i
-                class="glyphicon glyphicon-cog"></i></div>
-    </div>
-</div>
-
-<div class="form-group row padding-top-5"  ng-show="type == 'year' && (play || pause)">
-    <div class="col-sm-12 text-center">
-        <strong>Now showing: {{yearRangeMin}} - {{yearRangeMax}}</strong>
-    </div>
-</div>
-
-<div class="form-group row padding-top-5"  ng-show="type == 'month' && (play || pause)">
-    <div class="col-sm-12 text-center">
-        <strong>Now showing: <span ng-bind="monthAnimationMessage()"></span></strong>
-    </div>
-</div>
-
-<div ng-show="options" id="playback-options">
-    <div class="form-group row padding-top-5" ng-show="type == 'year'">
-        <div class="col-sm-offset-2 col-sm-10">
-            <label>Increase year by</label>
-            <input type="number" min="1" max="200" ng-model="yearStepSize">
+            <input type="number" min="1" max="200" ng-model="selected.layer.playback.yearStepSize">
         </div>
     </div>
 
     <div class="form-group row padding-top-5" ng-show="type == 'month'">
-        <div class="col-sm-offset-2 col-sm-10">
+        <div class="col-sm-4">
             <label>Increase month by</label>
-            <input type="number" min="1" max="12" ng-model="monthStepSize">
+        </div>
+        <div class="col-sm-7 padding-top-5">
+            <input type="number" min="1" max="12" ng-model="selected.layer.playback.monthStepSize">
         </div>
     </div>
 
     <div class="form-group row padding-top-5">
-        <div class="col-sm-offset-2 col-sm-10">
+        <div class="col-sm-4">
             <label>Number of seconds per frame</label>
-            <input type="number" min="0" max="300" ng-model="timeout">
+        </div>
+        <div class="col-sm-7 padding-top-5">
+            <input type="number" min="0" max="300" ng-model="selected.layer.playback.timeout">
         </div>
     </div>
+
 </div>

@@ -1,14 +1,14 @@
 (function (angular) {
     'use strict';
     angular.module('add-facet-ctrl', ['map-service', 'biocache-service', 'facet-auto-complete-service'])
-        .controller('AddFacetCtrl', ['$scope', 'MapService', '$timeout', '$rootScope', '$uibModalInstance', 'BiocacheService',
+        .controller('AddFacetCtrl', ['$scope', 'MapService', '$timeout', 'LayoutService', '$uibModalInstance', 'BiocacheService',
             'FacetAutoCompleteService',
-            function ($scope, MapService, $timeout, $rootScope, $uibModalInstance, BiocacheService, FacetAutoCompleteService) {
+            function ($scope, MapService, $timeout, LayoutService, $uibModalInstance, BiocacheService, FacetAutoCompleteService) {
 
                 $scope.name = 'addFacetCtrl'
 
-                $scope.step = $rootScope.getValue($scope.name, 'step', 1);
-                $scope.selectedArea = $rootScope.getValue($scope.name, 'selectedArea', {
+                $scope.step = 1
+                $scope.selectedArea = {
                     area: {
                         q: [],
                         wkt: '',
@@ -18,7 +18,7 @@
                         wms: '',
                         legend: ''
                     }
-                })
+                }
 
                 $scope.sel = ''
 
@@ -37,7 +37,7 @@
 
                 $scope.facetFilter = ''
 
-                $rootScope.addToSave($scope)
+                LayoutService.addToSave($scope)
 
                 $scope.hide = function () {
                     $uibModalInstance.close({hide: true});

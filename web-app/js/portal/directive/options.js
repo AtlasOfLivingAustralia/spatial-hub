@@ -1,15 +1,15 @@
 (function (angular) {
     'use strict';
     angular.module('sp-options-directive', ['map-service'])
-        .directive('spOptions', ['$timeout', 'MapService', '$rootScope',
-            function ($timeout, MapService, $rootScope) {
+        .directive('spOptions', ['$timeout', 'MapService', 'LayoutService',
+            function ($timeout, MapService, LayoutService) {
 
                 return {
                     scope: {},
                     templateUrl: 'portal/optionsContent.html',
                     link: function (scope, element, attrs) {
                         scope.selection = {
-                            name: "google_hybrid"
+                            name: "google_roadmaps"
                         }
 
                         scope.baselayers = [
@@ -40,7 +40,7 @@
                         ]
 
                         scope.info = function (url) {
-                            $rootScope.openIframe(url, '', '')
+                            LayoutService.openIframe(url, '', '')
                         }
 
                         scope.resetMap = function () {
@@ -51,11 +51,13 @@
                             MapService.leafletScope.resetZoom()
                             
                             //set base layer
-                            MapService.leafletScope.setBaseMap('google_hybrid')
+                            MapService.setBaseMap('google_roadmaps')
+
+                            mapService.leafletScope.baseMap()
                         }
 
                         scope.open = function (type) {
-                            $rootScope.openModal(type)
+                            LayoutService.openModal(type)
                         }
 
                         scope.downloadMap = function () {
@@ -67,7 +69,7 @@
                         }
 
                         scope.select = function (key) {
-                            MapService.leafletScope.setBaseMap(key)
+                            MapService.setBaseMap(key)
                         }
                     }
                 };

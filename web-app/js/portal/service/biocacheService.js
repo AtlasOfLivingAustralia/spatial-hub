@@ -109,8 +109,8 @@
                     return {
                         q: ["*:*"],
                         name: '',
-                        ws: SpatialPortalConfig.biocacheServiceUrl,
-                        bs: SpatialPortalConfig.biocacheUrl
+                        bs: SpatialPortalConfig.biocacheServiceUrl,
+                        ws: SpatialPortalConfig.biocacheUrl
                     }
                 },
                 newLayer: function (query, area, newName) {

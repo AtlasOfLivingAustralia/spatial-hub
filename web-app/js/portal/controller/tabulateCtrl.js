@@ -1,9 +1,9 @@
 (function (angular) {
     'use strict';
     angular.module('tabulate-ctrl', ['map-service', 'biocache-service', 'layers-service'])
-        .controller('TabulateCtrl', ['$scope', 'MapService', '$timeout', '$rootScope', '$uibModalInstance',
+        .controller('TabulateCtrl', ['$scope', 'MapService', '$timeout', 'LayoutService', '$uibModalInstance',
             'BiocacheService', '$http', 'LayersService',
-            function ($scope, MapService, $timeout, $rootScope, $uibModalInstance, BiocacheService, $http, LayersService) {
+            function ($scope, MapService, $timeout, LayoutService, $uibModalInstance, BiocacheService, $http, LayersService) {
 
                 $scope.tlayers = []
                 $scope.tabulations = []
@@ -36,7 +36,7 @@
                         console.log(url)
 
                         $scope.cancel({noOpen: true})
-                        $rootScope.openIframe(url)
+                        LayoutService.openIframe(url)
                     }
                 };
 

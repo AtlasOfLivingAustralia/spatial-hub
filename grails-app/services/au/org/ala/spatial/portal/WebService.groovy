@@ -20,11 +20,7 @@ import org.apache.commons.httpclient.HttpClient
 import org.apache.commons.httpclient.HttpException
 import org.apache.commons.httpclient.methods.PostMethod
 import org.apache.commons.httpclient.methods.StringRequestEntity
-import org.apache.commons.httpclient.methods.multipart.ByteArrayPartSource
-import org.apache.commons.httpclient.methods.multipart.FilePart
-import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity
-import org.apache.commons.httpclient.methods.multipart.Part
-import org.apache.commons.httpclient.methods.multipart.PartSource
+import org.apache.commons.httpclient.methods.multipart.*
 import org.codehaus.groovy.grails.web.converters.exceptions.ConverterException
 import org.codehaus.groovy.grails.web.servlet.HttpHeaders
 import org.springframework.http.MediaType
@@ -293,7 +289,7 @@ class WebService {
             int result = client.executeMethod(post);
             String response = post.getResponseBodyAsString();
 
-            if (result == 200) {
+            if (result == 200 || result == 302) {
                 return response
             } else {
             }
@@ -429,7 +425,7 @@ class WebService {
                 postMethod.setRequestEntity(
                         new MultipartRequestEntity(parts, postMethod.getParams())
                 );
-                postMethod.setRequestHeader('Authorization', grailsApplication.config.api_key)
+                //postMethod.setRequestHeader('Authorization', grailsApplication.config.api_key)
                 postMethod.setRequestHeader(grailsApplication.config.app.http.header.userId, userId)
                 HttpClient client = new HttpClient();
                 status = client.executeMethod(postMethod);

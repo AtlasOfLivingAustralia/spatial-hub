@@ -1,7 +1,7 @@
 (function (angular) {
     'use strict';
     angular.module('lists-list-directive', ['lists-service', 'map-service'])
-        .directive('listsList', ['$http', 'ListsService', 'MapService', '$rootScope', function ($http, ListsService, MapService, $rootScope) {
+        .directive('listsList', ['$http', 'ListsService', 'MapService', 'LayoutService', function ($http, ListsService, MapService, LayoutService) {
 
             var sortType = 'updated'
             var sortReverse = false

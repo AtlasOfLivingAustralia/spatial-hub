@@ -1,8 +1,7 @@
 (function (angular) {
     'use strict';
-    angular.module('export-map-ctrl', ['map-service', 'layers-service']).
-    controller('ExportMapCtrl', ['$scope', 'MapService', '$timeout', '$rootScope', '$uibModalInstance', '$http', 'LayersService',
-        function ($scope, MapService, $timeout, $rootScope, $uibModalInstance, $http, LayersService) {
+    angular.module('export-map-ctrl', ['map-service', 'layers-service']).controller('ExportMapCtrl', ['$scope', 'MapService', '$timeout', 'LayoutService', '$uibModalInstance', '$http', 'LayersService',
+        function ($scope, MapService, $timeout, LayoutService, $uibModalInstance, $http, LayersService) {
 
             $scope.name = 'ExportMapCtrl'
 

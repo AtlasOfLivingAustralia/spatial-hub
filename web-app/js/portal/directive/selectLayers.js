@@ -3,9 +3,9 @@
     angular.module('select-layers-directive', ['lists-service', 'layer-distances-service', 'map-service',
             'predefined-layer-lists-service'])
         .directive('selectLayers', ['$http', 'LayersService', 'LayerDistancesService', 'MapService',
-            '$rootScope', 'PredefinedLayerListsService',
+            'LayoutService', 'PredefinedLayerListsService',
             function ($http, LayersService, LayerDistancesService, MapService,
-                      $rootScope, PredefinedLayerListsService) {
+                      LayoutService, PredefinedLayerListsService) {
 
                 var sortType = 'classification' // set the default sort type
                 var sortReverse = false  // set the default sort order
@@ -21,10 +21,10 @@
                     link: function (scope, element, attrs) {
 
                         scope.name = 'selectLayers'
-                        scope.exportUrl = $rootScope.getValue(scope.name, 'exportUrl', null)
-                        scope.validLayerSelection = $rootScope.getValue(scope.name, 'validLayerSelection', scope.mandatory === undefined || !scope.mandatory)
-                        scope.mode = $rootScope.getValue(scope.name, 'mode', '')
-                        $rootScope.addToSave(scope)
+                        scope.exportUrl = null
+                        scope.validLayerSelection = scope.mandatory === undefined || !scope.mandatory
+                        scope.mode = ''
+                        LayoutService.addToSave(scope)
 
                         scope.layers = []
                         scope.predefinedLists = PredefinedLayerListsService.getList()
@@ -169,7 +169,7 @@
                         }
 
                         scope.info = function (item) {
-                            $rootScope.openIframe(LayersService.url() + '/layer/more/' + item.layerId, '', '')
+                            LayoutService.openIframe(LayersService.url() + '/layer/more/' + item.layerId, '', '')
                         }
 
                         scope.removeAll = function () {

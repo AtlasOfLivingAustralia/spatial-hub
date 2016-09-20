@@ -1,9 +1,9 @@
 (function (angular) {
     'use strict';
     angular.module('basic-tiles-controller', ['leaflet-directive', 'map-service', 'popup-service'])
-        .controller('BasicTilesController', ["$scope", "$rootScope", "$http", "leafletData", "leafletBoundsHelpers",
+        .controller('BasicTilesController', ["$scope", "LayoutService", "$http", "leafletData", "leafletBoundsHelpers",
             "MapService", '$timeout', 'leafletHelpers', 'PopupService',
-            function ($scope, $rootScope, $http, leafletData, leafletBoundsHelpers, MapService, $timeout, leafletHelpers, popupService) {
+            function ($scope, LayoutService, $http, leafletData, leafletBoundsHelpers, MapService, $timeout, leafletHelpers, popupService) {
 
                 angular.extend($scope, {
                     layercontrol: {
@@ -20,6 +20,11 @@
                     layers: {
                         baselayers: {
                             //first baselayer is the default base layer
+                            google_roadmaps: {
+                                name: 'Streets',
+                                layerType: 'ROADMAP',
+                                type: 'google'
+                            },
                             google_hybrid: {
                                 name: 'Hybrid',
                                 layerType: 'HYBRID',
@@ -39,11 +44,6 @@
                                 name: 'OpenStreetMap',
                                 url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
                                 type: 'xyz'
-                            },
-                            google_roadmaps: {
-                                name: 'Streets',
-                                layerType: 'ROADMAP',
-                                type: 'google'
                             },
                             google_satellite: {
                                 name: 'Satellite',
@@ -65,8 +65,14 @@
 
                 MapService.leafletScope = $scope
 
+                $scope.baseMap = 'google_roadmaps'
+                $scope.getBaseMap = function () {
+                    return $scope.baseMap
+                }
+
                 $scope.setBaseMap = function (key) {
                     leafletHelpers.safeApply($scope, function (scp) {
+                        $scope.baseMap = key
                         scp.baselayer = key;
                         leafletData.getMap().then(function (map) {
                             leafletData.getLayers().then(function (leafletLayers) {
@@ -108,6 +114,9 @@
                         var p1 = split[1].split(' ')
                         var p2 = split[3].split(' ')
                         b = [[Math.min(p1[1], p2[1]), Math.min(p1[0], p2[0])], [Math.max(p1[1], p2[1]), Math.max(p1[0], p2[0])]]
+                    }
+                    if (bounds && bounds.length == 4) {
+                        b = [[bounds[1], bounds[0]], [bounds[3], bounds[2]]]
                     }
                     leafletData.getMap().then(function (map) {
                         map.fitBounds(b);
@@ -342,7 +351,7 @@
 
                             map.on('click',function (e) {
                                 var latlng = e.latlng
-                                if($rootScope.areaCtrlAreaValue != 'drawPolygon'){
+                                if (LayoutService.areaCtrlAreaValue != 'drawPolygon') {
                                     popupService.click(latlng)
                                 }
                             });

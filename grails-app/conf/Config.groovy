@@ -1,7 +1,7 @@
 
 
 grails.project.groupId = "au.org.ala" // change this to alter the default package name and Maven publishing destination
-appName = "spatial-service"
+appName = "spatial-hub"
 
 grails.appName = appName
 
@@ -173,3 +173,5 @@ geoserver.url = 'http://spatial-test.ala.org.au/geoserver'
 
 viewConfig.json = "view-config.json"
 //google.apikey=
+
+sessions.dir = "/data/spatial-hub/sessions"

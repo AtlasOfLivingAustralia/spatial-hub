@@ -1,8 +1,8 @@
 (function (angular) {
     'use strict';
     angular.module('map-service', ['layers-service', 'facet-auto-complete-service', 'biocache-service'])
-        .factory("MapService", ['$rootScope', '$timeout', 'LayersService', 'FacetAutoCompleteService', 'BiocacheService',
-            function ($rootScope, $timeout, LayersService, FacetAutoCompleteService, BiocacheService) {
+        .factory("MapService", ['LayoutService', '$timeout', 'LayersService', 'FacetAutoCompleteService', 'BiocacheService', 'ColourService',
+            function (LayoutService, $timeout, LayersService, FacetAutoCompleteService, BiocacheService, ColourService) {
                 var bounds = {}
                 var layers = []
                 var leafletLayers = {
@@ -88,6 +88,10 @@
                             this.leafletScope.bounds.northEast.lng, this.leafletScope.bounds.northEast.lat]
                     },
 
+                    getBaseMap: function () {
+                        this.leafletScope.getBaseMap()
+                    },
+
                     updateZindex: function () {
                         for (var i = 0; i < this.mappedLayers.length; i++) {
                             this.mappedLayers[i].index = this.mappedLayers.length - i
@@ -108,7 +112,7 @@
                             layers.splice(i, 1)
                         }
 
-                        $rootScope.$emit('mapservice.layerchanged')
+                        //LayoutService.$emit('mapservice.layerchanged')
                     },
                     remove: function (uid) {
                         var deleteIndex
@@ -130,7 +134,7 @@
                             layers.splice(deleteIndex, 1)
                         }
 
-                        $rootScope.$emit('mapservice.layerchanged')
+                        //LayoutService.$emit('mapservice.layerchanged')
                     },
 
                     add: function (id, bs) {
@@ -142,7 +146,7 @@
                         layers.unshift(id)
 
                         if (id.red === undefined) {
-                            id.color = 'ff0000'
+                            id.color = ColourService.nextColour()
                         } else {
                             var r = id.red.toString(16);
                             if (r.length == 1) r = '0' + r;
@@ -165,7 +169,7 @@
                         }
 
                         if (id.opacity === undefined) {
-                            id.opacity = 80
+                            id.opacity = 60
                         }
 
                         id.uncertainty = false
@@ -189,7 +193,7 @@
                                 visible: true,
                                 url: bs + '/webportal/wms/reflect?',
                                 layertype: 'species',
-                                opacity: 80,
+                                opacity: id.opacity / 100.0,
                                 layerParams: {
                                     layers: 'ALA:occurrences',
                                     format: 'image/png',
@@ -225,7 +229,7 @@
                                     name: uid + ': ' + id.name,
                                     type: 'wms',
                                     visible: true,
-                                    opacity: 80,
+                                    opacity: id.opacity / 100.0,
                                     url: SpatialPortalConfig.geoserverUrl + '/wms',
                                     layertype: 'area',
                                     layerParams: {
@@ -268,7 +272,7 @@
                                     name: uid + ': ' + layer.layer.displayname,
                                     type: 'wms',
                                     visible: true,
-                                    opacity: 80,
+                                    opacity: id.opacity / 100.0,
                                     url: layer.layer.displaypath,
                                     layertype: id.layertype,
                                     layerParams: {
@@ -299,8 +303,8 @@
                         }
 
                         console.log(selected.layer.leaflet)
-                        $rootScope.$emit('mapservice.layerchanged', selected.layer)
-                        $rootScope.$emit('mapservice.layerselected', selected.layer)
+                        //LayoutService.$emit('mapservice.layerchanged', selected.layer)
+                        //LayoutService.$emit('mapservice.layerselected', selected.layer)
 
                         leafletLayers[selected.layer.uid] = selected.layer.leaflet
 
@@ -325,13 +329,10 @@
 
                     select: function (id) {
                         selected.layer = id
-                        $rootScope.$emit('mapservice.layerchanged', selected.layer)
-                        $rootScope.$emit('mapservice.layerselected', selected.layer)
+                        //LayoutService.$emit('mapservice.layerchanged', selected.layer)
+                        //LayoutService.$emit('mapservice.layerselected', selected.layer)
                     },
                     objectSld: function (item) {
-//                        var r = item.red.toString(16); if (r.length == 1) r = '0' + r;
-//                        var g = item.green.toString(16); if (g.length == 1) g = '0' + g;
-//                        var b = item.blue.toString(16); if (b.length == 1) b = '0' + b;
                         var sldBody = '<?xml version="1.0" encoding="UTF-8"?><StyledLayerDescriptor version="1.0.0" xmlns="http://www.opengis.net/sld"><NamedLayer><Name>ALA:Objects</Name><UserStyle><FeatureTypeStyle><Rule><Title>Polygon</Title><PolygonSymbolizer><Fill><CssParameter name="fill">#.colour</CssParameter></Fill></PolygonSymbolizer></Rule></FeatureTypeStyle></UserStyle></NamedLayer></StyledLayerDescriptor>'
                         sldBody = sldBody.replace('.colour', item.color)
                         return sldBody
@@ -366,6 +367,8 @@
                             query.q = query.q.concat(layer.fq)
                         }
 
+                        if (layer.qid) query.qid = layer.qid
+
                         return query
                     },
                     getAllSpeciesQuery: function (layer) {
@@ -392,6 +395,24 @@
                         query.area.legend = layer.legend || ''
                         query.area.uid = layer.uid
                         return query
+                    },
+                    info: function (item) {
+                        if (item.layertype == 'species') {
+                            LayoutService.openModal('speciesInfo', item, '')
+                        } else if (item.layertype == 'area') {
+                            console.log(item)
+                            alert('area')
+                        } else {
+                            if (item.metadataUrl !== undefined) {
+                                LayoutService.openIframe(item.metadataUrl, '', '')
+                            } else {
+                                LayoutService.openIframe(LayersService.url() + '/layer/more/' + item.layer.layer.id, '', '')
+                            }
+                        }
+                    },
+                    setBaseMap: function (basemap) {
+                        this.leafletScope.setBaseMap(basemap)
+                        this.updateZindex()
                     }
                 }
             }])

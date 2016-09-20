@@ -105,6 +105,7 @@ modules = {
         resource url: [dir: 'js/portal/controller', file: 'tabulateCtrl.js']
         resource url: [dir: 'js/portal/controller', file: 'toolAreaReportCtrl.js']
         resource url: [dir: 'js/portal/controller', file: 'sandBoxCtrl.js']
+        resource url: [dir: 'js/portal/controller', file: 'sessionsCtrl.js']
         resource url: [dir: 'js/portal/controller', file: 'createSpeciesListCtrl.js']
 
 
@@ -127,6 +128,7 @@ modules = {
         resource url: [dir: 'js/portal/directive', file: 'playback.js']
 
         resource url: [dir: 'js/portal/service', file: 'biocacheService.js']
+        resource url: [dir: 'js/portal/service', file: 'colourService.js']
         resource url: [dir: 'js/portal/service', file: 'facetAutocompleteService.js']
         resource url: [dir: 'js/portal/service', file: 'gazAutocompleteService.js']
         resource url: [dir: 'js/portal/service', file: 'layerDistancesService.js']
@@ -139,6 +141,7 @@ modules = {
         resource url: [dir: 'js/portal/service', file: 'predefinedAreasService.js']
         resource url: [dir: 'js/portal/service', file: 'predefinedLayerListsService.js']
         resource url: [dir: 'js/portal/service', file: 'sandboxService.js']
+        resource url: [dir: 'js/portal/service', file: 'sessionsService.js']
         resource url: [dir: 'js/portal/service', file: 'speciesAutoCompleteService.js']
         resource url: [dir: 'js/portal/service', file: 'popupService.js']
 

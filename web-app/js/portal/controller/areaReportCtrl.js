@@ -1,9 +1,9 @@
 (function (angular) {
     'use strict';
     angular.module('area-report-ctrl', ['map-service', 'biocache-service', 'lists-service', 'layers-service'])
-        .controller('AreaReportCtrl', ['$scope', 'MapService', '$timeout', '$rootScope', '$uibModalInstance',
+        .controller('AreaReportCtrl', ['$scope', 'MapService', '$timeout', 'LayoutService', '$uibModalInstance',
             'BiocacheService', 'data', '$http', 'ListsService', 'LayersService',
-            function ($scope, MapService, $timeout, $rootScope, $uibModalInstance, BiocacheService, data, $http, ListsService, LayersService) {
+            function ($scope, MapService, $timeout, LayoutService, $uibModalInstance, BiocacheService, data, $http, ListsService, LayersService) {
                 $scope.area = data
 
                 $scope.openExpertDistribution = ''

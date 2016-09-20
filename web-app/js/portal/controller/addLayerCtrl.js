@@ -1,17 +1,17 @@
 (function (angular) {
     'use strict';
     angular.module('add-layer-ctrl', ['map-service'])
-        .controller('AddLayerCtrl', ['$scope', 'MapService', '$timeout', '$rootScope', '$uibModalInstance',
-            function ($scope, MapService, $timeout, $rootScope, $uibModalInstance) {
+        .controller('AddLayerCtrl', ['$scope', 'MapService', '$timeout', 'LayoutService', '$uibModalInstance',
+            function ($scope, MapService, $timeout, LayoutService, $uibModalInstance) {
 
                 $scope.name = 'addLayerCtrl'
 
-                $scope.step = $rootScope.getValue($scope.name, 'step', 1);
+                $scope.step = 1;
 
-                $scope.selectedLayers = $rootScope.getValue($scope.name, 'selectedLayers', {layers: []});//{layers: []}
-                $scope.min = $rootScope.getValue($scope.name, 'min', 1);
-                $scope.max = $rootScope.getValue($scope.name, 'max', 20);
-                $rootScope.addToSave($scope)
+                $scope.selectedLayers = {layers: []}
+                $scope.min = 1
+                $scope.max = 20
+                LayoutService.addToSave($scope)
 
                 $scope.hide = function () {
                     $uibModalInstance.close({hide: true});

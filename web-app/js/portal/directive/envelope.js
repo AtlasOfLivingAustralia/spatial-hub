@@ -1,9 +1,9 @@
 (function (angular) {
     'use strict';
     angular.module('envelope-directive', ['biocache-service', 'map-service', 'layers-service', 'facet-auto-complete-service'])
-        .directive('envelope', ['$rootScope', 'MapService', '$timeout', 'LayersService', 'BiocacheService',
+        .directive('envelope', ['LayoutService', 'MapService', '$timeout', 'LayersService', 'BiocacheService',
             'FacetAutoCompleteService',
-            function ($rootScope, MapService, $timeout, LayersService, BiocacheService, FacetAutoCompleteService) {
+            function (LayoutService, MapService, $timeout, LayersService, BiocacheService, FacetAutoCompleteService) {
 
                 return {
                     scope: {
@@ -37,7 +37,7 @@
                             while (scope.layers.length > 0) {
                                 scope.removeLayer()
                             }
-                            $rootScope.closePanel()
+                            LayoutService.closePanel()
                         }
 
                         scope.addLayer = function (layerItem) {

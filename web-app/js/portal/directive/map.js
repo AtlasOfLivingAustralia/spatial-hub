@@ -1,8 +1,7 @@
 (function (angular) {
     'use strict';
-    angular.module('sp-map-directive', ['map-service', 'layout-service', 'layers-service']).
-    directive('spMap', ['$timeout', 'MapService', 'LayoutService', '$rootScope', 'LayersService',
-        function ($timeout, MapService, LayoutService, $rootScope, LayersService) {
+    angular.module('sp-map-directive', ['map-service', 'layout-service', 'layers-service']).directive('spMap', ['$timeout', 'MapService', 'LayoutService', 'LayersService',
+        function ($timeout, MapService, LayoutService, LayersService) {
             return {
                 scope: {
                     custom: '&onCustom'
@@ -52,18 +51,7 @@
                     }
 
                     scope.info = function (item) {
-                        if (item.layertype == 'species') {
-                            $rootScope.openModal('speciesInfo', item, '')
-                        } else if (item.layertype == 'area') {
-                            console.log(item)
-                            alert('area')
-                        } else {
-                            if (item.metadataUrl !== undefined) {
-                                $rootScope.openIframe(item.metadataUrl, '', '')
-                            } else {
-                                $rootScope.openIframe(LayersService.url() + '/layer/more/' + item.layer.layer.id, '', '')
-                            }
-                        }
+                        MapService.info(item)
                     }
 
                     scope.delete = function (item) {
@@ -88,15 +76,6 @@
                         LayoutService.enable('legend')
                         MapService.select(layer)
                     }
-
-                    $rootScope.$on('quicklinks.call', function (event, type, item) {
-                        switch (type){
-                            case 'metadata':
-                                scope.info(item)
-                                break
-                        }
-
-                    })
                 }
             };
         }])

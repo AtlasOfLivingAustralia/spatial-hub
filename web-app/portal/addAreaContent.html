@@ -81,12 +81,9 @@
                     <td ng-repeat="header in areaHeader" >
                         <a href="#" ng-click="sortType = header">
                         {{header}}
-                        <!--<span ng-show="sortType == 'updated' && !sortReverse" class="fa fa-caret-down"></span>
-                        <span ng-show="sortType == 'updated' && sortReverse" class="fa fa-caret-up"></span>-->
                     </a></td>
                 </tr>
                 </thead>
-               <!-- <tbody style="height:300px;overflow:scroll;display:block">-->
                 <tbody style="height:200px;overflow:scroll;">
                 <tr><img ng-src="{{shpImg}}" alt="No image" /></tr>
                 <tr ng-repeat="area in areaList">
@@ -113,5 +110,5 @@
 <div class="modal-footer">
     <button class="btn btn-default" type="button" ng-click="step = 'default'">< Back</button>
     <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
-    <button class="btn btn-primary" type="button" ng-click="ok()">Next ></button>
+    <button class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="isDisabled()">Next ></button>
 </div>

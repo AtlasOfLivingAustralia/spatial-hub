@@ -21,8 +21,8 @@
             function () {
                 return {
                     transclude: true,
-                    controller: ['$scope', '$compile', '$templateRequest', '$rootScope', 'leafletData', 'MapService',
-                        function ($scope, $compile, $templateRequest, $rootScope, leafletData, mapService) {
+                    controller: ['$scope', '$compile', '$templateRequest', '$rootScope', 'leafletData', 'MapService', 'LayoutService',
+                        function ($scope, $compile, $templateRequest, $rootScope, leafletData, MapService, LayoutService) {
                             $scope.expanded = true
                             $scope.showMainMenu = true
                             $scope.species = undefined
@@ -39,13 +39,13 @@
                                     case 'metadata':
                                         switch (inputs){
                                             case 'species':
-                                                $rootScope.$emit('quicklinks.call', type, $scope.species);
+                                                MapService.info($scope.species)
                                                 break
                                             case 'layer':
-                                                $rootScope.$emit('quicklinks.call', type, $scope.layer);
+                                                MapService.info($scope.layer)
                                                 break
                                             case 'area':
-                                                $rootScope.$emit('quicklinks.call', type, $scope.area);
+                                                MapService.info($scope.area)
                                                 break;
                                         }
 
@@ -53,27 +53,27 @@
                                     case 'download':
                                         switch (inputs){
                                             case 'speciesarea':
-                                                data.selectedQ = mapService.getSpeciesLayerQuery($scope.species)
-                                                data.selectedArea = mapService.getAreaLayerQuery($scope.area)
-                                                $scope.openModal('exportSample', data)
+                                                data.selectedQ = MapService.getSpeciesLayerQuery($scope.species)
+                                                data.selectedArea = MapService.getAreaLayerQuery($scope.area)
+                                                LayoutService.openModal('exportSample', data)
                                                 break;
                                             case 'specieslist':
                                                 data.step = 1;
-                                                data.selectedArea = mapService.getAreaLayerQuery($scope.area)
-                                                $scope.openModal('exportChecklist', data)
+                                                data.selectedArea = MapService.getAreaLayerQuery($scope.area)
+                                                LayoutService.openModal('exportChecklist', data)
                                                 break;
                                             case 'area':
                                                 data.step = 1;
-                                                data.selectedQ =  mapService.getAllSpeciesQuery()
-                                                data.selectedArea = mapService.getAreaLayerQuery($scope.area)
-                                                $scope.openModal('exportSample', data)
+                                                data.selectedQ = MapService.getAllSpeciesQuery()
+                                                data.selectedArea = MapService.getAreaLayerQuery($scope.area)
+                                                LayoutService.openModal('exportSample', data)
                                                 break;
                                             case 'species':
                                                 data.step = 1;
-                                                data.selectedQ = mapService.getSpeciesLayerQuery($scope.species)
+                                                data.selectedQ = MapService.getSpeciesLayerQuery($scope.species)
                                                 data.speciesOption = 'selectedSpecies'
                                                 data.includeDefaultAreas = true
-                                                $scope.openModal('exportSample', data)
+                                                LayoutService.openModal('exportSample', data)
                                                 break;
                                         }
                                         break;
@@ -81,14 +81,14 @@
                                         switch (inputs){
                                             case 'area':
                                                 data.step = 1;
-                                                data.selectedArea = mapService.getAreaLayerQuery($scope.area)
-                                                $scope.openModal('exportArea', data)
+                                                data.selectedArea = MapService.getAreaLayerQuery($scope.area)
+                                                LayoutService.openModal('exportArea', data)
                                                 break;
                                         }
                                         break;
                                     case 'areareport':
-                                        data.selectedArea = mapService.getAreaLayerQuery($scope.area)
-                                        $scope.openModal('toolAreaReport', data)
+                                        data.selectedArea = MapService.getAreaLayerQuery($scope.area)
+                                        LayoutService.openModal('toolAreaReport', data)
                                         break;
                                     case 'classification':
                                         data  = {opening: true, processName: 'Classification'}
@@ -97,14 +97,14 @@
                                                 input: {
                                                     area: {
                                                         constraints: {
-                                                            default: mapService.getAreaLayerQuery($scope.area)
+                                                            default: MapService.getAreaLayerQuery($scope.area)
                                                         }
                                                     }
                                                 }
                                             }
                                         }
-                                        data.selectedArea = mapService.getAreaLayerQuery($scope.area)
-                                        $scope.openModal('backgroundProcess', data)
+                                        data.selectedArea = MapService.getAreaLayerQuery($scope.area)
+                                        LayoutService.openModal('backgroundProcess', data)
                                         break;
                                     case 'scatterplot':
                                         switch (inputs) {
@@ -115,19 +115,19 @@
                                                         input: {
                                                             species1: {
                                                                 constraints: {
-                                                                    default: mapService.getSpeciesLayerQuery($scope.species)
+                                                                    default: MapService.getSpeciesLayerQuery($scope.species)
                                                                 }
                                                             },
                                                             species2: {
                                                                 constraints: {
-                                                                    default: mapService.getSpeciesLayerQuery($scope.species)
+                                                                    default: MapService.getSpeciesLayerQuery($scope.species)
                                                                 }
                                                             }
                                                         }
                                                     }
                                                 }
 
-                                                $scope.openModal('backgroundProcess', data)
+                                                LayoutService.openModal('backgroundProcess', data)
                                                 break;
                                             case 'speciesarea':
                                                 data = {opening: true, processName: 'ScatterplotCreate' }
@@ -136,24 +136,24 @@
                                                         input: {
                                                             species1: {
                                                                 constraints: {
-                                                                    default: mapService.getSpeciesLayerQuery($scope.species)
+                                                                    default: MapService.getSpeciesLayerQuery($scope.species)
                                                                 }
                                                             },
                                                             species2: {
                                                                 constraints: {
-                                                                    default: mapService.getSpeciesLayerQuery($scope.species)
+                                                                    default: MapService.getSpeciesLayerQuery($scope.species)
                                                                 }
                                                             },
                                                             area: {
                                                                 constraints: {
-                                                                    default:  mapService.getAreaLayerQuery($scope.area)
+                                                                    default: MapService.getAreaLayerQuery($scope.area)
                                                                 }
                                                             }
                                                         }
                                                     }
                                                 }
 
-                                                $scope.openModal('backgroundProcess', data)
+                                                LayoutService.openModal('backgroundProcess', data)
                                                 break;
                                         }
                                         break;
@@ -166,13 +166,13 @@
                                                         input: {
                                                             species: {
                                                                 constraints: {
-                                                                    default: mapService.getSpeciesLayerQuery($scope.species)
+                                                                    default: MapService.getSpeciesLayerQuery($scope.species)
                                                                 }
                                                             }
                                                         }
                                                     }
                                                 }
-                                                $scope.openModal('backgroundProcess', data)
+                                                LayoutService.openModal('backgroundProcess', data)
                                                 break;
                                             case 'speciesarea':
                                                 data = {opening: true, processName: 'Maxent'}
@@ -181,19 +181,19 @@
                                                         input: {
                                                             species: {
                                                                 constraints: {
-                                                                    default: mapService.getSpeciesLayerQuery($scope.species)
+                                                                    default: MapService.getSpeciesLayerQuery($scope.species)
                                                                 }
                                                             },
                                                             area: {
                                                                 constraints: {
-                                                                    default:  mapService.getAreaLayerQuery($scope.area)
+                                                                    default: MapService.getAreaLayerQuery($scope.area)
                                                                 }
                                                             }
                                                         }
                                                     }
                                                 }
 
-                                                $scope.openModal('backgroundProcess', data)
+                                                LayoutService.openModal('backgroundProcess', data)
                                                 break;
                                         }
                                         break;
@@ -206,13 +206,13 @@
                                                         input: {
                                                             species: {
                                                                 constraints: {
-                                                                    default: mapService.getSpeciesLayerQuery($scope.species)
+                                                                    default: MapService.getSpeciesLayerQuery($scope.species)
                                                                 }
                                                             }
                                                         }
                                                     }
                                                 }
-                                                $scope.openModal('backgroundProcess', data)
+                                                LayoutService.openModal('backgroundProcess', data)
                                                 break;
                                             case 'speciesarea':
                                                 data = {opening: true, processName: 'PointsToGrid'}
@@ -221,18 +221,18 @@
                                                         input: {
                                                             species: {
                                                                 constraints: {
-                                                                    default: mapService.getSpeciesLayerQuery($scope.species)
+                                                                    default: MapService.getSpeciesLayerQuery($scope.species)
                                                                 }
                                                             },
                                                             area: {
                                                                 constraints: {
-                                                                    default:  mapService.getAreaLayerQuery($scope.area)
+                                                                    default: MapService.getAreaLayerQuery($scope.area)
                                                                 }
                                                             }
                                                         }
                                                     }
                                                 }
-                                                $scope.openModal('backgroundProcess', data)
+                                                LayoutService.openModal('backgroundProcess', data)
                                                 break;
                                         }
 
@@ -267,10 +267,13 @@
 
                             function getSelectedOrFirstLayer(selected, layers, layertype) {
                                 if(layers && layers.length){
-                                    if(selected && (selected.layertype === layers[0].layertype)){
+                                    var i = 0
+                                    while (i < layers.length && !layers[i].visible) i++
+
+                                    if (selected && (i >= layers.length || selected.layertype === layers[i].layertype)) {
                                         return selected
-                                    } else {
-                                        return layers[0]
+                                    } else if (i < layers.length) {
+                                        return layers[i]
                                     }
                                 } else {
                                     if(selected && (selected.layertype === layertype)){
@@ -278,15 +281,24 @@
                                     }
                                 }
                             }
-                            
-                            $rootScope.$on('mapservice.layerchanged', function (event, layer) {
-                                var groups = mapService.groupLayersByType()
-                                $scope.selectedlayer = layer
+
+                            $scope.mappedLayers = MapService.mappedLayers
+                            $scope.$watch('mappedLayers', function () {
+                                var groups = MapService.groupLayersByType()
                                 $scope.area = getSelectedOrFirstLayer($scope.selectedlayer, groups.area, 'area')
                                 $scope.layer = getSelectedOrFirstLayer($scope.selectedlayer, groups.contextual, 'contextual')
                                 $scope.layer = $scope.layer || getSelectedOrFirstLayer($scope.selectedlayer, groups.grid, 'grid')
                                 $scope.species = getSelectedOrFirstLayer($scope.selectedlayer, groups.species, 'species')
+                            }, true)
+
+                            $scope.selectedLayer = MapService.selected
+                            $scope.$watch('selectedLayer', function () {
+                                $scope.selectedlayer = MapService.selected
                             })
+
+                            $scope.openModal = function (type) {
+                                LayoutService.openModal(type)
+                            }
 
                             $templateRequest('portal/quickLinksContent.html').then(function (content) {
                                 var html = $compile(content)($scope)

@@ -1,27 +1,16 @@
 (function (angular) {
     'use strict';
-    angular.module('phylo-ctrl', ['map-service']).
-    controller('PhyloCtrl', ['$scope', 'MapService', '$timeout', '$rootScope', '$uibModalInstance',
-        function ($scope, MapService, $timeout, $rootScope, $uibModalInstance) {
+    angular.module('phylo-ctrl', ['map-service']).controller('PhyloCtrl', ['$scope', 'MapService', '$timeout', 'LayoutService', '$uibModalInstance',
+        function ($scope, MapService, $timeout, LayoutService, $uibModalInstance) {
 
             $scope.name = 'PhyloCtrl'
             $scope.stepNames = ['select area', 'select tree', 'select species']
-            $scope.step = $rootScope.getValue($scope.name, 'step', 1);
-            $scope.selectedQ = $rootScope.getValue($scope.name, 'selectedQ', {q: [], name: '', bs: '', ws: ''})
-            $scope.selectedArea = $rootScope.getValue($scope.name, 'selectedArea', {
-                area: {
-                    q: [],
-                    wkt: '',
-                    bbox: [],
-                    pid: '',
-                    name: '',
-                    wms: '',
-                    legend: ''
-                }
-            })
-            $scope.selectedPhylo = $rootScope.getValue($scope.name, 'selectedPhylo', {id: ''})
+            $scope.step = 1
+            $scope.selectedQ = {q: [], name: '', bs: '', ws: ''}
+            $scope.selectedArea = {area: [{}]}
+            $scope.selectedPhylo = {id: ''}
 
-            $rootScope.addToSave($scope)
+            LayoutService.addToSave($scope)
 
             $scope.hide = function () {
                 $uibModalInstance.close({hide: true});

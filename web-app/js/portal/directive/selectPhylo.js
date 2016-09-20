@@ -1,8 +1,8 @@
 (function (angular) {
     'use strict';
     angular.module('select-phylo-directive', ['phylo-service'])
-        .directive('selectPhylo', ['$http', 'PhyloService', '$rootScope',
-            function ($http, PhyloService, $rootScope) {
+        .directive('selectPhylo', ['$http', 'PhyloService', 'LayoutService',
+            function ($http, PhyloService, LayoutService) {
 
                 return {
                     templateUrl: 'portal/' + 'selectPhyloCtrl.html',
@@ -12,7 +12,7 @@
                     link: function (scope, element, attrs) {
 
                         scope.name = 'selectPhylo'
-                        $rootScope.addToSave(scope)
+                        LayoutService.addToSave(scope)
 
                         scope.trees = []
 

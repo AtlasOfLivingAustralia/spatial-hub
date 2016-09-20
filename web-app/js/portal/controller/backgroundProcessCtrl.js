@@ -1,88 +1,54 @@
 (function (angular) {
     'use strict';
     angular.module('background-process-ctrl', ['map-service', 'biocache-service', 'layers-service'])
-        .controller('BackgroundProcessCtrl', ['$scope', 'MapService', '$timeout', '$rootScope', '$uibModalInstance',
+        .controller('BackgroundProcessCtrl', ['$scope', 'MapService', '$timeout', 'LayoutService', '$uibModalInstance',
             'BiocacheService', '$http', 'LayersService', 'data',
-            function ($scope, MapService, $timeout, $rootScope, $uibModalInstance, BiocacheService, $http, LayersService, inputData) {
+            function ($scope, MapService, $timeout, LayoutService, $uibModalInstance, BiocacheService, $http, LayersService, inputData) {
 
                 $scope.name = 'BackgroundProcessCtrl'
 
                 $scope.stepNames = ['select process']
 
-                $scope.step = $rootScope.getValue($scope.name, 'step', 0);
+                $scope.step = 0;
 
-                $rootScope.addToSave($scope)
+                LayoutService.addToSave($scope)
 
                 $scope.status = ''
 
                 $scope.selectedCapability = inputData !== undefined ? inputData.processName : ''
                 $scope.capabilities = []
                 $scope.cap = {}
-
-                $scope.viewConfig = null;
-                $http.get('portal/viewConfig').then(function (data) {
-                    $scope.viewConfig = data.data;
-                    $scope.buildStepViews();
-                }, function (e){
-                    $scope.viewConfig = {};
-                    $scope.buildStepViews();
-                });
-
-                $scope.buildStepViews = function() {
-                    $http.get(LayersService.url() + '/capabilities').then(function (data) {
-                        var k, merged
-                        for (k in data.data) {
-                            merged = data.data[k]
-
-                            // merge spec input values from with view-config.json
-                            if ($scope.viewConfig[k]) {
-                                angular.merge(merged, $scope.viewConfig[k])
-                                angular.merge(merged.input, $scope.viewConfig[k].input)
-                            }
-
-                            // overrideValues is set from Quick links
-                            if (inputData.overrideValues) {
-                                merged = angular.merge(merged, inputData.overrideValues[k])
-                            }
-
-                            $scope.capabilities.push(merged)
-                            $scope.cap[data.data[k].name] = merged
+                $http.get(LayersService.url() + '/capabilities').then(function (data) {
+                    var k, merged
+                    for (k in data.data) {
+                        merged = data.data[k]
+                        if (inputData.overrideValues) {
+                            merged = angular.merge(merged, inputData.overrideValues[k])
                         }
 
-                        if ($scope.selectedCapability.length > 0) {
-                            $scope.initValues();
-                            $scope.ok();
-                        }
-                    })
-                }
+                        $scope.capabilities.push(merged)
+                        $scope.cap[data.data[k].name] = merged
+                    }
+
+                    if ($scope.selectedCapability.length > 0) {
+                        $scope.test()
+                        $scope.ok()
+                    }
+                })
 
                 $scope.values = []
-     //         $scope.steps = 0
-    //          $scope.stepsActual = 1
-    //          $scope.stepsCurrent = 0
                 $scope.initValues = function () {
                     //defaults
                     var c = $scope.cap[$scope.selectedCapability].input
-                    var i = 0
-    //                 $scope.stepsActual = 0
-    //                $scope.stepsCurrent = 0
                     var k
                     var value
                     for (k in c) {
                         value = c[k]
                         var v
                         if (value.type == 'area') {
-                            v = value.constraints.default ||  {
-                                area: {
-                                    qid: '',
-                                    pid: '',
-                                    name: '',
-                                    wms: '',
-                                    legend: ''
-                                }
-                            }
+                            v = value.constraints.default || {area: [{}]}
                         } else if (value.type == 'species') {
-                            v = value.constraints.default || {qid: '', name: '', bs: '', ws: ''}
+                            v = value.constraints.default || {q: '', name: '', bs: '', ws: ''}
                         } else if (value.type == 'layer') {
                             v = {layers: []}
                         } else if (value.type == 'boolean') {
@@ -98,15 +64,8 @@
                         } else {
                             v = null
                         }
-                        $scope.values[k] = $rootScope.getValue($scope.name, $scope.selectedCapability + k, v);
-                      //  $scope.values[i] = $rootScope.getValue($scope.name, $scope.selectedCapability + i, v);
-            //            i = i + 1
-               /*         if (v != null || v === undefined) {
-                            $scope.stepsActual = $scope.stepsActual + 1
-                        } */
+                        $scope.values[k] = LayoutService.getValue($scope.name, $scope.selectedCapability + i, v);
                     }
-
-              //      $scope.steps = i
                 }
                 $scope.hide = function () {
                     $uibModalInstance.close({hide: true});
@@ -119,19 +78,6 @@
                 $scope.ok = function (data) {
 
                     if ($scope.step == 0) {
-     /*                   var sNames = []
-
-                        for (k in $scope.cap[$scope.selectedCapability].input) {
-                            var i = $scope.cap[$scope.selectedCapability].input[k]
-                            if (i.type !== 'auto') {
-                                sNames.push(i.description)
-                            } else {
-                                sNames.push('')
-                            }
-                        }
-
-                        $scope.stepNames = sNames
-*/
                         //build stepViews
                         $scope.stepView = {};
                         var order = 1;
@@ -141,7 +87,7 @@
                                 var inputArr = v.inputs.replace(/[\])}[{(]/g,'').replace(/[\s]/g, '').split(',');
                                 $scope.stepView[order] = {name: v.name, inputArr: inputArr};
                                 order ++;
-                            });
+                            })
                         } else {
                             for (var i in $scope.cap[$scope.selectedCapability].input) {
                                 if ($scope.cap[$scope.selectedCapability].input[i].type != "auto") {
@@ -150,8 +96,7 @@
                                     $scope.stepView[order] = {name: $scope.cap[$scope.selectedCapability].input[i].description, inputArr: view};
                                     order++;
                                 }
-
-                            };
+                            }
                         }
 
                         $scope.stepsActual = Object.keys($scope.stepView).length;
@@ -177,14 +122,31 @@
 
                         //format inputs
                         var c = $scope.cap[$scope.selectedCapability].input
-                      //  var i = 0
                         var inputs = {}
                         var k
                         var j
                         for (k in c) {
                             if ($scope.values[k] !== undefined && $scope.values[k] != null) {
                                 if ($scope.values[k].area !== undefined) {
-                                    inputs[k] = { pid: $scope.values[k].area.pid, qid: $scope.values[k].area.qid }
+                                    inputs[k] = []
+                                    for (j in $scope.values[k].area) {
+                                        var a = $scope.values[k].area[j]
+                                        if (a.pid) {
+                                            inputs[k].push({
+                                                pid: a.pid,
+                                                q: a.q
+                                            })
+                                        } else {
+                                            inputs[k].push({
+                                                q: a.q,
+                                                name: a.name,
+                                                bbox: a.bbox,
+                                                area_km: a.area_km,
+                                                wkt: a.wkt
+                                            })
+                                        }
+                                    }
+
                                 } else if ($scope.values[k].q !== undefined) {
                                     inputs[k] = { qid: $scope.values[k].qid, ws: $scope.values[k].ws, bs: $scope.values[k].bs }
                                 } else if ($scope.values[k].layers !== undefined) {
@@ -197,7 +159,6 @@
                                     inputs[k] = $scope.values[k]
                                 }
                             }
-                          //  i = i + 1
                         }
 
                         console.log(inputs)
@@ -217,12 +178,6 @@
                     }
 
                     $scope.step = $scope.step + 1
-
-                    //skip unknown steps, e.g. type='auto'
-                /*    while ($scope.step - 1 < $scope.values.length && $scope.values[$scope.step - 1] == null && $scope.values[$scope.step - 1] !== undefined) {
-                        $scope.step = $scope.step + 1
-                    }
-                    $scope.stepsCurrent = $scope.stepsCurrent + 1 */
                 };
 
                 $scope.finished = false
@@ -246,7 +201,7 @@
                         for (k in keys) {
                             $scope.log[keys[k]] = response.data.history[keys[k]]
                             $scope.logText = response.data.history[keys[k]] + '\r\n' + $scope.logText
-                            $scope.last = k
+                            $scope.last = keys[k]
                         }
 
                         if (response.data.status < 2) {
@@ -303,7 +258,7 @@
                             }
 
                             $scope.cancel({noOpen: true})
-                            if ($scope.metadataUrl != null) $rootScope.openIframe($scope.metadataUrl)
+                            if ($scope.metadataUrl != null) LayoutService.openIframe($scope.metadataUrl)
                         }
                     })
                 }
@@ -311,11 +266,6 @@
                 $scope.back = function () {
                     if ($scope.step > 1) {
                         $scope.step = $scope.step - 1
-
-                       /* while ($scope.step > 1 && $scope.values[$scope.step - 1] == null && $scope.values[$scope.step - 1] !== undefined) {
-                            $scope.step = $scope.step - 1
-                        }
-                        $scope.stepsCurrent = $scope.stepsCurrent - 1*/
                     }
                 };
 
@@ -324,18 +274,9 @@
                     if (value.constraints.optional) {
                         return false
                     } else if (value.type == 'area') {
-                        // TODO: check length
                         return $scope.values[i].area.length == 0
                     } else if (value.type == 'species') {
-                        //  var v = {qid: '', name: '', bs: '', ws: ''}
-                        // TODO: q should be set with default values from search species. At the moment this is giving error.
-                        //       Once q value is fixed, the if stmt is not needed
-                        if ($scope.values[i].q) {
-                            return $scope.values[i].q.length == 0;
-                        } else {
-                            return false;
-                        }
-
+                        return $scope.values[i].q.length == 0;
                     } else if (value.type == 'layer') {
                         return $scope.values[i].layers.length < value.constraints.min || $scope.values[i].layers.length > value.constraints.max
                     } else if (value.type == 'boolean') {

@@ -1,7 +1,7 @@
 (function (angular) {
     'use strict';
     angular.module('sp-menu-directive', []).directive('spMenu',
-        ["$rootScope", 'MapService', function ($rootScope, MapService) {
+        ["LayoutService", 'MapService', 'SessionsService', function (LayoutService, MapService, SessionsService) {
             return {
                 scope: {
                     custom: '&onCustom'
@@ -9,11 +9,11 @@
                 templateUrl: 'portal/' + "menuContent.html",
                 link: function (scope, element, attrs) {
                     scope.open = function (type, data) {
-                        $rootScope.openModal(type, data)
+                        LayoutService.openModal(type, data)
                     };
 
                     scope.openPanel = function (type, data) {
-                        $rootScope.openPanel(type, data)
+                        LayoutService.openPanel(type, data)
                     }
 
                     scope.toggleAnimation = function () {
@@ -32,6 +32,29 @@
                         $("#left-panel")[0].style.marginLeft="0px"
                         $("#right-panel")[0].style.marginLeft="400px"
                         MapService.leafletScope.invalidate()
+                    }
+
+                    scope.saveSession = function () {
+                        SessionsService.save({
+                            layers: MapService.mappedLayers,
+                            extents: MapService.getExtents(),
+                            basemap: MapService.getBaseMap()
+                        })
+                    }
+
+                    scope.loadSession = function (sessionId) {
+                        var data = SessionsService.get(sessionId)
+
+                        MapService.removeAll()
+
+                        //TODO: correct layer order
+                        for (var k in data.layers) {
+                            MapService.add(data.layers[k])
+                        }
+
+                        MapService.leafletScope.zoom(data.extents)
+
+                        MapService.setBaseMap(data.basemap)
                     }
                 }
             };

@@ -1,14 +1,14 @@
 (function (angular) {
     'use strict';
     angular.module('add-species-ctrl', ['map-service', 'biocache-service'])
-        .controller('AddSpeciesCtrl', ['$scope', 'MapService', '$timeout', '$rootScope', '$uibModalInstance', 'BiocacheService', 'data',
-            function ($scope, MapService, $timeout, $rootScope, $uibModalInstance, BiocacheService, inputData) {
+        .controller('AddSpeciesCtrl', ['$scope', 'MapService', '$timeout', 'LayoutService', '$uibModalInstance', 'BiocacheService', 'data',
+            function ($scope, MapService, $timeout, LayoutService, $uibModalInstance, BiocacheService, inputData) {
 
                 $scope.name = 'addSpeciesCtrl'
 
-                $scope.step = $rootScope.getValue($scope.name, 'step', 1);
-                $scope.selectedQ = $rootScope.getValue($scope.name, 'selectedQ', {q: [], name: '', bs: '', ws: ''})
-                $scope.selectedArea = $rootScope.getValue($scope.name, 'selectedArea', {
+                $scope.step = 1
+                $scope.selectedQ = {q: [], name: '', bs: '', ws: ''}
+                $scope.selectedArea = {
                     area: {
                         q: [],
                         wkt: '',
@@ -18,8 +18,8 @@
                         wms: '',
                         legend: ''
                     }
-                })
-                $rootScope.addToSave($scope)
+                }
+                LayoutService.addToSave($scope)
 
                 $scope.inputData = inputData
 

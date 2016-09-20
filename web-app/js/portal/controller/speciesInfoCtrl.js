@@ -1,8 +1,8 @@
 (function (angular) {
     'use strict';
     angular.module('species-info-ctrl', ['map-service', 'biocache-service'])
-        .controller('SpeciesInfoCtrl', ['$scope', 'MapService', '$timeout', '$rootScope', '$uibModalInstance', 'BiocacheService', 'data',
-            function ($scope, MapService, $timeout, $rootScope, $uibModalInstance, BiocacheService, data) {
+        .controller('SpeciesInfoCtrl', ['$scope', 'MapService', '$timeout', 'LayoutService', '$uibModalInstance', 'BiocacheService', 'data',
+            function ($scope, MapService, $timeout, LayoutService, $uibModalInstance, BiocacheService, data) {
 
                 $scope.speciesCountKosher = 'counting...'
                 $scope.speciesCountKosherAny = 'counting...'

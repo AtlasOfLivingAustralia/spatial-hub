@@ -13,12 +13,29 @@ class PortalController {
     def webService
     AuthService authService
     def grailsApplication
+    def sessionService
 
     static final APP_CONSTANT = 'SPATIAL_PORTAL'
 
     def index() {
         def userId = authService.getUserId()
-        render(view: "index", model: [config: grailsApplication.config, userId: userId])
+        render(view: "index", model: [config: grailsApplication.config, userId: userId, sessionId: sessionService.newId(userId)])
+    }
+
+    def listSaves() {
+        def userId = authService.getUserId()
+        render sessionService.list(userId) as JSON
+    }
+
+    def saveData() {
+        //use a new id
+        def id = sessionService.newId(authService.getUserId())
+
+        render sessionService.put(id, request.getJSON()) as JSON
+    }
+
+    def getSaved() {
+        render sessionService.get(params.sessionId) as JSON
     }
 
     def wkt() {
@@ -33,9 +50,9 @@ class PortalController {
 
     def shp() {
         def mFile = request.getFile('shapeFile')
-        def params = [:]
+        def settings = [:]
 
-        def r = webService.doPostMultiPart(grailsApplication.config.layersService.url + "/shape/upload/shp", params, mFile)
+        def r = webService.doPostMultiPart(grailsApplication.config.layersService.url + "/shape/upload/shp", settings, mFile)
 
         if (!r) {
             render [:] as JSON
@@ -53,11 +70,11 @@ class PortalController {
 
     def kml() {
         def mFile = request.getFile('shapeFile')
-        def params = [:]
-        params.put("name", request.getParameterValues("name"))
-        params.put("description", request.getParameterValues("description"))
+        def settings = [:]
 
-        def r = webService.doPostMultiPart(grailsApplication.config.layersService.url + "/shape/upload/kml", params, mFile)
+        def r = webService.doPostMultiPart(grailsApplication.config.layersService.url +
+                "/shape/upload/kml?name=${URLEncoder.encode(params.name, 'UTF-8')}&description=${URLEncoder.encode(params.description, 'UTF-8')}",
+                settings, mFile)
 
         if (!r) {
             render [:] as JSON
@@ -152,19 +169,18 @@ class PortalController {
         fetchAndOutputUrl(target, response, request, requestBody);
     }
 
+    //TODO: use a cache
+    def viewconfig
     def viewConfig() {
-        def defaultFile = "view-config.json"
+        if (viewconfig == null) {
+            def defaultFile = "view-config.json"
+            def file = new File(grailsApplication.config.viewConfig?.json)
 
-        def filePath = grailsApplication.config.viewConfig.json;
-        def text = ""
-        try {
-            FileInputStream inputStream = new FileInputStream(new File(filePath))
-            text = inputStream.getText()
-        } catch (Exception e) {
-            text = grailsApplication.getParentContext().getResource("classpath:$defaultFile").getInputStream().getText()
+            if (file.exists()) viewconfig = JSON.parse(new FileReader(file))
+            else viewconfig = JSON.parse(PortalController.getResourceAsStream(defaultFile))
         }
-        def json = JSON.parse(text)
-        render (json as JSON)
+
+        render viewconfig as JSON
     }
 
     private String rebuildParameters(Map params) {

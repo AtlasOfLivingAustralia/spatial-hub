@@ -3,8 +3,7 @@
 <body>
 
 <div style="width:400px" class="pull-left" ng-controller="LayoutCtrl" id="left-panel">
-
-    <div ng-show="panelMode == 'default'">
+    <div ng-show="panelMode[0] == 'default'">
 
         <div sp-menu></div>
 
@@ -13,25 +12,25 @@
         <div class="row" name="divSelectedLayer" id="legend" style="display:block;overflow:scroll">
             <div class="panel panel-default" style="height:100%">
                 <div class="panel-body" style="padding-top:0px;padding-left:5px">
-                    <div ng-show="settings().showOptions" style="padding-right:15px">
+                    <div ng-show="showOptions[0]" style="padding-right:15px">
                         <div sp-options></div>
                     </div>
 
-                    <div sp-legend ng-show="settings().showLegend"></div>
+                    <div sp-legend ng-show="showLegend[0]"></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div ng-if="panelMode == 'area'">
+    <div ng-if="panelMode[0] == 'area'">
         <div draw-area config='panelData.area'></div>
     </div>
 
-    <div ng-if="panelMode == 'envelope'">
+    <div ng-if="panelMode[0] == 'envelope'">
         <div envelope></div>
     </div>
 
-    <div ng-if="panelMode == 'nearestLocality'" nearest-locality>
+    <div ng-if="panelMode[0] == 'nearestLocality'" nearest-locality>
     </div>
 
 </div>
@@ -68,7 +67,8 @@
                 'export-map-ctrl', 'export-area-ctrl',
                 'species-info-ctrl', 'tabulate-ctrl', 'tool-area-report-ctrl', 'sand-box-ctrl',
                 'ngAria', 'ngTouch', 'ala.sandbox.components','create-species-list-ctrl',
-                'ala.sandbox.preview', 'chieffancypants.loadingBar', 'ngFileUpload', 'playback-directive'])
+                'ala.sandbox.preview', 'chieffancypants.loadingBar', 'ngFileUpload', 'playback-directive',
+                'colour-service', 'sessions-service', 'sessions-ctrl'])
             .factory("ConfigService", [function () {
                 return {}
             }])
@@ -100,6 +100,10 @@
             angular.bootstrap(document, ["spApp"]);
             $("#map").height($(window).height() - $('.navbar-header').height());
             $("#legend").height($(window).height() - $('.navbar-header').height() - 195);
+
+            if (SpatialPortalConfig.userId) {
+                $('<li class="dropdown font-xsmall"><a href="#" onclick="$(\'#saveSessionButton\')[0].click()" data-toggle="dropdown" role="button" aria-expanded="false">Save Session</a></li>').insertBefore($('.navbar-right .dropdown')[0])
+            }
         });
     }
 
@@ -107,11 +111,18 @@
         $sceDelegateProvider.resourceUrlWhitelist([
             'self',
             'http://*.ala.org.au/**',
-            'http://biocache.ala.org.au/**',
             'http://www.openstreetmap.org/**',
             'http://www.google.com/**',
-            'http://local.ala.org.au/**',
-            'http://**:**/**'
+            '${config.grails.serverURL}/**',
+            '${config.biocache.url}/**',
+            '${config.biocacheService.url}/**',
+            '${config.bie.baseURL}/**',
+            '${config.layersService.url}/**',
+            '${config.lists.url}/**',
+            '${config.sandbox.url}/**',
+            '${config.sandboxService.url}/**',
+            '${config.geoserver.url}/**',
+            '${config.collections.url}/**'
         ]);
     });
     spApp.config(['$compileProvider',
@@ -153,7 +164,9 @@
             gazField: '${config.gazField}',
             userId: '${userId}',
             hoverLayers: [],
-            proxyUrl: '${createLink(controller:'portal', action:'proxy')}'
+            proxyUrl: '${createLink(controller: 'portal', action: 'proxy')}',
+            url: '${createLink(controller: 'portal', action: 'index')}',
+            sessionId: '${sessionId}'
         }
     </r:script>
 

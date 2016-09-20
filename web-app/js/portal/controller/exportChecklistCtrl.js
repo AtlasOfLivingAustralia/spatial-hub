@@ -1,21 +1,21 @@
 (function (angular) {
     'use strict';
     angular.module('export-checklist-ctrl', ['biocache-service', 'map-service'])
-        .controller('ExportChecklistCtrl', ['$scope', 'MapService', '$timeout', '$rootScope', '$uibModalInstance', 'BiocacheService', 'data',
-            function ($scope, MapService, $timeout, $rootScope, $uibModalInstance, BiocacheService, config) {
+        .controller('ExportChecklistCtrl', ['$scope', 'MapService', '$timeout', 'LayoutService', '$uibModalInstance', 'BiocacheService', 'data',
+            function ($scope, MapService, $timeout, LayoutService, $uibModalInstance, BiocacheService, config) {
 
                 $scope.name = 'exportChecklistCtrl'
                 $scope.stepNames = ['select area']
                 if(config && config.step){
                     $scope.step = config.step
                 } else {
-                    $scope.step = $rootScope.getValue($scope.name, 'step', 1);
+                    $scope.step = 1
                 }
 
                 if(config && config.selectedArea){
                     $scope.selectedArea = config.selectedArea
                 } else {
-                    $scope.selectedArea = $rootScope.getValue($scope.name, 'selectedArea', {
+                    $scope.selectedArea = {
                         area: {
                             q: [],
                             wkt: '',
@@ -24,10 +24,10 @@
                             wms: '',
                             legend: ''
                         }
-                    })
+                    }
                 }
 
-                $rootScope.addToSave($scope)
+                LayoutService.addToSave($scope)
 
                 $scope.hide = function () {
                     $uibModalInstance.close({hide: true});
@@ -67,7 +67,7 @@
                             console.log(data)
 
                             $scope.cancel({noOpen: true})
-                            $rootScope.openModal('csv', {
+                            LayoutService.openModal('csv', {
                                 title: 'Species List',
                                 csv: data,
                                 info: 'species list csv',

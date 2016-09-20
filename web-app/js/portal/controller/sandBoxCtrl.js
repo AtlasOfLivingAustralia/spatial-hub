@@ -17,9 +17,9 @@
 (function (angular) {
     'use strict';
     angular.module('sand-box-ctrl', ['map-service', 'biocache-service', 'layers-service', 'ala.sandbox.preview'])
-        .controller('SandBoxCtrl', ['$scope', '$controller', 'MapService', '$timeout', '$rootScope', '$uibModalInstance',
+        .controller('SandBoxCtrl', ['$scope', '$controller', 'MapService', '$timeout', 'LayoutService', '$uibModalInstance',
             'BiocacheService', 'LayersService', 'data',
-            function ($scope, $controller, MapService, $timeout, $rootScope, $uibModalInstance, BiocacheService, LayersService, inputData) {
+            function ($scope, $controller, MapService, $timeout, LayoutService, $uibModalInstance, BiocacheService, LayersService, inputData) {
                 var setWatchFlag = false
                 $scope.name = 'sandBoxCtrl'
                 $scope.cancel = function (data) {

@@ -1,9 +1,9 @@
 (function (angular) {
     'use strict';
     angular.module('add-area-ctrl', ['map-service', 'layers-service', 'predefined-areas-service'])
-        .controller('AddAreaCtrl', ['$rootScope', '$scope', 'MapService', '$timeout', 'LayersService',
+        .controller('AddAreaCtrl', ['LayoutService', '$scope', 'MapService', '$timeout', 'LayersService',
             '$uibModalInstance', 'PredefinedAreasService',
-            function ($rootScope, $scope, MapService, $timeout, LayersService, $uibModalInstance, PredefinedAreasService) {
+            function (LayoutService, $scope, MapService, $timeout, LayersService, $uibModalInstance, PredefinedAreasService) {
                 $scope.name = 'AddAreaCtrl'
 
                 $scope.hide = function () {
@@ -14,55 +14,52 @@
                     $uibModalInstance.close(data);
                 };
 
-                $scope.step = $rootScope.getValue($scope.name, 'step', 'default')
-                $scope.area = $rootScope.getValue($scope.name, 'area', 'drawBoundingBox')
+                $scope.step = 'default'
+                $scope.area = 'drawBoundingBox'
                 $scope.defaultAreas = PredefinedAreasService.getList()
-                $scope.selectedArea = $rootScope.getValue($scope.name, 'selectedArea', {
+                $scope.selectedArea = {
                     name: 'new area',
                     wkt: '',
                     q: [],
                     legend: '',
                     metadata: '',
                     wms: ''
-                })
-                $scope.locationRadius = $rootScope.getValue($scope.name, 'locationRadius', 10)
-                $scope.location = $rootScope.getValue($scope.name, 'location', '')
-                $scope.areaname = $rootScope.getValue($scope.name, 'areaname', '')
-                $scope.intersect = $rootScope.getValue($scope.name, 'intersect', {})
+                }
+                $scope.locationRadius = 10
+                $scope.location = ''
+                $scope.areaname = ''
+                $scope.intersect = {}
 
-                $scope.testv = $rootScope.getValue($scope.name, 'testv', {
-                    a: '',
-                    minx: ''
-                })
-
-                $scope.circle = $rootScope.getValue($scope.name, 'circle', {
+                $scope.circle = {
                     longitude: '',
                     latitude: '',
                     radius: '10'
-                })
+                }
+
+                $scope.myAreaName = "new area"
 
                 $scope.$watch('area', function (newValue) {
                     // used by click info popup to check if click came while drawing polygon
-                    $rootScope.areaCtrlAreaValue = newValue;
+                    LayoutService.areaCtrlAreaValue = newValue;
                 })
 
-                $rootScope.addToSave($scope)
+                LayoutService.addToSave($scope)
 
                 $scope.ok = function (data) {
                     if ($scope.step == 'default') {
                         $scope.step = $scope.area
                         if ($scope.area == 'drawBoundingBox') {
                             $scope.cancel({noOpen: true})
-                            $rootScope.openPanel('area', $scope.area, {type: 'drawBox'})
+                            LayoutService.openPanel('area', $scope.area, {type: 'drawBox'})
                         } else if ($scope.area == 'drawPolygon') {
                             $scope.cancel({noOpen: true})
-                            $rootScope.openPanel('area', $scope.area, {type: 'drawPolygon'})
+                            LayoutService.openPanel('area', $scope.area, {type: 'drawPolygon'})
                         } else if ($scope.area == 'drawPointRadius') {
                             $scope.cancel({noOpen: true})
-                            $rootScope.openPanel('area', $scope.area, {type: 'drawCircle'})
+                            LayoutService.openPanel('area', $scope.area, {type: 'drawCircle'})
                         } else if ($scope.area == 'pointOnLayer') {
                             $scope.cancel({noOpen: true})
-                            $rootScope.openPanel('area', $scope.area, {type: 'layerIntersect'})
+                            LayoutService.openPanel('area', $scope.area, {type: 'layerIntersect'})
                         } else if ($scope.area == 'addressRadius') {
                         } else if ($scope.area == 'pointRadius') {
                         } else if ($scope.area == 'gazetteer') {
@@ -78,14 +75,13 @@
                             $scope.cancel()
                         } else if ($scope.area == 'importShapefile' || $scope.area == 'importKML') {
                             $scope.uploadProgress = 0;
-                            $scope.myAreaName = "My Area";
-                        //} else if ($scope.area == 'importKML') {
                         } else if ($scope.area == 'environmentalEnvelope') {
                             $scope.cancel({noOpen: true})
-                            $rootScope.openPanel('envelope', $scope.area)
+                            LayoutService.openPanel('envelope', $scope.area)
                         } else if ($scope.area == 'wkt') {
                         }
                     } else {
+                        var mapNow = true
                         if ($scope.area == 'drawBoundingBox') {
                             //n/a
                         } else if ($scope.area == 'drawPolygon') {
@@ -105,24 +101,21 @@
                             var featureIdxs = $scope.areaList.filter(function(area) {return area.selected}).
                                                               map(function(area){return area.id}).join();
 
-                            LayersService.createObject($scope.fileName, $scope.myAreaName, $scope.shapeId, featureIdxs).then(function(response){
-                                LayersService.getObject(response.data.id).then(function (data) {
-                                    data.data.layertype = 'area';
-                                    MapService.add(data.data);
-                                })
+                            LayersService.createObject($scope.myAreaName, $scope.fileName, $scope.shapeId, featureIdxs).then(function (response) {
+                                $scope.setPid(response.data.id, true)
                             });
+
+                            mapNow = false
                         } else if ($scope.area == 'importKML') {
-                            var pid = $scope.selectedPID;
-                            LayersService.getObject(pid).then(function (data) {
-                                data.data.layertype = 'area';
-                                MapService.add(data.data);
-                            })
+                            //n/a
                         } else if ($scope.area == 'environmentalEnvelope') {
                             //n/a
                         } else if ($scope.area == 'wkt') {
                         }
-                        $scope.addToMap()
-                        $scope.cancel()
+                        if (mapNow) {
+                            $scope.addToMap()
+                            $scope.cancel()
+                        }
                     }
                 };
 
@@ -137,7 +130,7 @@
                                 $scope.selectedArea.layertype = 'area'
                                 MapService.add($scope.selectedArea)
                             } else {
-                                LayersService.createFromWkt($scope.selectedArea.wkt, 'test', 'description').then(function (data) {
+                                LayersService.createFromWkt($scope.selectedArea.wkt, $scope.selectedArea.name, '').then(function (data) {
                                     LayersService.getObject(data.data.id).then(function (data) {
                                         data.data.layertype = 'area'
                                         data.data.wkt = $scope.selectedArea.wkt
@@ -168,7 +161,6 @@
                     var coords = $scope.location.split(',')
                     $scope.selectedArea.name = $scope.areaname
                     $scope.setWkt(Util.createCircle(coords[1] * 1, coords[0] * 1, $scope.locationRadius * 1000))
-                    //$scope.showWkt()
                 }
 
                 $scope.selectShpArea = function () {
@@ -190,11 +182,7 @@
                     angular.forEach($scope.areaList, function(area, index) {
                         area.selected = $scope.checkAll;
                     });
-                    if ($scope.checkAll) {
-                        $scope.shpImg = LayersService.getShpImageUrl ($scope.shapeId, "all");
-                    } else {
-                        $scope.shpImg = 'No image';
-                    }
+                    $scope.shpImg = LayersService.getShpImageUrl($scope.shapeId, "all");
                 }
 
                 $scope.uploadFile = function (file) {
@@ -204,7 +192,7 @@
                         return;
                     }
 
-                    LayersService.uploadAreaFile(file, $scope.area, $scope.myAreaName).then(function(response) {
+                    LayersService.uploadAreaFile(file, $scope.area, $scope.myAreaName, file.name).then(function (response) {
 
                         $scope.fileName =  file.name;
                         if ($scope.area == 'importShapefile') {
@@ -212,15 +200,11 @@
                             $scope.areaHeader = [];
                             if (response.data.area.length > 0) {
                                 $scope.areaHeader = Object.keys(response.data.area[0].values);
-                                //$scope.areaHeader = $.map(response.data.area[0].values, function(v, i){
-                                //    return i;
-                                //});
                             }
                             $scope.areaList = response.data.area;
                         } else if ($scope.area == 'importKML') {
                             if (response.data.length > 0) {
-                                $scope.selectedPID = response.data[0].id
-                                $scope.ok()
+                                $scope.setPid(response.data[0].id, true)
                             }
                         }
                         file.result = response.data;
@@ -233,24 +217,14 @@
 
 
                 $scope.showWkt = function () {
-                    //validate wkt
-
-                    //display wkt
-                    //$rootScope.$emit('addWktToMap', [$scope.area.wkt])
                     MapService.leafletScope.addWktToMap([$scope.selectedArea.wkt])
                 }
 
                 $scope.setWkt = function (wkt) {
-                    //if (wkt === 'Current extent') {
-                    //    var extents = MapService.getExtents()
-                    //    wkt = 'POLYGON((' + extents[0] + ' ' + extents[1] + ',' + extents[0] + ' ' + extents[3] +
-                    //        ',' + extents[2] + ' ' + extents[3] + ',' + extents[2] + ' ' + extents[1] +
-                    //        ',' + extents[0] + ' ' + extents[1] + '))'
-                    //}
                     $scope.selectedArea.wkt = wkt
                 }
 
-                $scope.setPid = function (pid) {
+                $scope.setPid = function (pid, mapNow) {
                     LayersService.getObject(pid).then(function (obj) {
                         obj = obj.data
                         $scope.selectedArea.obj = obj
@@ -266,8 +240,37 @@
                             }
                             $scope.selectedArea.pid = obj.pid
                             $scope.selectedArea.wms = obj.wmsurl
+
+                            if (mapNow) {
+                                $scope.addToMap()
+                                $scope.cancel()
+                            }
                         })
                     })
+                }
+
+                $scope.isDisabled = function () {
+                    if ($scope.step == 'default') {
+                    } else if ($scope.area == 'addressRadius') {
+                        return $scope.location.length == 0
+                    } else if ($scope.area == 'pointRadius') {
+                        return $scope.circle.longitude.length == 0 || $scope.circle.latitude.length == 0
+                    } else if ($scope.area == 'gazetteer') {
+                        return $scope.selectedArea.pid === undefined
+                    } else if ($scope.area.startsWith('preset_')) {
+                    } else if ($scope.area == 'importShapefile' || $scope.area == 'importKML') {
+                        if ($scope.areaList) {
+                            return $scope.areaList.filter(function (area) {
+                                    return area.selected
+                                }) == 0
+                        } else {
+                            return true
+                        }
+                    } else if ($scope.area == 'environmentalEnvelope') {
+                    } else if ($scope.area == 'wkt') {
+                        return $scope.selectedArea.wkt === undefined || $scope.selectedArea.wkt.length == 0
+                    }
+                    return false
                 }
             }])
 }(angular));

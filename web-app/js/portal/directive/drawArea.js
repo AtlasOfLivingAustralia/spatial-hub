@@ -52,22 +52,22 @@
 
                         scope.cancel = function () {
                             // used by click info popup to check if click came while drawing polygon
-                            $rootScope.areaCtrlAreaValue = undefined;
+                            LayoutService.areaCtrlAreaValue = undefined;
                             
                             scope.deleteDrawing()
 
-                            $rootScope.closePanel()
+                            LayoutService.closePanel()
                         }
 
                         scope.ok = function (data) {
                             // used by click info popup to check if click came while drawing polygon
-                            $rootScope.areaCtrlAreaValue = undefined;
+                            LayoutService.areaCtrlAreaValue = undefined;
 
                             scope.addToMap()
 
                             scope.deleteDrawing()
 
-                            $rootScope.closePanel()
+                            LayoutService.closePanel()
                         }
 
                         scope.wkt

@@ -49,15 +49,18 @@
                     return SpatialPortalConfig.layersServiceUrl + "/shape/" + type + "/" + pid + "?filename=" + encodeURIComponent(filename)
                 },
                 getShpImageUrl: function (shapeId, selectedArea) {
-                    return this.url() + '/shape/upload/shp/image/' + shapeId + "/" + selectedArea;
-                    //return "http://spatial-test.ala.org.au/spatial-service/shape/upload/shp/image/1473644976664-0/all";
+                    if (selectedArea.length > 0) {
+                        return this.url() + '/shape/upload/shp/image/' + shapeId + "/" + selectedArea;
+                    } else {
+                        return this.url() + '/shape/upload/shp/image/' + shapeId + "/all";
+                    }
                 },
-                uploadAreaFile: function(file, type, desc) {
+                uploadAreaFile: function (file, type, name, desc) {
                     var uploadURL = "";
                     if (type == 'importShapefile') {
                         uploadURL = "portal/shp";
                     } else if (type == 'importKML') {
-                        uploadURL = "portal/kml?name=" + file.name + "&description=" + desc;
+                        uploadURL = "portal/kml?name=" + name + "&description=" + desc;
                     }
 
                     file.upload = Upload.upload({
@@ -66,13 +69,6 @@
                     });
 
                     return file.upload;
-                    /*return file.upload.then(function (response) {
-                        return response;
-                     }, function (response) {
-                        return response;
-                    }, function (evt) {
-                        return evt;
-                    }); */
                 },
                 createObject: function(name, description, shpId, featureIdx) {
                     var param = {

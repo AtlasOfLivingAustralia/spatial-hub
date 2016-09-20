@@ -27,13 +27,13 @@
                         scope.cancel = function () {
                             scope.deleteDrawing()
 
-                            $rootScope.closePanel()
+                            LayoutService.closePanel()
                         }
 
                         scope.ok = function (data) {
                             scope.deleteDrawing()
 
-                            $rootScope.closePanel()
+                            LayoutService.closePanel()
                         }
 
                         scope.showWkt = function () {

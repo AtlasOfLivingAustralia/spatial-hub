@@ -1,8 +1,8 @@
 (function (angular) {
     'use strict';
     angular.module('select-species-directive', ['map-service', 'lists-service'])
-        .directive('selectSpecies', ['MapService', 'ListsService', '$timeout', '$rootScope',
-            function (MapService, ListsService, $timeout, $rootScope) {
+        .directive('selectSpecies', ['MapService', 'ListsService', '$timeout', 'LayoutService',
+            function (MapService, ListsService, $timeout, LayoutService) {
 
                 return {
                     scope: {
@@ -15,24 +15,24 @@
 
                         scope.name = 'selectSpecies'
 
-                        scope.spatiallyValid = $rootScope.getValue(scope.name, 'spatiallyValid', true);
-                        scope.spatiallySuspect = $rootScope.getValue(scope.name, 'spatiallySuspect', false);
-                        scope.useScientificNames = $rootScope.getValue(scope.name, 'useScientificNames', false);
-                        scope.includeExpertDistributions = $rootScope.getValue(scope.name, 'includeExpertDistributions', true);
+                        scope.spatiallyValid = true
+                        scope.spatiallySuspect = false
+                        scope.useScientificNames = false
+                        scope.includeExpertDistributions = true
 
                         if (scope.inputData !== undefined && scope.inputData.speciesOption !== undefined) {
-                            scope.speciesOption = $rootScope.getValue(scope.name, 'speciesOption', scope.inputData.speciesOption);
+                            scope.speciesOption = scope.inputData.speciesOption
                         } else {
-                            scope.speciesOption = $rootScope.getValue(scope.name, 'speciesOption', 'searchSpecies');
+                            scope.speciesOption = 'searchSpecies'
                         }
 
                         if (scope.selectedQ === undefined) {
-                            scope.selectedQ = {q:[], bs: null, ws: null, name: $rootScope.getValue(scope.name, 'name', '')}
+                            scope.selectedQ = {q: [], bs: null, ws: null, name: ''}
                         }
                         scope.sandboxName = ''
                         scope.speciesListName = ''
 
-                        $rootScope.addToSave(scope);
+                        LayoutService.addToSave(scope);
 
                         scope.speciesLayers = MapService.speciesLayers()
 
@@ -66,7 +66,7 @@
 
                         scope.openSandbox = function () {
                             $timeout(function () {
-                                $rootScope.openModal('sandBox', {setQ: scope.setSandboxQ})
+                                LayoutService.openModal('sandBox', {setQ: scope.setSandboxQ})
                             }, 0)
                         };
 
@@ -78,7 +78,7 @@
 
                         scope.openSpeciesList = function () {
                             $timeout(function () {
-                                $rootScope.openModal('createSpeciesList', {setQ: scope.setSpeciesListQ})
+                                LayoutService.openModal('createSpeciesList', {setQ: scope.setSpeciesListQ})
                             }, 0)
                         }
 
