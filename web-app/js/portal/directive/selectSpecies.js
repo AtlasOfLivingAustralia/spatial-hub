@@ -8,12 +8,13 @@
                     scope: {
                         custom: '&onCustom',
                         selectedQ: '=selectedQ',
-                        inputData: '=inputData'
+                        inputData: '=inputData',
+                        uniqueId: '=uniqueId'
                     },
                     templateUrl: 'portal/' + 'selectSpeciesCtrl.html',
                     link: function (scope, element, attrs) {
 
-                        scope.name = 'selectSpecies'
+                        scope.name = 'selectSpecies' + scope.uniqueId
 
                         scope.spatiallyValid = true
                         scope.spatiallySuspect = false
