@@ -39,7 +39,7 @@
 </div><!-- End container #main col -->
 
 <!-- Footer -->
-<hf:footer/>
+%{--<hf:footer/>--}%
 <!-- End footer -->
 
 <!-- JS resources-->

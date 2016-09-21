@@ -38,7 +38,7 @@
             <button ng-click="facetFilter=''" class="btn btn-xs btn-default"
                     ng-disabled="facetFilter == ''">clear filter
             </button>
-            <table class="table" style="width:370px;height:200px;overflow:scroll;display:block">
+            <table class="table" style="width:370px;max-height:200px;overflow:scroll;display:block">
                 <tr ng-repeat="x in selected.layer.facetList[selected.layer.facet] | filter:facetFilter">
                     <td style="width:20px"><input type="checkbox" ng-model="x.selected"
                                                   ng-change="updateSelection()"></td>
@@ -48,12 +48,18 @@
                 </tr>
             </table>
 
-            <div style="float:right;padding-right:30px" class="btn-group">
-                <button class="btn btn-xs btn-default" ng-click="facetClearSelection()"
+            <div style="width:100%;padding-right:30px" class="btn-group">
+                <label style="float:left;" ng-show="facetsSelected()">{{facetsSelectedCount()}} selected</label>
+                <button style="float:right;" class="btn btn-xs btn-default" ng-click="facetClearSelection()"
                         ng-disabled="!facetsSelected()">Clear selection
                 </button>
+            </div>
+            <div style="float:right;padding-right:30px" class="btn-group">
                 <button class="btn btn-xs btn-default" ng-click="facetNewLayer()"
-                        ng-disabled="!facetsSelected()">Create layer
+                        ng-disabled="!facetsSelected()">Create layer with selection
+                </button>
+                <button class="btn btn-xs btn-default" ng-click="facetNewLayerOut()"
+                        ng-disabled="!facetsSelected()">Create layer without selection
                 </button>
             </div>
         </div>
@@ -61,7 +67,7 @@
         <div ng-show="(selected.layer.layertype == 'species' && selected.layer.colorType=='-1' &&
                                         selected.layer.facet=='-1') || selected.layer.layertype == 'area'"
              class="form-group row">
-            <grid id="cpGrid" style="padding-left:2px;width:280px;display:block">
+            <grid id="cpGrid" style="padding-left:2px;padding-top:5px;width:280px;display:block">
                 <rows class="noborder">
                     <row>
                         <div style="background-color:#8b0000" height="12px"
@@ -164,12 +170,39 @@
                 </rows>
             </grid>
 
+            <div width="100%" style="float:right; margin-top:-25px;margin-right:100px">
+                <label><a ng-click="selected.layer.showColourSliders=true" ng-show="!selected.layer.showColourSliders">more</a></label>
+                <label><a ng-click="selected.layer.showColourSliders=false" ng-show="selected.layer.showColourSliders">less</a><label>
+            </div>
+
             <div width="100%"
-                 style="padding-left:10px; float:right; margin-top:-40px;height:40px;width:40px;margin-right:30px">
+                 style="padding-left:10px; float:right; margin-top:-39px;height:40px;width:40px;margin-right:30px">
                 <div style="background-color:#{{selected.layer.color}};height:30px">&nbsp;</div>
             </div>
         </div>
         <br/>
+
+        <div class="form-group row" ng-show="selected.layer.showColourSliders">
+            <label style="float:left;width:70px" for="size">Red</label>
+            <div style="float:left;width:200px" id="red" ui-slider min="0" max="255"
+                 ng-model="selected.layer.red" ng-change="updateColour()" ng-stop="applyColour()"></div>
+            <span style="float:left;width:15px">&nbsp;</span>
+            <span style="float:left">{{selected.layer.red}}</span>
+        </div>
+        <div class="form-group row" ng-show="selected.layer.showColourSliders">
+            <label style="float:left;width:70px" for="size">Green</label>
+            <div style="float:left;width:200px" id="green" ui-slider min="0" max="255"
+                 ng-model="selected.layer.green" ng-change="updateColour()" ng-stop="applyColour()"></div>
+            <span style="float:left;width:15px">&nbsp;</span>
+            <span style="float:left">{{selected.layer.green}}</span>
+        </div>
+        <div class="form-group row" ng-show="selected.layer.showColourSliders" style="padding-bottom:5px">
+            <label style="float:left;width:70px" for="size">Blue</label>
+            <div style="float:left;width:200px" id="blue" ui-slider min="1" max="255"
+                 ng-model="selected.layer.blue" ng-change="updateColour()" ng-stop="applyColour()"></div>
+            <span style="float:left;width:15px">&nbsp;</span>
+            <span style="float:left">{{selected.layer.blue}}</span>
+        </div>
 
         <div class="form-group row"
              ng-show="selected.layer.layertype == 'species' && selected.layer.colorType!='grid'">
@@ -181,7 +214,7 @@
             <span style="float:left">{{selected.layer.size}}</span>
         </div>
 
-        <div class="form-group row">
+        <div class="form-group row" style="padding-top:5px">
             <label style="float:left;width:70px" for="opacity">Opacity</label>
 
             <div style="float:left;width:200px" id="opacity" ui-slider min="0" max="100"
@@ -250,8 +283,14 @@
 
             <input style="margin-left:70px" type="checkbox" id="uncertainty"
                    ng-change="setUncertainty(chkUncertainty)" ng-model="chkUncertainty">
-            <label for="uncertainty"
-                   style="width:300px">Display spatial uncertainty as a circle</label>
+            <label for="uncertainty" style="width:300px">Display spatial uncertainty as a circle</label>
+
+            <div ng-show="selected.layer.uncertainty"><img style="margin-left:70px;margin-bottom: 0px;"
+                                                           ng-src="images/orangecircle.png"><label>&lt; 30km (mapped
+                with actual radius)</label></div>
+            <div ng-show="selected.layer.uncertainty"><img style="margin-left:70px;margin-bottom: 0px;"
+                                                           ng-src="images/greencircle.png"><label>&gt; 30km (mapped with
+                30km radius)</label></div>
         </div>
 
         <div class="form-group row"

@@ -150,7 +150,14 @@
 
                         scope.facetNewLayer = function () {
                             BiocacheService.newLayerAddFq(scope.selected.layer, decodeURIComponent(scope.selected.layer.sel),
-                                scope.selected.layer.name + " : Filtered").then(function (data) {
+                                scope.selected.layer.name + " : from selected").then(function (data) {
+                                MapService.add(data)
+                            })
+                        }
+
+                        scope.facetNewLayerOut = function () {
+                            BiocacheService.newLayerAddFq(scope.selected.layer, decodeURIComponent('-(' + scope.selected.layer.sel + ')'),
+                                scope.selected.layer.name + " : from unselected").then(function (data) {
                                 MapService.add(data)
                             })
                         }
@@ -163,6 +170,17 @@
                                 return true
                             } else {
                                 return false
+                            }
+                        }
+
+                        scope.facetsSelectedCount = function () {
+                            if (scope.selected.layer !== undefined &&
+                                scope.selected.layer != null &&
+                                scope.selected.layer.sel !== undefined &&
+                                scope.selected.layer.sel.length > 0) {
+                                return scope.selected.layer.sel.length
+                            } else {
+                                return 0
                             }
                         }
 
@@ -494,6 +512,28 @@
                                 'width': 0,
                                 'height': 0
                             }).hide();
+                        }
+
+                        scope.colourTimeout = null
+
+                        scope.updateColour = function () {
+                            var r = scope.selected.layer.red.toString(16);
+                            if (r.length == 1) r = '0' + r;
+                            var g = scope.selected.layer.green.toString(16);
+                            if (g.length == 1) g = '0' + g;
+                            var b = scope.selected.layer.blue.toString(16);
+                            if (b.length == 1) b = '0' + b;
+                            scope.selected.layer.color = r + g + b
+
+                            if (scope.colourTimeout != null) clearTimeout(scope.colourTimeout)
+                            scope.colourTimeout = setTimeout(function () {
+                                scope.applyColour()
+                            }, 500)
+                        }
+
+                        scope.applyColour = function () {
+                            scope.updateColour()
+                            scope.updateWMS()
                         }
                     }
 

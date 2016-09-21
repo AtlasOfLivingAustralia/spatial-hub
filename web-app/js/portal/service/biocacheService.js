@@ -99,8 +99,8 @@
                 },
                 registerParam: function (ws, q, fq, wkt) {
                     var data = {q: q, ws: ws}
-                    if (fq !== undefined) data.fq = fq
-                    if (wkt !== undefined && wkt.length > 0) data.wkt = wkt
+                    if (fq !== undefined && fq != null) data.fq = fq
+                    if (wkt !== undefined && wkt != null && wkt.length > 0) data.wkt = wkt
                     return $http.post("portal/q", data).then(function (response) {
                         return response.data
                     });
@@ -124,11 +124,14 @@
                     if (query.fq !== undefined) {
                         fq = fq.concat(query.fq)
                     }
-                    if (area !== undefined && area.q !== undefined) {
+                    if (query.fqs !== undefined) {
+                        fq = fq.concat(query.fqs)
+                    }
+                    if (area !== undefined && area != null && area.q !== undefined) {
                         fq = fq.concat(area.q)
                     }
                     var wkt = undefined
-                    if (area !== undefined) wkt = area.wkt
+                    if (area !== undefined && area != null && area.q === undefined) wkt = area.wkt
                     if (query.wkt !== undefined) wkt = query.wkt
 
                     return this.registerLayer(query.bs, query.ws, fq, wkt, newName)

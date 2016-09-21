@@ -284,3 +284,9 @@ ol.leaflet-quick-links li {
     padding-top: 5px;
 }
 /** playback css end **/
+
+.process-description {
+    margin-bottom: 10px;
+    font-style: italic;
+    display: block;
+}

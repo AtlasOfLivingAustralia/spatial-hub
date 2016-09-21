@@ -9,8 +9,9 @@
 
         <div sp-map></div>
 
-        <div class="row" name="divSelectedLayer" id="legend" style="display:block;overflow:scroll">
-            <div class="panel panel-default" style="height:100%">
+        <div class="row" name="divSelectedLayer" id="legend"
+             style="display:block;overflow:scroll;background-color: #fff">
+            <div class="panel panel-default" style="height:100%;box-shadow: 0 0px; border: 0">
                 <div class="panel-body" style="padding-top:0px;padding-left:5px">
                     <div ng-show="showOptions[0]" style="padding-right:15px">
                         <div sp-options></div>

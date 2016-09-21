@@ -143,6 +143,9 @@
 
                         if (id.red === undefined) {
                             id.color = ColourService.nextColour()
+                            id.red = parseInt(id.color.substr(0, 2), 16)
+                            id.green = parseInt(id.color.substr(2, 2), 16)
+                            id.blue = parseInt(id.color.substr(4, 2), 16)
                         } else {
                             var r = id.red.toString(16);
                             if (r.length == 1) r = '0' + r;
@@ -151,7 +154,6 @@
                             var b = id.blue.toString(16);
                             if (b.length == 1) b = '0' + b;
                             id.color = r + g + b
-
                         }
                         if (id.colorType === undefined) {
                             id.colorType = '-1'

@@ -18,7 +18,7 @@
             <form class="form-horizontal">
 
                 <div ng-show="step<=stepsActual">
-                    <span><h5>Step: {{step}} of {{stepsActual}} {{cap[selectedCapability].description}}</h5></span>
+                    <span><h3>Step: {{step}} of {{stepsActual}} {{cap[selectedCapability].description}}</h3></span>
                 </div>
 
                 <div ng-show="step==0">
@@ -31,25 +31,29 @@
                 <div ng-show="stepView">
                     <!--<div ng-repeat="(key, v) in cap[selectedCapability].input" style="border-top: 1px solid black;"
                          ng-if="v.type != 'auto'" ng-show="step == ($index + 1)">-->
-                    <div ng-repeat="(key, sv) in stepView" ng-show="step == ($index + 1)" uib-accordion close-others="true">
+                    <div ng-repeat="(key, sv) in stepView" ng-if="step == ($index + 1)">
                        <!-- <h3>{{sv.name}}</h3>-->
                         <div ng-repeat="i in sv.inputArr" ng-init="v=cap[selectedCapability].input[i]; status.open = $first" ng-if="v.type != 'auto'"
-                             uib-accordion-group class="panel-default" heading="{{v.description}}" is-open="status.open">
+                             class="panel-default" heading="{{v.description}}" is-open="status.open">
 
                             <!--Values: {{values[i]}}-->
 
                             <div ng-if="v.type == 'area'">
+                                <span class="process-description">{{v.description}}</span>
                                 <div select-area selected-area="values[i]" unique-id="i"></div>
                             </div>
                             <div ng-if="v.type == 'species'">
+                                <span class="process-description">{{v.description}}</span>
                                 <div select-species selected-q="values[i]" unique-id="i"></div>
                             </div>
                             <div ng-if="v.type == 'double'">
+                                <span class="process-description">{{v.description}}</span>
                                 <input style="width:300px" type="number" max="{{v.constraints.max}}"
                                        min="{{v.constraints.min}}"
                                        ng-model="values[i]">
                             </div>
                             <div ng-if="v.type == 'layer'">
+                                <span class="process-description">{{v.description}}</span>
                                 <div select-layers selected-layers="values[i]"
                                      min-count="v.constraints.min"
                                      max-count="v.constraints.max"
@@ -61,19 +65,23 @@
                                 ></div>
                             </div>
                             <div ng-if="v.type == 'boolean'">
-                                <input type="checkbox" ng-model="values[i]">
+                                <input type="checkbox" ng-model="values[i]">{{v.description}}
+                                <br/>
                             </div>
                             <div ng-if="v.type == 'int'">
+                                <span class="process-description">{{v.description}}</span>
                                 <input style="width:300px" type="number" max="{{v.constraints.max}}"
                                        min="{{v.constraints.min}}"
                                        ng-model="values[i]">
                             </div>
                             <div ng-if="v.type == 'list' && v.constraints.selection == 'single'">
+                                <span class="process-description">{{v.description}}</span>
                                 <select ng-model="values[i]">
                                     <option ng-repeat="x in v.constraints.content" ng-value="x">{{x}}</option>
                                 </select>
                             </div>
                             <div ng-if="v.type == 'list' && v.constraints.selection != 'single'">
+                                <span class="process-description">{{v.description}}</span>
                                 <select ng-model="values[i]" multiple>
                                     <option ng-repeat="x in v.constraints.content" ng-value="x">{{x}}</option>
                                 </select>

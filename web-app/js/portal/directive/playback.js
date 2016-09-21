@@ -25,7 +25,6 @@
                 templateUrl: 'portal/' + "playbackContent.html",
                 link: function (scope, element, attrs) {
                     var self = this,
-                        promiseTimeout,
                         monthNames = [
                             'January',
                             'February',
@@ -155,34 +154,36 @@
                         var s = scope.selected.layer.playback
                         var fireEnd = false;
 
-                        switch (s.type) {
-                            case 'year':
-                                if (scope.selected.layer.yearMax < s.yearRange[1] + s.yearStepSize) {
-                                    fireEnd = true
-                                    scope.clearSteps()
-                                    s.yearRange[0] = scope.selected.layer.yearMin
-                                } else {
-                                    s.yearRange[0] += s.yearStepSize
-                                }
-                                s.yearRange[1] = s.yearRange[0] + (s.yearStepSize - 1)
-                                break;
-                            case 'month':
-                                if (12 < s.monthRange[1] + s.monthStepSize) {
-                                    fireEnd = true
-                                    scope.clearSteps()
-                                    s.monthRange[0] = 1
-                                } else {
-                                    s.monthRange[0] += s.monthStepSize
-                                }
-                                s.monthRange[1] = s.monthRange[0] + (s.monthStepSize - 1)
-                                break;
-                        }
+                        if (s.type) {
+                            switch (s.type) {
+                                case 'year':
+                                    if (scope.selected.layer.yearMax < s.yearRange[1] + s.yearStepSize) {
+                                        fireEnd = true
+                                        scope.clearSteps()
+                                        s.yearRange[0] = scope.selected.layer.yearMin
+                                    } else {
+                                        s.yearRange[0] += s.yearStepSize
+                                    }
+                                    s.yearRange[1] = s.yearRange[0] + (s.yearStepSize - 1)
+                                    break;
+                                case 'month':
+                                    if (12 < s.monthRange[1] + s.monthStepSize) {
+                                        fireEnd = true
+                                        scope.clearSteps()
+                                        s.monthRange[0] = 1
+                                    } else {
+                                        s.monthRange[0] += s.monthStepSize
+                                    }
+                                    s.monthRange[1] = s.monthRange[0] + (s.monthStepSize - 1)
+                                    break;
+                            }
 
-                        if (fireEnd && !s.repeat) {
-                            scope.onStop()
-                        } else {
-                            scope.updateDispay()
-                            promiseTimeout = $timeout(nextStep, s.timeout * 1000)
+                            if (fireEnd && !s.repeat) {
+                                scope.onStop()
+                            } else {
+                                scope.updateDispay()
+                                s.promiseTimeout = $timeout(nextStep, s.timeout * 1000)
+                            }
                         }
                     }
 

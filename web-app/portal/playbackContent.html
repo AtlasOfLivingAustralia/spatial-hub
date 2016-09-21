@@ -52,7 +52,7 @@
     <div ng-if="showYear()">
         <div class="form-group row padding-top-5">
             <div class="col-sm-4">
-                <label>Choose year range</label>
+                <label>Year range</label>
             </div>
             <div class="col-sm-7 padding-top-5">
                 <div ui-slider ng-model="selected.layer.playback.yearRange" range="true"
@@ -66,10 +66,10 @@
         </div>
     </div>
 
-    <div ng-if="type == 'month' && monthRange">
-        <div class="form-group row padding-top-5">
+    <div ng-show="selected.layer.playback.type == 'month'">
+        <div class="form-ggit pullroup row padding-top-5">
             <div class="col-sm-4">
-                <label>Choose month range</label>
+                <label>Month range</label>
             </div>
             <div class="col-sm-7 padding-top-5">
                 <div ui-slider ng-model="selected.layer.playback.monthRange" range="true" min="1" max="12"
@@ -91,7 +91,7 @@
         </div>
     </div>
 
-    <div class="form-group row padding-top-5" ng-show="type == 'month'">
+    <div class="form-group row padding-top-5" ng-show="selected.layer.playback.type == 'month'">
         <div class="col-sm-4">
             <label>Increase month by</label>
         </div>

@@ -271,7 +271,10 @@
                                         MapService.add(data.data)
                                     })
                                 } else if (d.name == 'species') {
-                                    MapService.add(jQuery.parseJSON(d.file))
+                                    var q = jQuery.parseJSON(d.file)
+                                    BiocacheService.newLayer(q, null, q.name).then(function (data) {
+                                        MapService.add(data)
+                                    })
                                 }
                             }
 
