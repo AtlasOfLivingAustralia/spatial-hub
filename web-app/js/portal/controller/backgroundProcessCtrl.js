@@ -18,23 +18,42 @@
                 $scope.selectedCapability = inputData !== undefined ? inputData.processName : ''
                 $scope.capabilities = []
                 $scope.cap = {}
-                $http.get(LayersService.url() + '/capabilities').then(function (data) {
-                    var k, merged
-                    for (k in data.data) {
-                        merged = data.data[k]
-                        if (inputData.overrideValues) {
-                            merged = angular.merge(merged, inputData.overrideValues[k])
+                $scope.viewConfig = null;
+                $http.get('portal/viewConfig').then(function (data) {
+                    $scope.viewConfig = data.data;
+                    $scope.buildStepViews();
+                }, function (e) {
+                    $scope.viewConfig = {};
+                    $scope.buildStepViews();
+                });
+
+                $scope.buildStepViews = function () {
+                    $http.get(LayersService.url() + '/capabilities').then(function (data) {
+                        var k, merged
+                        for (k in data.data) {
+                            merged = data.data[k]
+
+                            // merge spec input values from with view-config.json
+                            if ($scope.viewConfig[k]) {
+                                angular.merge(merged, $scope.viewConfig[k])
+                                angular.merge(merged.input, $scope.viewConfig[k].input)
+                            }
+
+                            // overrideValues is set from Quick links
+                            if (inputData.overrideValues) {
+                                merged = angular.merge(merged, inputData.overrideValues[k])
+                            }
+
+                            $scope.capabilities.push(merged)
+                            $scope.cap[data.data[k].name] = merged
                         }
 
-                        $scope.capabilities.push(merged)
-                        $scope.cap[data.data[k].name] = merged
-                    }
-
-                    if ($scope.selectedCapability.length > 0) {
-                        $scope.test()
-                        $scope.ok()
-                    }
-                })
+                        if ($scope.selectedCapability.length > 0) {
+                            $scope.initValues();
+                            $scope.ok();
+                        }
+                    })
+                }
 
                 $scope.values = []
                 $scope.initValues = function () {
@@ -64,7 +83,7 @@
                         } else {
                             v = null
                         }
-                        $scope.values[k] = LayoutService.getValue($scope.name, $scope.selectedCapability + i, v);
+                        $scope.values[k] = LayoutService.getValue($scope.name, $scope.selectedCapability + k, v);
                     }
                 }
                 $scope.hide = function () {
@@ -84,8 +103,7 @@
                         // if View-config.json is configured for the selected capability, use that, otherwise, use the spec capabilitt
                         if ($scope.viewConfig[$scope.selectedCapability]) {
                             $scope.viewConfig[$scope.selectedCapability].view.forEach(function (v) {
-                                var inputArr = v.inputs.replace(/[\])}[{(]/g,'').replace(/[\s]/g, '').split(',');
-                                $scope.stepView[order] = {name: v.name, inputArr: inputArr};
+                                $scope.stepView[order] = {name: v.name, inputArr: v.inputs};
                                 order ++;
                             })
                         } else {

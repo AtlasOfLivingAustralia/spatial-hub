@@ -177,7 +177,10 @@ class PortalController {
             def file = new File(grailsApplication.config.viewConfig?.json)
 
             if (file.exists()) viewconfig = JSON.parse(new FileReader(file))
-            else viewconfig = JSON.parse(PortalController.getResourceAsStream(defaultFile))
+            else {
+                def text = PortalController.class.classLoader.getResourceAsStream(defaultFile).text
+                viewconfig = JSON.parse(text)
+            }
         }
 
         render viewconfig as JSON

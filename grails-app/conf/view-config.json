@@ -1,22 +1,30 @@
 {
   "ScatterplotCreate": {
-    "description": "Detailed scatterplot area report.",
     "view": [
       {
         "name": "Apply to an area",
-        "inputs": "[area]"
+        "inputs": [
+          "area"
+        ]
       },
       {
         "name": "Select species",
-        "inputs": "[species1]"
+        "inputs": [
+          "species1"
+        ]
       },
       {
         "name": "Select background species",
-        "inputs": "[species2]"
+        "inputs": [
+          "species2"
+        ]
       },
       {
         "name": "Select environmental layers",
-        "inputs": "[grid, layer]"
+        "inputs": [
+          "grid",
+          "layer"
+        ]
       }
     ],
     "input": {
@@ -30,19 +38,27 @@
     "view": [
       {
         "name": "Area to restrict the scatterplot list.",
-        "inputs": "[area]"
+        "inputs": [
+          "area"
+        ]
       },
       {
         "name": "Foreground species.",
-        "inputs": "[species1]"
+        "inputs": [
+          "species1"
+        ]
       },
       {
         "name": "Layers to use in the scatterplot. Between 2 and 10 layers.",
-        "inputs": "[layer]"
+        "inputs": [
+          "layer"
+        ]
       },
       {
         "name": "Select background species",
-        "inputs": "[species2]"
+        "inputs": [
+          "species2"
+        ]
       }
     ],
     "input": {
