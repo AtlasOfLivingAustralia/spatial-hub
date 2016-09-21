@@ -1,9 +1,9 @@
 (function (angular) {
     'use strict';
     angular.module('nearest-locality-directive', ['map-service', 'layers-service', 'predefined-areas-service'])
-        .directive('nearestLocality', ['$rootScope', 'MapService', '$timeout', 'LayersService',
+        .directive('nearestLocality', ['$rootScope', 'MapService', '$timeout', 'LayersService', 'LayoutService',
             'PredefinedAreasService', "$http",
-            function ($rootScope, MapService, $timeout, LayersService, PredefinedAreasService, $http) {
+            function ($rootScope, MapService, $timeout, LayersService, LayoutService, PredefinedAreasService, $http) {
                 return {
                     scope: {},
                     templateUrl: 'portal/' + 'nearestLocalityContent.html',
