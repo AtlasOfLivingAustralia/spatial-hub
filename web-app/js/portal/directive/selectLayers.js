@@ -16,11 +16,12 @@
                         selection: "=selectedLayers",
                         minCount: "=minCount",
                         maxCount: "=maxCount",
-                        mandatory: "=mandatory"
+                        mandatory: "=mandatory",
+                        uniqueId: '=uniqueId'
                     },
                     link: function (scope, element, attrs) {
 
-                        scope.name = 'selectLayers'
+                        scope.name = 'selectLayers' + scope.uniqueId
                         scope.exportUrl = null
                         scope.validLayerSelection = scope.mandatory === undefined || !scope.mandatory
                         scope.mode = ''

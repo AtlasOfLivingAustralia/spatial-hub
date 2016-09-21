@@ -16,7 +16,8 @@
                     scope: {
                         custom: '&onCustom',
                         selectedArea: '=selectedArea',
-                        includeDefaultAreas: '=includeDefaultAreas'
+                        includeDefaultAreas: '=includeDefaultAreas',
+                        uniqueId: '=uniqueId'
                         // ,
                         // maxAreas: '=maxAreas',
                         // minAreas: '=minAreas'
@@ -27,7 +28,7 @@
                         // if (!scope.minAreas) scope.minAreas = 1
                         // if (!scope.maxAreas) scope.maxAreas = 1
 
-                        scope.name = 'selectArea'
+                        scope.name = 'selectArea' + scope.uniqueId
                         scope.layerAreas = $.map(MapService.areaLayers(), function (x) {
                             return {
                                 name: x.name,
