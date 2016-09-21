@@ -39,10 +39,10 @@
                             <!--Values: {{values[i]}}-->
 
                             <div ng-if="v.type == 'area'">
-                                <div select-area selected-area="values[i]"></div>
+                                <div select-area selected-area="values[i]" unique-id="i"></div>
                             </div>
                             <div ng-if="v.type == 'species'">
-                                <div select-species selected-q="values[i]"></div>
+                                <div select-species selected-q="values[i]" unique-id="i"></div>
                             </div>
                             <div ng-if="v.type == 'double'">
                                 <input style="width:300px" type="number" max="{{v.constraints.max}}"
@@ -57,6 +57,7 @@
                                      environmental="v.constrains.environmental"
                                      contextual="v.constrains.contextual"
                                      analysis="v.constrains.analysis"
+                                     unique-id="i"
                                 ></div>
                             </div>
                             <div ng-if="v.type == 'boolean'">
