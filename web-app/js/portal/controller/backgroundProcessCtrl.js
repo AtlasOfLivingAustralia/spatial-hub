@@ -166,7 +166,12 @@
                                     }
 
                                 } else if ($scope.values[k].q !== undefined) {
-                                    inputs[k] = { qid: $scope.values[k].qid, ws: $scope.values[k].ws, bs: $scope.values[k].bs }
+                                    inputs[k] = {
+                                        q: $scope.values[k].q,
+                                        ws: $scope.values[k].ws,
+                                        bs: $scope.values[k].bs,
+                                        name: $scope.values[k].name
+                                    }
                                 } else if ($scope.values[k].layers !== undefined) {
                                     var layers = []
                                     for (j in $scope.values[k].layers) {
