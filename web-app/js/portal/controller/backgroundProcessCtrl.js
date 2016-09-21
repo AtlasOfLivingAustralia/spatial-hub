@@ -103,8 +103,7 @@
                         // if View-config.json is configured for the selected capability, use that, otherwise, use the spec capabilitt
                         if ($scope.viewConfig[$scope.selectedCapability]) {
                             $scope.viewConfig[$scope.selectedCapability].view.forEach(function (v) {
-                                var inputArr = v.inputs.replace(/[\])}[{(]/g,'').replace(/[\s]/g, '').split(',');
-                                $scope.stepView[order] = {name: v.name, inputArr: inputArr};
+                                $scope.stepView[order] = {name: v.name, inputArr: v.inputs};
                                 order ++;
                             })
                         } else {
