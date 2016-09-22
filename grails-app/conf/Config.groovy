@@ -175,3 +175,18 @@ viewConfig.json = "view-config.json"
 //google.apikey=
 
 sessions.dir = "/data/spatial-hub/sessions"
+
+grails.cache.config = {
+
+    defaults {
+        eternal false
+        overflowToDisk false
+        maxElementsInMemory 20000
+        timeToLiveSeconds 3600
+    }
+    cache {
+        name 'viewConfigCache'
+        timeToLiveSeconds (3600 * 12)
+    }
+
+}

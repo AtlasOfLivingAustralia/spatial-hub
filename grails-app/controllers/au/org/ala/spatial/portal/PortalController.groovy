@@ -169,21 +169,9 @@ class PortalController {
         fetchAndOutputUrl(target, response, request, requestBody);
     }
 
-    //TODO: use a cache
-    def viewconfig
     def viewConfig() {
-        if (viewconfig == null) {
-            def defaultFile = "view-config.json"
-            def file = new File(grailsApplication.config.viewConfig?.json)
-
-            if (file.exists()) viewconfig = JSON.parse(new FileReader(file))
-            else {
-                def text = PortalController.class.classLoader.getResourceAsStream(defaultFile).text
-                viewconfig = JSON.parse(text)
-            }
-        }
-
-        render viewconfig as JSON
+        def viewConfig = webService.getViewConfig()
+        render viewConfig as JSON
     }
 
     private String rebuildParameters(Map params) {

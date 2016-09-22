@@ -16,6 +16,7 @@
 package au.org.ala.spatial.portal
 
 import grails.converters.JSON
+import grails.plugin.cache.Cacheable
 import org.apache.commons.httpclient.HttpClient
 import org.apache.commons.httpclient.HttpException
 import org.apache.commons.httpclient.methods.PostMethod
@@ -66,6 +67,20 @@ class WebService {
 
     private int defaultTimeout() {
         grailsApplication.config.webservice.readTimeout as int
+    }
+
+    @Cacheable('viewConfigCache')
+    def getViewConfig () {
+        def viewConfig
+        def defaultFile = "view-config.json"
+        def file = new File(grailsApplication.config.viewConfig?.json)
+
+        if (file.exists()) viewConfig = JSON.parse(new FileReader(file))
+        else {
+            def text = PortalController.class.classLoader.getResourceAsStream(defaultFile).text
+            viewConfig = JSON.parse(text)
+        }
+        return viewConfig
     }
 
     private URLConnection configureConnection(String url, boolean includeUserId, Integer timeout = null) {
