@@ -16,9 +16,9 @@
  */
 (function (angular) {
     'use strict';
-    angular.module('analysis-ctrl', [])
-        .controller('AnalysisCtrl', ['$scope', '$rootScope', '$uibModalInstance', '$timeout', 'data',
-            function ($scope, $rootScope, $uibModalInstance, $timeout, inputData) {
+    angular.module('analysis-ctrl', ['layout-service'])
+        .controller('AnalysisCtrl', ['$scope', '$rootScope', '$uibModalInstance', '$timeout', '$http', 'LayoutService', 'data',
+            function ($scope, $rootScope, $uibModalInstance, $timeout, $http, LayoutService, inputData) {
                 $scope.name = 'AnalysisCtrl'
                 $scope.taskId = undefined
                 $scope.cancel = function () {
@@ -29,10 +29,14 @@
                     $uibModalInstance.close({noOpen: true})
 
                     if(angular.isDefined($scope.taskId)){
-                        $timeout(function () {
-                            var processData = {opening: true, processName: 'PointsToGrid', stage: 'output', taskId: 1}
-                            $scope.openModal('backgroundProcess', processData)
-                        }, 50)
+                        $http.get(SpatialPortalConfig.layersServiceUrl + '/tasks/status/' + $scope.taskId).then(function (resp) {
+                            $timeout(function () {
+                                var processData = {opening: true, processName: resp.data.name, stage: 'output', taskId: resp.data.id}
+                                LayoutService.openModal('backgroundProcess', processData)
+                            },0)
+                        }, function () {
+                            alert('Could not find task - ' + $scope.taskId)
+                        })
                     }
                 };
 

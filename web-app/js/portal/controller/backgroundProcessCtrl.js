@@ -124,6 +124,10 @@
 
                     }
 
+                    if($scope.stage == 'output'){
+                        $scope.step = $scope.stepsActual + 1
+                    }
+
                     if ($scope.isDisabled()) {
                         //TODO: message to user
                         return
@@ -135,89 +139,86 @@
                         return
                     }
 
-                    if ($scope.step >= $scope.stepsActual) {
-
-                        $scope.status = 'starting...'
-
-                        var url = 'portal/createTask'
-
-                        //format inputs
-                        var c = $scope.cap[$scope.selectedCapability].input
-                        var inputs = {}
-                        var k
-                        var j
-                        for (k in c) {
-                            if ($scope.values[k] !== undefined && $scope.values[k] != null) {
-                                if ($scope.values[k].area !== undefined) {
-                                    inputs[k] = []
-                                    for (j in $scope.values[k].area) {
-                                        var a = $scope.values[k].area[j]
-                                        if (a.pid) {
-                                            inputs[k].push({
-                                                pid: a.pid,
-                                                q: a.q
-                                            })
-                                        } else {
-                                            inputs[k].push({
-                                                q: a.q,
-                                                name: a.name,
-                                                bbox: a.bbox,
-                                                area_km: a.area_km,
-                                                wkt: a.wkt
-                                            })
-                                        }
-                                    }
-
-                                } else if ($scope.values[k].q !== undefined) {
-                                    inputs[k] = {
-                                        q: $scope.values[k].q,
-                                        ws: $scope.values[k].ws,
-                                        bs: $scope.values[k].bs,
-                                        name: $scope.values[k].name
-                                    }
-                                } else if ($scope.values[k].layers !== undefined) {
-                                    var layers = []
-                                    for (j in $scope.values[k].layers) {
-                                        layers.push($scope.values[k].layers[j].id)
-                                    }
-                                    inputs[k] = layers
-                                } else {
-                                    inputs[k] = $scope.values[k]
-                                }
-                            }
-                        }
-
-                        console.log(inputs)
-
-                        var m = {}
-                        m['input'] = inputs
-                        m['name'] = $scope.selectedCapability
-                        //m['tag'] =
-
-                        $http.post(url, m).then(function (response) {
-                            $scope.statusUrl = LayersService.url() + '/tasks/status/' + response.data.id
-                            console.log($scope.statusUrl)
-                            $timeout(function () {
-                                $scope.checkStatus()
-                            }, 5000)
-                        })
-                    }
-
-                    $scope.step = $scope.step + 1
-
-                    //skip unknown steps, e.g. type='auto'
-                    while ($scope.step - 1 < $scope.values.length && $scope.values[$scope.step - 1] == null && $scope.values[$scope.step - 1] !== undefined) {
-                        $scope.step = $scope.step + 1
-                    }
-                    $scope.stepsCurrent = $scope.stepsCurrent + 1
-
                     switch ($scope.stage){
                         case 'input':
+                            if ($scope.step >= $scope.stepsActual) {
+
+                                $scope.status = 'starting...'
+
+                                var url = 'portal/createTask'
+
+                                //format inputs
+                                var c = $scope.cap[$scope.selectedCapability].input
+                                var inputs = {}
+                                var k
+                                var j
+                                for (k in c) {
+                                    if ($scope.values[k] !== undefined && $scope.values[k] != null) {
+                                        if ($scope.values[k].area !== undefined) {
+                                            inputs[k] = []
+                                            for (j in $scope.values[k].area) {
+                                                var a = $scope.values[k].area[j]
+                                                if (a.pid) {
+                                                    inputs[k].push({
+                                                        pid: a.pid,
+                                                        q: a.q
+                                                    })
+                                                } else {
+                                                    inputs[k].push({
+                                                        q: a.q,
+                                                        name: a.name,
+                                                        bbox: a.bbox,
+                                                        area_km: a.area_km,
+                                                        wkt: a.wkt
+                                                    })
+                                                }
+                                            }
+
+                                        } else if ($scope.values[k].q !== undefined) {
+                                            inputs[k] = {
+                                                q: $scope.values[k].q,
+                                                ws: $scope.values[k].ws,
+                                                bs: $scope.values[k].bs,
+                                                name: $scope.values[k].name
+                                            }
+                                        } else if ($scope.values[k].layers !== undefined) {
+                                            var layers = []
+                                            for (j in $scope.values[k].layers) {
+                                                layers.push($scope.values[k].layers[j].id)
+                                            }
+                                            inputs[k] = layers
+                                        } else {
+                                            inputs[k] = $scope.values[k]
+                                        }
+                                    }
+                                }
+
+                                console.log(inputs)
+
+                                var m = {}
+                                m['input'] = inputs
+                                m['name'] = $scope.selectedCapability
+                                //m['tag'] =
+
+                                $http.post(url, m).then(function (response) {
+                                    $scope.statusUrl = LayersService.url() + '/tasks/status/' + response.data.id
+                                    console.log($scope.statusUrl)
+                                    $timeout(function () {
+                                        $scope.checkStatus()
+                                    }, 5000)
+                                })
+                            }
+
+                            $scope.step = $scope.step + 1
+
+                            //skip unknown steps, e.g. type='auto'
+                            while ($scope.step - 1 < $scope.values.length && $scope.values[$scope.step - 1] == null && $scope.values[$scope.step - 1] !== undefined) {
+                                $scope.step = $scope.step + 1
+                            }
                             break;
                         case 'output':
                             if($scope.taskId) {
                                 $scope.statusUrl = LayersService.url() + '/tasks/status/' + $scope.taskId
-                                $scope.step = $scope.steps + 1
                                 $scope.checkStatus()
                             }
                             break;
