@@ -32,7 +32,7 @@
                         }
 
                         scope.info = function (item) {
-                            alert(item.url)
+                            bootbox.alert('Metadata url: <a href="' + item.url + '">' + item.url + '</a>')
                         }
 
                         scope.contextualClearSelection = function () {
@@ -135,7 +135,11 @@
                         }
 
                         scope.popupLegend = function () {
-                            alert(scope.selected.legendurl)
+                            L.control.window(map, {
+                                modal: false,
+                                title: scope.selected.displayname,
+                                content: '<img src="' + scope.selected.layer.leaflet.legendurl + '"/>'
+                            }).show()
                         }
 
                         scope.setColor = function (color) {

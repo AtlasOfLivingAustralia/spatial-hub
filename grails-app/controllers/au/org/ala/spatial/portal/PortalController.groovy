@@ -23,15 +23,20 @@ class PortalController {
     }
 
     def listSaves() {
-        def userId = authService.getUserId()
-        render sessionService.list(userId) as JSON
+        render sessionService.list(authService.getUserId()) as JSON
     }
 
     def saveData() {
         //use a new id
         def id = sessionService.newId(authService.getUserId())
 
-        render sessionService.put(id, request.getJSON()) as JSON
+        render sessionService.put(id, authService.getUserId(), request.getJSON()) as JSON
+    }
+
+    def deleteSaved() {
+        def list = sessionService.updateUserSave(params.sessionId, authService.getUserId(), 'delete', null, null)
+
+        render list as JSON
     }
 
     def getSaved() {

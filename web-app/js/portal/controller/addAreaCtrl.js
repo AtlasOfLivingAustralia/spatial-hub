@@ -230,7 +230,7 @@
                         $scope.selectedArea.obj = obj
                         $scope.selectedArea.name = obj.name.length > 0 ? obj.name : 'area'
                         LayersService.getField(obj.fid, 0, 0, '').then(function (data) {
-                            if (data.data === undefined || data.data.id === undefined) {
+                            if (data.data === undefined || data.data.id === undefined || !data.data.indb) {
                                 LayersService.getWkt(pid).then(function (wkt) {
                                     $scope.selectedArea.wkt = wkt
                                 })

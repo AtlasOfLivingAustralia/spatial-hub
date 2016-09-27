@@ -45,6 +45,8 @@
     </div>
 </div>
 
+<div style="display:none" id="loginWorkaround"></div>
+
 <r:script disposition="defer">
 
     var spApp = angular.module('spApp', ["leaflet-directive", 'ngAnimate', 'ui.bootstrap', 'ui.sortable', 'ui.slider',
@@ -69,7 +71,7 @@
                 'species-info-ctrl', 'tabulate-ctrl', 'tool-area-report-ctrl', 'sand-box-ctrl', 'analysis-ctrl',
                 'ngAria', 'ngTouch', 'ala.sandbox.components','create-species-list-ctrl',
                 'ala.sandbox.preview', 'chieffancypants.loadingBar', 'ngFileUpload', 'playback-directive',
-                'colour-service', 'sessions-service', 'sessions-ctrl'])
+                'colour-service', 'sessions-service', 'sessions-ctrl', 'bie-service'])
             .factory("ConfigService", [function () {
                 return {}
             }])
@@ -102,8 +104,20 @@
             $("#map").height($(window).height() - $('.navbar-header').height());
             $("#legend").height($(window).height() - $('.navbar-header').height() - 195);
 
+            //alter header
             if (SpatialPortalConfig.userId) {
+                $('<li class="dropdown font-xsmall"><a href="#" onclick="$(\'#sessionsButton\')[0].click()" data-toggle="dropdown" role="button" aria-expanded="false">Load Session</a></li>').insertBefore($('.navbar-right .dropdown')[0])
                 $('<li class="dropdown font-xsmall"><a href="#" onclick="$(\'#saveSessionButton\')[0].click()" data-toggle="dropdown" role="button" aria-expanded="false">Save Session</a></li>').insertBefore($('.navbar-right .dropdown')[0])
+
+                var userEmail = document.cookie.split(';').find ( function ( cookie ) { return cookie.trim().startsWith('ALA-Auth='); } ).trim().replace('ALA-Auth="','').replace('"','')
+                $('.navbar-right .dropdown:last a:first').html(userEmail + '<span class="caret"/>')
+            } else {
+                var a = $('<li class="dropdown font-xsmall"></li>').insertBefore($('.navbar-right .dropdown')[0])
+                var b = $('.navbar-right .dropdown a:last')
+                b.detach()
+                a.append(b)
+
+                $('.navbar-right .dropdown:last a:first').html('<span class="caret"/>')
             }
         });
     }
@@ -158,6 +172,9 @@
             listsUrl: '${config.lists.url}',
             sandboxUrl: '${config.sandbox.url}',
             sandboxServiceUrl: '${config.sandboxService.url}',
+            sandboxUiUrl: '${config.sandbox.uiUrl}',
+            sandboxUrls: ['${config.sandbox.url}'],
+            sandboxServiceUrls: ['${config.sandboxService.url}'],
             gazField: '${config.gazField}',
             geoserverUrl: '${config.geoserver.url}',
             collectionsUrl: '${config.collections.url}',
@@ -171,6 +188,24 @@
         }
 
         L.Icon.Default.imagePath = 'node_modules/leaflet/dist/images'
+
+        //call this after adding data to a fixed-head table
+        $resizeTables = function() {
+            var tables = $('table.fixed-head')
+            $('table.fixed-head').each(function() {
+                var widths = $(this).find('tbody tr:first').children().map( function (i, v) {
+                    return $(this).width()
+                }).get()
+
+                $(this).find('thead tr').children().each(function(i, v) {
+                    $(v).width(widths[i]);
+                });
+            })
+        }
+
+        $(window).resize(function() {
+            $resizeTables()
+        }).resize(); // Trigger resize handler
     </r:script>
 
 

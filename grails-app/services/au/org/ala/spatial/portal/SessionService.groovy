@@ -23,7 +23,6 @@ class SessionService {
     def grailsApplication
 
     def sessionCache = [:]
-    def userCache = [:]
     def sessionLog = []
 
     def currentId = System.currentTimeMillis()
@@ -32,13 +31,6 @@ class SessionService {
         //get id
         def newId = System.currentTimeMillis()
         if (newId == currentId) newId++
-
-        //update user cache
-        if (userId) {
-            def userSessions = userCache.get(userId) ?: []
-            userSessions.add(newId)
-            userCache.put(userId, userSessions)
-        }
 
         //update session log
         sessionLog.push([newId, 'newSession', userId])
@@ -49,14 +41,34 @@ class SessionService {
         currentId = newId
     }
 
-    def put(id, data) {
+    def put(id, userId, data) {
         sessionCache.put(id, data)
 
         saveFile(id).getParentFile().mkdirs()
 
         FileUtils.writeStringToFile(saveFile(id), (data as JSON).toString())
 
+        updateUserSave(id, userId, 'add', data?.name, System.currentTimeMillis())
+
         [status: 'saved', url: grailsApplication.config.grails.serverURL + '?ss=' + id]
+    }
+
+    synchronized def updateUserSave(id, userId, type, name, time) {
+        def list = userFile(userId).exists() ? JSON.parse(FileUtils.readFileToString(userFile(userId))) : []
+
+        if ('add' == type) {
+            list.push([id: id, name: name, time: time])
+        } else if ('delete' == type) {
+            list = list.findAll { it.id.toString() != id }
+        }
+
+        FileUtils.writeStringToFile(userFile(userId), (list as JSON).toString(true))
+
+        list
+    }
+
+    def userFile(userId) {
+        new File(grailsApplication.config.sessions.dir + '/user_' + userId + '.json')
     }
 
     def saveFile(id) {
@@ -68,6 +80,11 @@ class SessionService {
     }
 
     def list(userId) {
-        userCache.get(userId) ?: []
+        def sessions = userFile(userId).exists() ? JSON.parse(FileUtils.readFileToString(userFile(userId))) : []
+        sessions.each {
+            it.url = grailsApplication.config.grails.serverURL + "?ss=" + it.id
+        }
+
+        sessions
     }
 }

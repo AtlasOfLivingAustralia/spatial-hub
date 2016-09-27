@@ -74,7 +74,6 @@
                     return q
                 },
                 getQString: function(query) {
-                    //TODO: test for max query length and generate qid where necessary
                     if (query.qid !== undefined) {
                         return query.qid
                     } else if (query.q !== undefined) {

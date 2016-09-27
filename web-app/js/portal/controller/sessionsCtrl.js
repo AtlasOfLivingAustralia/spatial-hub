@@ -1,28 +1,56 @@
 (function (angular) {
     'use strict';
     angular.module('sessions-ctrl', ['sessions-service'])
-        .controller('SessionsCtrl', ['$scope', 'SessionsService', 'MapService',
-            function ($scope, SessionsService, MapService) {
+        .controller('SessionsCtrl', ['$scope', '$timeout', 'SessionsService', 'MapService', '$uibModalInstance',
+            function ($scope, $timeout, SessionsService, MapService, $uibModalInstance) {
 
                 $scope.sessions = []
-                SessionsService.list().then(function (data) {
-                    $scope.sessions = data
-                })
 
                 $scope.import = function (sessionId) {
-                    SessionsService.get(sessionId).then(function (data) {
-                        MapService.removeAll()
+                    SessionsService.load(sessionId)
 
-                        for (var k in data.layers) {
-                            MapService.add(data.layers[k])
-                        }
+                    $scope.cancel()
+                }
 
-                        MapService.leafletScope.zoom(data.extents)
+                $scope.delete = function (sessionId) {
+                    bootbox.confirm({
+                        message: "Delete this session?",
+                        size: 'small',
+                        callback: function (result) {
+                            if (result) {
+                                $scope.sessions = SessionsService.delete(sessionId)
+                            }
+                        },
+                        buttons: {
+                            confirm: {
+                                label: 'Yes'
+                            },
+                            cancel: {
+                                label: 'No'
+                            }
+                        },
+                    });
+                }
 
-                        data.baseMap || MapService.leafletScope.setBaseMap(data.baseMap)
-
-                        MapService.updateZindex()
+                $scope.getList = function () {
+                    SessionsService.list().then(function (data) {
+                        $scope.sessions = data
+                        $timeout(function () {
+                            $resizeTables()
+                        }, 200)
                     })
                 }
+
+                $scope.$watch('sessions', function () {
+                    $timeout(function () {
+                        $resizeTables()
+                    }, 200)
+                }, true)
+
+                $scope.cancel = function (data) {
+                    $uibModalInstance.close(data);
+                };
+
+                $scope.getList()
             }])
 }(angular));

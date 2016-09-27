@@ -163,6 +163,7 @@ lists.url = 'http://lists.ala.org.au'
 collections.url = 'http://collections.ala.org.au'
 sandbox.url = 'http://sandbox.ala.org.au/ala-hub'
 sandboxService.url = 'http://sandbox.ala.org.au/biocache-service'
+sandbox.uiUrl = 'http://sandbox.ala.org.au/datacheck'
 
 gazField = 'cl915'
 userObjectsField = 'cl1082'

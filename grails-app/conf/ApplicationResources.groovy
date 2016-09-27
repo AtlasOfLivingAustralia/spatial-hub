@@ -30,6 +30,8 @@ modules = {
         resource url: [dir: 'node_modules/leaflet-draw/dist/', file: 'leaflet.draw.js'], disposition: 'head'
         resource url: [dir: 'node_modules/leaflet-draw/dist/', file: 'leaflet.draw.css'], disposition: 'head'
         resource url: [dir: 'js', file: 'leaflet.util.getParamString.js'], disposition: 'head'
+        resource url: [dir: 'js', file: 'L.Control.Window.js'], disposition: 'head'
+        resource url: [dir: 'css', file: 'L.Control.Window.css'], disposition: 'head'
     }
 
     google {
@@ -145,6 +147,7 @@ modules = {
         resource url: [dir: 'js/portal/service', file: 'sessionsService.js']
         resource url: [dir: 'js/portal/service', file: 'speciesAutoCompleteService.js']
         resource url: [dir: 'js/portal/service', file: 'popupService.js']
+        resource url: [dir: 'js/portal/service', file: 'bieService.js']
 
         resource url: [dir: 'js/portal', file: 'util.js']
         resource url: [dir: 'js/portal', file: 'wellknown.js']

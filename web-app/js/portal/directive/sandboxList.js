@@ -1,7 +1,8 @@
 (function (angular) {
     'use strict';
     angular.module('sandbox-list-directive', ['lists-service', 'map-service'])
-        .directive('sandboxList', ['$http', 'SandboxService', 'MapService', function ($http, SandboxService, MapService) {
+        .directive('sandboxList', ['$http', '$timeout', 'SandboxService', 'MapService',
+            function ($http, $timeout, SandboxService, MapService) {
 
             var sortType = 'updated'
             var sortReverse = false
@@ -11,21 +12,41 @@
                     custom: "&onCustom"
                 },
                 link: function (scope, element, attrs) {
-                    scope.ws = SpatialPortalConfig.sandboxUrl
-                    scope.bs = SpatialPortalConfig.sandboxServiceUrl
-
                     scope.sandboxItems = []
 
                     scope.setItems = function (data) {
                         for (var i = 0; i < data.length; i++) {
-                            scope.sandboxItems.push({
-                                //TODO: enable access to multiple sandbox instances
-                                uid: data[i].uid,
-                                name: data[i].name,
-                                lastUpdated: data[i].lastUpdated,
-                                numberOfRecords: data[i].numberOfRecords,
-                                selected: false
-                            })
+                            //lists of valid sandbox instances
+                            var bsList = SpatialPortalConfig.sandboxServiceUrls
+                            var wsList = SpatialPortalConfig.sandboxUrls
+
+                            //match sandbox instance
+                            var bs = undefined
+                            var ws = undefined
+                            if (data[i].webserviceUrl != undefined && data[i].webserviceUrl != null) {
+                                for (var j = 0; j < bsList.length; j++) {
+                                    if (data[i].webserviceUrl == bsList[j]) {
+                                        bs = bsList[j]
+                                        ws = wsList[j]
+                                    }
+                                }
+                            } else {
+                                //legacy sandbox uploads do not have webserviceUrl
+                                bs = bsList[0]
+                                ws = wsList[0]
+                            }
+
+                            if (bs !== undefined) {
+                                scope.sandboxItems.push({
+                                    ws: ws,
+                                    bs: bs,
+                                    uid: data[i].uid,
+                                    name: data[i].name,
+                                    lastUpdated: data[i].lastUpdated,
+                                    numberOfRecords: data[i].numberOfRecords,
+                                    selected: false
+                                })
+                            }
                         }
                     }
 
@@ -35,7 +56,17 @@
 
                     SandboxService.list(SpatialPortalConfig.userId).then(function (data) {
                         scope.setItems(data)
-                    })
+
+                        $timeout(function () {
+                            $resizeTables()
+                        }, 200)
+                    });
+
+                    scope.$watch('sandboxItems', function () {
+                        $timeout(function () {
+                            $resizeTables()
+                        }, 200)
+                    }, true)
 
                     scope.selection = {}
 
@@ -57,8 +88,8 @@
                             scope.custom()({
                                 q: ["data_resource_uid:" + item.uid],
                                 name: item.name,
-                                bs: scope.bs,
-                                ws: scope.ws
+                                bs: item.bs,
+                                ws: item.ws
                             })
                         }
                     }

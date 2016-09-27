@@ -66,10 +66,12 @@
                 Import <span class="caret"></span>
             </button>
             <ul uib-dropdown-menu role="menu" aria-labelledby="menu-import">
-                <li role="menuitem"><a href="#" ng-click="open('sandBox')">Points</a></li>
+                <li role="menuitem"><a href="#" ng-click="open('sandBox', {display: { size: 'full'}})">Points</a></li>
                 <li role="menuitem"><a href="#" ng-click="open('addSpecies', {speciesOption: 'speciesList'})">Species List</a></li>
                 <li role="menuitem"><a href="#" ng-click="open('addArea')">Areas</a></li>
                 <li role="menuitem"><a href="#" ng-click="open('analysis')">Restore prior analysis</a></li>
+                <li style="display:none" role="menuitem"><a href="#" ng-click="open('sessions')" id="sessionsButton">Restore
+                    saved session</a></li>
             </ul>
         </div>
 

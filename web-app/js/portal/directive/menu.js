@@ -38,23 +38,12 @@
                         SessionsService.save({
                             layers: MapService.mappedLayers,
                             extents: MapService.getExtents(),
-                            basemap: MapService.getBaseMap()
+                            basemap: MapService.leafletScope.getBaseMap()
                         })
                     }
 
                     scope.loadSession = function (sessionId) {
-                        var data = SessionsService.get(sessionId)
-
-                        MapService.removeAll()
-
-                        //TODO: correct layer order
-                        for (var k in data.layers) {
-                            MapService.add(data.layers[k])
-                        }
-
-                        MapService.leafletScope.zoom(data.extents)
-
-                        MapService.setBaseMap(data.basemap)
+                        SessionsService.load(sessionId)
                     }
                 }
             };

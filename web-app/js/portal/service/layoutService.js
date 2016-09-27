@@ -82,25 +82,28 @@
                     this.panelMode[0] = 'default'
                     this.openFromStack(data)
                 },
-                openModal: function (type, returnData) {
-                    if (returnData === undefined || returnData.opening) {
+                openModal: function (type, data) {
+                    if (data === undefined || data.opening) {
                         this.closeOpen()
                     }
+
+                    var size = 'lg'
+                    if (data && data.display && data.display.size) size = data.display.size
 
                     var modalInstance = $uibModal.open({
                         animation: true,
                         templateUrl: 'portal/' + type + 'Content.html',
                         controller: type[0].toUpperCase() + type.substring(1) + 'Ctrl',
-                        size: 'lg',
+                        size: size,
                         backdrop: 'static',
                         resolve: {
                             data: function () {
-                                return returnData;
+                                return data;
                             }
                         }
                     });
 
-                    if (returnData === undefined || returnData.opening) {
+                    if (data === undefined || data.opening) {
                         layoutStack.push(["openModal", {}, [], type])
                     }
 

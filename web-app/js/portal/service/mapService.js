@@ -33,6 +33,16 @@
                         }
                         return list
                     },
+
+                    contextualLayers: function () {
+                        var list = []
+                        for (var i = 0; i < layers.length; i++) {
+                            if (layers[i].layertype === 'contextual') {
+                                list.push(layers[i])
+                            }
+                        }
+                        return list
+                    },
                     
                     groupLayersByType: function () {
                         var groups = {}
@@ -88,10 +98,6 @@
                             this.leafletScope.bounds.northEast.lng, this.leafletScope.bounds.northEast.lat]
                     },
 
-                    getBaseMap: function () {
-                        this.leafletScope.getBaseMap()
-                    },
-
                     updateZindex: function () {
                         for (var i = 0; i < this.mappedLayers.length; i++) {
                             this.mappedLayers[i].index = this.mappedLayers.length - i
@@ -133,9 +139,7 @@
                         }
                     },
 
-                    add: function (id, bs) {
-                        bs = bs || SpatialPortalConfig.biocacheServiceUrl
-
+                    add: function (id) {
                         id.uid = uid
                         uid = uid + 1
 
@@ -189,10 +193,11 @@
                                 name: uid + ': ' + id.name,
                                 type: 'wms',
                                 visible: true,
-                                url: bs + '/webportal/wms/reflect?',
+                                url: id.bs + '/webportal/wms/reflect?',
                                 layertype: 'species',
                                 opacity: id.opacity / 100.0,
                                 layerParams: {
+                                    opacity: id.opacity / 100.0,
                                     layers: 'ALA:occurrences',
                                     format: 'image/png',
                                     q: id.qid,
@@ -231,6 +236,7 @@
                                     url: SpatialPortalConfig.geoserverUrl + '/wms',
                                     layertype: 'area',
                                     layerParams: {
+                                        opacity: id.opacity / 100.0,
                                         layers: 'ALA:Objects',
                                         format: 'image/png',
                                         transparent: true,
@@ -274,6 +280,7 @@
                                     url: layer.layer.displaypath,
                                     layertype: id.layertype,
                                     layerParams: {
+                                        opacity: id.opacity / 100.0,
                                         layers: 'ALA:' + layer.layer.name,
                                         format: 'image/png',
                                         transparent: true
@@ -392,10 +399,11 @@
                     },
                     info: function (item) {
                         if (item.layertype == 'species') {
+                            item.display = {size: 'full'}
                             LayoutService.openModal('speciesInfo', item, '')
                         } else if (item.layertype == 'area') {
-                            console.log(item)
-                            alert('area')
+                            bootbox.alert("<b>Area</b><br/>Name: <i>item.name</i><br/>Description: <i>item.description</i>" +
+                                "<br/>Area (sq km): <i>item.area_km</i><br/>Extents: <i>item.bbox</i>");
                         } else {
                             if (item.metadataUrl !== undefined) {
                                 LayoutService.openIframe(item.metadataUrl, '', '')

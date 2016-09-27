@@ -211,10 +211,6 @@
 
                             $scope.step = $scope.step + 1
 
-                            //skip unknown steps, e.g. type='auto'
-                            while ($scope.step - 1 < $scope.values.length && $scope.values[$scope.step - 1] == null && $scope.values[$scope.step - 1] !== undefined) {
-                                $scope.step = $scope.step + 1
-                            }
                             break;
                         case 'output':
                             if($scope.taskId) {

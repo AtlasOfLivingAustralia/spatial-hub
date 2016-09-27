@@ -1,7 +1,7 @@
 (function (angular) {
     'use strict';
     angular.module('sessions-service', [])
-        .factory('SessionsService', ['$http', function ($http) {
+        .factory('SessionsService', ['$http', 'MapService', function ($http, MapService) {
 
             return {
                 list: function () {
@@ -10,9 +10,19 @@
                     });
                 },
                 save: function (data) {
-                    return $http.post("portal/saveData?sessionId=" + SpatialPortalConfig.sessionId, data).then(function (response) {
-                        console.log(response.data)
-                        alert(response.data.url)
+                    bootbox.prompt({
+                        title: "Enter a name to save this session",
+                        callback: function (name) {
+                            if (name != null) {
+                                if (name.length == 0) {
+                                    name = 'My saved session'
+                                }
+                                data.name = name
+                                return $http.post("portal/saveData?sessionId=" + SpatialPortalConfig.sessionId, data).then(function (response) {
+                                    bootbox.alert('<h3>Session Saved</h3><br/><br/>URL to retrived this saved session<br/><br/><a href="' + response.data.url + '">' + response.data.url + '</a>')
+                                });
+                            }
+                        }
                     });
                 },
                 get: function (sessionId) {
@@ -20,6 +30,29 @@
                         console.log(response.data)
                         return response.data
                     });
+                },
+                delete: function (sessionId) {
+                    return $http.get("portal/deleteSaved?sessionId=" + sessionId).then(function (response) {
+                        console.log(response.data)
+                        return response.data
+                    });
+                },
+                load: function (sessionId) {
+                    this.get(sessionId).then(function (data) {
+                        MapService.removeAll()
+
+                        MapService.leafletScope.zoom(data.extents)
+
+                        MapService.setBaseMap(data.basemap)
+
+                        //add in index order
+                        data.layers.sort(function (a, b) {
+                            return a.index - b.index
+                        })
+                        for (var i = 0; i < data.layers.length; i++) {
+                            MapService.add(data.layers[i])
+                        }
+                    })
                 }
             }
         }])

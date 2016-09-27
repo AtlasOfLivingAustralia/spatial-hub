@@ -1,7 +1,8 @@
 (function (angular) {
     'use strict';
     angular.module('lists-list-directive', ['lists-service', 'map-service'])
-        .directive('listsList', ['$http', 'ListsService', 'MapService', 'LayoutService', function ($http, ListsService, MapService, LayoutService) {
+        .directive('listsList', ['$http', '$timeout', 'ListsService', 'MapService', 'LayoutService',
+            function ($http, $timeout, ListsService, MapService, LayoutService) {
 
             var sortType = 'updated'
             var sortReverse = false
@@ -12,6 +13,8 @@
                 },
                 link: function (scope, element, attrs) {
                     scope.items = []
+
+                    scope.searchLists = ''
 
                     scope.setItems = function (data) {
                         if (data.length) {
@@ -43,7 +46,16 @@
 
                     ListsService.list().then(function (data) {
                         scope.setItems(data)
+                        $timeout(function () {
+                            $resizeTables()
+                        }, 200)
                     });
+
+                    scope.$watch('searchLists', function () {
+                        $timeout(function () {
+                            $resizeTables()
+                        }, 200)
+                    }, true)
 
                     scope.selection = {}
 

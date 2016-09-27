@@ -67,7 +67,7 @@
 
                         scope.openSandbox = function () {
                             $timeout(function () {
-                                LayoutService.openModal('sandBox', {setQ: scope.setSandboxQ})
+                                LayoutService.openModal('sandBox', {setQ: scope.setSandboxQ, display: {size: 'full'}})
                             }, 0)
                         };
 

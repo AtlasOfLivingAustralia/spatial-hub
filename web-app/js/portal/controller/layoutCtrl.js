@@ -21,30 +21,17 @@
                 })
 
                 //init a saved session
-                $scope.loadSession = function () {
-                    var sessionId = /[\?&]ss=[0-9]*/.exec(window.location.search)
+                $scope.loadSession = function (sessionId) {
                     if (sessionId) sessionId = sessionId[0].replace('?ss=', '').replace('&ss=', '')
 
                     if (sessionId) {
-                        SessionsService.get(sessionId).then(function (data) {
-
-                            MapService.removeAll()
-
-                            //TODO: verify layer order
-                            for (var k in data.layers) {
-                                MapService.add(data.layers[k])
-                            }
-
-                            MapService.setBaseMap(data.basemap)
-
-                            MapService.leafletScope.zoom(data.extents)
-
-                        })
+                        SessionsService.load(sessionId)
                     }
                 }
 
                 $timeout(function () {
-                    $scope.loadSession()
+                    var sessionId = /[\?&]ss=[0-9]*/.exec(window.location.search)
+                    $scope.loadSession(sessionId)
                 }, 2000)
 
             }])

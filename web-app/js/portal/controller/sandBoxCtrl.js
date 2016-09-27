@@ -26,10 +26,15 @@
                     $uibModalInstance.close(data);
                 };
 
+                //workaround for logging in to sandbox
+                if (SpatialPortalConfig.userId != '' && $('#loginWorkaround')[0].children.length == 0) {
+                    $('#loginWorkaround').append('<iframe src="' + SpatialPortalConfig.sandboxUiUrl + '/dataCheck/ping"></iframe>')
+                }
+
                 $scope.watchStatus = function (sandbox) {
                     var child = $scope.$$childHead
-                    while(child){
-                        if(child.preview && !setWatchFlag){
+                    while (child) {
+                        if (child.preview && !setWatchFlag) {
                             var dataResourceUid, datasetName
                             child.$watch('preview.dataResourceUid', function (newValue) {
                                 dataResourceUid = newValue
@@ -40,7 +45,7 @@
                             });
 
                             child.$watch('preview.uploadStatus', function (newValue) {
-                                if(newValue == 'COMPLETE'){
+                                if (newValue == 'COMPLETE') {
                                     var q = {
                                         q: ['data_resource_uid:"' + dataResourceUid + '"'],
                                         name: datasetName,
@@ -56,7 +61,7 @@
                                     }
                                     
                                     $scope.cancel();
-                                } else if(newValue == 'FAILED') {
+                                } else if (newValue == 'FAILED') {
                                     alert('failed to import')
                                     $scope.cancel()
                                 }

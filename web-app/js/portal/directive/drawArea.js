@@ -15,18 +15,29 @@
                         scope.name = 'DrawAreaCtrl'
 
                         scope.type = scope.config.data
+                        scope.typeName = ''
+
+                        scope.mappedLayers = []
+
+                        scope.layerSelected = {name: 'search'}
 
                         scope.enableDrawing = function () {
                             if (scope.deleteDrawing)
                                 scope.deleteDrawing()
 
                             if (scope.type == 'drawBoundingBox') {
+                                scope.typeName = 'rectangle'
                                 scope.addBox()
                             } else if (scope.type == 'drawPolygon') {
+                                scope.typeName = 'polygon'
                                 scope.addPolygon()
                             } else if (scope.type == 'pointOnLayer') {
                                 scope.addMarker()
+                                scope.mappedLayers = MapService.contextualLayers()
+                                scope.mappedLayers.push({uid: 'search', name: 'Search for a layer'})
+                                if (scope.mappedLayers.length > 0) scope.layerSelected.name = scope.mappedLayers[0].uid
                             } else if (scope.type == 'drawPointRadius') {
+                                scope.typeName = 'circle'
                                 scope.addCircle()
                             }
                         }
@@ -44,6 +55,20 @@
                             data: {},
                             value: ''
                         }
+
+                        scope.$watch('layerSelected.name', function () {
+                            if (scope.layerSelected.name != 'search') {
+                                scope.intersect.layer = MapService.getFullLayer(scope.layerSelected.name)
+                                scope.updateIntersect()
+                            } else {
+                                scope.intersect = {
+                                    name: '',
+                                    layer: {},
+                                    data: {},
+                                    value: ''
+                                }
+                            }
+                        }, true)
 
                         scope.selectLayer = function (layer) {
                             scope.intersect.layer = layer
@@ -107,8 +132,6 @@
                         }
 
                         scope.showWkt = function () {
-                            //TODO: validate wkt
-
                             //display wkt
                             MapService.leafletScope.addWktToMap([scope.selectedArea.wkt])
                         }
