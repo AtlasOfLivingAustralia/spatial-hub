@@ -269,7 +269,7 @@
                                 } else {
                                     id.layertype = 'grid'
                                 }
-                                id.layer = layer
+                              //  id.layer = layer
                                 var url = layer.layer.displaypath.replace("&style=", "&ignore=")
 
                                 selected.layer.leaflet = {

@@ -1,7 +1,7 @@
 (function (angular) {
     'use strict';
     angular.module('layers-service', ['ngFileUpload'])
-        .factory('LayersService', ['$http', 'Upload', function ($http, Upload) {
+        .factory('LayersService', ['$http', '$timeout', 'Upload', function ($http, $timeout, Upload) {
             var layers = []
 
             $http.get(SpatialPortalConfig.layersServiceUrl + "/fields/search?q=").then(function (data) {
@@ -24,10 +24,15 @@
                 },
                 getLayer: function (layer) {
                     for (var i = 0; i < layers.length; i++) {
-                        if (layers[i].id === layer || layers[i].layer.name === layer) {
+                        if (layers[i].id === layer || layers[i].layer.name.toLowerCase() == layer.toLowerCase()) {
                             return layers[i];
                         }
                     }
+                },
+                getLayersUrlLoad: function(layer) {
+                    var layerService = this
+                    return $timeout(function() {
+                        return layerService.getLayer(layer)}, 1000);
                 },
                 createFromWkt: function (wkt, name, description) {
                     return $http.post('portal/wkt',

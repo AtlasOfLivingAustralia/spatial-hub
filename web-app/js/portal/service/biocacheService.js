@@ -33,6 +33,16 @@
                         }
                     });
                 },
+                queryTitle: function (query, fqs) {
+                    var fqList = (fqs === undefined ? '' : '&fq=' + this.joinAndEncode(fqs))
+                    return $http.get(query.bs + "/occurrences/search?facet=false&pageSize=0&q=" + this.getQString(query) + fqList).then(function (response) {
+                        if (response.data !== undefined && response.data.queryTitle !== undefined) {
+                            return response.data.queryTitle
+                        } else {
+                            return ""
+                        }
+                    });
+                },
                 constructSearchResultUrl: function (query, fqs, pageSize, offset, facet) {
                     facet = facet || false
                     pageSize = pageSize === undefined ? 1 : pageSize

@@ -71,13 +71,21 @@
                 'species-info-ctrl', 'tabulate-ctrl', 'tool-area-report-ctrl', 'sand-box-ctrl', 'analysis-ctrl',
                 'ngAria', 'ngTouch', 'ala.sandbox.components','create-species-list-ctrl',
                 'ala.sandbox.preview', 'chieffancypants.loadingBar', 'ngFileUpload', 'playback-directive',
-                'colour-service', 'sessions-service', 'sessions-ctrl', 'bie-service'])
+                'colour-service', 'sessions-service', 'sessions-ctrl', 'bie-service', 'url-params-service'])
             .factory("ConfigService", [function () {
                 return {}
             }])
 
     spApp.value('sandboxConfig', SANDBOX_CONFIG);
     spApp.value('existing', 1 );
+
+    spApp.config(function($locationProvider) {
+        $locationProvider.html5Mode({
+            enabled: true,
+            requireBase: false
+        });
+
+    });
 
     spApp.config(['cfpLoadingBarProvider', function(cfpLoadingBarProvider) {
         cfpLoadingBarProvider.includeSpinner = false;

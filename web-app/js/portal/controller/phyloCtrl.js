@@ -1,13 +1,23 @@
 (function (angular) {
     'use strict';
-    angular.module('phylo-ctrl', ['map-service']).controller('PhyloCtrl', ['$scope', 'MapService', '$timeout', 'LayoutService', '$uibModalInstance',
-        function ($scope, MapService, $timeout, LayoutService, $uibModalInstance) {
+    angular.module('phylo-ctrl', ['map-service']).controller('PhyloCtrl', ['$scope', 'MapService', '$timeout', 'LayoutService', '$uibModalInstance', 'data',
+        function ($scope, MapService, $timeout, LayoutService, $uibModalInstance, inputData) {
+
+            var param = inputData
 
             $scope.name = 'PhyloCtrl'
             $scope.stepNames = ['select area', 'select tree', 'select species']
             $scope.step = 1
             $scope.selectedQ = {q: [], name: '', bs: '', ws: ''}
+
+            // TODO: set the selectedArea from param
+          /*  if (param && param.selectedAreas && param.selectedAreas != undefined) {
+               
+            } else {
+                $scope.selectedArea = {area: [{}]}
+            } */
             $scope.selectedArea = {area: [{}]}
+
             $scope.selectedPhylo = {id: ''}
 
             LayoutService.addToSave($scope)

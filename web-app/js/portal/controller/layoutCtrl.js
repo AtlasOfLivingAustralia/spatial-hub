@@ -1,8 +1,8 @@
 (function (angular) {
     'use strict';
-    angular.module('layout-ctrl', ['layout-service'])
-        .controller('LayoutCtrl', ['$scope', 'LayoutService', 'SessionsService', '$timeout', 'MapService',
-            function ($scope, LayoutService, SessionsService, $timeout, MapService) {
+    angular.module('layout-ctrl', ['layout-service', 'url-params-service'])
+        .controller('LayoutCtrl', ['$scope', 'LayoutService', 'SessionsService', '$timeout', '$location', 'MapService', 'UrlParamsService',
+            function ($scope, LayoutService, SessionsService, $timeout, $location, MapService, UrlParamsService) {
                 $scope.panelMode = LayoutService.panelMode
                 $scope.showOptions = LayoutService.showOptions
                 $scope.showLegend = LayoutService.showLegend
@@ -19,6 +19,11 @@
                 $scope.$watch('panelMode', function () {
                     console.log($scope.panelMode)
                 })
+
+                var params = $location.search();
+                if (params && Object.keys(params).length != 0) {
+                    UrlParamsService.processUrlParams(params);
+                }
 
                 //init a saved session
                 $scope.loadSession = function (sessionId) {
