@@ -71,7 +71,7 @@
                 'species-info-ctrl', 'tabulate-ctrl', 'tool-area-report-ctrl', 'sand-box-ctrl', 'analysis-ctrl',
                 'ngAria', 'ngTouch', 'ala.sandbox.components','create-species-list-ctrl',
                 'ala.sandbox.preview', 'chieffancypants.loadingBar', 'ngFileUpload', 'playback-directive',
-                'colour-service', 'sessions-service', 'sessions-ctrl', 'bie-service', 'url-params-service'])
+                'colour-service', 'sessions-service', 'sessions-ctrl', 'bie-service', 'logger-service', 'url-params-service'])
             .factory("ConfigService", [function () {
                 return {}
             }])
@@ -120,10 +120,11 @@
                 var userEmail = document.cookie.split(';').find ( function ( cookie ) { return cookie.trim().startsWith('ALA-Auth='); } ).trim().replace('ALA-Auth="','').replace('"','')
                 $('.navbar-right .dropdown:last a:first').html(userEmail + '<span class="caret"/>')
             } else {
-                var a = $('<li class="dropdown font-xsmall"></li>').insertBefore($('.navbar-right .dropdown')[0])
-                var b = $('.navbar-right .dropdown a:last')
-                b.detach()
-                a.append(b)
+                //insert new login button
+                $('<li class="dropdown font-xsmall"><a href="#" onclick="$(\'#spatialHubLogin\')[0].click()" data-toggle="dropdown" role="button" aria-expanded="false">Log in</a></li>').insertBefore($('.navbar-right .dropdown')[0])
+
+                //remove login button
+                $('.navbar-right .dropdown a:last').detach()
 
                 $('.navbar-right .dropdown:last a:first').html('<span class="caret"/>')
             }
@@ -192,7 +193,8 @@
             hoverLayers: [],
             proxyUrl: '${createLink(controller: 'portal', action: 'proxy')}',
             url: '${createLink(controller: 'portal', action: 'index')}',
-            sessionId: '${sessionId}'
+            sessionId: '${sessionId}',
+            loginUrl: '${config.loginUrl}'
         }
 
         L.Icon.Default.imagePath = 'node_modules/leaflet/dist/images'

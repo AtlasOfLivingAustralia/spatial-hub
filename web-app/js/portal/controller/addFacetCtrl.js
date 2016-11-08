@@ -7,6 +7,8 @@
 
                 $scope.name = 'addFacetCtrl'
 
+                $scope.stepNames = ['Restrict to an area', 'Select facet']
+
                 $scope.step = 1
                 $scope.selectedArea = {
                     area: {
@@ -77,7 +79,7 @@
                     if ($scope.step == 1) {
                         return $scope.selectedArea.area.length == 0
                     } else if ($scope.step == 2) {
-                        return false
+                        return $scope.selection.length == 0
                     }
                 }
 

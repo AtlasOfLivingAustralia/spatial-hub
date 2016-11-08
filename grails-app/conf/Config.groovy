@@ -191,3 +191,5 @@ grails.cache.config = {
     }
 
 }
+
+loginUrl = 'https://auth.ala.org.au/cas/login'

@@ -1,8 +1,8 @@
 (function (angular) {
     'use strict';
-    angular.module('map-service', ['layers-service', 'facet-auto-complete-service', 'biocache-service'])
-        .factory("MapService", ['LayoutService', '$timeout', 'LayersService', 'FacetAutoCompleteService', 'BiocacheService', 'ColourService',
-            function (LayoutService, $timeout, LayersService, FacetAutoCompleteService, BiocacheService, ColourService) {
+    angular.module('map-service', ['layers-service', 'facet-auto-complete-service', 'biocache-service', 'logger-service'])
+        .factory("MapService", ['LayoutService', '$timeout', 'LayersService', 'FacetAutoCompleteService', 'BiocacheService', 'ColourService', 'LoggerService',
+            function (LayoutService, $timeout, LayersService, FacetAutoCompleteService, BiocacheService, ColourService, LoggerService) {
                 var bounds = {}
                 var layers = []
                 var leafletLayers = {
@@ -187,6 +187,7 @@
                         selected.layer.index = idx + 1
 
                         if (id.q && id.layertype !== 'area') {
+                            LoggerService.log('AddToMap', 'Species', {qid: id.qid})
                             id.layertype = 'species'
                             id.name = id.name
                             selected.layer.leaflet = {
@@ -227,6 +228,7 @@
                             })
                         } else {
                             if (id.layertype === 'area') {
+                                LoggerService.log('AddToMap', 'Area', {pid: id.pid})
                                 //user or layer object
                                 selected.layer.leaflet = {
                                     name: uid + ': ' + id.name,
@@ -248,6 +250,8 @@
                                 var layer
                                 if (id.displaypath !== undefined) layer = id
                                 else layer = LayersService.getLayer(id.id)
+
+                                LoggerService.log('AddToMap', 'Layer', {id: id.id})
 
                                 if (layer.type != 'e') {
                                     id.layertype = 'contextual'
@@ -402,8 +406,25 @@
                             item.display = {size: 'full'}
                             LayoutService.openModal('speciesInfo', item, '')
                         } else if (item.layertype == 'area') {
-                            bootbox.alert("<b>Area</b><br/>Name: <i>item.name</i><br/>Description: <i>item.description</i>" +
-                                "<br/>Area (sq km): <i>item.area_km</i><br/>Extents: <i>item.bbox</i>");
+                            var b = item.bbox
+                            if ((item.bbox + '').startsWith('POLYGON')) {
+                                //convert POLYGON box to bounds
+                                var split = item.bbox.split(',')
+                                var p1 = split[1].split(' ')
+                                var p2 = split[3].split(' ')
+                                b = [[Math.min(p1[1], p2[1]), Math.min(p1[0], p2[0])], [Math.max(p1[1], p2[1]), Math.max(p1[0], p2[0])]]
+                            }
+                            if (item.bbox && item.bbox.length == 4) {
+                                b = [[item.bbox[1], item.bbox[0]], [item.bbox[3], item.bbox[2]]]
+                            }
+
+                            bootbox.alert("<b>Area</b><br/><br/>" +
+                                "<table class='table-striped table table-bordered'>" +
+                                "<tr><td style='width:100px'>Name</td><td>" + item.name + "</td></tr>" +
+                                "<tr><td>Description</td><td>" + item.description + "</td></tr>" +
+                                "<tr><td>Area (sq km)</td><td>" + item.area_km.toFixed(2) + "</td></tr>" +
+                                "<tr><td>Extents</td><td>" + item.bbox[0][0] + " " + item.bbox[0][1] + ", " +
+                                item.bbox[1][0] + " " + item.bbox[1][1] + "</td></tr></table>")
                         } else {
                             if (item.metadataUrl !== undefined) {
                                 LayoutService.openIframe(item.metadataUrl, '', '')

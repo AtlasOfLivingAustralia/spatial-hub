@@ -42,6 +42,14 @@
                         })
                     }
 
+                    scope.spatialHubLogin = function () {
+                        SessionsService.saveLogin({
+                            layers: MapService.mappedLayers,
+                            extents: MapService.leafletScope.getExtents(),
+                            basemap: MapService.leafletScope.getBaseMap()
+                        })
+                    }
+
                     scope.loadSession = function (sessionId) {
                         SessionsService.load(sessionId)
                     }

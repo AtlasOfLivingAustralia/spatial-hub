@@ -26,7 +26,7 @@
 </div>
 
 <input type="radio" ng-model="speciesOption" value="importList"
-       ng-change="changeOption()">Create new species list</input>
+       ng-change="changeOption()" ng-disabled="!isLoggedIn()">Create new species list<span ng-show="!isLoggedIn()">&nbsp;(must be logged in)</span></input>
 
 <div ng-if="speciesOption == 'importList'" style="margin-left:15px">
     <i>List: <b>{{speciesListName}}</b></i>
@@ -46,7 +46,8 @@
 </div>
 
 <br/>
-<input type="radio" ng-model="speciesOption" value="importPoints" ng-change="changeOption()">Import points</input>
+<input type="radio" ng-model="speciesOption" value="importPoints" ng-change="changeOption()"
+       ng-disabled="!isLoggedIn()">Import points<span ng-show="!isLoggedIn()">&nbsp;(must be logged in)</span></input>
 
 <div ng-if="speciesOption == 'importPoints'" style="margin-left:25px;margin-top:10px">
     <i>Dataset: <b>{{sandboxName}}</b></i>
@@ -57,7 +58,7 @@
 <br/>
 
 <input type="radio" ng-model="speciesOption" value="sandboxPoints"
-       ng-change="changeOption()">Use imported points</input>
+       ng-change="changeOption()" ng-disabled="!isLoggedIn()">Use imported points<span ng-show="!isLoggedIn()">&nbsp;(must be logged in)</span></input>
 <br/>
 
 <div ng-if="speciesOption == 'sandboxPoints'" style="margin-left:15px">

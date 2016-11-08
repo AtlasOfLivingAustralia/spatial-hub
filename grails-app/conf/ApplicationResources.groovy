@@ -149,6 +149,7 @@ modules = {
         resource url: [dir: 'js/portal/service', file: 'popupService.js']
         resource url: [dir: 'js/portal/service', file: 'urlParamsService.js']
         resource url: [dir: 'js/portal/service', file: 'bieService.js']
+        resource url: [dir: 'js/portal/service', file: 'loggerService.js']
 
         resource url: [dir: 'js/portal', file: 'util.js']
         resource url: [dir: 'js/portal', file: 'wellknown.js']

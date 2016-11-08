@@ -295,6 +295,10 @@ ol.leaflet-quick-links li {
     width: 80%;
 }
 
+.modal-sm {
+    width: 400px;
+}
+
 /** thead padding must match tbody matching for fixed-head tables **/
 .table > thead > tr > th {
     padding: 0px;

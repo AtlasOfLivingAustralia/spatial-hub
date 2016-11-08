@@ -1,11 +1,25 @@
 <div class="modal-header">
-    <h3 class="modal-title">Add Species</h3>
+    <h3 class="modal-title">Add Facet</h3>
 </div>
 
 <div class="modal-body">
     <div>
-        <form class="form-horizontal">
-            <span>{{sel}}</span>
+        <div class="col-md-3">
+            <div class="stepList">
+                <div ng-repeat="stepName in stepNames">
+                    <div ng-show="step < $index + 1" style="font-size:12px">
+                        <span>{{$index + 1}}. {{stepName}}</span></div>
+                    <div ng-show="step == $index + 1" style="font-size:12px;font-weight:bold;border-bottom-style:solid">
+                        <span>{{$index + 1}}. {{stepName}}</span></div>
+                    <div ng-show="step > $index + 1" style="font-size:12px">
+                        <span>{{$index + 1}}. {{stepName}}</span>
+                        <i class="glyphicon glyphicon-ok" ng-show="step > $index + 1"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+
+            <form class="form-horizontal">
 
             <div ng-show="step == '1'">
                 <div select-area on-custom="setArea" selected-area="selectedArea"></div>
@@ -33,7 +47,7 @@
                 <table class="table" style="width:370px;height:200px;overflow:scroll;display:block">
                     <tr ng-repeat="x in facetList">
                         <td style="width:20px"><input type="checkbox" ng-model="x.selected"
-                                                      ng-change="updateSelection()"></td>
+                                                      ng-change="applySelection()"></td>
                         <td style="width:230px">{{x.label}}</td>
                         <td style="width:100px">{{x.count}}</td>
                         <td style="background-color:#{{formatColor(x)}};width:20px">&nbsp</td>
@@ -44,9 +58,11 @@
                 <button ng-click="nextPage()" class="btn btn-xs btn-default" ng-disabled="offset + pageSize >= max">></button>
 
                 <button ng-click="clearSelection()" class="btn btn-xs btn-default">Clear selection</button>
+                <span style="color:red">{{selection.length}} facets selected</span>
             </div>
 
         </form>
+        </div>
     </div>
 </div>
 

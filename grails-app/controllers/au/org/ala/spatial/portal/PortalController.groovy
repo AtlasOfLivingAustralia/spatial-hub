@@ -30,7 +30,7 @@ class PortalController {
         //use a new id
         def id = sessionService.newId(authService.getUserId())
 
-        render sessionService.put(id, authService.getUserId(), request.getJSON()) as JSON
+        render sessionService.put(id, authService.getUserId(), request.getJSON(), params?.save ?: true) as JSON
     }
 
     def deleteSaved() {
@@ -112,9 +112,11 @@ class PortalController {
     def createTask() {
         def json = request.getJSON()
 
+        def userId = authService.userId
+
         json.putAt('api_key', grailsApplication.config.api_key)
 
-        def r = webService.doPost(grailsApplication.config.layersService.url + "/tasks/create", json)
+        def r = webService.doPost(grailsApplication.config.layersService.url + "/tasks/create?userId=" + userId + '&sessionId=' + params.sessionId, json)
 
         if (r == null)
             render [:] as JSON
@@ -155,7 +157,7 @@ class PortalController {
     def q() {
         def json = request.getJSON()
 
-        def r = webService.doPost(json.ws + "/webportal/params", json)
+        def r = webService.doPost(json.bs + "/webportal/params", json)
 
         render([qid: r] as JSON)
     }

@@ -2,9 +2,9 @@
     'use strict';
     angular.module('select-layers-directive', ['lists-service', 'layer-distances-service', 'map-service',
             'predefined-layer-lists-service'])
-        .directive('selectLayers', ['$http', 'LayersService', 'LayerDistancesService', 'MapService',
+        .directive('selectLayers', ['$http', '$timeout', 'LayersService', 'LayerDistancesService', 'MapService',
             'LayoutService', 'PredefinedLayerListsService',
-            function ($http, LayersService, LayerDistancesService, MapService,
+            function ($http, $timeout, LayersService, LayerDistancesService, MapService,
                       LayoutService, PredefinedLayerListsService) {
 
                 var sortType = 'classification' // set the default sort type
@@ -26,6 +26,8 @@
                         scope.validLayerSelection = scope.mandatory === undefined || !scope.mandatory
                         scope.mode = ''
                         LayoutService.addToSave(scope)
+
+                        scope.layersServiceUrl = SpatialPortalConfig.layersServiceUrl
 
                         scope.layers = []
                         scope.predefinedLists = PredefinedLayerListsService.getList()
@@ -92,6 +94,22 @@
 
                         LayersService.getLayers().then(function (data) {
                             scope.setLayers(data.data)
+
+                            $timeout(function () {
+                                $resizeTables()
+                            }, 200)
+                        })
+
+                        scope.$watch('layers', function () {
+                            $timeout(function () {
+                                $resizeTables()
+                            }, 200)
+                        })
+
+                        scope.$watch('searchLayer', function () {
+                            $timeout(function () {
+                                $resizeTables()
+                            }, 200)
                         })
 
                         scope.isSelected = function (id) {

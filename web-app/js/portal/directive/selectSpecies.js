@@ -150,6 +150,10 @@
 
 
                         }
+
+                        scope.isLoggedIn = function () {
+                            return SpatialPortalConfig.userId !== undefined && SpatialPortalConfig.userId != null && SpatialPortalConfig.userId.length > 0
+                        }
                     }
                 }
 

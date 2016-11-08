@@ -27,6 +27,9 @@ class SessionService {
 
     def currentId = System.currentTimeMillis()
 
+    //sessions saves that do not persist on restart
+    def tmpSaves = [:]
+
     synchronized def newId(userId) {
         //get id
         def newId = System.currentTimeMillis()
@@ -41,14 +44,18 @@ class SessionService {
         currentId = newId
     }
 
-    def put(id, userId, data) {
+    def put(id, userId, data, save) {
         sessionCache.put(id, data)
 
-        saveFile(id).getParentFile().mkdirs()
+        if (!save) {
+            saveFile(id).getParentFile().mkdirs()
 
-        FileUtils.writeStringToFile(saveFile(id), (data as JSON).toString())
+            FileUtils.writeStringToFile(saveFile(id), (data as JSON).toString())
 
-        updateUserSave(id, userId, 'add', data?.name, System.currentTimeMillis())
+            updateUserSave(id, userId, 'add', data?.name, System.currentTimeMillis())
+        } else {
+            tmpSaves.put(id, data)
+        }
 
         [status: 'saved', url: grailsApplication.config.grails.serverURL + '?ss=' + id]
     }

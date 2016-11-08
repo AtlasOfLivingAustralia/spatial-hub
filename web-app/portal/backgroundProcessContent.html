@@ -5,13 +5,17 @@
 <div class="modal-body">
     <div class="row">
         <div class="col-md-4">
-            <ol class="stepList" style="margin-left:-20px;">
-
-           <!--     <li style="font-size:12px" ng-repeat="stepName in stepNames" ng-show="stepName.length > 0"><span>{{stepName}}&nbsp;</span><i
-                        class="glyphicon glyphicon-ok" ng-show="step > $index + 1"></i></li>-->
-                <li style="font-size:12px" ng-repeat="(key, sv) in stepView"><span>{{sv.name}}&nbsp;</span><i
-                        class="glyphicon glyphicon-ok" ng-show="step > $index + 1"></i></li>
-            </ol>
+            <div class="stepList">
+                <div ng-repeat="(key, sv) in stepView">
+                    <div ng-show="step < $index + 1" style="font-size:12px">
+                        <span>{{$index + 1}}. {{sv.name}}</span></div>
+                    <div ng-show="step == $index + 1" style="font-size:12px;font-weight:bold;border-bottom-style:solid">
+                        <span>{{$index + 1}}. {{sv.name}}</span></div>
+                    <div ng-show="step > $index + 1" style="font-size:12px">
+                        <span>{{$index + 1}}. {{sv.name}}</span>
+                        <i class="glyphicon glyphicon-ok" ng-show="step > $index + 1"></i></div>
+                </div>
+            </div>
         </div>
 
         <div class="col-md-8">

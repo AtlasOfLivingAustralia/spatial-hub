@@ -1,37 +1,45 @@
 (function (angular) {
     'use strict';
     angular.module('biocache-service', [])
-        .factory("BiocacheService", ["$http", function ($http) {
+        .factory("BiocacheService", ["$http", "$q", function ($http, $q) {
             return {
                 speciesCount: function (query, fqs) {
                     var fqList = (fqs === undefined ? '' : '&fq=' + this.joinAndEncode(fqs))
-                    return $http.get(query.bs + "/occurrence/facets?facets=names_and_lsid&flimit=0&q=" + this.getQString(query) + fqList).then(function (response) {
-                        if (response.data !== undefined && response.data.length > 0 && response.data[0].count !== undefined) {
-                            return response.data[0].count;
-                        } else {
-                            return 0;
-                        }
-                    });
+                    return this.registerQuery(query).then(function (response) {
+                        return $http.get(query.bs + "/occurrence/facets?facets=names_and_lsid&flimit=0&q=" + response.qid + fqList).then(function (response) {
+                            if (response.data !== undefined && response.data.length > 0 && response.data[0].count !== undefined) {
+                                return response.data[0].count;
+                            } else {
+                                return 0;
+                            }
+                        });
+                    })
                 },
                 speciesList: function (query, fqs) {
                     var fqList = (fqs === undefined ? '' : '&fq=' + this.joinAndEncode(fqs))
-                    return $http.get(query.bs + "/occurrences/facets/download?facets=names_and_lsid&lookup=true&count=true&q=" + this.getQString(query) + fqList).then(function (response) {
-                        return response.data;
-                    });
+                    return this.registerQuery(query).then(function (response) {
+                        return $http.get(query.bs + "/occurrences/facets/download?facets=names_and_lsid&lookup=true&count=true&q=" + query.qid + fqList).then(function (response) {
+                            return response.data;
+                        });
+                    })
                 },
                 dataProviderList: function (query, fqs) {
                     var fqList = (fqs === undefined ? '' : '&fq=' + this.joinAndEncode(fqs))
-                    return $http.jsonp(query.bs + "/webportal/dataProviders?q=" + this.getQString(query) + fqList).then(function (response) {
-                        return response.data;
-                    });
+                    return this.registerQuery(query).then(function (response) {
+                        return $http.jsonp(query.bs + "/webportal/dataProviders?q=" + response.qid + fqList).then(function (response) {
+                            return response.data;
+                        });
+                    })
                 },
                 count: function (query, fqs) {
                     var fqList = (fqs === undefined ? '' : '&fq=' + this.joinAndEncode(fqs))
-                    return $http.get(query.bs + "/occurrences/search?facet=false&pageSize=0&q=" + this.getQString(query) + fqList).then(function (response) {
-                        if (response.data !== undefined && response.data.totalRecords !== undefined) {
-                            return response.data.totalRecords;
-                        }
-                    });
+                    return this.registerQuery(query).then(function (response) {
+                        return $http.get(query.bs + "/occurrences/search?facet=false&pageSize=0&q=" + response.qid + fqList).then(function (response) {
+                            if (response.data !== undefined && response.data.totalRecords !== undefined) {
+                                return response.data.totalRecords;
+                            }
+                        });
+                    })
                 },
                 queryTitle: function (query, fqs) {
                     var fqList = (fqs === undefined ? '' : '&fq=' + this.joinAndEncode(fqs))
@@ -48,28 +56,36 @@
                     pageSize = pageSize === undefined ? 1 : pageSize
                     offset = offset || 0
                     var fqList = (fqs === undefined ? '' : '&fq=' + this.joinAndEncode(fqs))
-                    return query.ws + "/occurrences/search?facet=" + facet + "&pageSize=" + pageSize + "&startIndex=" + offset +"&q=" + this.getQString(query) + fqList
+                    return this.registerQuery(query).then(function (response) {
+                        return query.ws + "/occurrences/search?facet=" + facet + "&pageSize=" + pageSize + "&startIndex=" + offset + "&q=" + response.qid + fqList
+                    })
                 },
                 searchForOccurrences: function (query, fqs, pageSize, offset, facet) {
                     facet = facet || false
                     pageSize = pageSize === undefined ? 1 : pageSize
                     offset = offset || 0
                     var fqList = (fqs === undefined ? '' : '&fq=' + this.joinAndEncode(fqs))
-                    return $http.get(query.bs + "/occurrences/search?facet=" + facet + "&pageSize=" + pageSize + "&startIndex=" + offset +"&q=" + this.getQString(query) + fqList).then(function (response) {
-                        if (response.data !== undefined) {
-                            return response.data;
-                        }
-                    });
+                    return this.registerQuery(query).then(function (response) {
+                        return $http.get(query.bs + "/occurrences/search?facet=" + facet + "&pageSize=" + pageSize + "&startIndex=" + offset + "&q=" + response.qid + fqList).then(function (response) {
+                            if (response.data !== undefined) {
+                                return response.data;
+                            }
+                        });
+                    })
                 },
                 facet: function (facet, query) {
-                    return $http.get(query.bs + "/webportal/legend?cm=" + facet + "&q=" + this.getQString(query) + "&type=application/json").then(function (response) {
-                        return response.data;
-                    });
+                    return this.registerQuery(query).then(function (response) {
+                        return $http.get(query.bs + "/webportal/legend?cm=" + facet + "&q=" + response.qid + "&type=application/json").then(function (response) {
+                            return response.data;
+                        });
+                    })
                 },
                 facetGeneral: function (facet, query, pageSize, offset) {
-                    return $http.get(query.bs + "/occurrence/facets?facets=" + facet + "&flimit=" + pageSize + "&foffset=" + offset + "&q=" + this.getQString(query)).then(function (response) {
-                        return response.data;
-                    });
+                    return this.registerQuery(query).then(function (response) {
+                        return $http.get(query.bs + "/occurrence/facets?facets=" + facet + "&flimit=" + pageSize + "&foffset=" + offset + "&q=" + reqponse.qid).then(function (response) {
+                            return response.data;
+                        });
+                    })
                 },
                 joinAndEncode: function(list) {
                     var q = ''
@@ -83,31 +99,35 @@
                     }
                     return q
                 },
-                getQString: function(query) {
-                    if (query.qid !== undefined) {
-                        return query.qid
-                    } else if (query.q !== undefined) {
-                        var q = this.joinAndEncode(query.q)
-                        if (query.wkt != null) {
-                            q += "&wkt=" + encodeURIComponent(query.wkt)
-                        }
-
-                        query.qid = q
-
-                        return q
+                bbox: function (query) {
+                    return this.registerQuery(query).then(function (response) {
+                        return $http.get(query.bs + "/webportal/bbox?q=" + response.qid + "&type=application/json").then(function (response) {
+                            var bb = response.data.split(",")
+                            return [[bb[1], bb[0]], [bb[3], bb[2]]];
+                        });
+                    })
+                },
+                registerQuery: function (query) {
+                    if (query.qid) {
+                        return $q.when(query)
                     } else {
-                        return query
+                        var q = query.q[0]
+                        var fq
+                        if (query.q.length > 1) {
+                            fq = query.q.slice()
+                            fq.splice(0, 1)
+                        }
+                        var data = {q: q, bs: query.bs}
+                        if (fq !== undefined && fq != null) data.fq = fq
+                        if (query.wkt !== undefined && query.wkt != null && query.wkt.length > 0) data.wkt = query.wkt
+                        return $http.post("portal/q", data).then(function (response) {
+                            query.qid = 'qid:' + response.data.qid
+                            return query
+                        });
                     }
                 },
-                bbox: function (query) {
-                    var qstr = this.getQString(query)
-                    return $http.get(query.bs + "/webportal/bbox?q=" + this.getQString(query) + "&type=application/json").then(function (response) {
-                        var bb = response.data.split(",")
-                        return [[bb[1], bb[0]], [bb[3], bb[2]]];
-                    });
-                },
-                registerParam: function (ws, q, fq, wkt) {
-                    var data = {q: q, ws: ws}
+                registerParam: function (bs, q, fq, wkt) {
+                    var data = {q: q, bs: bs}
                     if (fq !== undefined && fq != null) data.fq = fq
                     if (wkt !== undefined && wkt != null && wkt.length > 0) data.wkt = wkt
                     return $http.post("portal/q", data).then(function (response) {

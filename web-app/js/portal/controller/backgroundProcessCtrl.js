@@ -2,8 +2,8 @@
     'use strict';
     angular.module('background-process-ctrl', ['map-service', 'biocache-service', 'layers-service'])
         .controller('BackgroundProcessCtrl', ['$scope', 'MapService', '$timeout', 'LayoutService', '$uibModalInstance',
-            'BiocacheService', '$http', 'LayersService', 'data',
-            function ($scope, MapService, $timeout, LayoutService, $uibModalInstance, BiocacheService, $http, LayersService, inputData) {
+            'BiocacheService', '$http', 'LayersService', 'data', 'LoggerService',
+            function ($scope, MapService, $timeout, LayoutService, $uibModalInstance, BiocacheService, $http, LayersService, inputData, LoggerService) {
 
                 $scope.name = 'BackgroundProcessCtrl'
 
@@ -145,7 +145,7 @@
 
                                 $scope.status = 'starting...'
 
-                                var url = 'portal/createTask'
+                                var url = 'portal/createTask?sessionId=' + SpatialPortalConfig.sessionId
 
                                 //format inputs
                                 var c = $scope.cap[$scope.selectedCapability].input
@@ -201,6 +201,8 @@
                                 //m['tag'] =
 
                                 $http.post(url, m).then(function (response) {
+                                    LoggerService.log('Tools', m.name, '{ "taskId": "' + response.data.id + '"}')
+
                                     $scope.statusUrl = LayersService.url() + '/tasks/status/' + response.data.id
                                     console.log($scope.statusUrl)
                                     $timeout(function () {

@@ -71,7 +71,8 @@
                                 title: 'Species List',
                                 csv: data,
                                 info: 'species list csv',
-                                filename: 'speciesList.csv'
+                                filename: 'speciesList.csv',
+                                display: {size: 'full'}
                             })
                         })
                     } else {

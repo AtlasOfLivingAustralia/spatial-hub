@@ -1,7 +1,8 @@
 (function (angular) {
     'use strict';
-    angular.module('export-map-ctrl', ['map-service', 'layers-service']).controller('ExportMapCtrl', ['$scope', 'MapService', '$timeout', 'LayoutService', '$uibModalInstance', '$http', 'LayersService',
-        function ($scope, MapService, $timeout, LayoutService, $uibModalInstance, $http, LayersService) {
+    angular.module('export-map-ctrl', ['map-service', 'layers-service']).controller('ExportMapCtrl',
+        ['$scope', 'MapService', '$timeout', 'LayoutService', '$uibModalInstance', '$http', 'LayersService', 'LoggerService',
+            function ($scope, MapService, $timeout, LayoutService, $uibModalInstance, $http, LayersService, LoggerService) {
 
             $scope.name = 'ExportMapCtrl'
 
@@ -47,7 +48,9 @@
                         mapLayers: $scope.mapLayers
                     }
                 }
-                $http.post("portal/createTask", task).then(function (response) {
+
+                $http.post('portal/createTask?sessionId=' + SpatialPortalConfig.sessionId, task).then(function (response) {
+                    LoggerService.log('Export', 'Map', '{ "taskId": "' + response.data.id + '"}')
                     $timeout(function () {
                         $scope.checkStatus(LayersService.url() + '/tasks/status/' + response.data.id)
                     }, 5000)

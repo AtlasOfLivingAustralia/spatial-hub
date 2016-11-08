@@ -1,21 +1,23 @@
 <div class="modal-header">
-    <div class="modal-title">Tabulate<br/><br/></div>
+    <div class="modal-title">Tabulate</div>
 </div>
 
 <div class="modal-body">
     <div class="container">
-        Layer 1
+        Select layers for tabulation.
+        <br/>
+        <br/>
+        <span style="width:100px;display:inline-block">Layer 1</span>
         <select ng-model="layer1">
             <option ng-repeat="x in tlayers" ng-value="x.id">{{x.name}}</option>
         </select>
         <br/>
-        Layer 2
+        <span style="width:100px;display:inline-block">Layer 2</span>
         <select ng-model="layer2">
             <option ng-repeat="x in tlayers" ng-value="x.id">{{x.name}}</option>
         </select>
         <br/>
-        <br/>
-        Type
+        <span style="width:100px;display:inline-block">Type</span>
         <select ng-model="type">
             <option ng-repeat="x in types" ng-value="x">{{x}}</option>
         </select>

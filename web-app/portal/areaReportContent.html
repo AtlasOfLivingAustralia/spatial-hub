@@ -1,35 +1,47 @@
 <div class="modal-header">
-    <div class="modal-title">Area report - {{areaName}}<br/><br/></div>
+    <div class="modal-title">Area report - {{area.name}}</div>
 </div>
 
 <div class="modal-body">
     <div class="container">
-        <table class="table table-bordered table-striped">
+        <table class="table table-striped">
             <tbody style="height:300px;overflow:scroll;display:block">
             <tr ng-repeat="item in items">
-                <td>{{item.name}}</td>
-                <td style="text-align:right">{{item.value}}</td>
-                <td>
-                    <button ng-show="item.query !== undefined && (item.occurrences === undefined || !item.occurrences)"
+                <td style="width:250px">{{item.name}}</td>
+                <td style="text-align:right;width:80px">{{item.value}}</td>
+                <td style="width:70px">
+                    <button style="float:right;"
+                            ng-show="item.query !== undefined && (item.occurrences === undefined || !item.occurrences)"
                             class="btn btn-xs btn-default" ng-click="list(item)">list
                     </button>
                 </td>
-                <td>
-                    <button ng-show="item.query !== undefined && (item.map === undefined || item.map)" class="btn btn-xs btn-default"
+                <td style="width:70px">
+                    <button style="float:right;"
+                            ng-show="item.query !== undefined && (item.map === undefined || item.map)"
+                            class="btn btn-xs btn-default"
                             ng-click="map(item)">Map all
                     </button>
                 </td>
-                <td>
-                    <button ng-show="item.query !== undefined && (item.map === undefined || item.map)" class="btn btn-xs btn-default"
+                <td style="width:70px">
+                    <button style="float:right;"
+                            ng-show="item.query !== undefined && (item.map === undefined || item.map)"
+                            class="btn btn-xs btn-default"
                             ng-click="sample(item)">Sample
                     </button>
                 </td>
-                <td><a ng-show="item.query !== undefined && (item.occurrences === undefined || item.occurrences)"
-                       target="_blank" href="{{item.query.bs}}/occurrences/search?q={{item.formattedQ}}">View Records</a>
+                <td style="width:100px;padding-left:20px"><a
+                        ng-show="item.query !== undefined && (item.occurrences === undefined || item.occurrences)"
+                        target="_blank"
+                        href="{{item.query.bs}}/occurrences/search?q={{item.query.qid}}&fq={{item.extraQ.join('&fq=')}}">View
+                    Records</a>
                     <br/><a ng-show="item.link" target="_blank" href="{{item.link}}">{{item.linkName}}</a></td>
             </tr>
             </tbody>
         </table>
+        <a download="{{area.name}}-area-report"
+           ng-href="{{exportUrl}}" ng-disabled="exportUrl == null">
+            Download
+        </a>
     </div>
 </div>
 

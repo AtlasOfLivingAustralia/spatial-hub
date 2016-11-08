@@ -25,6 +25,12 @@
                         }
                     });
                 },
+                saveLogin: function (data) {
+                    return $http.post("portal/saveData?sessionId=" + SpatialPortalConfig.sessionId + "&save=false", data).then(function (response) {
+                        //Not sure why service is not preserved and the additional / is added. Workaround with /?
+                        window.location.href = SpatialPortalConfig.loginUrl + '?service=' + encodeURI(response.data.url.replace("?", "/?"))
+                    });
+                },
                 get: function (sessionId) {
                     return $http.get("portal/getSaved?sessionId=" + sessionId).then(function (response) {
                         console.log(response.data)

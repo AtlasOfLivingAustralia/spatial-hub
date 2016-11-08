@@ -457,7 +457,7 @@
                                 input: scope.selected.layer
                             }
                             task.input.selection = value
-                            $http.post("portal/createTask", task).then(function (response) {
+                            $http.post('portal/createTask?sessionId=' + SpatialPortalConfig.sessionId, task).then(function (response) {
                                 $timeout(function () {
                                     scope.checkScatterplotStatus(LayersService.url() + '/tasks/status/' + response.data.id)
                                 }, 5000)

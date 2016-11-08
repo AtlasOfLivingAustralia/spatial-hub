@@ -153,8 +153,9 @@
 
                     this.listRecords = function () {
                         var q = self.getQueryParams(self.layer)
-                        var url = biocacheService.constructSearchResultUrl(q.query, q.fqs, 10, 0, true)
-                        $window.open(url, "_blank")
+                        var url = biocacheService.constructSearchResultUrl(q.query, q.fqs, 10, 0, true).then(function (data) {
+                            $window.open(url, "_blank")
+                        })
                     }
 
                     this.viewRecord = function () {

@@ -123,6 +123,7 @@
                 $scope.addToMap = function () {
                     if ($scope.selectedArea.obj !== undefined) {
                         $scope.selectedArea.obj.layertype = 'area'
+                        $scope.selectedArea.obj.source = 
                         MapService.add($scope.selectedArea.obj)
                     } else {
                         if ($scope.selectedArea.wkt !== undefined && $scope.selectedArea.wkt.length > 0) {
@@ -271,6 +272,10 @@
                         return $scope.selectedArea.wkt === undefined || $scope.selectedArea.wkt.length == 0
                     }
                     return false
+                }
+
+                $scope.isLoggedIn = function () {
+                    return SpatialPortalConfig.userId !== undefined && SpatialPortalConfig.userId != null && SpatialPortalConfig.userId.length > 0
                 }
             }])
 }(angular));

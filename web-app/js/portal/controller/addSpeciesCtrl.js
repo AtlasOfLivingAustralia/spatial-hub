@@ -6,6 +6,8 @@
 
                 $scope.name = 'addSpeciesCtrl'
 
+                $scope.stepNames = ['Select species', 'Restrict to an area']
+
                 $scope.step = 1
                 $scope.selectedQ = {q: [], name: '', bs: '', ws: ''}
                 $scope.selectedArea = {
