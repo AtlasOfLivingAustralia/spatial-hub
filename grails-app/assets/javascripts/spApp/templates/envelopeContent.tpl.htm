@@ -1,0 +1,49 @@
+<div class="row" name="envelope" style="padding-left:10px">
+    <h3 class="modal-title">Environmental Envelope</h3>
+    <br/>
+
+    <div style="padding-left:20px">
+        <div class="form-group row">
+            <label>Search for a layer to add</label>
+            <input style="width:230px" layer-auto-complete environmental="true" contextual="true" on-custom="addLayer">
+        </div>
+
+        <br/>
+        <br/>
+
+        <table class="table" style="width: 380px" ng-show="layers.length > 0">
+            <tr style="font-weight: bold">
+                <td>Layer</td>
+                <td>Range</td>
+                <td>Count</td>
+            </tr>
+            <tr ng-repeat="x in layers">
+                <td class="td-vertical-align table-text-ellipsis">{{ x.name }}</td>
+                <td class="td-vertical-align table-text-ellipsis">{{ x.min }} to {{ x.max }}</td>
+                <td class="td-vertical-align text-right">{{ x.count }}</td>
+            </tr>
+        </table>
+
+        <br/>
+
+        <div class="form-group row" ng-show="layers.length > 0">
+            <label style="width:30px">Min</label>
+            <input style="width:80px" ng-model="selection.min">
+            <label style="margin-left:20px;width:30px">Max</label>
+            <input style="width:80px" ng-model="selection.max">
+        </div>
+        <br/>
+        <div class="btn-group" ng-show="layers.length > 0">
+            <button class="btn btn-default btn-xs" ng-click="update()">Update count</button>
+            <button class="btn btn-default btn-xs" ng-click="updateDisplay()">Update display</button>
+            <button class="btn btn-default btn-xs" ng-click="removeLayer()">Remove layer</button>
+        </div>
+        <br/>
+        <br/>
+        <div class="btn-group" style="float:right;padding-right:30px">
+            <button class="btn btn-default" ng-click="cancel()">Cancel</button>
+            <button class="btn btn-default btn-primary" ng-click="save()" ng-disabled="getFq().length == 0">Next &gt;
+            </button>
+        </div>
+    </div>
+</div>

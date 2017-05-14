@@ -11,28 +11,18 @@
           type="image/x-icon"/>
 
     <title><g:layoutTitle/></title>
-
-    <r:require modules="bootstrap, ala" />
-
-    <r:layoutResources/>
     <g:layoutHead/>
-
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-	  <!--<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>-->
-    <!--<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>-->
-    <![endif]-->
+    <asset:stylesheet href="application.css" />
 </head>
 
 <body class="${pageProperty(name: 'body.class')}" id="${pageProperty(name: 'body.id')}"
       onload="${pageProperty(name: 'body.onload')}">
 
 <!-- Header -->
-<hf:banner logoutUrl="${g.createLink(controller: "logout", action: "logout", absolute: true)}"/>
+<hf:banner logoutUrl="${g.createLink(controller: "logout", action: "logout", absolute: true)}" ignoreCookie="true"/>
 <!-- End header -->
-<g:set var="fluidLayout"
-       value="${pageProperty(name: 'meta.fluidLayout') ?: grailsApplication.config.skin?.fluidLayout}"/>
+<g:set var="fluidLayout" value="${pageProperty(name: 'meta.fluidLayout') ?: grailsApplication.config.skin?.fluidLayout}"/>
+
 <!-- Container -->
 <div class="${fluidLayout ? 'container-fluid' : 'container'}" id="main">
     <g:layoutBody/>
@@ -43,6 +33,8 @@
 <!-- End footer -->
 
 <!-- JS resources-->
-<r:layoutResources disposition="defer"/>
+<asset:javascript src="application.js" />
+<asset:deferredScripts />
+
 </body>
 </html>

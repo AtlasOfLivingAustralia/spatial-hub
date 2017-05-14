@@ -47,7 +47,7 @@ class SessionService {
     def put(id, userId, data, save) {
         sessionCache.put(id, data)
 
-        if (!save) {
+        if (save) {
             saveFile(id).getParentFile().mkdirs()
 
             FileUtils.writeStringToFile(saveFile(id), (data as JSON).toString())
@@ -83,7 +83,7 @@ class SessionService {
     }
 
     def get(id) {
-        sessionCache.get(id) ?: saveFile(id).exists() ? JSON.parse(FileUtils.readFileToString(saveFile(id))) : [:]
+        sessionCache.get(id as Long) ?: saveFile(id).exists() ? JSON.parse(FileUtils.readFileToString(saveFile(id))) : [:]
     }
 
     def list(userId) {

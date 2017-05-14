@@ -1,5 +1,3 @@
-
-
 grails.project.groupId = "au.org.ala" // change this to alter the default package name and Maven publishing destination
 appName = "spatial-hub"
 
@@ -36,13 +34,6 @@ grails.mime.types = [ // the first one is the default format
                       hal          : ['application/hal+json', 'application/hal+xml'],
                       xml          : ['text/xml', 'application/xml']
 ]
-
-// URL Mapping Cache Max Size, defaults to 5000
-//grails.urlmapping.cache.maxsize = 1000
-
-// What URL patterns should be processed by the resources plugin
-grails.resources.adhoc.patterns = ['/images/*', '/css/*', '/js/*', '/plugins/*', '/node_modules/*']
-grails.resources.adhoc.includes = ['/images/**', '/css/**', '/js/**', '/plugins/**', '/node_modules/**']
 
 // Legacy setting for codec used to encode data with ${}
 grails.views.default.codec = "html"
@@ -88,15 +79,6 @@ grails.web.disable.multipart = false
 // request parameters to mask when logging exceptions
 grails.exceptionresolver.params.exclude = ['password']
 
-// configure auto-caching of queries by default (if false you can cache individual queries with 'cache: true')
-grails.hibernate.cache.queries = false
-
-// configure passing transaction's read-only attribute to Hibernate session, queries and criterias
-// set "singleSession = false" OSIV mode in hibernate configuration after enabling
-grails.hibernate.pass.readonly = false
-// configure passing read-only to OSIV session by default, requires "singleSession = false" OSIV mode
-grails.hibernate.osiv.readonly = false
-
 environments {
     development {
         grails.logging.jul.usebridge = true
@@ -104,8 +86,7 @@ environments {
     }
     production {
         grails.logging.jul.usebridge = false
-        grails.serverURL = 'http://spatial-test.ala.org.au/spatial-hub'
-        // TODO: grails.serverURL = "http://www.changeme.com"
+        grails.serverURL = 'http://spatial.ala.org.au/spatial-hub'
     }
 }
 
@@ -137,17 +118,19 @@ log4j = {
  *  NOTE: Some of these will be ignored if default_config exists
  \******************************************************************************/
 security.cas.casServerName = 'https://auth.ala.org.au'
-security.cas.authenticateOnlyIfLoggedInFilterPattern = '/,/.*'
+security.cas.uriFilterPattern = '/portal.*,,/'
+security.cas.uriExclusionFilterPattern = '/portal/messages.*,/portal/saveData.*,/static.*,/assets.*'
+security.cas.authenticateOnlyIfLoggedInFilterPattern = ''
 security.cas.loginUrl = 'https://auth.ala.org.au/cas/login'
-security.cas.contextPath = '/spatial-hub'
-security.cas.serverName = 'http://local.ala.org.au:8081'
-serverName='http://local.ala.org.au:8081'
 security.cas.logoutUrl = 'https://auth.ala.org.au/cas/logout'
+security.cas.gateway = false
 security.cas.casServerUrlPrefix = 'https://auth.ala.org.au/cas'
 security.cas.bypass = false // set to true for non-ALA deployment
-security.cas.appServerName = 'http://local.ala.org.au:8081'
 security.cas.casServerUrlPrefix = 'https://auth.ala.org.au/cas'
-security.cas.casProperties = 'casServerLoginUrl,serverName,centralServer,casServerName,uriFilterPattern,uriExclusionFilter,authenticateOnlyIfLoggedInFilterPattern,casServerLoginUrlPrefix,gateway,casServerUrlPrefix,contextPath'
+security.cas.disableCAS = false
+
+autocompleteUrl = 'http://bie.ala.org.au/ws/search/auto.jsonp'
+
 auth.admin_role = "ROLE_ADMIN"
 app.http.header.userId = "X-ALA-userId"
 
@@ -156,10 +139,8 @@ ala.baseURL = 'http://www.ala.org.au'
 bie.baseURL = 'http://bie.ala.org.au'
 bie.searchPath = '/search'
 
-layersService.url = 'http://spatial-test.ala.org.au/spatial-service'
-//layersService.url = 'http://spatial.ala.org.au/layers-service/'
+layersService.url = 'http://spatial.ala.org.au/layers-service/'
 lists.url = 'http://lists.ala.org.au'
-//lists.url = 'http://dev.ala.org.au:8082/specieslist-webapp'
 collections.url = 'http://collections.ala.org.au'
 sandbox.url = 'http://sandbox.ala.org.au/ala-hub'
 sandboxService.url = 'http://sandbox.ala.org.au/biocache-service'
@@ -170,6 +151,7 @@ userObjectsField = 'cl1082'
 
 biocache.url = 'http://biocache.ala.org.au'
 biocacheService.url = 'http://biocache.ala.org.au/ws'
+sampling.url = 'http://ala-dylan.it.csiro.au/sampling-service'
 geoserver.url = 'http://spatial-test.ala.org.au/geoserver'
 
 viewConfig.json = "view-config.json"
@@ -187,9 +169,134 @@ grails.cache.config = {
     }
     cache {
         name 'viewConfigCache'
-        timeToLiveSeconds (3600 * 12)
+        timeToLiveSeconds(3600 * 12)
     }
 
 }
 
-loginUrl = 'https://auth.ala.org.au/cas/login'
+//download source type
+skin.fluidLayout = true
+skin.layout = 'mainbs3'
+
+logger.baseUrl = 'http://logger.ala.org.au/service'
+
+webservice.readTimeout = 60000
+webservice.connectTimeout = 20000
+
+grails.ziplet.urlPatterns = ["/*"]
+grails.ziplet.enabled = true
+grails.ziplet.includeContentTypes = ['text/javascript', 'application/json']
+
+cache.headers.enabled = true
+
+phylolink.url = "http://phylolink.ala.org.au"
+
+lists.threatenedSpeciesUrl = "/ws/speciesList/?isThreatened=eq:true&isAuthoritative=eq:true"
+lists.invasiveSpeciesUrl = "/ws/speciesList/?isInvasive=eq:true&isAuthoritative=eq:true"
+
+bccvl.login.url = "https://demo.bccvl.org.au/bccvl/oauth2/authorize?client_id=F031d7ce-abb0-11e6-a678-0242ac120005&response_type=token&redirect_uri="
+bccvl.post.url = "https://demo.bccvl.org.au/API/dm/v1/import_ala_data"
+
+keep.alive.timeout.ms = 10000
+
+startup.lat = -25
+startup.lng = 131
+startup.zoom = 4
+startup.baselayer.default = 'google_roadmaps'
+startup.baselayers = [
+    google_roadmaps: [
+        name: 'Streets',
+        layerType: 'ROADMAP',
+        type: 'google',
+        exportType: 'normal',
+        link: 'http://www.google.com/intl/en_au/help/terms_maps.html'
+    ],
+    google_hybrid: [
+        name: 'Hybrid',
+        layerType: 'HYBRID',
+        type: 'google',
+        exportType: 'hybrid',
+        link: 'http://www.google.com/intl/en_au/help/terms_maps.html'
+    ],
+    outline: [
+        name: 'Outline',
+        type: 'wms',
+        url: 'http://spatial.ala.org.au/geoserver/gwc/service/wms/reflect?',
+        layerParams: [
+            layers: 'ALA:world',
+            format: 'image/png'
+        ],
+        exportType: 'outline'
+    ],
+    osm: [
+        name: 'Open Street Map',
+        url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        type: 'xyz',
+        exportType: 'minimal',
+        link: 'http://www.openstreetmap.org/about'
+    ],
+    google_satellite: [
+        name: 'Satellite',
+        layerType: 'SATELLITE',
+        type: 'google',
+        exportType: 'normal',
+        link: 'http://www.google.com/intl/en_au/help/terms_maps.html'
+    ]
+]
+
+grails {
+    cache {
+        enabled = true
+        config {
+            diskStore {
+                path = "/data/${appName}/cache"
+            }
+
+            cache {
+                name = 'proxy'
+                eternal = false
+                overflowToDisk = true
+                maxElementsInMemory = 10000
+                maxElementsOnDisk = 100000
+            }
+
+            cache {
+                name = 'qid'
+                eternal = false
+                overflowToDisk = true
+                maxElementsInMemory = 10000
+                maxElementsOnDisk = 100000
+            }
+
+            defaultCache {
+                maxElementsInMemory = 10000
+                eternal = false
+                timeToIdleSeconds = 120
+                timeToLiveSeconds = 120
+                overflowToDisk = true
+                maxElementsOnDisk = 100000
+                diskPersistent = false
+                diskExpiryThreadIntervalSeconds = 120
+                memoryStoreEvictionPolicy = 'LRU'
+            }
+
+            defaults {
+                maxElementsInMemory = 10000
+                eternal = false
+                timeToIdleSeconds = 120
+                timeToLiveSeconds = 120
+                overflowToDisk = true
+                maxElementsOnDisk = 100000
+                diskPersistent = false
+                diskExpiryThreadIntervalSeconds = 120
+                memoryStoreEvictionPolicy = 'LRU'
+            }
+        }
+    }
+}
+
+grails.assets.minifyOptions.excludes = ["**/*.min.js"]
+grails.assets.excludes=['node_modules/**', 'target/**']
+grails.assets.plugin."sandbox-hub".excludes = ["**/*.*"]
+grails.assets.plugin."ala-bootstrap3".excludes = ["**/*.*"]
+grails.assets.enableGzip=true

@@ -1,25 +1,59 @@
 package au.org.ala.spatial.portal
 
-import au.org.ala.web.AuthService
 import grails.converters.JSON
 import org.apache.commons.io.IOUtils
 
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
-
+import java.util.zip.ZipEntry
+import java.util.zip.ZipInputStream
 
 class PortalController {
 
-    def webService
-    AuthService authService
+    def hubWebService
     def grailsApplication
     def sessionService
+    def messageService
+    def authService
+    def grailsCacheManager
 
     static final APP_CONSTANT = 'SPATIAL_PORTAL'
 
     def index() {
         def userId = authService.getUserId()
-        render(view: "index", model: [config: grailsApplication.config, userId: userId, sessionId: sessionService.newId(userId)])
+
+        if (params?.silent) {
+            render html: "<html>" + (authService.getUserId() != null ? "isLoggedIn" : "isLoggedOut") + "</html>"
+        } else if (request.forwardURI.contains(";jsessionid=")) {
+            //clean forwards from CAS
+            redirect(url: grailsApplication.config.grails.serverURL, params: params)
+        } else {
+            render(view: "index",
+                    model: [config   : grailsApplication.config,
+                            userId   : userId,
+                            sessionId: sessionService.newId(userId),
+                            messagesAge: messageService.messagesAge])
+        }
+    }
+
+    def resetCache() {
+        messageService.updateMessages()
+
+        grailsCacheManager.getCache('qid').clear()
+        grailsCacheManager.getCache('proxy').clear()
+    }
+
+    def messages() {
+        if (!params.id) {
+            redirect(action: 'messages', params: [id: messageService.messagesAge])
+        }
+
+        //biocache-service facets/i18n
+        response.outputStream << "Messages = { messages: "
+        response.outputStream << messageService.getMessages()
+        response.outputStream << ",get: function(key, _default) { var value = this.messages[key]; if (!value) { if (_default !== undefined) { return _default; } else { return key; } } else { return value } } }; "
+
+        response.contentType= 'text/javascript'
     }
 
     def listSaves() {
@@ -27,10 +61,12 @@ class PortalController {
     }
 
     def saveData() {
-        //use a new id
-        def id = sessionService.newId(authService.getUserId())
+        def userId = authService.getUserId()
 
-        render sessionService.put(id, authService.getUserId(), request.getJSON(), params?.save ?: true) as JSON
+        //use a new id
+        def id = sessionService.newId(userId)
+
+        render sessionService.put(id, userId, request.getJSON(), params?.save ?: true) as JSON
     }
 
     def deleteSaved() {
@@ -48,25 +84,26 @@ class PortalController {
 
         json.putAt('api_key', grailsApplication.config.api_key)
 
-        def r = webService.doPostJSON(grailsApplication.config.layersService.url + "/shape/upload/wkt", json)
+        def r = hubWebService.doPostJSON(grailsApplication.config.layersService.url + "/shape/upload/wkt", json)
 
         render JSON.parse(r) as JSON
     }
 
     def shp() {
         def mFile = request.getFile('shapeFile')
-        def settings = [:]
+        def settings = [api_key: grailsApplication.config.api_key]
 
-        def r = webService.doPostMultiPart(grailsApplication.config.layersService.url + "/shape/upload/shp", settings, mFile)
+        def r = hubWebService.doPostMultiPart(grailsApplication.config.layersService.url + "/shape/upload/shp?api_key=" + grailsApplication.config.api_key, settings, mFile)
 
         if (!r) {
             render [:] as JSON
         } else if (r.error) {
-            render r as JSON
+            log.error("failed shapefile upload: " + r.toString())
+            render [:] as JSON
         } else {
             def shapeFileId = r.remove('shp_id')
-            def area = r.collect {key, value ->
-                [id:(key), values:(value)]
+            def area = r.collect { key, value ->
+                [id: (key), values: (value)]
             }
             def msg = [shapeId: shapeFileId, area: area]
             render msg as JSON
@@ -77,7 +114,7 @@ class PortalController {
         def mFile = request.getFile('shapeFile')
         def settings = [:]
 
-        def r = webService.doPostMultiPart(grailsApplication.config.layersService.url +
+        def r = hubWebService.doPostMultiPart(grailsApplication.config.layersService.url +
                 "/shape/upload/kml?name=${URLEncoder.encode(params.name, 'UTF-8')}&description=${URLEncoder.encode(params.description, 'UTF-8')}",
                 settings, mFile)
 
@@ -86,14 +123,13 @@ class PortalController {
         } else if (r.error) {
             render r as JSON
         } else {
-            def msg = r.collect({key, value -> [id: value]})
+            def msg = r.collect({ key, value -> [id: value] })
             render msg as JSON
         }
     }
 
     def createObj() {
-
-        def userId = authService.userId
+        def userId = hubWebService.userId
 
         if (userId) {
             def json = request.getJSON()
@@ -101,7 +137,7 @@ class PortalController {
             json.putAt('user_id', userId)
             json.putAt('api_key', grailsApplication.config.api_key)
 
-            def r = webService.doPostJSON(grailsApplication.config.layersService.url + "/shape/upload/shp/${json.getAt('shpId')}/${json.getAt('featureIdx')}", json)
+            def r = hubWebService.doPostJSON(grailsApplication.config.layersService.url + "/shape/upload/shp/${json.getAt('shpId')}/${json.getAt('featureIdx')}", json)
 
             render JSON.parse(r) as JSON
         } else {
@@ -116,7 +152,7 @@ class PortalController {
 
         json.putAt('api_key', grailsApplication.config.api_key)
 
-        def r = webService.doPost(grailsApplication.config.layersService.url + "/tasks/create?userId=" + userId + '&sessionId=' + params.sessionId, json)
+        def r = hubWebService.doPost(grailsApplication.config.layersService.url + "/tasks/create?userId=" + userId + '&sessionId=' + params.sessionId, json)
 
         if (r == null)
             render [:] as JSON
@@ -125,8 +161,7 @@ class PortalController {
     }
 
     def addNewSpecies() {
-
-        def r = [:]
+        def r
 
         if (!authService.getUserId()) {
             log.info("UnAuthorized user trying to add new species.")
@@ -139,7 +174,7 @@ class PortalController {
 
             def url = grailsApplication.config.lists.url
 
-            r = webService.doPostJsonWithAuthentication(url + "/ws/speciesList/", json)
+            r = hubWebService.doPostJsonWithAuthentication(url + "/ws/speciesList/", json)
 
             if (r == null) {
                 def status = response.setStatus(500)
@@ -157,96 +192,157 @@ class PortalController {
     def q() {
         def json = request.getJSON()
 
-        def r = webService.doPost(json.bs + "/webportal/params", json)
+        //caching
+        def value = grailsCacheManager.getCache('qid').get(json)
+        if (!value) {
+            def r = hubWebService.doPost(json.bs + "/webportal/params", json)
 
-        render([qid: r] as JSON)
+            value = [qid: r] as JSON
+
+            if (value) {
+                grailsCacheManager.getCache('qid').put(json, value)
+                render(value)
+            }
+        } else {
+            render(value.get())
+        }
     }
 
     def proxy() {
         def url = params.url
 
-        def requestBody = IOUtils.toString(request.getReader()).getBytes("UTF-8");
+        def requestBody = IOUtils.toString(request.getReader()).getBytes("UTF-8")
 
-        String extra = rebuildParameters(request.getParameterMap());
+        String extra = rebuildParameters(request.getParameterMap())
         if (url.contains("?") && extra.startsWith("?")) {
-            extra = "&" + extra.substring(1);
+            extra = "&" + extra.substring(1)
         }
-        String target = url + extra;
+        String target = url + extra
 
-        fetchAndOutputUrl(target, response, request, requestBody);
+        //caching
+        if (request.getMethod().equals("GET")) {
+            def value = grailsCacheManager.getCache('proxy').get(params.url)
+            if (!value) {
+                value = fetchAndOutputUrl(target, null, request, requestBody)
+                if (value) {
+                    grailsCacheManager.getCache('proxy').put(params.url, value)
+                }
+            }
+            response.addHeader("Cache-Control", "max-age=" + 360000 + "public must-revalidate")
+
+            if (value) {
+                response.setContentType(value.get().contentType)
+                response.outputStream.write(value.get().bytes)
+            }
+        } else {
+            fetchAndOutputUrl(target, response, request, requestBody)
+        }
     }
 
     def viewConfig() {
-        def viewConfig = webService.getViewConfig()
+        def viewConfig = hubWebService.getViewConfig()
         render viewConfig as JSON
     }
 
-    private String rebuildParameters(Map params) {
-        StringBuilder uri = new StringBuilder();
-        String delim = "?";
+    private def rebuildParameters(Map params) {
+        StringBuilder uri = new StringBuilder()
+        String delim = "?"
         for (Object o : params.entrySet()) {
-            Map.Entry entry = (Map.Entry) o;
+            Map.Entry entry = (Map.Entry) o
             // skip the url parameter - removal from the map is not allowed
             if (!"url".equalsIgnoreCase((String) entry.getKey())) {
-                String[] value = (String[]) entry.getValue();
+                String[] value = (String[]) entry.getValue()
                 try {
-                    uri.append(delim).append(entry.getKey()).append("=").append(URLEncoder.encode(value[0], "UTF-8"));
-                    delim = "&";
+                    uri.append(delim).append(entry.getKey()).append("=").append(URLEncoder.encode(value[0], "UTF-8"))
+                    delim = "&"
                 } catch (UnsupportedEncodingException e) {
                 }
             }
         }
-        return uri.toString();
+        return uri.toString()
     }
 
-    private void fetchAndOutputUrl(String url, HttpServletResponse response, HttpServletRequest request, byte[] requestBody) {
+    private
+    def fetchAndOutputUrl(String url, HttpServletResponse response, HttpServletRequest request, byte[] requestBody) {
         URLConnection con = new URL(url).openConnection()
-        InputStream is = null;
+        InputStream is = null
         try {
-            log.debug("will request '" + url + "' from remote server");
+            log.debug("will request '" + url + "' from remote server")
 
             // POST parameters
             if ("POST".equals(request.getMethod())) {
-                HttpURLConnection hc = (HttpURLConnection) new URL(url).openConnection();
+                HttpURLConnection hc = (HttpURLConnection) new URL(url).openConnection()
                 if (request.getContentType() != null) {
-                    hc.setRequestProperty("Content-Type", request.getContentType());
+                    hc.setRequestProperty("Content-Type", request.getContentType())
                 }
-                hc.setRequestMethod("POST");
-                hc.setDoInput(true);
-                hc.setDoOutput(true);
+                hc.setRequestMethod("POST")
+                hc.setDoInput(true)
+                hc.setDoOutput(true)
 
                 if (requestBody != null && requestBody.length > 0) {
-                    hc.getOutputStream().write(requestBody);
+                    hc.getOutputStream().write(requestBody)
                 }
 
-                con = hc;
+                con = hc
             }
 
-            // force the url to be cached by adding/replaceing the cache-control header
-            response.addHeader(
-                    "Cache-Control",
-                    "max-age=" + 360000 + "public must-revalidate");
+            // force the url to be cached by adding/replacing the cache-control header
+            if (response) {
+                response.addHeader("Cache-Control", "max-age=" + 360000 + "public must-revalidate")
 
-            // get the data...
-            is = con.getInputStream();
-            byte[] data = IOUtils.toByteArray(is);
+                // restore the MIME type for correct handling
+                response.setContentType(con.getContentType())
 
-            // restore the MIME type for correct handling
-            response.setContentType(con.getContentType());
-
-            // flush to client
-            response.getOutputStream().write(data);
-
+                response.outputStream << con.getInputStream()
+            } else {
+                [bytes: IOUtils.toByteArray(con.getInputStream()), contentType: con.getContentType()]
+            }
         } catch (IOException e) {
-            log.debug("IO error doing remote request: " + e.getMessage());
+            log.debug("IO error doing remote request: " + e.getMessage())
         } finally {
             if (is != null) {
                 try {
-                    is.close();
+                    is.close()
                 } catch (IOException e) {
-                    log.error("Error closing stream to " + url, e);
+                    log.error("Error closing stream to " + url, e)
                 }
             }
         }
+    }
+
+    def getSampleCSV() {
+        String url = params.url
+
+        if (url && authService.getUserId() &&
+                (url.startsWith(grailsApplication.config.biocacheService.url) ||
+                        url.startsWith(grailsApplication.config.sandboxService.url))) {
+            InputStream stream = new URL(url).openStream()
+            try {
+                ZipInputStream zis = new ZipInputStream(stream)
+                ZipEntry ze
+                while ((ze = zis.getNextEntry())) {
+                    if (ze.getName().endsWith(".csv") && !ze.getName().endsWith("headings.csv") &&
+                            !ze.getName().endsWith("citations.csv")) {
+                        //unzip the downloads file
+                        response.contentType = "text/csv"
+                        response.outputStream << zis
+                    }
+                }
+            } catch (Exception e) {
+                log.error("failed to get download: " + url, e)
+            } finally {
+                if (stream)
+                    stream.close()
+            }
+        }
+    }
+
+    def ping() {
+        def sessionId = params.sessionId
+        def session = request.JSON
+
+        //save session?
+
+        render status: 200
     }
 }

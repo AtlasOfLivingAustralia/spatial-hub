@@ -8,7 +8,6 @@ class UrlMappings {
             }
         }
 
-
         "/"(controller: "portal", action: "/index")
         "500"(view: '/error')
     }

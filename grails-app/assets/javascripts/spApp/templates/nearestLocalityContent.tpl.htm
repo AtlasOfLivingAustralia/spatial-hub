@@ -1,0 +1,30 @@
+<div class="row" name="nearestLocality" style="padding-left:10px">
+    <h3 class="modal-title">Nearest locality</h3>
+    <br/>
+
+    <label style="font-weight: bold">{{pointLabel}}</label>
+    <div>
+        <table class="table" style="width: 380px">
+            <tr style="font-weight: bold">
+                <td>Feature</td>
+                <td>Location</td>
+                <td>Distance (km)</td>
+                <td>Heading (deg)</td>
+            </tr>
+            <tr ng-repeat="x in points">
+                <td class="td-vertical-align table-text-ellipsis">{{ x.name }}</td>
+                <td class="td-vertical-align table-text-ellipsis">{{ x.geometry.replace('POINT(','').replace(')','')
+                    }}
+                </td>
+                <td class="td-vertical-align text-right">{{ x.distance | number : 1 }}</td>
+                <td class="td-vertical-align text-right">{{ x.degrees | number : 1}}</td>
+            </tr>
+        </table>
+        <div style="width:100%;padding-right:30px" class="btn-group">
+            <button class="btn btn-default btn-xs " ng-click="enableDrawing()"
+                    ng-disabled="selectedArea.wkt.length == 0">Set a new point
+            </button>
+            <button class="btn btn-default btn-xs" ng-click="cancel()">Close</button>
+        </div>
+    </div>
+</div>

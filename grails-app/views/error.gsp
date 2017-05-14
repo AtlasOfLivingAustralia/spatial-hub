@@ -3,12 +3,7 @@
 <head>
     <title><g:if env="development">Grails Runtime Exception</g:if><g:else>Error</g:else></title>
     <meta name="layout" content="main">
-    <g:if env="development"><link rel="stylesheet" href="${resource(dir: 'css', file: 'errors.css')}"
-                                  type="text/css"></g:if>
-    <g:else>
-        <link rel="stylesheet" href="${resource(dir: 'css', file: 'errors.css')}"
-              type="text/css">
-    </g:else>
+    <link rel="stylesheet" href="assets/errors.css" type="text/css">
 </head>
 
 <body>

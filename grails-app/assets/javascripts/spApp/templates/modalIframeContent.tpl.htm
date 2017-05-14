@@ -1,0 +1,16 @@
+<div class="modal-header">
+    <div style="float:right">
+        <a style="padding-right:30px" href="{{src}}" target="_blank">open in new window</a>
+        <button class="btn btn-primary" type="button" ng-click="$close()">Close</button>
+    </div>
+
+    <div>
+        <h3 class="modal-title">{{title}}</h3>
+        <label>{{notes}}</label>
+    </div>
+</div>
+
+<div class="modal-body" style="height:500px">
+    <iframe src="{{src}}" style="height:100%;width:100%">
+    </iframe>
+</div>

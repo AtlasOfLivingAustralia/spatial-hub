@@ -6,6 +6,9 @@ grails.project.work.dir = "target/work"
 grails.project.target.level = 1.7
 grails.project.source.level = 1.7
 //grails.plugin.location."sandbox-hub" = "../sandbox-hub"
+//grails.plugin.location.'ala-charts-plugin' = "../ala-charts-plugin"
+//grails.plugin.location.'downloads-plugin' = '../downloads-plugin'
+
 grails.project.war.file = "target/${appName}-${appVersion}.war"
 
 grails.server.port.http = 8081
@@ -50,7 +53,7 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
-        compile ":quartz:1.0.2"
+        compile ':cache:1.1.8'
         compile ':cache-ehcache:1.0.0'
 
         compile ":jsonp:0.2"
@@ -61,32 +64,22 @@ grails.project.dependency.resolution = {
         // plugins for the build system only
         build ":tomcat:7.0.54"
 
-        // plugins for the compile step
-        compile ":scaffolding:2.0.3"
-        compile ':cache:1.1.8'
- 
-        // plugins needed at runtime but not for compilation
-        runtime ":resources:1.2.14"
-        runtime (":jquery-ui:1.10.4") {
-            excludes 'jquery'
-        }
-        // Uncomment these (or add new ones) to enable additional resources capabilities
-        //runtime ":zipped-resources:1.0.1"
-        //runtime ":cached-resources:1.1"
-        //runtime ":yui-minify-resources:0.1.5"
+        compile ":asset-pipeline:2.14.1"
+        runtime ":angular-annotate-asset-pipeline:2.4.1"
+        runtime ":angular-template-asset-pipeline:2.3.0"
 
-        // An alternative to the default resources plugin is the asset-pipeline plugin
-        //compile ":asset-pipeline:1.6.1"
-
-        // Uncomment these to enable additional asset-pipeline capabilities
-        //compile ":sass-asset-pipeline:1.5.5"
-        //compile ":less-asset-pipeline:1.5.3"
-        //compile ":coffee-asset-pipeliney:1.5.0"
-        //compile ":handlebars-asset-pipeline:1.3.0.1"
         runtime(":ala-bootstrap3:1.6") {
-            excludes 'jquery'
+            excludes 'jquery', 'resources'
         }
-        runtime ":ala-auth:1.3.4"
-        runtime ":sandbox-hub:0.1"
+
+        runtime(":ala-auth:1.3.4") {
+            excludes 'commons-httpclient', 'resources'
+        }
+
+        runtime(":sandbox-hub:0.1") {
+            excludes 'resources'
+        }
+
+        compile "org.grails.plugins:ziplet:0.4"
     }
 }

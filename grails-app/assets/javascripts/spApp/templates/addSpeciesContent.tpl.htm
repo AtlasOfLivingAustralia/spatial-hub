@@ -1,0 +1,39 @@
+<div class="modal-header">
+    <h3 class="modal-title">Add Species</h3>
+</div>
+
+<div class="modal-body">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="stepList">
+                <div ng-repeat="stepName in stepNames">
+                    <div ng-show="step < $index + 1" style="font-size:12px">
+                        <span>{{$index + 1}}. {{stepName}}</span></div>
+                    <div ng-show="step == $index + 1" style="font-size:12px;font-weight:bold;border-bottom-style:solid">
+                        <span>{{$index + 1}}. {{stepName}}</span></div>
+                    <div ng-show="step > $index + 1" style="font-size:12px">
+                        <span>{{$index + 1}}. {{stepName}}</span>
+                        <i class="glyphicon glyphicon-ok" ng-show="step > $index + 1"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <form class="form-horizontal">
+                <div ng-show="step == '1'">
+                    <div select-species selected-q="selectedQ" include-layers="false"></div>
+                </div>
+
+                <div ng-show="step == '2'">
+                    <div select-area selected-area="selectedArea" unique-id="1" include-default-areas="true"></div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-default" type="button" ng-click="$close()">Cancel</button>
+    <button class="btn btn-default" type="button" ng-click="back()" ng-disabled="step == 1">&lt; Back</button>
+    <button class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="isDisabled()">Next &gt;</button>
+</div>

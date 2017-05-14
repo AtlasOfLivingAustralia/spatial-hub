@@ -1,0 +1,42 @@
+{
+  "name": "spatial-hub",
+  "description": "ALA spatial-hub",
+  "version": "1.0.0",
+  "homepage": "http://www.ala.org.au",
+  "private": true,
+  "contributors": [
+    {
+      "name": "Temi Varghese",
+      "web": "https://github.com/temi"
+    }
+  ],
+  "maintainers": [
+    {
+      "name": "Atlas of Living Australia",
+      "web": "https://github.com/AtlasOfLivingAustralia?tab=members"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AtlasOfLivingAustralia/spatial-hub"
+  },
+  "bugs": {
+    "url": "https://github.com/AtlasOfLivingAustralia/spatial-hub/issues"
+  },
+  "license": "MPL-2.0",
+  "devDependencies": {},
+  "dependencies": {
+    "angular": "1.5.8",
+    "angular-animate": "1.5.8",
+    "angular-aria": "1.5.8",
+    "angular-leaflet-directive": "0.9.5",
+    "angular-route": "1.5.8",
+    "angular-ui-bootstrap": "2.5.0",
+    "angular-touch": "1.5.8",
+    "leaflet": "0.7.7",
+    "leaflet-draw": "0.2.4",
+    "bootstrap": "3.3.4",
+    "ngbootbox": "0.1.2",
+    "ng-file-upload": "12.2.13"
+  }
+}

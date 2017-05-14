@@ -1,5 +1,6 @@
 {
   "ScatterplotCreate": {
+    "download": false,
     "view": [
       {
         "name": "Apply to an area",
@@ -66,6 +67,67 @@
         "description": "Foreground species description"
       }
     }
+  },
+  "ScatterplotCreate": {
+    "view": [
+      {
+        "name": "Apply to an area",
+        "inputs": [
+          "area"
+        ]
+      },
+      {
+        "name": "Select species",
+        "inputs": [
+          "species1"
+        ]
+      },
+      {
+        "name": "Select background species",
+        "inputs": [
+          "species2"
+        ]
+      },
+      {
+        "name": "Select environmental layers",
+        "inputs": [
+          "grid",
+          "layer"
+        ]
+      }
+    ],
+    "input": {
+      "species1": {
+        "description": "Foreground species description"
+      }
+    }
+  },
+  "PointsToGrid": {
+    "description": "Create a grid from points.",
+    "view": [
+      {
+        "name": "Area to restrict the points.",
+        "inputs": [
+          "area"
+        ]
+      },
+      {
+        "name": "Occurrences to use in points to grid.",
+        "inputs": [
+          "species"
+        ]
+      },
+      {
+        "name": "Other settings",
+        "inputs": [
+          "gridCellSize",
+          "sitesBySpecies",
+          "occurrenceDensity",
+          "speciesRichness",
+          "movingAverage"
+        ]
+      }
+    ]
   }
 }
 

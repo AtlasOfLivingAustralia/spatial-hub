@@ -1,0 +1,25 @@
+<div class="modal-header">
+    <h3 class="modal-title">Export map</h3>
+</div>
+
+<div class="modal-body">
+    <div>
+        <form class="form-horizontal">
+            <span style="vertical-align:top">Map caption:&nbsp;</span>
+            <textarea ng-model="comment" style="width:350px;height:100px;margin-left:10px"></textarea>
+
+            <br/><br/>
+            <span>Image format:&nbsp;</span>
+            <select ng-model="outputType">
+                <option value="jpg">jpg</option>
+                <option value="png">png</option>
+                <option value="pdf">pdf</option>
+            </select>
+        </form>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-default" type="button" ng-click="$close()">Cancel</button>
+    <button class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="isDisabled()">Next &gt;</button>
+</div>

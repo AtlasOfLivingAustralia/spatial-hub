@@ -1,0 +1,32 @@
+<div class="modal-header">
+    <div class="modal-title">Tabulate</div>
+</div>
+
+<div class="modal-body">
+    <div class="container">
+        Select layers for tabulation.
+        <br/>
+        <br/>
+        <span style="width:100px;display:inline-block">Layer 1</span>
+        <select ng-model="layer1">
+            <option ng-repeat="x in tlayers" ng-value="x.id">{{x.name}}</option>
+        </select>
+        <br/>
+        <span style="width:100px;display:inline-block">Layer 2</span>
+        <select ng-model="layer2">
+            <option ng-repeat="x in tlayers" ng-value="x.id">{{x.name}}</option>
+        </select>
+        <br/>
+        <span style="width:100px;display:inline-block">Type</span>
+        <select ng-model="type">
+            <option ng-repeat="x in types" ng-value="x">{{x}}</option>
+        </select>
+        <br/>
+        {{msg}}
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-primary" type="button" ng-click="$close()">Cancel</button>
+    <button class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="isDisabled()">Next &gt;</button>
+</div>
