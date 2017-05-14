@@ -36,7 +36,7 @@ class BootStrap {
         //set CAS values that are determined from other config
         def url = new URL(grailsApplication.config.grails.serverURL)
         grailsApplication.config.security.cas.appServerName =
-                url.getProtocol() + "://" + url.getHost() + (url.port != '80' ? ':' + url.port : '')
+                url.getProtocol() + "://" + url.getHost() + (url.port > 0 ? ':' + url.port : '')
         grailsApplication.config.security.cas.serverName = grailsApplication.config.security.cas.appServerName
         grailsApplication.config.security.cas.contextPath = url.getPath()
         grailsApplication.config.security.cas.casProperties = grailsApplication.config.security.cas.keySet().join(',')
