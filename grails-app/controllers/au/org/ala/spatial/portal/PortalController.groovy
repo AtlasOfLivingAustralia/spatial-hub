@@ -226,14 +226,14 @@ class PortalController {
                 value = fetchAndOutputUrl(target, null, request, requestBody)
                 if (value) {
                     grailsCacheManager.getCache('proxy').put(params.url, value)
+                    response.setContentType(value.contentType)
+                    response.outputStream.write(value.bytes)
                 }
-            }
-            response.addHeader("Cache-Control", "max-age=" + 360000 + "public must-revalidate")
-
-            if (value) {
+            } else {
                 response.setContentType(value.get().contentType)
                 response.outputStream.write(value.get().bytes)
             }
+            response.addHeader("Cache-Control", "max-age=" + 360000 + "public must-revalidate")
         } else {
             fetchAndOutputUrl(target, response, request, requestBody)
         }
