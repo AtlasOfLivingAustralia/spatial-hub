@@ -117,7 +117,7 @@ log4j = {
  \******************************************************************************/
 security.cas.casServerName = 'https://auth.ala.org.au'
 security.cas.uriFilterPattern = '/portal.*,,/'
-security.cas.uriExclusionFilterPattern = '/portal/messages.*,/portal/saveData.*,/static.*,/assets.*'
+security.cas.uriExclusionFilterPattern = '/portal/messages.*,/portal/saveAny.*,/static.*,/assets.*'
 security.cas.authenticateOnlyIfLoggedInFilterPattern = ''
 security.cas.loginUrl = 'https://auth.ala.org.au/cas/login'
 security.cas.logoutUrl = 'https://auth.ala.org.au/cas/logout'
