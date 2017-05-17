@@ -60,6 +60,16 @@ class PortalController {
         render sessionService.list(authService.getUserId()) as JSON
     }
 
+    def saveAny() {
+        //no user id
+        def userId = null
+
+        //use a new id
+        def id = sessionService.newId(userId)
+
+        render sessionService.put(id, userId, request.getJSON(), params?.save ?: true) as JSON
+    }
+
     def saveData() {
         def userId = authService.getUserId()
 

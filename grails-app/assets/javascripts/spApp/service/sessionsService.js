@@ -38,7 +38,8 @@
                     });
                 },
                 saveAndLogin: function (data, urlTemplate, encode, skipALALoginUrl) {
-                    return $http.post("portal/saveData?sessionId=" + $SH.sessionId + "&save=false", data).then(function (response) {
+                    //this is not a permanent save
+                    return $http.post("portal/saveAny?sessionId=" + $SH.sessionId + "&save=false", data).then(function (response) {
                         //Not sure why service is not preserved and the additional / is added. Workaround with /?
                         var url = response.data.url.replace("?", "/?");
 
