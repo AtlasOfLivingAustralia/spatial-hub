@@ -1,7 +1,41 @@
 // http://www2.ala.org.au/commonui-bs3/js/application.js
 
+var navbarCollapseMinWidth = 768;
+var _navbarWidthCheck = function() {
+    var menu = $('#bs-example-navbar-collapse-1');
+    var button = $('.navbar-toggle');
+    var width = $(document).width();
+    if (width < 768) {
+        $('.navbar-header')[0].style.width = ""
+    } else {
+        $('.navbar-header')[0].style.width = "100%"
+    }
+    if (width <= navbarCollapseMinWidth || menu.height() > 50) {
+        if (width > navbarCollapseMinWidth) {
+            navbarCollapseMinWidth = width;
+        }
+        menu[0].className = "navbar-collapse collapse";
+        button[0].style.display = 'block !important';
+        button[0].className = "navbar-toggle";
+    } else {
+        menu[0].className = "navbar-collapse";
+        button[0].className = "navbar-toggle collapse";
+        button[0].style.display = 'none !important';
+    }
+};
+var navbarWidthCheck = function() {
+    _navbarWidthCheck();
+
+    //recheck because _navbarWidthCheck() can expand the menu
+    _navbarWidthCheck();
+};
+
 // initialise plugins
 $(function(){
+    $( window ).resize(function() {
+        navbarWidthCheck();
+    });
+    setTimeout(navbarWidthCheck, 100);
 
     var autocompleteUrl = 'http://bie.ala.org.au/ws/search/auto.jsonp';
 

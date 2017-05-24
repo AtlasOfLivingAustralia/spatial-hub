@@ -371,3 +371,6 @@ ol.leaflet-quick-links li {
 .list-group-item {
     margin-left: 15px;
 }
+
+.navbar-collapse.collapse, .navbar-toggle.collapse { display: none !important; }
+.navbar-collapse.in, .navbar-toggle { display: block !important; }
