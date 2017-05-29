@@ -156,7 +156,7 @@
                             } else scope.validLayerSelection = scope._selection !== undefined &&
                                 scope._selection.layers !== undefined &&
                                 scope._selection.layers.length >= scope._minCount &&
-                                scope._selection.layers.length <= scope_.maxCount;
+                                scope._selection.layers.length <= scope._maxCount;
                             if (scope._selection !== undefined && scope._selection.layers !== undefined) {
                                 var data = '';
                                 for (var i = 0; i < scope._selection.layers.length; i++) {
