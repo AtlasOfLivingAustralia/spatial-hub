@@ -256,7 +256,7 @@
                                     switch (layer.layertype) {
                                         case "contextual":
                                         case "grid":
-                                            layers.push(layer.name);
+                                            layers.push(layer.id);
                                             break;
                                         case "area":
                                             areaLayers.push(layer);
