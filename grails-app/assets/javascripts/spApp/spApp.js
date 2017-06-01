@@ -31,7 +31,7 @@ function fetchData() {
     spApp.constant("gLayerDistances", gLayerDistances);
 
     var distancesUrl = $SH.layersServiceUrl + "/layerDistances/layerdistancesJSON";
-    $http.get($SH.proxyUrl + "?url=" + encodeURIComponent(distancesUrl) + "&cache=86400").then(function (response) {
+    $http.get($SH.proxyUrl + "?url=" + encodeURIComponent(distancesUrl)).then(function (response) {
         $.map(response.data, function (v, k) {
             gLayerDistances[k] = v
         });
@@ -124,7 +124,7 @@ $(window).on("resize", function () {
 
 }).trigger("resize");
 
-L.Icon.Default.imagePath = 'node_modules/leaflet/dist/images';
+L.Icon.Default.imagePath = 'assets/leaflet/dist/images';
 
 //call this after adding data to a fixed-head table
 $resizeTables = function () {

@@ -82,7 +82,14 @@
                                     scope._selectedArea.area[0] = scope.layerAreas[0];
                                     scope.selected = scope._selectedArea.area[0].uid
                                 } else {
-                                    scope._selectedArea.area[0] = scope.defaultAreas[0];
+                                    if (scope.defaultAreas.length > 0) {
+                                        if (scope._selectedArea.area !== undefined) {
+                                            scope._selectedArea.area[0] = scope.defaultAreas[0];
+                                        } else {
+                                            scope._selectedArea = [scope.defaultAreas[0]];
+                                        }
+                                    }
+
                                     scope.selected = scope._selectedArea.area[0].name
                                 }
                             }

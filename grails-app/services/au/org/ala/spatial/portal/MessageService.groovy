@@ -3,7 +3,7 @@
  * All Rights Reserved.
  *
  * The contents of this file are subject to the Mozilla Public
- * License Version 1.1 (the "License"); you may not use this file
+ * License Version 1.1 (the 'License'); you may not use this file
  * except in compliance with the License. You may obtain a copy of
  * the License at http://www.mozilla.org/MPL/
  *
@@ -17,6 +17,9 @@ package au.org.ala.spatial.portal
 
 import grails.converters.JSON
 
+/**
+ * Cache of biocache-service /facets/i18n lookup
+ */
 class MessageService {
 
     def grailsApplication
@@ -26,22 +29,23 @@ class MessageService {
     def messagesAge = System.currentTimeMillis()
 
     def updateMessages() {
-        def newMessages = [:]
-        def txt = hubWebService.get("${grailsApplication.config.biocacheService.url}/facets/i18n", false)
-        if (txt) {
-            def rows = txt.toString().split('\n')
-            rows.each { row ->
-                if (row.length() > 0 && row.charAt(0) != '#') {
-                    def eq = row.indexOf('=')
-                    if (eq > 0) {
-                        newMessages.put(row.substring(0, eq), row.substring(eq + 1))
+        def url = "${grailsApplication.config.biocacheService.url}/facets/i18n"
+        try {
+            def newMessages = [:]
+            String txt = hubWebService.getUrl(url, null, false)
+            if (txt) {
+                txt.split('\n').each { row ->
+                    row.find('^([^#].*)=(.*)$') { match, key, value ->
+                        newMessages.put(key.trim(), value.trim())
                     }
                 }
             }
-        }
-        if (newMessages) {
-            messagesAge = System.currentTimeMillis()
-            messages = newMessages
+            if (newMessages != messages) {
+                messagesAge = System.currentTimeMillis()
+                messages = newMessages
+            }
+        } catch (IOException e) {
+            log.error "failed to get ${url}", e
         }
     }
 
@@ -50,6 +54,6 @@ class MessageService {
             updateMessages()
         }
 
-        return messages as JSON
+        messages as JSON
     }
 }

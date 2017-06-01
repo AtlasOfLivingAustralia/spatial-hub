@@ -1,13 +1,19 @@
 package au.org.ala.spatial.portal
 
 import grails.converters.JSON
-import org.apache.commons.io.IOUtils
+import org.apache.commons.httpclient.methods.StringRequestEntity
+import org.apache.http.client.methods.HttpGet
+import org.apache.http.client.methods.HttpPost
+import org.springframework.web.multipart.MultipartHttpServletRequest
+import org.springframework.web.multipart.commons.CommonsMultipartFile
+import org.codehaus.groovy.grails.web.servlet.HttpHeaders
 
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 
+/**
+ * Controller for all spatial-hub web services.
+ */
 class PortalController {
 
     def hubWebService
@@ -16,19 +22,18 @@ class PortalController {
     def messageService
     def authService
     def grailsCacheManager
-
-    static final APP_CONSTANT = 'SPATIAL_PORTAL'
+    def portalService
 
     def index() {
-        def userId = authService.getUserId()
+        def userId = authService.userId
 
         if (params?.silent) {
-            render html: "<html>" + (authService.getUserId() != null ? "isLoggedIn" : "isLoggedOut") + "</html>"
-        } else if (request.forwardURI.contains(";jsessionid=")) {
+            render html: '<html>' + (authService.userId != null ? 'isLoggedIn' : 'isLoggedOut') + '</html>'
+        } else if (request.forwardURI.contains(';jsessionid=')) {
             //clean forwards from CAS
             redirect(url: grailsApplication.config.grails.serverURL, params: params)
         } else {
-            render(view: "index",
+            render(view: 'index',
                     model: [config   : grailsApplication.config,
                             userId   : userId,
                             sessionId: sessionService.newId(userId),
@@ -39,8 +44,8 @@ class PortalController {
     def resetCache() {
         messageService.updateMessages()
 
-        grailsCacheManager.getCache('qid').clear()
-        grailsCacheManager.getCache('proxy').clear()
+        grailsCacheManager.getCache(portalService.caches.QID).clear()
+        grailsCacheManager.getCache(portalService.caches.QID).clear()
     }
 
     def messages() {
@@ -49,15 +54,16 @@ class PortalController {
         }
 
         //biocache-service facets/i18n
-        response.outputStream << "Messages = { messages: "
-        response.outputStream << messageService.getMessages()
-        response.outputStream << ",get: function(key, _default) { var value = this.messages[key]; if (!value) { if (_default !== undefined) { return _default; } else { return key; } } else { return value } } }; "
+        response.outputStream << 'Messages = { messages: '
+        response.outputStream << messageService.messages
+        response.outputStream << ',get: function(key, _default) { var value = this.messages[key]; if (!value) { ' +
+                'if (_default !== undefined) { return _default; } else { return key; } } else { return value } } }; '
 
-        response.contentType= 'text/javascript'
+        response.contentType = 'text/javascript'
     }
 
     def listSaves() {
-        render sessionService.list(authService.getUserId()) as JSON
+        render sessionService.list(authService.userId) as JSON
     }
 
     def saveAny() {
@@ -67,20 +73,21 @@ class PortalController {
         //use a new id
         def id = sessionService.newId(userId)
 
-        render sessionService.put(id, userId, request.getJSON(), params?.save ?: true) as JSON
+        render sessionService.put(id, userId, request.JSON, params?.save ?: true) as JSON
     }
 
     def saveData() {
-        def userId = authService.getUserId()
+        def userId = authService.userId
 
         //use a new id
         def id = sessionService.newId(userId)
 
-        render sessionService.put(id, userId, request.getJSON(), params?.save ?: true) as JSON
+        render sessionService.put(id, userId, request.JSON, params?.save ?: true) as JSON
     }
 
     def deleteSaved() {
-        def list = sessionService.updateUserSave(params.sessionId, authService.getUserId(), 'delete', null, null)
+        def list = sessionService.updateUserSave(params.sessionId, authService.userId,
+                SessionService.TYPE_DELETE, null, null)
 
         render list as JSON
     }
@@ -89,270 +96,215 @@ class PortalController {
         render sessionService.get(params.sessionId) as JSON
     }
 
-    def wkt() {
-        def json = request.getJSON()
+    def postAreaWkt() {
+        def json = request.JSON as Map
 
-        json.putAt('api_key', grailsApplication.config.api_key)
+        json.api_key = grailsApplication.config.api_key
 
-        def r = hubWebService.doPostJSON(grailsApplication.config.layersService.url + "/shape/upload/wkt", json)
+        def url = "${grailsApplication.config.layersService.url}/shape/upload/wkt"
+        def r = hubWebService.urlResponse(HttpPost.METHOD_NAME, url, null, null,
+                new StringRequestEntity((json as JSON).toString()))
 
-        render JSON.parse(r) as JSON
+        render JSON.parse(String.valueOf(r?.text)) as JSON
     }
 
-    def shp() {
-        def mFile = request.getFile('shapeFile')
+    def postAreaFile(type) {
+        def mFile = ((MultipartHttpServletRequest) request).getFile('shapeFile')
         def settings = [api_key: grailsApplication.config.api_key]
 
-        def r = hubWebService.doPostMultiPart(grailsApplication.config.layersService.url + "/shape/upload/shp?api_key=" + grailsApplication.config.api_key, settings, mFile)
+        String ce = grailsApplication.config.character.encoding
+
+        def r = hubWebService.postUrl("${grailsApplication.config.layersService.url}/shape/upload/${type}?" +
+                "name=${URLEncoder.encode((String) params.name, ce)}&" +
+                "description=${URLEncoder.encode((String) params.description, ce)}&" +
+                "api_key=${grailsApplication.config.api_key}", (Map) settings, null, (CommonsMultipartFile) mFile)
 
         if (!r) {
             render [:] as JSON
         } else if (r.error) {
-            log.error("failed shapefile upload: " + r.toString())
+            log.error("failed ${type} upload: ${r}")
             render [:] as JSON
         } else {
             def shapeFileId = r.remove('shp_id')
             def area = r.collect { key, value ->
-                [id: (key), values: (value)]
+                [id: key, values: value]
             }
             def msg = [shapeId: shapeFileId, area: area]
             render msg as JSON
         }
     }
 
-    def kml() {
-        def mFile = request.getFile('shapeFile')
-        def settings = [:]
-
-        def r = hubWebService.doPostMultiPart(grailsApplication.config.layersService.url +
-                "/shape/upload/kml?name=${URLEncoder.encode(params.name, 'UTF-8')}&description=${URLEncoder.encode(params.description, 'UTF-8')}",
-                settings, mFile)
-
-        if (!r) {
-            render [:] as JSON
-        } else if (r.error) {
-            render r as JSON
-        } else {
-            def msg = r.collect({ key, value -> [id: value] })
-            render msg as JSON
-        }
-    }
-
-    def createObj() {
-        def userId = hubWebService.userId
+    def postArea() {
+        def userId = authService.userId
 
         if (userId) {
-            def json = request.getJSON()
+            def json = request.JSON as Map
 
-            json.putAt('user_id', userId)
-            json.putAt('api_key', grailsApplication.config.api_key)
+            json.user_id = userId
+            json.api_key = grailsApplication.config.api_key
 
-            def r = hubWebService.doPostJSON(grailsApplication.config.layersService.url + "/shape/upload/shp/${json.getAt('shpId')}/${json.getAt('featureIdx')}", json)
+            String url = "${grailsApplication.config.layersService.url}/shape/upload/shp/" +
+                    "${json.shpId}/${json.featureIdx}"
 
-            render JSON.parse(r) as JSON
+            def r = hubWebService.urlResponse(HttpPost.METHOD_NAME, url, null, null,
+                    new StringRequestEntity((json as JSON).toString()))
+
+            render JSON.parse(String.valueOf(r?.text)) as JSON
         } else {
             render [:] as JSON
         }
     }
 
-    def createTask() {
-        def json = request.getJSON()
+    def postTask() {
+        def json = request.JSON as Map
 
         def userId = authService.userId
 
-        json.putAt('api_key', grailsApplication.config.api_key)
+        json.api_key = grailsApplication.config.api_key
 
-        def r = hubWebService.doPost(grailsApplication.config.layersService.url + "/tasks/create?userId=" + userId + '&sessionId=' + params.sessionId, json)
+        def r = hubWebService.postUrl("${grailsApplication.config.layersService.url}/tasks/create?" +
+                "userId=${userId}&sessionId=${params.sessionId}", json)
 
-        if (r == null)
+        if (r == null) {
             render [:] as JSON
-
-        render JSON.parse(r) as JSON
+        } else {
+            render JSON.parse(String.valueOf(r?.text)) as JSON
+        }
     }
 
     def addNewSpecies() {
         def r
 
-        if (!authService.getUserId()) {
-            log.info("UnAuthorized user trying to add new species.")
-            response.setStatus(401)
-            r = [status: 401, error: "You must be logged in before you can create a new species."]
-        } else {
-            def json = request.getJSON()
+        if (authService.userId) {
+            def json = request.JSON as Map
 
-            json.putAt("listType", APP_CONSTANT)
+            json.listType = PortalService.APP_CONSTANT
 
             def url = grailsApplication.config.lists.url
 
-            r = hubWebService.doPostJsonWithAuthentication(url + "/ws/speciesList/", json)
+            def header = [:]
+            def userId = authService.userId
+            if (userId) {
+                header.put(grailsApplication.config.app.http.header.userId, userId)
+                header.put('Cookie', 'ALA-Auth=' + URLEncoder.encode(authService.email, 'UTF-8'))
+            }
+
+            r = hubWebService.urlResponse(HttpPost.METHOD_NAME, "${url}/ws/speciesList/", null, header,
+                    new StringRequestEntity((json as JSON).toString()), true)
 
             if (r == null) {
-                def status = response.setStatus(500)
+                def status = response.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR)
                 r = [status: status, error: 'Unknown error when creating list']
             } else if (r.error) {
-                response.setStatus(r.statusCode)
+                response.setStatus((int) r.statusCode)
             } else {
-                response.setStatus(200)
+                response.setStatus(HttpURLConnection.HTTP_OK)
             }
+        } else {
+            log.info('UnAuthorized user trying to add new species.')
+            response.setStatus(HttpURLConnection.HTTP_UNAUTHORIZED)
+            r = [status: HttpURLConnection.HTTP_UNAUTHORIZED, error:
+                    'You must be logged in before you can create a new species.']
         }
 
         render r as JSON
     }
 
     def q() {
-        def json = request.getJSON()
+        def json = (Map) request.JSON
 
         //caching
-        def value = grailsCacheManager.getCache('qid').get(json)
-        if (!value) {
-            def r = hubWebService.doPost(json.bs + "/webportal/params", json)
+        def value = grailsCacheManager.getCache(portalService.caches.QID).get(json)
+        if (value) {
+            render(value.get())
+        } else {
+            def r = hubWebService.postUrl("${json.bs}/webportal/params", json)
 
-            value = [qid: r] as JSON
+            value = [qid: r.text] as JSON
 
             if (value) {
-                grailsCacheManager.getCache('qid').put(json, value)
+                grailsCacheManager.getCache(portalService.caches.QID).put(json, value)
                 render(value)
             }
-        } else {
-            render(value.get())
         }
     }
 
     def proxy() {
-        def url = params.url
+        String url = params.url
 
-        def requestBody = IOUtils.toString(request.getReader()).getBytes("UTF-8")
-
-        String extra = rebuildParameters(request.getParameterMap())
-        if (url.contains("?") && extra.startsWith("?")) {
-            extra = "&" + extra.substring(1)
-        }
+        String extra = portalService.rebuildParameters(request.parameterMap, url.contains('?'))
         String target = url + extra
 
-        //caching
-        if (request.getMethod().equals("GET")) {
-            def value = grailsCacheManager.getCache('proxy').get(params.url)
-            if (!value) {
-                value = fetchAndOutputUrl(target, null, request, requestBody)
+        //use caching for GET requests
+        if (request.method == HttpGet.METHOD_NAME) {
+            def value = grailsCacheManager.getCache(portalService.caches.PROXY).get(params.url)
+            if (value) {
+                response.setContentType((String) ((Map) value.get()).contentType)
+                response.outputStream << String.valueOf(((Map) value.get()).text)
+            } else {def headers = [:]
+                request.headerNames.each { name -> headers.put(name, request.getHeader(name)) }
+
+
+                value = hubWebService.getUrlMap(target, headers)
                 if (value) {
-                    grailsCacheManager.getCache('proxy').put(params.url, value)
-                    response.setContentType(value.contentType)
-                    response.outputStream.write(value.bytes)
+                    grailsCacheManager.getCache(portalService.caches.PROXY).put(params.url, value)
+                    response.setContentType(String.valueOf(value.contentType))
+                    response.outputStream << String.valueOf(value.text)
                 }
-            } else {
-                response.setContentType(value.get().contentType)
-                response.outputStream.write(value.get().bytes)
             }
-            response.addHeader("Cache-Control", "max-age=" + 360000 + "public must-revalidate")
         } else {
-            fetchAndOutputUrl(target, response, request, requestBody)
+            def stream = hubWebService.getStream(url, HttpPost.METHOD_NAME, request.contentType, request.inputStream)
+
+            def contentType = stream.call.getResponseHeader(HttpHeaders.CONTENT_TYPE).value
+            if (contentType) {
+                response.setContentType(contentType)
+            }
+
+            response.outputStream << stream.stream
+
+            hubWebService.closeStream(stream)
         }
+
+        response.addHeader(HttpHeaders.CACHE_CONTROL, (String) grailsApplication.config.cache.control)
     }
 
     def viewConfig() {
-        def viewConfig = hubWebService.getViewConfig()
+        def viewConfig = portalService.viewConfig
+
+        response.addHeader(HttpHeaders.CACHE_CONTROL, (String) grailsApplication.config.cache.control)
+
         render viewConfig as JSON
-    }
-
-    private def rebuildParameters(Map params) {
-        StringBuilder uri = new StringBuilder()
-        String delim = "?"
-        for (Object o : params.entrySet()) {
-            Map.Entry entry = (Map.Entry) o
-            // skip the url parameter - removal from the map is not allowed
-            if (!"url".equalsIgnoreCase((String) entry.getKey())) {
-                String[] value = (String[]) entry.getValue()
-                try {
-                    uri.append(delim).append(entry.getKey()).append("=").append(URLEncoder.encode(value[0], "UTF-8"))
-                    delim = "&"
-                } catch (UnsupportedEncodingException e) {
-                }
-            }
-        }
-        return uri.toString()
-    }
-
-    private
-    def fetchAndOutputUrl(String url, HttpServletResponse response, HttpServletRequest request, byte[] requestBody) {
-        URLConnection con = new URL(url).openConnection()
-        InputStream is = null
-        try {
-            log.debug("will request '" + url + "' from remote server")
-
-            // POST parameters
-            if ("POST".equals(request.getMethod())) {
-                HttpURLConnection hc = (HttpURLConnection) new URL(url).openConnection()
-                if (request.getContentType() != null) {
-                    hc.setRequestProperty("Content-Type", request.getContentType())
-                }
-                hc.setRequestMethod("POST")
-                hc.setDoInput(true)
-                hc.setDoOutput(true)
-
-                if (requestBody != null && requestBody.length > 0) {
-                    hc.getOutputStream().write(requestBody)
-                }
-
-                con = hc
-            }
-
-            // force the url to be cached by adding/replacing the cache-control header
-            if (response) {
-                response.addHeader("Cache-Control", "max-age=" + 360000 + "public must-revalidate")
-
-                // restore the MIME type for correct handling
-                response.setContentType(con.getContentType())
-
-                response.outputStream << con.getInputStream()
-            } else {
-                [bytes: IOUtils.toByteArray(con.getInputStream()), contentType: con.getContentType()]
-            }
-        } catch (IOException e) {
-            log.debug("IO error doing remote request: " + e.getMessage())
-        } finally {
-            if (is != null) {
-                try {
-                    is.close()
-                } catch (IOException e) {
-                    log.error("Error closing stream to " + url, e)
-                }
-            }
-        }
     }
 
     def getSampleCSV() {
         String url = params.url
 
-        if (url && authService.getUserId() &&
-                (url.startsWith(grailsApplication.config.biocacheService.url) ||
-                        url.startsWith(grailsApplication.config.sandboxService.url))) {
+        if (url && authService.userId &&
+                (url.startsWith("${grailsApplication.config.biocacheService.url}") ||
+                        url.startsWith("${grailsApplication.config.sandboxService.url}"))) {
             InputStream stream = new URL(url).openStream()
             try {
                 ZipInputStream zis = new ZipInputStream(stream)
                 ZipEntry ze
-                while ((ze = zis.getNextEntry())) {
-                    if (ze.getName().endsWith(".csv") && !ze.getName().endsWith("headings.csv") &&
-                            !ze.getName().endsWith("citations.csv")) {
+                while ((ze = zis.nextEntry) != null) {
+                    if (ze.name.endsWith('.csv') && !ze.name.endsWith('headings.csv') &&
+                            !ze.name.endsWith('citations.csv')) {
                         //unzip the downloads file
-                        response.contentType = "text/csv"
+                        response.contentType = 'text/csv'
                         response.outputStream << zis
                     }
                 }
-            } catch (Exception e) {
-                log.error("failed to get download: " + url, e)
+            } catch (IOException e) {
+                log.error('failed to get download: ' + url, e)
             } finally {
-                if (stream)
+                if (stream) {
                     stream.close()
+                }
             }
         }
     }
 
     def ping() {
-        def sessionId = params.sessionId
-        def session = request.JSON
-
-        //save session?
-
-        render status: 200
+        render status: HttpURLConnection.HTTP_OK
     }
 }

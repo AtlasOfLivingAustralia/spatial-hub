@@ -70,10 +70,10 @@
                 <li role="menuitem"><a href="#" ng-click="isLoggedIn() && open('sandBox', {display: { size: 'full'}})">Points<span
                         ng-show="!isLoggedIn()">&nbsp;(must be logged in)</span></a></li>
                 <li role="menuitem"><a href="#"
-                                       ng-click="isLoggedIn() && open('addSpecies', {speciesOption: 'speciesList'})" n>Species
+                                       ng-click="isLoggedIn() && open('addSpecies', {speciesOption: 'speciesList', importList: true})">Species
                     List<span
                             ng-show="!isLoggedIn()">&nbsp;(must be logged in)</span></a></li>
-                <li role="menuitem"><a href="#" ng-click="isLoggedIn() && open('addArea',  {display: { size: 'sm'}})">Areas<span
+                <li role="menuitem"><a href="#" ng-click="isLoggedIn() && open('addArea',  {display: { size: 'sm'}, importArea: true})">Areas<span
                         ng-show="!isLoggedIn()">&nbsp;(must be logged in)</span></a></li>
                 <li role="menuitem"><a href="#" ng-click="open('analysis')">Restore prior analysis</a></li>
                 <li style="display:none" role="menuitem"><a href="#" ng-click="open('sessions')" id="sessionsButton">Restore

@@ -6,23 +6,25 @@
     <div ng-show="step == 'default'" style="padding:10px">
         <span>Select method to define area.</span><br/>
 
-        <br/><span>Interact with the map</span><br/>
-        <input type="radio" ng-model="area" name="addArea_area" value="drawBoundingBox">Draw bounding box<br/>
-        <input type="radio" ng-model="area" name="addArea_area" value="drawPolygon">Draw polygon<br/>
-        <input type="radio" ng-model="area" name="addArea_area" value="drawPointRadius">Draw point and radius<br/>
-        <input type="radio" ng-model="area" name="addArea_area"
-               value="pointOnLayer">Select area from polygonal layer<br/>
+        <div ng-show="!inputData.importArea">
+            <br/><span>Interact with the map</span><br/>
+            <input type="radio" ng-model="area" name="addArea_area" value="drawBoundingBox">Draw bounding box<br/>
+            <input type="radio" ng-model="area" name="addArea_area" value="drawPolygon">Draw polygon<br/>
+            <input type="radio" ng-model="area" name="addArea_area" value="drawPointRadius">Draw point and radius<br/>
+            <input type="radio" ng-model="area" name="addArea_area"
+                   value="pointOnLayer">Select area from polygonal layer<br/>
 
-        <br/><span>Searching</span><br/>
-        <input type="radio" ng-model="area" name="addArea_area"
-               value="addressRadius">Radius centered on street address<br/>
-        <input type="radio" ng-model="area" name="addArea_area" value="pointRadius">Create radius from point<br/>
-        <input type="radio" ng-model="area" name="addArea_area" value="gazetteer">Gazetteer polygon<br/>
+            <br/><span>Searching</span><br/>
+            <input type="radio" ng-model="area" name="addArea_area"
+                   value="addressRadius">Radius centered on street address<br/>
+            <input type="radio" ng-model="area" name="addArea_area" value="pointRadius">Create radius from point<br/>
+            <input type="radio" ng-model="area" name="addArea_area" value="gazetteer">Gazetteer polygon<br/>
 
-        <br/><span>Preset areas</span><br/>
-        <input type="radio" ng-model="area" name="addArea_area" value="preset_World">World<br/>
-        <input type="radio" ng-model="area" name="addArea_area" value="preset_Australia">Australia<br/>
-        <input type="radio" ng-model="area" name="addArea_area" value="preset_Current_extent">Current extent<br/>
+            <br/><span>Preset areas</span><br/>
+            <input type="radio" ng-model="area" name="addArea_area" value="preset_World">World<br/>
+            <input type="radio" ng-model="area" name="addArea_area" value="preset_Australia">Australia<br/>
+            <input type="radio" ng-model="area" name="addArea_area" value="preset_Current_extent">Current extent<br/>
+        </div>
 
         <br/><span>Import</span><br/>
         <input type="radio" ng-model="area" value="importShapefile" ng-disabled="!isLoggedIn()">Import Shapefile<span
@@ -31,10 +33,14 @@
             ng-show="!isLoggedIn()">&nbsp;(must be logged in)</span><br/>
 
         <br/><span>Other</span><br/>
-        <input type="radio" ng-model="area" name="addArea_area"
-               value="environmentalEnvelope">Define environmental envelope<br/>
+        <div ng-show="!inputData.importArea">
+            <input type="radio" ng-model="area" name="addArea_area"
+                   value="environmentalEnvelope">Define environmental envelope<br/>
+        </div>
         <input type="radio" ng-model="area" name="addArea_area" value="wkt">Enter area coordinates (WKT)<br/>
-        <input type="radio" ng-model="area" value="mergeArea">Merge map areas (TODO)<br/>
+        <div ng-show="!inputData.importArea">
+            <input type="radio" ng-model="area" value="mergeArea">Merge map areas (TODO)<br/>
+        </div>
     </div>
 
     <div ng-show="step == 'addressRadius'">

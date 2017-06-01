@@ -2,11 +2,18 @@
     'use strict';
     angular.module('add-area-ctrl', ['map-service', 'layers-service', 'predefined-areas-service'])
         .controller('AddAreaCtrl', ['LayoutService', '$scope', 'MapService', '$timeout', 'LayersService',
-            '$uibModalInstance', 'PredefinedAreasService',
-            function (LayoutService, $scope, MapService, $timeout, LayersService, $uibModalInstance, PredefinedAreasService) {
+            '$uibModalInstance', 'PredefinedAreasService', 'data',
+            function (LayoutService, $scope, MapService, $timeout, LayersService, $uibModalInstance, PredefinedAreasService, inputData) {
+
+                $scope.inputData = inputData;
 
                 $scope.step = 'default';
                 $scope.area = 'drawBoundingBox';
+
+                if (inputData !== undefined && inputData.importArea === true) {
+                    $scope.area = 'importShapefile';
+                }
+
                 $scope.defaultAreas = PredefinedAreasService.getList();
                 $scope.selectedArea = {
                     name: 'new area',
@@ -89,7 +96,7 @@
                                 return area.id
                             }).join();
 
-                            LayersService.createObject($scope.myAreaName, $scope.fileName, $scope.shapeId, featureIdxs).then(function (response) {
+                            LayersService.createArea($scope.myAreaName, $scope.fileName, $scope.shapeId, featureIdxs).then(function (response) {
                                 $scope.setPid(response.data.id, true)
                             });
 

@@ -4,12 +4,13 @@ import org.apache.naming.ContextAccessController
 import org.springframework.web.context.request.RequestContextHolder
 
 import javax.naming.InitialContext
+import javax.naming.NamingException
 import javax.servlet.http.HttpServletRequest
 import java.lang.reflect.Field
 
 class BootStrap {
 
-    def hubWebService
+    def portalService
     def grailsApplication
 
     def init = { servletContext ->
@@ -17,8 +18,8 @@ class BootStrap {
 
         //This application does not need to be authorised for userdetails. Update AuthService to prevent exceptions.
         AuthService.metaClass.getUserId = {
-            def request = RequestContextHolder.currentRequestAttributes().getRequest() as HttpServletRequest
-            return AuthenticationUtils.getUserId(request)
+            def request = RequestContextHolder.currentRequestAttributes().request as HttpServletRequest
+            AuthenticationUtils.getUserId(request)
         }
 
         //copy baselayers
@@ -26,7 +27,7 @@ class BootStrap {
             grailsApplication.config.startup.baselayers = JSON.parse(grailsApplication.config.startup.baselayers)
         }
 
-        hubWebService.updateListQueries()
+        portalService.updateListQueries()
     }
 
     def destroy = {
@@ -34,11 +35,11 @@ class BootStrap {
 
     def casConfig = {
         //set CAS values that are determined from other config
-        def url = new URL(grailsApplication.config.grails.serverURL)
+        def url = new URL("${grailsApplication.config.grails.serverURL}")
         grailsApplication.config.security.cas.appServerName =
-                url.getProtocol() + "://" + url.getHost() + (url.port > 0 ? ':' + url.port : '')
+                url.protocol + '://' + url.host + (url.port > 0 ? ':' + url.port : '')
         grailsApplication.config.security.cas.serverName = grailsApplication.config.security.cas.appServerName
-        grailsApplication.config.security.cas.contextPath = url.getPath()
+        grailsApplication.config.security.cas.contextPath = url.path
         grailsApplication.config.security.cas.casProperties = grailsApplication.config.security.cas.keySet().join(',')
 
         //set CAS values for ala-cas-client
@@ -48,29 +49,30 @@ class BootStrap {
 
         //ensure ala-cas-client uses these config values
         try {
-            File casConfig = File.createTempFile("casConfig", "")
+            File casConfig = File.createTempFile('casConfig', '')
             def stream = new FileOutputStream(casConfig)
             grailsApplication.config.toProperties().store(stream, '')
             stream.flush()
             stream.close()
 
-            Field readOnlyContextsField = ContextAccessController.class.getDeclaredField("readOnlyContexts")
+            Field readOnlyContextsField = ContextAccessController.getDeclaredField('readOnlyContexts')
             readOnlyContextsField.setAccessible(true)
-            Hashtable hashtable = (Hashtable) readOnlyContextsField.get(null)
-            Hashtable backup = (Hashtable) hashtable.clone()
+            Map hashtable = (Map) readOnlyContextsField.get(null)
+            Map backup = (Map) hashtable.clone()
             hashtable.clear()
 
             try {
                 def ctx = new InitialContext()
-                ctx.unbind("java:comp/env/configPropFile")
-                ctx.bind("java:comp/env/configPropFile", casConfig.getPath())
-            } catch (Exception e) {
-                e.printStackTrace()
+                String prop = 'java:comp/env/configPropFile'
+                ctx.unbind(prop)
+                ctx.bind(prop, casConfig.path)
+            } catch (NamingException e) {
+                log.error(e.message, e)
             }
 
             hashtable.putAll(backup)
-        } catch (Exception ex) {
-            log.error("CAS configuration failed.", ex)
+        } catch (IOException ex) {
+            log.error('CAS configuration failed.', ex)
         }
     }
 }

@@ -39,7 +39,7 @@
                     }, 1000);
                 },
                 createFromWkt: function (wkt, name, description) {
-                    return $http.post('portal/wkt',
+                    return $http.post('portal/postAreaWkt',
                         {wkt: wkt, name: name, description: description, user_id: $SH.userId})
                 },
                 getObject: function (id) {
@@ -65,12 +65,11 @@
                     }
                 },
                 uploadAreaFile: function (file, type, name, desc) {
-                    var uploadURL = "";
-                    if (type === 'importShapefile') {
-                        uploadURL = "portal/shp";
-                    } else if (type === 'importKML') {
-                        uploadURL = "portal/kml?name=" + name + "&description=" + desc;
+                    var uploadType = "/shp";
+                    if (type === 'importKML') {
+                        uploadType = "/kml";
                     }
+                    var uploadURL = "portal/postAreaFile/" + uploadType + "?" + name + "&description=" + desc;
 
                     file.upload = Upload.upload({
                         url: uploadURL,
@@ -79,14 +78,14 @@
 
                     return file.upload;
                 },
-                createObject: function (name, description, shpId, featureIdx) {
+                createArea: function (name, description, shpId, featureIdx) {
                     var param = {
                         name: name,
                         description: description,
                         shpId: shpId,
                         featureIdx: featureIdx
                     };
-                    return $http.post('portal/createObj', param);
+                    return $http.post('portal/postArea', param);
                 }
             }
         }])

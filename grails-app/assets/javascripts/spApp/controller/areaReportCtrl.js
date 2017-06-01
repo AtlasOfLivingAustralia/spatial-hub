@@ -7,7 +7,7 @@
                       ListsService, LayersService) {
                 LayoutService.addToSave($scope);
 
-                $scope._autoClose = false;
+                //$scope._autoClose = false;
 
                 $scope.area = data;
                 $scope.endemic = data.endemic;
@@ -334,7 +334,8 @@
                     })
                 };
 
-                $scope.map = function (item) {
+                $scope.map = function (event, item) {
+                    event.currentTarget.classList.add('disabled');
                     var q = {q: areaQ.q.concat(item.extraQ), ws: areaQ.ws, bs: areaQ.bs, wkt: areaQ.wkt};
                     BiocacheService.registerQuery(q).then(function (response) {
                         BiocacheService.newLayer(response, undefined, item.name).then(function (data) {

@@ -1,5 +1,5 @@
-grails.project.groupId = "au.org.ala" // change this to alter the default package name and Maven publishing destination
-appName = "spatial-hub"
+grails.project.groupId = 'au.org.ala' // change this to alter the default package name and Maven publishing destination
+appName = 'spatial-hub'
 
 grails.appName = appName
 
@@ -9,7 +9,7 @@ if (!grails.config.locations || !(grails.config.locations instanceof List)) {
 }
 if (new File(default_config).exists()) {
     println "[${appName}] Including default configuration file: " + default_config;
-    grails.config.locations.add "file:" + default_config
+    grails.config.locations.add 'file:' + default_config
 } else {
     println "[${appName}] No external configuration file defined."
 }
@@ -34,13 +34,13 @@ grails.mime.types = [ // the first one is the default format
 ]
 
 // Legacy setting for codec used to encode data with ${}
-grails.views.default.codec = "html"
+grails.views.default.codec = 'html'
 
 // The default scope for controllers. May be prototype, session or singleton.
 // If unspecified, controllers are prototype scoped.
 grails.controllers.defaultScope = 'singleton'
 
-//grails.config.locations = [ "file:/data/spatial-service/config/spatial-service-config.properties"]
+//grails.config.locations = [ 'file:/data/spatial-service/config/spatial-service-config.properties']
 
 // GSP settings
 grails {
@@ -61,7 +61,7 @@ grails {
 }
 
 
-grails.converters.encoding = "UTF-8"
+grails.converters.encoding = 'UTF-8'
 // scaffolding templates configuration
 grails.scaffolding.templates.domainSuffix = 'Instance'
 
@@ -96,10 +96,11 @@ log4j = {
 
     error 'org.codehaus.groovy.grails.web.servlet',        // controllers
             'org.codehaus.groovy.grails.web.pages',          // GSP
-            'org.codehaus.groovy.grails.web.sitemesh',       // layouts
-            'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
-            'org.codehaus.groovy.grails.web.mapping',        // URL mapping
-            'org.codehaus.groovy.grails.commons',            // core / classloading
+            'org.codehaus.groovy.grails.web.sitemesh' // layouts
+    error 'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
+            'org.codehaus.groovy.grails.web.mapping'        // URL mapping
+
+    error 'org.codehaus.groovy.grails.commons',            // core / classloading
             'org.codehaus.groovy.grails.plugins',            // plugins
             'org.codehaus.groovy.grails.orm.hibernate',      // hibernate integration
             'org.springframework',
@@ -129,8 +130,8 @@ security.cas.disableCAS = false
 
 autocompleteUrl = 'http://bie.ala.org.au/ws/search/auto.jsonp'
 
-auth.admin_role = "ROLE_ADMIN"
-app.http.header.userId = "X-ALA-userId"
+auth.admin_role = 'ROLE_ADMIN'
+app.http.header.userId = 'X-ALA-userId'
 
 headerAndFooter.baseURL = 'http://www2.ala.org.au/commonui-bs3'
 ala.baseURL = 'http://www.ala.org.au'
@@ -152,10 +153,10 @@ biocacheService.url = 'http://biocache.ala.org.au/ws'
 sampling.url = 'http://ala-dylan.it.csiro.au/sampling-service'
 geoserver.url = 'http://spatial-test.ala.org.au/geoserver'
 
-viewConfig.json = "view-config.json"
+viewConfig.json = 'view-config.json'
 //google.apikey=
 
-sessions.dir = "/data/spatial-hub/sessions"
+sessions.dir = '/data/spatial-hub/sessions'
 
 grails.cache.config = {
 
@@ -181,19 +182,19 @@ logger.baseUrl = 'http://logger.ala.org.au/service'
 webservice.readTimeout = 60000
 webservice.connectTimeout = 20000
 
-grails.ziplet.urlPatterns = ["/*"]
+grails.ziplet.urlPatterns = ['/*']
 grails.ziplet.enabled = true
 grails.ziplet.includeContentTypes = ['text/javascript', 'application/json']
 
 cache.headers.enabled = true
 
-phylolink.url = "http://phylolink.ala.org.au"
+phylolink.url = 'http://phylolink.ala.org.au'
 
-lists.threatenedSpeciesUrl = "/ws/speciesList/?isThreatened=eq:true&isAuthoritative=eq:true"
-lists.invasiveSpeciesUrl = "/ws/speciesList/?isInvasive=eq:true&isAuthoritative=eq:true"
+lists.threatenedSpeciesUrl = '/ws/speciesList/?isThreatened=eq:true&isAuthoritative=eq:true'
+lists.invasiveSpeciesUrl = '/ws/speciesList/?isInvasive=eq:true&isAuthoritative=eq:true'
 
-bccvl.login.url = "https://demo.bccvl.org.au/bccvl/oauth2/authorize?client_id=F031d7ce-abb0-11e6-a678-0242ac120005&response_type=token&redirect_uri="
-bccvl.post.url = "https://demo.bccvl.org.au/API/dm/v1/import_ala_data"
+bccvl.login.url = 'https://demo.bccvl.org.au/bccvl/oauth2/authorize?client_id=F031d7ce-abb0-11e6-a678-0242ac120005&response_type=token&redirect_uri='
+bccvl.post.url = 'https://demo.bccvl.org.au/API/dm/v1/import_ala_data'
 
 keep.alive.timeout.ms = 10000
 
@@ -293,8 +294,13 @@ grails {
     }
 }
 
-grails.assets.minifyOptions.excludes = ["**/*.min.js"]
+grails.assets.minifyOptions.excludes = ['**/*.min.js']
 grails.assets.excludes=['node_modules/**', 'target/**']
-grails.assets.plugin."sandbox-hub".excludes = ["**/*.*"]
-grails.assets.plugin."ala-bootstrap3".excludes = ["**/*.*"]
+grails.assets.plugin.'sandbox-hub'.excludes = ['**/*.*']
+grails.assets.plugin.'ala-bootstrap3'.excludes = ['**/*.*']
 grails.assets.enableGzip=true
+
+character.encoding='UTF-8'
+cache.control='max-age=36000 public must-revalidate'
+http.so.timeout=60000
+http.timeout=10000

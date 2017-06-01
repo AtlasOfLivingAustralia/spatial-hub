@@ -22,7 +22,7 @@
                     <button style="float:right;"
                             ng-show="item.query !== undefined && (item.map === undefined || item.map)"
                             class="btn btn-xs btn-default"
-                            ng-click="map(item)">Map all
+                            ng-click="map($event, item)">Map all
                     </button>
                 </td>
                 <td style="width:70px">

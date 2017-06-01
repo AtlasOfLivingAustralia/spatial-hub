@@ -31,7 +31,8 @@
                 });
 
                 $scope.buildStepViews = function () {
-                    $http.get(LayersService.url() + '/capabilities').then(function (data) {
+                    var url = LayersService.url() + '/capabilities';
+                    $http.get($SH.proxyUrl + "?url=" + encodeURIComponent(url)).then(function (data) {
                         var k, merged;
                         for (k in data.data) {
                             if (data.data.hasOwnProperty(k)) {
@@ -165,7 +166,7 @@
 
                                 $scope.status = 'starting...';
 
-                                var url = 'portal/createTask?sessionId=' + $SH.sessionId;
+                                var url = 'portal/postTask?sessionId=' + $SH.sessionId;
 
                                 //format inputs
                                 var c = $scope.cap[$scope.selectedCapability].input;

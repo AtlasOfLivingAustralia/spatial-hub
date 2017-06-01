@@ -59,11 +59,11 @@
                                                 $scope.$close();
                                             });
                                         }
+                                        if (!closeLater)
+                                            $scope.$close();
                                     } else if (newValue === 'FAILED') {
                                         alert('failed to import');
                                     }
-                                    if (!closeLater)
-                                        $scope.$close();
                                 });
 
                                 setWatchFlag = true;

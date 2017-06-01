@@ -528,7 +528,7 @@
                                 task.input.selection = scope.selected.layer.scatterplotSelection;
                             }
                             task.input.wkt = [{pid: scope.selected.layer.highlightWkt}];
-                            $http.post('portal/createTask?sessionId=' + $SH.sessionId, task).then(function (response) {
+                            $http.post('portal/postTask?sessionId=' + $SH.sessionId, task).then(function (response) {
                                 scope.checkScatterplotStatus(LayersService.url() + '/tasks/status/' + response.data.id, scope.selected.layer)
                             })
                         };

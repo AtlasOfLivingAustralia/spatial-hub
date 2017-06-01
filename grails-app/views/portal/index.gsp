@@ -13,7 +13,7 @@
 
 <body>
 
-<script src="portal/messages.js?id=${cache}" type="text/javascript" defer></script>
+<script src="portal/messages.js?id=${messagesAge}" type="text/javascript" defer></script>
 <script src="https://maps.google.com/maps/api/js?language=en-US&libraries=places&key=${grailsApplication.config.google.apikey}" type="text/javascript"></script>
 
 <g:set var="sandboxUrl" value="${grailsApplication.config.sandbox.uiUrl}"></g:set>

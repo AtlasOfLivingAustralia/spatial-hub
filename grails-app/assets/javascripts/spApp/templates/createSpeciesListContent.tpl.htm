@@ -56,7 +56,7 @@
 
 <div class="modal-footer">
     <button class="btn btn-default" type="button" ng-click="step = '1'" ng-disabled="step == '1'">&lt; Back</button>
-    <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-default" type="button" ng-click="$close()">Cancel</button>
     <button class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="matchedGuids().length == 0">Next &gt;
     </button>
 </div>

@@ -1,17 +1,17 @@
-grails.servlet.version = "3.0" // Change depending on target container compliance (2.5 or 3.0)
-grails.project.class.dir = "target/classes"
-grails.project.test.class.dir = "target/test-classes"
-grails.project.test.reports.dir = "target/test-reports"
-grails.project.work.dir = "target/work"
+grails.servlet.version = '3.0' // Change depending on target container compliance (2.5 or 3.0)
+grails.project.class.dir = 'target/classes'
+grails.project.test.class.dir = 'target/test-classes'
+grails.project.test.reports.dir = 'target/test-reports'
+grails.project.work.dir = 'target/work'
 grails.project.target.level = 1.7
 grails.project.source.level = 1.7
-//grails.plugin.location."sandbox-hub" = "../sandbox-hub"
-//grails.plugin.location.'ala-charts-plugin' = "../ala-charts-plugin"
+//grails.plugin.location.'sandbox-hub' = '../sandbox-hub'
+//grails.plugin.location.'ala-charts-plugin' = '../ala-charts-plugin'
 //grails.plugin.location.'downloads-plugin' = '../downloads-plugin'
 
-grails.project.war.file = "target/${appName}-${appVersion}.war"
-
 grails.server.port.http = 8081
+
+grails.project.war.file = "target/${appName}-${appVersion}.war"
 
 grails.project.fork = [
         // configure settings for compilation JVM, note that if you alter the Groovy version forked compilation is required
@@ -29,21 +29,21 @@ grails.project.fork = [
         run: false, test: false
 ]
 
-grails.project.dependency.resolver = "maven" // or ivy
+grails.project.dependency.resolver = 'maven' // or ivy
 grails.project.dependency.resolution = {
     // inherit Grails' default dependencies
-    inherits("global") {
+    inherits('global') {
         // specify dependency exclusions here; for example, uncomment this to disable ehcache:
         // excludes 'ehcache'
     }
-    log "error" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
+    log 'error' // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
     checksums true // Whether to verify checksums on resolve
     legacyResolve true
     // whether to do a secondary resolve on plugin installation, not advised and here for backwards compatibility
 
     repositories {
         mavenLocal()
-        mavenRepo("http://nexus.ala.org.au/content/groups/public/") {
+        mavenRepo('http://nexus.ala.org.au/content/groups/public/') {
             updatePolicy 'always'
         }
     }
@@ -56,30 +56,30 @@ grails.project.dependency.resolution = {
         compile ':cache:1.1.8'
         compile ':cache-ehcache:1.0.0'
 
-        compile ":jsonp:0.2"
-        compile ":build-info:1.2.8"
+        compile ':jsonp:0.2'
+        compile ':build-info:1.2.8'
 
-        build ":release:3.0.1"
+        build ':release:3.0.1'
 
         // plugins for the build system only
-        build ":tomcat:7.0.54"
+        build ':tomcat:7.0.54'
 
-        compile ":asset-pipeline:2.14.1"
-        runtime ":angular-annotate-asset-pipeline:2.4.1"
-        runtime ":angular-template-asset-pipeline:2.3.0"
+        compile ':asset-pipeline:2.14.1'
+        runtime ':angular-annotate-asset-pipeline:2.4.1'
+        runtime ':angular-template-asset-pipeline:2.3.0'
 
-        runtime(":ala-bootstrap3:1.6") {
+        runtime(':ala-bootstrap3:1.6') {
             excludes 'jquery', 'resources'
         }
 
-        runtime(":ala-auth:1.3.4") {
+        runtime(':ala-auth:1.3.4') {
             excludes 'commons-httpclient', 'resources'
         }
 
-        runtime(":sandbox-hub:0.1") {
+        runtime(':sandbox-hub:0.1') {
             excludes 'resources'
         }
 
-        compile "org.grails.plugins:ziplet:0.4"
+        compile 'org.grails.plugins:ziplet:0.4'
     }
 }

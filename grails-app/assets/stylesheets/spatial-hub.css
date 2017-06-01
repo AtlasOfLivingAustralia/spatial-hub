@@ -374,3 +374,7 @@ ol.leaflet-quick-links li {
 
 .navbar-collapse.collapse, .navbar-toggle.collapse { display: none !important; }
 .navbar-collapse.in, .navbar-toggle { display: block !important; }
+
+.progress {
+    height: 22px;
+}

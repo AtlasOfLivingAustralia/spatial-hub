@@ -9,7 +9,10 @@
                 $scope.tlayers = [];
                 $scope.tabulations = [];
 
-                $http.get(LayersService.url() + '/tabulations.json').then(function (response) {
+                $scope.loading = true;
+
+
+                $http.get($SH.proxyUrl + "?url=" + encodeURIComponent(LayersService.url() + '/tabulations.json')).then(function (response) {
                     $scope.tabulations = response.data;
                     var k;
                     for (k in $scope.tabulations) {
@@ -18,6 +21,7 @@
                             $scope.tlayers.push({name: $scope.tabulations[k].name2, id: $scope.tabulations[k].fid2});
                         }
                     }
+                    $scope.loading = false;
                 });
 
                 $scope.type = 'area';
