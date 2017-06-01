@@ -378,3 +378,7 @@ ol.leaflet-quick-links li {
 .progress {
     height: 22px;
 }
+
+.modal-lg {
+    width: 900px !important;
+}

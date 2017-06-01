@@ -7,10 +7,12 @@
                 templateUrl: '/spApp/menuContent.htm',
                 link: function (scope, element, attrs) {
                     scope.open = function (type, data) {
+                        LayoutService.clear();
                         LayoutService.openModal(type, data)
                     };
 
                     scope.openPanel = function (type, data) {
+                        LayoutService.clear();
                         LayoutService.openPanel(type, data, false)
                     };
 

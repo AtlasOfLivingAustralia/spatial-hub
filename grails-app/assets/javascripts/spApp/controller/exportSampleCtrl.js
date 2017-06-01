@@ -45,7 +45,8 @@
             $scope.ok = function () {
                 if ($scope.step === 3) {
                     BiocacheService.newLayer($scope.selectedQ, $scope.selectedArea.area[0], '').then(function (query) {
-                        var sampleUrl = $scope.selectedQ.ws + '/download/options1?searchParams=' + encodeURIComponent('q=' + query.qid);
+                        //include redirect to biocache-service/occurrences/search page
+                        var sampleUrl = $scope.selectedQ.ws + '/download/options1?searchParams=' + encodeURIComponent('q=' + query.qid) + "&targetUri=/occurrences/search";
 
                         if ($scope.selectedLayers.layers && ($scope.selectedLayers.layers.length > 0)) {
                             var layers = '';

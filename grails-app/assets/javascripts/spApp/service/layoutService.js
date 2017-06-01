@@ -92,6 +92,10 @@
                     panelData[type].data = data;
                     this.panelMode[0] = type
                 },
+                /* clear all saved panel info */
+                clear: function (data) {
+                    layoutStack = []
+                },
                 /* close a panel */
                 closePanel: function (data) {
                     this.panelMode[0] = 'default';
