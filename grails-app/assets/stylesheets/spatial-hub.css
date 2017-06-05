@@ -382,3 +382,7 @@ ol.leaflet-quick-links li {
 .modal-lg {
     width: 900px !important;
 }
+
+.modal {
+    background: transparent;
+}
