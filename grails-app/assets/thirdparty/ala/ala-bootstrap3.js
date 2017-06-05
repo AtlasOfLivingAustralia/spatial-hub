@@ -5,18 +5,17 @@ var _navbarWidthCheck = function() {
     var menu = $('#bs-example-navbar-collapse-1');
     var button = $('.navbar-toggle');
     var width = $(document).width();
-    if (width < 768) {
-        $('.navbar-header')[0].style.width = ""
-    } else {
-        $('.navbar-header')[0].style.width = "100%"
-    }
-    if (width <= navbarCollapseMinWidth || menu.height() > 50) {
+
+    $('.navbar-header')[0].style.width = ""
+
+    if (width <= navbarCollapseMinWidth || menu.height() > 75) {
         if (width > navbarCollapseMinWidth) {
             navbarCollapseMinWidth = width;
         }
         menu[0].className = "navbar-collapse collapse";
         button[0].style.display = 'block !important';
         button[0].className = "navbar-toggle";
+        $('.navbar-header')[0].style.width = "100%"
     } else {
         menu[0].className = "navbar-collapse";
         button[0].className = "navbar-toggle collapse";
