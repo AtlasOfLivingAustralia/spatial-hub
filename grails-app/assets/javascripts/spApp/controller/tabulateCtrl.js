@@ -11,14 +11,19 @@
 
                 $scope.loading = true;
 
-
                 $http.get($SH.proxyUrl + "?url=" + encodeURIComponent(LayersService.url() + '/tabulations.json')).then(function (response) {
                     $scope.tabulations = response.data;
+                    var unique = {};
                     var k;
                     for (k in $scope.tabulations) {
                         if ($scope.tabulations.hasOwnProperty(k)) {
-                            $scope.tlayers.push({name: $scope.tabulations[k].name1, id: $scope.tabulations[k].fid1});
-                            $scope.tlayers.push({name: $scope.tabulations[k].name2, id: $scope.tabulations[k].fid2});
+                            unique[$scope.tabulations[k].name1] = $scope.tabulations[k].fid1;
+                            unique[$scope.tabulations[k].name2] = $scope.tabulations[k].fid2;
+                        }
+                    }
+                    for (k in unique) {
+                        if (unique.hasOwnProperty(k)) {
+                            $scope.tlayers.push({name: k, id: unique[k]});
                         }
                     }
                     $scope.loading = false;

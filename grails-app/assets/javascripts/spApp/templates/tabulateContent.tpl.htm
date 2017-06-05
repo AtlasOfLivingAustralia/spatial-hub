@@ -14,12 +14,12 @@
             <br/>
             <span style="width:100px;display:inline-block">Layer 1</span>
             <select ng-model="layer1" style="font-size: 12px; width: 400px" >
-                <option ng-repeat="x in tlayers" ng-value="x.id">{{x.name}}</option>
+                <option ng-repeat="x in tlayers | orderBy:'name'" ng-value="x.id">{{x.name}}</option>
             </select>
             <br/><br/>
             <span style="width:100px;display:inline-block">Layer 2</span>
             <select ng-model="layer2" style="font-size: 12px; width: 400px" >
-                <option ng-repeat="x in tlayers" ng-value="x.id">{{x.name}}</option>
+                <option ng-repeat="x in tlayers | orderBy:'name'" ng-value="x.id">{{x.name}}</option>
             </select>
             <br/><br/>
             <span style="width:100px;display:inline-block">Type</span>
