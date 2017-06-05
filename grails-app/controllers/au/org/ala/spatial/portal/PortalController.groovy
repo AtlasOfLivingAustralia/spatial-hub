@@ -279,9 +279,7 @@ class PortalController {
     def getSampleCSV() {
         String url = params.url
 
-        if (url && authService.userId &&
-                (url.startsWith("${grailsApplication.config.biocacheService.url}") ||
-                        url.startsWith("${grailsApplication.config.sandboxService.url}"))) {
+        if (url && authService.userId) {
             InputStream stream = new URL(url).openStream()
             try {
                 ZipInputStream zis = new ZipInputStream(stream)
