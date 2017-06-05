@@ -229,7 +229,7 @@
                                     if (params.fq && params.fq.length) {
                                         p.fq = params.fq
                                     } else {
-                                        p.fq = undefined
+                                        delete p.fq
                                     }
 
                                     if (p.sld_body !== undefined) {
