@@ -216,7 +216,7 @@ class PortalController {
         //caching
         def value = grailsCacheManager.getCache(portalService.caches.QID).get(json)
         if (value) {
-            render(value.get())
+            render value.get()
         } else {
             def r = hubWebService.postUrl("${json.bs}/webportal/params", json)
 
@@ -224,7 +224,7 @@ class PortalController {
 
             if (value) {
                 grailsCacheManager.getCache(portalService.caches.QID).put(json, value)
-                render(value)
+                render value
             }
         }
     }
