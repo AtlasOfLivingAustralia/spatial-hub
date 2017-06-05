@@ -48,11 +48,11 @@
                     </button>
                     <button ng-click="clearFilter()" class="btn btn-xs btn-default">clear filter
                     </button>
-                    <table class="table" style="width:370px;height:250px;overflow:scroll;display:block">
+                    <table class="table" style="width:470px;height:250px;overflow:scroll;display:block">
                         <tr ng-repeat="x in facetList">
                             <td style="width:20px"><input type="checkbox" ng-model="x.selected"
                                                           ng-change="applySelection()"></td>
-                            <td style="width:230px">{{x.displaylabel}}</td>
+                            <td style="width:330px;display: block;word-wrap:break-word;">{{x.displaylabel}}</td>
                             <td style="width:100px">{{x.count}}</td>
                             <td style="background-color:#{{formatColor(x)}};width:20px">&nbsp</td>
                         </tr>
