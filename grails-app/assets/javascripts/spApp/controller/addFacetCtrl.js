@@ -74,12 +74,21 @@
                     }
                 };
 
-                $scope.isDisabled = function () {
-                    if ($scope.step === 1) {
+                $scope.getInputChecks = function (step) {
+                    if (step === 1) {
                         return $scope.selectedArea.area.length === 0 || $scope.selectedArea.area[0] === undefined || $scope.selectedArea.area[0].name === undefined
-                    } else if ($scope.step === 2) {
+                    } else if (step === 2) {
                         return $scope.selection.length === 0
                     }
+                };
+
+                $scope.isDisabled = function () {
+                    // if ($scope.step === 1) {
+                    //     return $scope.selectedArea.area.length === 0 || $scope.selectedArea.area[0] === undefined || $scope.selectedArea.area[0].name === undefined
+                    // } else if ($scope.step === 2) {
+                    //     return $scope.selection.length === 0
+                    // }
+                    return $scope.getInputChecks(1) || $scope.getInputChecks(2)
                 };
 
                 $scope.nextPage = function () {

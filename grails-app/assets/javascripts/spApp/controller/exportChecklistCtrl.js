@@ -4,7 +4,7 @@
         .controller('ExportChecklistCtrl', ['$q', '$scope', 'MapService', '$timeout', 'LayoutService', '$uibModalInstance', 'BiocacheService', 'data',
             function ($q, $scope, MapService, $timeout, LayoutService, $uibModalInstance, BiocacheService, config) {
 
-                $scope.stepNames = ['select area'];
+                $scope.stepNames = ['Restrict to an area'];
                 if (config && config.step) {
                     $scope.step = config.step
                 } else {
@@ -112,10 +112,10 @@
                 };
 
                 $scope.isDisabled = function () {
-                    if ($scope.step === 1) {
+                    // if ($scope.step === 1) {
                         return $scope.selectedArea.area.length === 0 || $scope.selectedArea.area[0] === undefined ||
                             $scope.selectedArea.area[0].name === undefined
-                    }
+                    // }
                 }
             }])
 }(angular));

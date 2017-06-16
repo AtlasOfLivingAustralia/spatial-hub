@@ -9,7 +9,7 @@
                     return [
                         MapService.newArea("World",
                             [], //["longitude:[-180 TO 180]","latitude:[-90 TO 90]"],
-                            "POLYGON((-180 -90.0,180.0 -90.0,180.0 90.0,-180 90.0,-180 -90.0))",
+                            "POLYGON((-180 -90.0,-180.0 90.0,180.0 90.0,180 -90.0,-180 -90.0))",
                             510000000,
                             [-180, -90, 180, 90]),
                         MapService.newArea("Australia",

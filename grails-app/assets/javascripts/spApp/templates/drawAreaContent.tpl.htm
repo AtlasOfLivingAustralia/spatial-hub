@@ -5,7 +5,7 @@
     <div ng-show="type == 'pointOnLayer'">
         <span>Select or search for a contextual layer and click on the map to set the coordinates.</span>
         <br/>
-        <table class="table table-bordered table-striped">
+        <table class="table table-striped">
             <tbody>
             <tr>
                 <td style="width:100px"><b>Layer</b></td>
@@ -52,11 +52,11 @@
         <textarea ng-model="selectedArea.wkt" style="width:350px;height:200px;margin-left:10px" readonly></textarea>
         <br/>
         <br/>
-        <button class="btn btn-default" ng-click="enableDrawing()"
+        <button class="btn" ng-click="enableDrawing()"
                 ng-disabled="selectedArea.wkt.length == 0">Delete and redraw
         </button>
     </div>
-    <button class="btn btn-default" style="float:right;margin-right:20px;" ng-click="ok()">Next &gt;</button>
-    <button class="btn btn-default" style="float:right" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-primary" style="float:right;margin-right:20px;" ng-click="ok()">Next &gt;</button>
+    <button class="btn" style="float:right" ng-click="cancel()">Cancel</button>
     <br/>
 </div>

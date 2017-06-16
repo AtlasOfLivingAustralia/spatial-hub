@@ -3,37 +3,36 @@
 </div>
 
 <div class="modal-body">
-    <div class="container">
-        <spinner/>
+    <div class="container well">
         <table class="table table-striped">
-            <tbody style="height:300px;overflow:scroll;display:block">
+            <tbody >
             <tr ng-repeat="item in items">
-                <td style="width:250px">{{item.name}}</td>
-                <td style="text-align:right;width:80px" ng-switch="item.value">
+                <td style="width:250px;vertical-align: middle;">{{item.name}}</td>
+                <td style="text-align:right;width:80px;vertical-align: middle;" ng-switch="item.value">
                     <i ng-switch-when="" class="fa fa-refresh fa-spin" style="font-size:18px"></i>
                     <span ng-switch-default>{{item.value}}</span></td>
                 <td style="width:70px">
                     <button style="float:right;"
-                            ng-show="item.query !== undefined && (item.occurrences === undefined || !item.occurrences)"
+                            ng-show="item.query !== undefined && (item.occurrences === undefined || !item.occurrences) && item.value !== 0"
                             class="btn btn-xs btn-default" ng-click="list(item)">list
                     </button>
                 </td>
                 <td style="width:70px">
                     <button style="float:right;"
-                            ng-show="item.query !== undefined && (item.map === undefined || item.map)"
+                            ng-show="item.query !== undefined && (item.map === undefined || item.map) && item.value !== 0"
                             class="btn btn-xs btn-default"
                             ng-click="map($event, item)">Map all
                     </button>
                 </td>
                 <td style="width:70px">
                     <button style="float:right;"
-                            ng-show="item.query !== undefined && (item.map === undefined || item.map)"
+                            ng-show="item.query !== undefined && (item.map === undefined || item.map) && item.value !== 0"
                             class="btn btn-xs btn-default"
                             ng-click="sample(item)">Sample
                     </button>
                 </td>
-                <td style="width:100px;padding-left:20px"><a
-                        ng-show="item.query !== undefined && (item.occurrences === undefined || item.occurrences)"
+                <td style="width:100px;padding-left:20px;vertical-align: middle;"><a
+                        ng-show="item.query !== undefined && (item.occurrences === undefined || item.occurrences) && item.value !== 0"
                         target="_blank"
                         href="{{item.query.ws}}/occurrences/search?q={{item.query.qid}}&fq={{item.extraQ.join('&fq=')}}">View
                     Records<br/></a>
@@ -43,7 +42,7 @@
         </table>
         <a download="{{area.name}}-area-report"
            ng-href="{{exportUrl}}" ng-disabled="exportUrl == null">
-            Download
+            <i class="glyphicon glyphicon-download-alt"></i>Download
         </a>
     </div>
 </div>

@@ -302,9 +302,12 @@ ol.leaflet-quick-links li {
 /** playback css end **/
 
 .process-description {
-    margin-bottom: 10px;
-    font-style: italic;
-    display: block;
+    display: inline-block;
+    font-weight: bold;
+    margin-left: -10px;
+    margin-bottom: 20px;
+    font-size: 20px;
+    color: gray;
 }
 
 .modal-sp {
@@ -385,4 +388,32 @@ ol.leaflet-quick-links li {
 
 .modal {
     background: transparent;
+}
+
+.list-group-item {
+    border: 0px;
+}
+
+.glyphicon {
+    margin: 3px;
+}
+
+.modal-header {
+    padding-bottom: 0px;
+}
+
+.modal-body {
+    padding-bottom: 0px;
+}
+
+.modal-footer {
+    padding-top: 0px;
+}
+
+label {
+    margin-bottom: 10px;
+}
+
+#tool-items > :first-child > hr {
+    display: none;
 }

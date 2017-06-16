@@ -11,8 +11,8 @@
                         source: function (searchTerm, response) {
                             SpeciesAutoCompleteService.search(searchTerm.term, iElement).then(function (data) {
                                 response($.map(data.searchResults.results, function (item, idx) {
-                                    var distributions = item.distributionCount > 0 ? '+' + item.distributionCount + ' expert distributions' : '';
-                                    var checklists = item.checklistCount > 0 ? '+' + item.checklistCount + ' checklists' : '';
+                                    var distributions = item.distributionsCount > 0 ? '+' + item.distributionsCount + ' expert distribution(s)' : '';
+                                    var checklists = item.checklistsCount > 0 ? '+' + item.checklistsCount + ' checklist(s)' : '';
                                     return {
                                         label: item.name,
                                         info: item.rank + (item.commonNameSingle ? ' ' + item.commonNameSingle : ' ') +

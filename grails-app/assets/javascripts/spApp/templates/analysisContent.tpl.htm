@@ -3,37 +3,39 @@
 </div>
 
 <div class="modal-body">
-    <div class="row">
-        <div class="col-sm-4">
-            Task id
+    <div class="well">
+        <div class="row">
+            <div class="col-sm-4">
+                Task id
+            </div>
+            <div class="col-sm-4">
+                <input type="number" min="0" ng-model="taskId"/>
+            </div>
         </div>
-        <div class="col-sm-4">
-            <input type="number" min="0" ng-model="taskId"/>
+        <br/>
+        <div class="row">
+            <div class="col-sm-4">
+                Download result
+            </div>
+            <div class="col-sm-4">
+                <input type="checkbox" ng-model="doDownload"/>
+            </div>
         </div>
-    </div>
-    <br/>
-    <div class="row">
-        <div class="col-sm-4">
-            Download result
-        </div>
-        <div class="col-sm-4">
-            <input type="checkbox" ng-model="doDownload"/>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-12">
-            <table class="table table-condensed">
-                <tr ng-repeat="item in list" ng-show="item.data && item.data.taskId && item.data.metadataUrl">
-                    <td ng-click="taskId = item.data.taskId">{{ item.category2 }}</td>
-                    <td>{{ item.created }}</td>
-                    <td><i class="glyphicon glyphicon-info-sign" ng-click="openUrl(item.data.metadataUrl)"></i></td>
-                </tr>
-            </table>
+        <div class="row">
+            <div class="col-sm-12">
+                <table class="table table-condensed">
+                    <tr ng-repeat="item in list" ng-show="item.data && item.data.taskId && item.data.metadataUrl">
+                        <td ng-click="taskId = item.data.taskId">{{ item.category2 }}</td>
+                        <td>{{ item.created }}</td>
+                        <td><i class="glyphicon glyphicon-info-sign" ng-click="openUrl(item.data.metadataUrl)"></i></td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
 </div>
 
 <div class="modal-footer">
-    <button class="btn btn-default" type="button" ng-click="$close()">Cancel</button>
+    <button class="btn" type="button" ng-click="$close()">Cancel</button>
     <button class="btn btn-primary" type="button" ng-click="ok()">Next &gt;</button>
 </div>

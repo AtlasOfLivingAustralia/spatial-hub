@@ -5,17 +5,7 @@
             'LayoutService', function ($http, MapService, PredefinedAreasService, $timeout, LayoutService) {
 
                 return {
-                    template: '<div><div ng-repeat="x in layerAreas" >\
-                                    <input type="radio" ng-change="change(x)" ng-model="selected" \
-                                        ng-value="x.uid" name="selectedArea">{{x.name}}<br/>\
-                                </div><br/><div ng-repeat="x in defaultAreas">\
-                                    <input type="radio" ng-change="change(x)" ng-model="selected" \
-                                        ng-value="x.name" name="selectedArea">{{x.name}}<br/>\
-                                </div><br/><div><input type="radio" ng-click="createArea()" ng-model="selected" \
-                                        ng-model="_selectedArea.area[0]" ng-value="create" \
-                                        name="selectedArea">Define new area...<br/>\
-                                </div>\
-                                </div>',
+                    templateUrl: '/spApp/selectAreaCtrl.htm',
                     scope: {
                         _selectedArea: '=selectedArea',
                         _includeDefaultAreas: '=includeDefaultAreas',

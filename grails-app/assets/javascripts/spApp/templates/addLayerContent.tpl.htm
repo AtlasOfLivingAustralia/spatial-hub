@@ -3,7 +3,7 @@
 </div>
 
 <div class="modal-body">
-    <div>
+    <div class="well">
         <form class="form-horizontal">
             <div ng-show="step == '1'">
                 <div select-layers selected-layers="selectedLayers" min-count="min" max-count="max"
@@ -14,6 +14,6 @@
 </div>
 
 <div class="modal-footer">
-    <button class="btn btn-default" type="button" ng-click="$close()">Cancel</button>
+    <button class="btn" type="button" ng-click="$close()">Cancel</button>
     <button class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="isDisabled()">Next &gt;</button>
 </div>

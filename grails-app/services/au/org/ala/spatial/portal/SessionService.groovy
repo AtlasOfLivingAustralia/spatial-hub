@@ -48,6 +48,8 @@ class SessionService {
 
         //update session cache
         sessionCache.put(newId, [:])
+
+        newId
     }
 
     def put(id, userId, data, save) {
@@ -67,7 +69,7 @@ class SessionService {
     }
 
     def updateUserSave(id, userId, type, name, time) {
-        def list = (List) userFile(userId).exists() ? JSON.parse(FileUtils.readFileToString(userFile(userId))) : []
+        def list = (List) (userFile(userId).exists() ? JSON.parse(FileUtils.readFileToString(userFile(userId))) : [])
 
         if (TYPE_ADD == type) {
             list.push([id: id, name: name, time: time])

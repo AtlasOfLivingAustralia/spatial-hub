@@ -166,10 +166,17 @@
                         var data = {q: q, bs: query.bs};
                         if (fq !== undefined && fq !== null) data.fq = fq;
                         if (query.wkt !== undefined && query.wkt !== null && query.wkt.length > 0) data.wkt = query.wkt;
-                        return $http.post("portal/q", data).then(function (response) {
-                            query.qid = 'qid:' + response.data.qid;
-                            return query
-                        });
+
+                        if(((data.fq === undefined || data.fq === null || data.fq.length === 0) &&
+                            (data.wkt === undefined || data.wkt === null || data.wkt.length === 0))) {
+                            query.qid = data.q;
+                            return $q.when(query)
+                        } else {
+                            return $http.post("portal/q", data).then(function (response) {
+                                query.qid = 'qid:' + response.data.qid;
+                                return query
+                            });
+                        }
                     }
                 },
                 registerParam: function (bs, q, fq, wkt) {
@@ -232,17 +239,29 @@
                         q = fq[0];
                         fq.splice(0, 1)
                     }
-                    return this.registerParam(bs, q, fq, wkt).then(function (data) {
-                        return {
+                    if (fq.length > 0 || (wkt !== undefined && wkt !== null && wkt.length > 0)) {
+                        return this.registerParam(bs, q, fq, wkt).then(function (data) {
+                            return {
+                                q: q,
+                                fq: fq,
+                                wkt: wkt,
+                                qid: "qid:" + data.qid,
+                                bs: bs,
+                                ws: ws,
+                                name: name
+                            }
+                        })
+                    } else {
+                        return $q.when({
                             q: q,
                             fq: fq,
                             wkt: wkt,
-                            qid: "qid:" + data.qid,
+                            qid: q,
                             bs: bs,
                             ws: ws,
                             name: name
-                        }
-                    })
+                        })
+                    }
                 },
                 url: function () {
                     return $SH.biocacheServiceUrl

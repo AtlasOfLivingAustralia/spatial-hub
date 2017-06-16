@@ -507,11 +507,11 @@
                         };
 
                         scope.scatterplotDownloadData = function () {
-                            Util.download(selected.layer.scatterplotDataUrl);
+                            Util.download(scope.selected.layer.scatterplotDataUrl);
                         }
 
                         scope.scatterplotDownloadImage = function () {
-                            Util.download(selected.layer.scatterplotUrl);
+                            Util.download(scope.selected.layer.scatterplotUrl);
                         }
 
                         scope.scatterplotUpdate = function (value) {
@@ -540,7 +540,7 @@
                                 if (response.data.status < 2) {
                                     $timeout(function () {
                                         scope.checkScatterplotStatus(url, layer)
-                                    }, 2000)
+                                    }, 500)
                                 } else if (response.data.status === 2) {
                                     scope.status = 'cancelled';
                                     layer.scatterplotUpdating = false;
@@ -572,6 +572,7 @@
                                                     var fq = species.scatterplotLayers[0] + ":[" + species.scatterplotSelectionExtents[1] + " TO " + species.scatterplotSelectionExtents[3] + "] AND " +
                                                         species.scatterplotLayers[1] + ":[" + species.scatterplotSelectionExtents[0] + " TO " + species.scatterplotSelectionExtents[2] + "]";
                                                     var fqs = [fq];
+                                                    scope.selected.layer.scatterplotFq = fq
                                                     if (species.scatterplotSelectionExtents.length == 0) {
                                                         scope.selected.layer.sel = undefined;
                                                         fqs = [];
@@ -585,15 +586,15 @@
                                                         scope.updateWMS();
                                                         updateNow = false;
                                                         scope.selected.layer.scatterplotSelectionCount = 'counting...';
-                                                        BiocacheService.count(species, fqs).then(function (count) {
+                                                        BiocacheService.count(scope.selected.layer, fqs).then(function (count) {
                                                             scope.selected.layer.scatterplotSelectionCount = count;
                                                             layer.scatterplotUpdating = false;
-                                                        })
+                                                        });
 
                                                         scope.selected.layer.scatterplotLabel1 = Messages.get('facet.' + species.scatterplotLayers[0]) + " : " +
-                                                            species.scatterplotSelectionExtents[1] + " - " + species.scatterplotSelectionExtents[3];
+                                                            species.scatterplotSelectionExtents[1].toFixed(4) + " - " + species.scatterplotSelectionExtents[3].toFixed(4);
                                                         scope.selected.layer.scatterplotLabel2 = Messages.get('facet.' + species.scatterplotLayers[1]) + " : " +
-                                                            species.scatterplotSelectionExtents[0] + " - " + species.scatterplotSelectionExtents[2];
+                                                            species.scatterplotSelectionExtents[0].toFixed(4) + " - " + species.scatterplotSelectionExtents[2].toFixed(4);
                                                     }
                                                 }
                                             }

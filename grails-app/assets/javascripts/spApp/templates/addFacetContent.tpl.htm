@@ -3,83 +3,160 @@
 </div>
 
 <div class="modal-body">
-    <div>
-        <div class="col-md-3">
-            <div class="stepList">
-                <div ng-repeat="stepName in stepNames">
-                    <div ng-show="step < $index + 1" style="font-size:12px">
-                        <span>{{$index + 1}}. {{stepName}}</span></div>
-                    <div ng-show="step == $index + 1" style="font-size:12px;font-weight:bold;border-bottom-style:solid">
-                        <span>{{$index + 1}}. {{stepName}}</span></div>
-                    <div ng-show="step > $index + 1" style="font-size:12px">
-                        <span>{{$index + 1}}. {{stepName}}</span>
-                        <i class="glyphicon glyphicon-ok" ng-show="step > $index + 1"></i></div>
-                </div>
+    <!--<div class="well">-->
+        <!--<div class="col-md-3">-->
+            <!--<div class="stepList">-->
+                <!--<div ng-repeat="stepName in stepNames">-->
+                    <!--<div ng-show="step < $index + 1" style="font-size:12px">-->
+                        <!--<span>{{$index + 1}}. {{stepName}}</span></div>-->
+                    <!--<div ng-show="step == $index + 1" style="font-size:12px;font-weight:bold;border-bottom-style:solid">-->
+                        <!--<span>{{$index + 1}}. {{stepName}}</span></div>-->
+                    <!--<div ng-show="step > $index + 1" style="font-size:12px">-->
+                        <!--<span>{{$index + 1}}. {{stepName}}</span>-->
+                        <!--<i class="glyphicon glyphicon-ok" ng-show="step > $index + 1"></i></div>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div class="col-md-9">-->
+
+            <!--<form class="form-horizontal">-->
+
+                <!--<div ng-show="step == '1'">-->
+                    <!--<input type="checkbox" ng-model="spatiallyValid">Include spatially-valid records-->
+                    <!--<br/>-->
+                    <!--<input type="checkbox" ng-model="spatiallySuspect">Include spatially-suspect records-->
+                    <!--<br/><br/>-->
+
+                    <!--<div select-area on-custom="setArea" selected-area="selectedArea"></div>-->
+                <!--</div>-->
+
+                <!--<div ng-show="step == '2'">-->
+                    <!--<div>-->
+                        <!--<label style=";width:70px">Facet</label>-->
+                        <!--<select style=";width:300px" id='facet' ng-model="facet"-->
+                                <!--ng-change="resetFacet()">-->
+                            <!--<option ng-repeat="x in facets" value="{{x.facet}}"-->
+                                    <!--ng-disabled="x.separator">-->
+                                <!--{{x.name}}-->
+                            <!--</option>-->
+                        <!--</select>-->
+                    <!--</div>-->
+
+                    <!--<input style="width:200px" type="text" ng-model="facetFilter"/>-->
+                    <!--<button ng-click="offset = 0; updateFacet()" class="btn btn-xs btn-default">-->
+                        <!--apply filter (case sensitive)-->
+                    <!--</button>-->
+                    <!--<button ng-click="clearFilter()" class="btn btn-xs btn-default">clear filter-->
+                    <!--</button>-->
+                    <!--<table class="table" style="width:470px;height:250px;overflow:scroll;display:block">-->
+                        <!--<tr ng-repeat="x in facetList">-->
+                            <!--<td style="width:20px"><input type="checkbox" ng-model="x.selected"-->
+                                                          <!--ng-change="applySelection()"></td>-->
+                            <!--<td style="width:330px;display: block;word-wrap:break-word;">{{x.displaylabel}}</td>-->
+                            <!--<td style="width:100px">{{x.count}}</td>-->
+                            <!--<td style="background-color:#{{formatColor(x)}};width:20px">&nbsp</td>-->
+                        <!--</tr>-->
+                    <!--</table>-->
+                    <!--<div style="height:30px">-->
+                        <!--<uib-progressbar class="progress-striped" ng-class="{ active: true }" ng-show="updating"-->
+                                         <!--value="100"-->
+                                         <!--type='info' title="Updating">loading...</uib-progressbar>-->
+                    <!--</div>-->
+                    <!--<button ng-click="previousPage()" class="btn btn-xs btn-default" ng-disabled="offset == 0">&lt;-->
+                    <!--</button>-->
+                    <!--<span>Page {{(offset / pageSize) + 1}} of {{maxPages}}</span>-->
+                    <!--<button ng-click="nextPage()" class="btn btn-xs btn-default" ng-disabled="offset + pageSize >= max">-->
+                        <!--&gt;-->
+                    <!--</button>-->
+
+                    <!--<button ng-click="clearSelection()" class="btn btn-xs btn-default">Clear selection</button>-->
+                    <!--<span style="color:red">{{selection.length}} facets selected</span>-->
+                <!--</div>-->
+
+            <!--</form>-->
+        <!--</div>-->
+    <!--</div>-->
+
+    <div class="col-md-12">
+        <form class="form-horizontal">
+
+            <div class="panel-default well">
+                <i style="float:right;font-size:25px;color:green;" class="glyphicon glyphicon-ok"
+                   ng-hide="getInputChecks(1)"></i>
+                <i style="float:right;font-size:25px;color:red;" class="glyphicon glyphicon-asterisk"
+                   ng-show="getInputChecks(1)"></i>
+
+                <span class="process-description">1.&nbsp{{stepNames[0]}}</span>
+
+                <br/>
+                <input type="checkbox" ng-model="spatiallyValid">Include spatially-valid records
+                <br/>
+                <input type="checkbox" ng-model="spatiallySuspect">Include spatially-suspect records
+                <br/><br/>
+
+                <div select-area on-custom="setArea" selected-area="selectedArea"></div>
             </div>
-        </div>
-        <div class="col-md-9">
+        </form>
+    </div>
 
-            <form class="form-horizontal">
+    <div class="col-md-12">
+        <form class="form-horizontal">
 
-                <div ng-show="step == '1'">
-                    <input type="checkbox" ng-model="spatiallyValid">Include spatially-valid records
-                    <br/>
-                    <input type="checkbox" ng-model="spatiallySuspect">Include spatially-suspect records
-                    <br/><br/>
+            <div class="panel-default well">
+                <i style="float:right;font-size:25px;color:green;" class="glyphicon glyphicon-ok"
+                   ng-hide="getInputChecks(2)"></i>
+                <i style="float:right;font-size:25px;color:red;" class="glyphicon glyphicon-asterisk"
+                   ng-show="getInputChecks(2)"></i>
 
-                    <div select-area on-custom="setArea" selected-area="selectedArea"></div>
+                <span class="process-description">2.&nbsp{{stepNames[1]}}</span>
+
+                <div>
+                    <label style=";width:70px">Facet</label>
+                    <select style=";width:300px" id='facet' ng-model="facet"
+                            ng-change="resetFacet()">
+                        <option ng-repeat="x in facets" value="{{x.facet}}"
+                                ng-disabled="x.separator">
+                            {{x.name}}
+                        </option>
+                    </select>
                 </div>
 
-                <div ng-show="step == '2'">
-                    <div>
-                        <label style=";width:70px">Facet</label>
-                        <select style=";width:300px" id='facet' ng-model="facet"
-                                ng-change="resetFacet()">
-                            <option ng-repeat="x in facets" value="{{x.facet}}"
-                                    ng-disabled="x.separator">
-                                {{x.name}}
-                            </option>
-                        </select>
-                    </div>
-
-                    <input style="width:200px" type="text" ng-model="facetFilter"/>
-                    <button ng-click="offset = 0; updateFacet()" class="btn btn-xs btn-default">
-                        apply filter (case sensitive)
-                    </button>
-                    <button ng-click="clearFilter()" class="btn btn-xs btn-default">clear filter
-                    </button>
-                    <table class="table" style="width:470px;height:250px;overflow:scroll;display:block">
-                        <tr ng-repeat="x in facetList">
-                            <td style="width:20px"><input type="checkbox" ng-model="x.selected"
-                                                          ng-change="applySelection()"></td>
-                            <td style="width:330px;display: block;word-wrap:break-word;">{{x.displaylabel}}</td>
-                            <td style="width:100px">{{x.count}}</td>
-                            <td style="background-color:#{{formatColor(x)}};width:20px">&nbsp</td>
-                        </tr>
-                    </table>
-                    <div style="height:30px">
-                        <uib-progressbar class="progress-striped" ng-class="{ active: true }" ng-show="updating"
-                                         value="100"
-                                         type='info' title="Updating">loading...</uib-progressbar>
-                    </div>
-                    <button ng-click="previousPage()" class="btn btn-xs btn-default" ng-disabled="offset == 0">&lt;
-                    </button>
-                    <span>Page {{(offset / pageSize) + 1}} of {{maxPages}}</span>
-                    <button ng-click="nextPage()" class="btn btn-xs btn-default" ng-disabled="offset + pageSize >= max">
-                        >
-                    </button>
-
-                    <button ng-click="clearSelection()" class="btn btn-xs btn-default">Clear selection</button>
-                    <span style="color:red">{{selection.length}} facets selected</span>
+                <input style="width:200px" type="text" ng-model="facetFilter"/>
+                <button ng-click="offset = 0; updateFacet()" class="btn btn-xs btn-default">
+                    apply filter (case sensitive)
+                </button>
+                <button ng-click="clearFilter()" class="btn btn-xs btn-default">clear filter
+                </button>
+                <table class="table" style="width:470px;height:250px;overflow:scroll;display:block">
+                    <tr ng-repeat="x in facetList">
+                        <td style="width:20px"><input type="checkbox" ng-model="x.selected"
+                                                      ng-change="applySelection()"></td>
+                        <td style="width:330px;display: block;word-wrap:break-word;">{{x.displaylabel}}</td>
+                        <td style="width:100px">{{x.count}}</td>
+                        <td style="background-color:#{{formatColor(x)}};width:20px">&nbsp</td>
+                    </tr>
+                </table>
+                <div style="height:30px">
+                    <uib-progressbar class="progress-striped" ng-class="{ active: true }" ng-show="updating"
+                                     value="100"
+                                     type='info' title="Updating">loading...</uib-progressbar>
                 </div>
+                <button ng-click="previousPage()" class="btn btn-xs btn-default" ng-disabled="offset == 0">&lt;
+                </button>
+                <span>Page {{(offset / pageSize) + 1}} of {{maxPages}}</span>
+                <button ng-click="nextPage()" class="btn btn-xs btn-default" ng-disabled="offset + pageSize >= max">
+                    >
+                </button>
 
-            </form>
-        </div>
+                <button ng-click="clearSelection()" class="btn btn-xs btn-default">Clear selection</button>
+                <span style="color:red">{{selection.length}} facets selected</span>
+            </div>
+        </form>
     </div>
 </div>
 
 <div class="modal-footer">
-    <button class="btn btn-default" type="button" ng-click="$close()">Cancel</button>
-    <button class="btn btn-default" type="button" ng-click="back()" ng-disabled="step == 1">&lt; Back</button>
+    <button class="btn" type="button" ng-click="$close()">Cancel</button>
+    <!--<button class="btn" type="button" ng-click="back()" ng-disabled="step == 1">&lt; Back</button>-->
     <button class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="isDisabled()">Next &gt;</button>
 </div>

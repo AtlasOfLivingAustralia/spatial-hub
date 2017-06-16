@@ -138,7 +138,7 @@
 
                             <div id="tabulatedData" style="overflow: auto;">
 
-                                <table id="initialParse" class="table table-bordered">
+                                <table id="initialParse" class="table">
                                     <thead>
                                     <tr>
                                         <th ng-repeat="header in preview.preview.headers">
@@ -271,7 +271,7 @@
                                 class="pull-right fa fa-chevron-right animate"
                                 ng-class="{'fa-rotate-90': processedRecord.isOpen }"></i>
                         </uib-accordion-heading>
-                        <table class="table table-bordered">
+                        <table class="table">
                             <thead>
                             <tr>
                                 <th class="fieldNameTD">Field name</th>
@@ -327,5 +327,5 @@
 </div>
 
 <div class="modal-footer">
-    <button class="btn btn-default" type="button" ng-click="$close()">Close</button>
+    <button class="btn btn-primary" type="button" ng-click="$close()">Close</button>
 </div>

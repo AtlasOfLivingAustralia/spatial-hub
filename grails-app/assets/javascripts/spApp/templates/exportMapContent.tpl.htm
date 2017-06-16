@@ -3,7 +3,7 @@
 </div>
 
 <div class="modal-body">
-    <div>
+    <div class="well">
         <form class="form-horizontal">
             <span style="vertical-align:top">Map caption:&nbsp;</span>
             <textarea ng-model="comment" style="width:350px;height:100px;margin-left:10px"></textarea>
@@ -20,6 +20,6 @@
 </div>
 
 <div class="modal-footer">
-    <button class="btn btn-default" type="button" ng-click="$close()">Cancel</button>
+    <button class="btn" type="button" ng-click="$close()">Cancel</button>
     <button class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="isDisabled()">Next &gt;</button>
 </div>

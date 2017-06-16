@@ -1,0 +1,120 @@
+<div class="modal-header">
+    <h3 class="modal-title">{{data.title}}</h3>
+</div>
+
+<div class="modal-body">
+    <div class="row">
+        <div class="col-md-3" ng-show="stepsActual > 1">
+            <div class="stepList">
+                <div ng-repeat="(key, sv) in stepView">
+                    <div ng-show="step < $index + 1" style="font-size:12px">
+                        <span>{{$index + 1}}. {{sv.name}}</span></div>
+                    <div ng-show="step == $index + 1" style="font-size:12px;font-weight:bold;border-bottom-style:solid">
+                        <span>{{$index + 1}}. {{sv.name}}</span></div>
+                    <div ng-show="step > $index + 1" style="font-size:12px">
+                        <span>{{$index + 1}}. {{sv.name}}</span>
+                        <i class="glyphicon glyphicon-ok" ng-show="step > $index + 1"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <div ng-class="stepsActual > 1 ? 'col-md-9' : 'col-md-12'">
+            <form class="form-horizontal">
+                <!--<div ng-show="step<=stepsActual">-->
+                    <!--<span><h3>Step: {{step}} of {{stepsActual}} {{cap[selectedCapability].description}}</h3></span>-->
+                <!--</div>-->
+
+                <!--<div ng-show="step==0">-->
+                    <!--Choose:-->
+                    <!--<select ng-model="selectedCapability" ng-change="test()">-->
+                        <!--<option ng-repeat="cp in capabilities" ng-value="cp.name">{{cp.name}}</option>-->
+                    <!--</select>-->
+                <!--</div>-->
+
+                <div ng-show="stepView">
+                    <div id="tool-items" ng-repeat="(key, sv) in stepView" ng-if="step == ($index + 1)">
+                        <div ng-repeat="i in sv.inputArr"
+                             ng-init="v=cap[selectedCapability].input[i]; status_open = $first" ng-if="v.type != 'auto'"
+                             class="panel-default well" heading="{{v.description}}" is-open="status_open">
+                            <!--<hr/>-->
+
+                            <div ng-if="v.type == 'area' && !(v.constrains.max>1)">
+                                <span class="process-description">{{v.description}}</span>
+                                <div select-area selected-area="values[i]" unique-id="i"></div>
+                            </div>
+                            <div ng-if="v.type == 'area' && v.constrains.max>1">
+                                <span class="process-description">{{v.description}}</span>
+                                <div select-area selected-area="values[i]" unique-id="i"></div>
+                            </div>
+                            <div ng-if="v.type == 'species'">
+                                <span class="process-description">{{v.description}}</span>
+                                <div select-species selected-q="values[i]" unique-id="i" min="v.constraints.min"></div>
+                            </div>
+                            <div ng-if="v.type == 'double'">
+                                <span class="process-description">{{v.description}}</span>
+                                <input style="width:300px" type="number" max="{{v.constraints.max}}"
+                                       min="{{v.constraints.min}}"
+                                       ng-model="values[i]">
+                            </div>
+                            <div ng-if="v.type == 'layer'">
+                                <span class="process-description">{{v.description}}</span>
+                                <div select-layers selected-layers="values[i]"
+                                     min-count="v.constraints.min"
+                                     max-count="v.constraints.max"
+                                     mandatory="v.constraints.mandatory"
+                                     environmental="v.constrains.environmental"
+                                     contextual="v.constrains.contextual"
+                                     analysis="v.constrains.analysis"
+                                     unique-id="i"
+                                ></div>
+                            </div>
+                            <div ng-if="v.type == 'boolean'">
+                                <span class="process-description" style="margin-bottom:0px">{{v.description}}</span>
+                                <input style="margin-left:30px" type="checkbox" ng-model="values[i]">
+                            </div>
+                            <div ng-if="v.type == 'int'">
+                                <span class="process-description">{{v.description}}</span>
+                                <input style="width:300px" type="number" max="{{v.constraints.max}}"
+                                       min="{{v.constraints.min}}"
+                                       ng-model="values[i]">
+                            </div>
+                            <div ng-if="v.type == 'list' && v.constraints.selection == 'single'">
+                                <span class="process-description">{{v.description}}</span>
+                                <select ng-model="values[i]">
+                                    <option ng-repeat="x in v.constraints.content" ng-value="x">{{x}}</option>
+                                </select>
+                            </div>
+                            <div ng-if="v.type == 'list' && v.constraints.selection != 'single'">
+                                <span class="process-description">{{v.description}}</span>
+                                <select ng-model="values[i]" multiple>
+                                    <option ng-repeat="x in v.constraints.content" ng-value="x">{{x}}</option>
+                                </select>
+                            </div>
+                            <div ng-if="v.type == 'phylogeneticTree'">
+                                <span class="process-description">{{v.description}}</span>
+                                <div style="height:300px;overflow:scroll;display:block"
+                                     select-phylo selected-phylo="values[i]"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div ng-show="step > stepsActual">
+                    <h3>Wait for task to complete</h3>
+
+                    <div>{{status}}</div>
+                    <textarea ng-model="logText "
+                              style="height:300px;width:100%;overflow:scroll;display:block"></textarea>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button class="btn" type="button" ng-click="close()">Cancel</button>
+    <button class="btn" type="button" ng-click="back()" ng-disabled="step == 1 || step > stepsActual">&lt;
+        Back
+    </button>
+    <button class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="isDisabled()">Next &gt;</button>
+</div>

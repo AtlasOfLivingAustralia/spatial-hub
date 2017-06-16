@@ -33,13 +33,14 @@
     <label style="width:120px">Add from search</label><input style="width:300px" layer-auto-complete
                                                              environmental="true" contextual="true" on-custom="add">
 
-    <label style="padding-left:30px;padding-right:5px">Filter table</label><input type="text" width="150px"
+    <br/>
+    <label style="width:120px;">Filter table</label><input type="text" width="150px"
                                                                                   placeholder="Filter layers"
                                                                                   ng-model="searchLayer">
 
     <div class="container">
         <div style="margin-left: -15px;">
-            <table class="table table-bordered table-striped fixed-head">
+            <table class="table table-striped fixed-head">
                 <thead style="display:block">
                 <tr>
                     <th style="width:20px"></th>
@@ -69,7 +70,7 @@
                             ng-src="assets/icon_{{layer.type == 'e' ? 'grid':'contextual'}}-layer.png"></td>
                     <td style="width:300px">{{ layer.classification}}</td>
                     <td style="width:300px">{{ layer.name }}</td>
-                    <td style="float:right" class="glyphicon glyphicon-info-sign" ng-click="info(layer)"></td>
+                    <td style="float:right"><div class="glyphicon glyphicon-info-sign" ng-click="info(layer)">&nbsp;</div></td>
                     <td style="width:10px;"
                         class="{{ layer.dist <= 0.1 ? 'bk-green' : (layer.dist <= 0.3 ? 'bk-yellow' : (layer.dist <= 1 ? 'bk-red' : 'bk-white'))}}">
                         &nbsp
@@ -82,7 +83,7 @@
                 <button class="btn btn-xs btn-default" ng-click="clearSelection()">Clear selection</button>
                 <a download="layerList.txt"
                    ng-href="{{exportUrl}}" ng-disabled="{{exportUrl == null}}">
-                    Export
+                    <i class="glyphicon glyphicon-download-alt"></i>Export
                 </a>
                 <label style="padding-left:20px;"
                        class="{{validLayerSelection ? '' : 'red-text' }}">{{_selection.layers.length}} layers

@@ -3,24 +3,44 @@
 </div>
 
 <div class="modal-body">
-    <div class="row">
-        <div class="col-md-4">
-            <ol class="stepList" style="margin-left:-20px;">
-                <li style="font-size:12px" ng-repeat="stepName in stepNames"><span>{{stepName}}&nbsp;</span><i
-                        class="glyphicon glyphicon-ok" ng-show="step > $index + 1"></i></li>
-            </ol>
-        </div>
-        <div class="col-md-8">
-            <form class="form-horizontal">
-                <div ng-show="step == '1'">
-                    <input type="checkbox" ng-model="geospatialkoshertrue">Include spatially-valid records<br/>
-                    <input type="checkbox" ng-model="geospatialkosherfalse">nclude spatially-suspect records<br/>
-                    <input type="checkbox" ng-model="endemic">Include endemic species only<br/>
-                    <br/>
-                    <div select-area on-custom="setArea" selected-area="selectedArea"></div>
-                </div>
-            </form>
-        </div>
+    <!--<div class="row well">-->
+        <!--<div class="col-md-4">-->
+            <!--<ol class="stepList" style="margin-left:-20px;">-->
+                <!--<li style="font-size:12px" ng-repeat="stepName in stepNames"><span>{{stepName}}&nbsp;</span><i-->
+                        <!--class="glyphicon glyphicon-ok" ng-show="step > $index + 1"></i></li>-->
+            <!--</ol>-->
+        <!--</div>-->
+        <!--<div class="col-md-8">-->
+            <!--<form class="form-horizontal">-->
+                <!--<div ng-show="step == '1'">-->
+                    <!--<input type="checkbox" ng-model="geospatialkoshertrue">Include spatially-valid records<br/>-->
+                    <!--<input type="checkbox" ng-model="geospatialkosherfalse">nclude spatially-suspect records<br/>-->
+                    <!--<input type="checkbox" ng-model="endemic">Include endemic species only<br/>-->
+                    <!--<br/>-->
+                    <!--<div select-area on-custom="setArea" selected-area="selectedArea"></div>-->
+                <!--</div>-->
+            <!--</form>-->
+        <!--</div>-->
+    <!--</div>-->
+    <div class="col-md-12">
+        <form class="form-horizontal">
+
+            <div class="panel-default well">
+                <i style="float:right;font-size:25px;color:green;" class="glyphicon glyphicon-ok"
+                   ng-hide="isDisabled()"></i>
+                <i style="float:right;font-size:25px;color:red;" class="glyphicon glyphicon-asterisk"
+                   ng-show="isDisabled()"></i>
+
+                <span class="process-description">1.&nbsp{{stepNames[0]}}</span>
+
+                <br/>
+                <input type="checkbox" ng-model="geospatialkoshertrue">Include spatially-valid records<br/>
+                <input type="checkbox" ng-model="geospatialkosherfalse">Include spatially-suspect records<br/>
+                <input type="checkbox" ng-model="endemic">Include endemic species only<br/>
+                <br/>
+                <div select-area on-custom="setArea" selected-area="selectedArea"></div>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -29,7 +49,7 @@
                      type='info' title="Download progress"><b>downloading... {{downloadSize/1024 | number:0}}kB</b>
     </uib-progressbar>
 
-    <button class="btn btn-default" type="button" ng-click="$close()">Cancel</button>
+    <button class="btn" type="button" ng-click="$close()">Cancel</button>
     <button class="btn btn-primary" type="button" ng-click="ok(false)" ng-disabled="isDisabled()">Download</button>
     <button class="btn btn-primary" type="button" ng-click="ok(true)" ng-disabled="isDisabled() || downloading">Download
         with Preview

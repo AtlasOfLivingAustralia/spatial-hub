@@ -1,5 +1,4 @@
-<div
-        style="padding-left:15px;">
+<div style="padding-left:15px;">
     <form class="form-horizontal" ng-show="selected.layer">
 
         <div class="form-group row">
@@ -10,7 +9,7 @@
 
         <div ng-if="selected.layer.layertype == 'species' && selected.layer.scatterplotUrl !== undefined">
 
-            <div ng-if="selected.layer.scatterplotSelectionCount !== 0">
+            <!--<div ng-if="selected.layer.scatterplotSelectionCount !== 0">-->
                 <div class="form-group row">
                     <label>Records selected: {{ selected.layer.scatterplotSelectionCount }} record/s </label>
                     <button class="btn btn-xs btn-default" ng-click="scatterplotCreateInOut()">add in/out layers to
@@ -25,7 +24,7 @@
                 <div class="form-group row">
                     <label>{{ selected.layer.scatterplotLabel2 }}</label>
                 </div>
-            </div>
+            <!--</div>-->
 
             <div ng-if="areaLayers.length > 0" class="form-group row">
                 <label>Highlight area</label>
@@ -254,14 +253,13 @@
                 </rows>
             </grid>
 
-            <div width="100%" style="float:right; margin-top:-25px;margin-right:100px">
+            <div style="float:right; margin-top:-25px;margin-right:100px;width: 40px;">
                 <label><a ng-click="selected.layer.showColourSliders=true" ng-show="!selected.layer.showColourSliders">more</a></label>
                 <label><a ng-click="selected.layer.showColourSliders=false" ng-show="selected.layer.showColourSliders">less</a></label>
             </div>
 
-            <div width="100%"
-                 style="padding-left:10px; float:right; margin-top:-39px;height:40px;width:40px;margin-right:30px">
-                <div style="background-color:#{{selected.layer.color}};height:30px">&nbsp;</div>
+            <div style="padding-left:10px; float:right; margin-top:-39px;height:40px;width:40px;margin-right:-80px">
+                <div style="border-radius: 15px;background-color:#{{selected.layer.color}};height:30px">&nbsp;</div>
             </div>
         </div>
         <br/>

@@ -1,11 +1,11 @@
 (function (angular) {
     'use strict';
     angular.module('export-bccvl-ctrl', ['map-service']).controller('ExportBCCVLCtrl', ['$scope', 'MapService',
-        '$timeout', 'LayoutService', 'BiocacheService', '$window', '$uibModalInstance', 'SessionsService', '$http', 'data',
+        '$timeout', 'LayoutService', 'BiocacheService', '$window', '$uibModalInstance', 'SessionsService', '$http', '$q', 'data',
         function ($scope, MapService, $timeout, LayoutService, BiocacheService, $window, $uibModalInstance,
-                  SessionsService, $http, config) {
+                  SessionsService, $http, $q, config) {
 
-            $scope.stepNames = ['select species'];
+            $scope.stepNames = ['Select species'];
 
             if (config && config.selectedQ) {
                 $scope.selectedQs = config.selectedQs
@@ -30,9 +30,11 @@
                     var promises = [];
                     var url = $SH.bccvlPostUrl;
                     var data = [];
-                    $.each($scope.selectedQs, function (q) {
+                    $.each($scope.selectedQs, function (i) {
+                        var q = $scope.selectedQs[i];
                         promises.push(BiocacheService.registerQuery(q).then(function (response) {
                             data.push({name: q.name, query: response.qid, url: q.bs})
+                            true
                         }));
                     });
                     $q.all(promises).then(function () {
@@ -49,7 +51,7 @@
             };
 
             $scope.bccvlLogin = function () {
-                var bccvlExportTool = encodeURI("&tool=exportBCCVL&toolparameters=" + encodeURIComponent("{step:2}"));
+                var bccvlExportTool = encodeURI("&tool=exportBCCVL&toolParameters=" + encodeURIComponent('{"step":2}'));
 
                 //save session and open BCCVL login page
                 SessionsService.saveAndLogin(SessionsService.current(), $SH.bccvlLoginUrl + '$url' + bccvlExportTool, true, true)

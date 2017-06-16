@@ -1,23 +1,26 @@
-<h4>Map options</h4>
-<span><b>Base map</b></span>
+<h4 style="text-align:center">Map options</h4>
 
-<form>
-    <ul ng-repeat="x in baselayers" class="list-group">
-        <li class="list-group-item">
+<hr/>
+
+<div class="container">
+    <label><b>Base map</b></label>
+
+    <ul>
+        <li class="list-group-item" ng-repeat="x in baselayers" class="list-group" >
             <input type="radio" ng-model="selection.name" value="{{x.key}}" ng-change="select(x.key)">
-            {{x.name}}
-            <a style="float:right" ng-show="x.link != null" class="glyphicon glyphicon-info-sign" href="{{x.link}}"
+            <span>{{x.name}}</span>
+            <a style="float;color:black;" ng-show="x.link != null" class="glyphicon glyphicon-info-sign" href="{{x.link}}"
                target="_blank"></a>
-            <a style="float:right" ng-show="x.url != null" class="glyphicon glyphicon-info-sign" href="{{x.url}}"
+            <a style="float;color:black;" ng-show="x.url != null" class="glyphicon glyphicon-info-sign" href="{{x.url}}"
                target="_blank"></a>
         </li>
     </ul>
-</form>
+</div>
 
-<br>
+<hr/>
 
 <div style="float:right">
-    <button class="btn btn-sm btn-default" ng-click="addWMS()">Add WMS Layer</button>
-    <button class="btn btn-sm btn-default" ng-click="downloadMap()">Download map</button>
-    <button class="btn btn-sm btn-default" ng-click="resetMap()">Reset map</button>
+    <button class="btn btn-sm" ng-click="addWMS()">Add WMS Layer</button>
+    <button class="btn btn-sm" ng-click="downloadMap()">Download map</button>
+    <button class="btn btn-sm" ng-click="resetMap()">Reset map</button>
 </div>

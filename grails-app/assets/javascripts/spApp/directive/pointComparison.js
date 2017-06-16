@@ -17,6 +17,8 @@
 
                         scope.statusUrl = null;
 
+                        scope.placingMarker = false;
+
                         scope.cancel = function () {
                             scope.deleteDrawing();
 
@@ -30,13 +32,16 @@
 
                         scope.remove = function (idx) {
                             scope.points.splice(idx, 1);
+                            scope.update()
                         }
 
                         scope.addMarker = function () {
+                            scope.placingMarker = true;
                             $('.leaflet-draw-draw-marker')[0].click();
                         };
 
                         scope.stopDrawing = function () {
+                            scope.placingMarker = false;
                             var a = $('.leaflet-draw-actions a');
                             for (var i = 0; i < a.length; i++) {
                                 if (a[i].title === 'Cancel drawing') {

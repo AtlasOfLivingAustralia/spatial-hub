@@ -50,6 +50,7 @@ grails.project.dependency.resolution = {
 
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes e.g.
+        compile 'au.org.ala:ala-cas-client:2.2.1-SNAPSHOT'
     }
 
     plugins {
@@ -69,7 +70,7 @@ grails.project.dependency.resolution = {
         runtime ':angular-template-asset-pipeline:2.3.0'
 
         runtime(':ala-bootstrap3:1.6') {
-            excludes 'jquery', 'resources'
+            excludes 'jquery', 'resources', 'ala-cas-client'
         }
 
         runtime(':ala-auth:1.3.4') {

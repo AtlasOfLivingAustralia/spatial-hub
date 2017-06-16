@@ -83,7 +83,7 @@
                                 var url = $SH.layersServiceUrl + "/objects/" + $SH.gazField + "/" +
                                     scope.point.latitude + "/" + scope.point.longitude + "?limit=10";
 
-                                scope.pointLabel = 'searching point ' + scope.point.longitude.toFixed(3) + ' ' + scope.point.latitude.toFixed(3);
+                                scope.pointLabel = 'searching point... ' + scope.point.longitude.toFixed(3) + ' ' + scope.point.latitude.toFixed(3);
 
                                 $http.get(url).then(function (response) {
                                     scope.points = response.data;

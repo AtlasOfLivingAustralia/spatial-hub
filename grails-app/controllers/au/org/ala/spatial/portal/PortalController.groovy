@@ -218,14 +218,35 @@ class PortalController {
         if (value) {
             render value.get()
         } else {
+            //remove null fqs
+            if (json?.fq) {
+                def nFqs = json?.fq?.findAll()
+                json.fq = nFqs
+            }
+            //move q with qid to fq
+            if (json.q?.contains("qid:")) {
+                if (json?.fq?.size() > 0) {
+                    def tmp = json.fq[0]
+                    json.fq[0] = json.q
+                    json.q = tmp
+                } else if (json?.wkt || json?.qc) {
+                    json.fq = [json.q]
+                    json.q = '*:*'
+                } else {
+                    value = [qid: json.q.replaceFirst("qid:", "")] as JSON
+                    render value
+                }
+            }
+
             def r = hubWebService.postUrl("${json.bs}/webportal/params", json)
 
             value = [qid: r.text] as JSON
 
-            if (value) {
+            if (r?.text) {
                 grailsCacheManager.getCache(portalService.caches.QID).put(json, value)
-                render value
             }
+
+            render value
         }
     }
 

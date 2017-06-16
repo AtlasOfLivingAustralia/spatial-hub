@@ -25,16 +25,16 @@
                 $scope.inputData = inputData;
 
                 $scope.ok = function (data) {
-                    if ($scope.step === 2) {
+                    // if ($scope.step === 2) {
                         var newName = $scope.selectedQ.name;
                         if ($scope.selectedArea.area[0].name !== undefined) newName += ' (' + $scope.selectedArea.area[0].name + ')';
                         BiocacheService.newLayer($scope.selectedQ, $scope.selectedArea.area, newName).then(function (data) {
                             MapService.add(data);
                             $scope.$close()
                         });
-                    } else {
-                        $scope.step = $scope.step + 1
-                    }
+                    // } else {
+                    //     $scope.step = $scope.step + 1
+                    // }
                 };
 
                 $scope.back = function () {
@@ -43,12 +43,21 @@
                     }
                 };
 
-                $scope.isDisabled = function () {
-                    if ($scope.step === 1) {
+                $scope.getInputChecks = function (step) {
+                    if (step === 1) {
                         return $scope.selectedQ.q.length === 0
-                    } else if ($scope.step === 2) {
+                    } else if (step === 2) {
                         return $scope.selectedArea.area.length === 0 || $scope.selectedArea.area[0] === undefined || $scope.selectedArea.area[0].name === undefined
                     }
+                };
+
+                $scope.isDisabled = function () {
+                    // if ($scope.step === 1) {
+                    //     return $scope.selectedQ.q.length === 0
+                    // } else if ($scope.step === 2) {
+                    //     return $scope.selectedArea.area.length === 0 || $scope.selectedArea.area[0] === undefined || $scope.selectedArea.area[0].name === undefined
+                    // }
+                    return $scope.getInputChecks(1) || $scope.getInputChecks(2)
                 }
             }])
 }(angular));

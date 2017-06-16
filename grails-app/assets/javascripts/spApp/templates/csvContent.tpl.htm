@@ -9,7 +9,7 @@
         <br/>
         <span ng-if="truncated">Partial results</span>
         <div style="height:300px;overflow:scroll">
-            <table class="table table-bordered table-striped">
+            <table class="table table-striped">
                 <tbody style="height:300px;overflow:scroll;display:block">
                 <tr ng-repeat="x in summary track by $index">
                     <button class="btn btn-xs" ng-if="mappable" ng-click="addToMap(x)">
@@ -25,10 +25,10 @@
     </div>
     <a download="{{data.filename}}"
        ng-href="{{exportUrl}}" ng-disabled="exportUrl == null">
-        Download
+        <i class="glyphicon glyphicon-download-alt"></i>Download
     </a>
 </div>
 
 <div class="modal-footer">
-    <button class="btn btn-default" type="button" ng-click="$close()">Close</button>
+    <button class="btn btn-primary" type="button" ng-click="$close()">Close</button>
 </div>

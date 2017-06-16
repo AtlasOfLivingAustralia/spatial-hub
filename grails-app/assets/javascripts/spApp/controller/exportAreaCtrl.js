@@ -5,7 +5,7 @@
             'LayersService', 'data',
             function ($scope, MapService, $timeout, LayoutService, $uibModalInstance, BiocacheService, LayersService, config) {
 
-                $scope.stepNames = ['area to export', 'export type'];
+                $scope.stepNames = ['Area to export', 'Export type'];
 
                 if (config && config.step) {
                     $scope.step = config.step
@@ -33,15 +33,15 @@
                 LayoutService.addToSave($scope);
 
                 $scope.ok = function () {
-                    if ($scope.step === 2) {
+                    // if ($scope.step === 2) {
 
                         var url = LayersService.getAreaDownloadUrl($scope.selectedArea.area[0].pid, $scope.type, $scope.selectedArea.area[0].name);
                         Util.download(url);
 
                         $scope.$close();
-                    } else {
-                        $scope.step = $scope.step + 1
-                    }
+                    // } else {
+                    //     $scope.step = $scope.step + 1
+                    // }
                 };
 
                 $scope.back = function () {
@@ -51,11 +51,11 @@
                 };
 
                 $scope.isDisabled = function () {
-                    if ($scope.step === 1) {
-                        return $scope.selectedArea.area.length === 0 || $scope.selectedArea.area[0] === undefined || $scope.selectedArea.area[0].name === undefined
-                    } else {
-                        return false
-                    }
+                    // if ($scope.step === 1) {
+                        return $scope.selectedArea.area.length === 0 || $scope.selectedArea.area[0] === undefined || $scope.selectedArea.area[0].name === undefined || $scope.selectedArea.area[0].name
+                    // } else {
+                    //     return false
+                    // }
                 }
             }])
 }(angular));

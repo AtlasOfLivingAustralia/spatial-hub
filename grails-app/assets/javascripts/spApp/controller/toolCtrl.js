@@ -15,6 +15,9 @@
 
                 $scope.status = '';
 
+                //continous == true then use toolContent.tpl.htm else toolContent_v2.tpl.htm
+                $scope.continous = true;
+
                 $scope.doDownload = true;
                 if (inputData && inputData.doDownload !== undefined) $scope.doDownload = inputData.doDownload;
 
@@ -29,6 +32,8 @@
                     $scope.viewConfig = {};
                     $scope.buildStepViews();
                 });
+
+                $scope.cancelled = false;
 
                 $scope.buildStepViews = function () {
                     var url = LayersService.url() + '/capabilities';
@@ -143,21 +148,23 @@
 
                         $scope.stepsActual = Object.keys($scope.stepView).length;
 
+                    } else if ($scope.continous) {
+                        $scope.step = $scope.stepsActual;
                     }
 
                     if ($scope.stage === 'output') {
-                        $scope.step = $scope.stepsActual + 1
-                    }
+                        $scope.step = $scope.stepsActual + 1;
+                    } else {
+                        if ($scope.isDisabled()) {
+                            //TODO: message to user
+                            return
+                        }
 
-                    if ($scope.isDisabled()) {
-                        //TODO: message to user
-                        return
-                    }
+                        if ($scope.finished) {
+                            alert('process finished running. should not be here');
 
-                    if ($scope.finished) {
-                        alert('process finished running. should not be here');
-
-                        return
+                            return
+                        }
                     }
 
                     switch ($scope.stage) {
@@ -253,7 +260,11 @@
                 $scope.log = {};
                 $scope.logText = '';
                 $scope.last = 0;
+                $scope.checkStatusTimeout = null;
                 $scope.checkStatus = function () {
+                    if ($scope.cancelled) {
+                        return;
+                    }
                     $http.get($scope.statusUrl + "?last=" + $scope.last).then(function (response) {
                         $scope.status = response.data.message;
 
@@ -272,7 +283,7 @@
                         }
 
                         if (response.data.status < 2) {
-                            $timeout(function () {
+                            $scope.checkStatusTimeout = $timeout(function () {
                                 $scope.checkStatus()
                             }, 5000)
                         } else if (response.data.status === 2) {
@@ -355,7 +366,7 @@
                                 LoggerService.log('Tools', $scope.selectedCapability, '{ "taskId": "' + $scope.finishedData.id + '"}')
                             }
 
-                            if ($scope.metadataUrl !== null) LayoutService.openIframe($scope.metadataUrl, false)
+                            if ($scope.metadataUrl !== null) LayoutService.openIframe($scope.metadataUrl, false);
 
                             $scope.$close();
                         }
@@ -403,19 +414,42 @@
                     } else {
                         //defaults
 
-                        //Get the input list from step view
-                        var iList = $scope.stepView[$scope.step].inputArr;
+                        if ($scope.continous) {
+                            for (var sv in $scope.stepView) {
 
-                        for (var i in iList) {
-                            if (iList.hasOwnProperty(i)) {
-                                if ($scope.getInputChecks(iList[i])) {
-                                    return true;
+                                //Get the input list from step view
+                                // var iList = $scope.stepView[$scope.step].inputArr;
+                                var iList = $scope.stepView[sv].inputArr;
+
+                                for (var i in iList) {
+                                    if (iList.hasOwnProperty(i)) {
+                                        if ($scope.getInputChecks(iList[i])) {
+                                            return true;
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            //Get the input list from step view
+                            var iList = $scope.stepView[$scope.step].inputArr;
+
+                            for (var i in iList) {
+                                if (iList.hasOwnProperty(i)) {
+                                    if ($scope.getInputChecks(iList[i])) {
+                                        return true;
+                                    }
                                 }
                             }
                         }
 
                         return false;
                     }
+                };
+
+                $scope.close = function () {
+                    $scope.cancelled = true;
+
+                    $scope.$close();
                 }
 
             }])

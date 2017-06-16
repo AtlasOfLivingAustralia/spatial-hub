@@ -3,6 +3,8 @@
     angular.module('logger-service', [])
         .factory('LoggerService', ['$http', function ($http) {
 
+            var history = [];
+
             return {
                 log: function (category1, category2, data) {
                     var params = '?category1=' + encodeURIComponent(category1) +

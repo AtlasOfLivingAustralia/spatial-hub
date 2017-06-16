@@ -262,7 +262,7 @@
                         var s = scope._selected.layer.playback;
                         return s.type === 'year' &&
                             scope._selected.layer.yearMin &&
-                            scope._selected.layer.yearMax !== scope.selected.layer.yearMin
+                            scope._selected.layer.yearMax !== scope._selected.layer.yearMin
                     };
 
                     scope.setType = function (value) {

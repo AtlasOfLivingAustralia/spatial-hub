@@ -3,37 +3,63 @@
 </div>
 
 <div class="modal-body">
-    <div class="row">
-        <div class="col-md-3">
-            <div class="stepList">
-                <div ng-repeat="stepName in stepNames">
-                    <div ng-show="step < $index + 1" style="font-size:12px">
-                        <span>{{$index + 1}}. {{stepName}}</span></div>
-                    <div ng-show="step == $index + 1" style="font-size:12px;font-weight:bold;border-bottom-style:solid">
-                        <span>{{$index + 1}}. {{stepName}}</span></div>
-                    <div ng-show="step > $index + 1" style="font-size:12px">
-                        <span>{{$index + 1}}. {{stepName}}</span>
-                        <i class="glyphicon glyphicon-ok" ng-show="step > $index + 1"></i></div>
-                </div>
+    <!--<div class="row">-->
+        <!--<div class="col-md-3">-->
+            <!--<div class="stepList">-->
+                <!--<div ng-repeat="stepName in stepNames">-->
+                    <!--<div ng-show="step < $index + 1" style="font-size:12px">-->
+                        <!--<span>{{$index + 1}}. {{stepName}}</span></div>-->
+                    <!--<div ng-show="step == $index + 1" style="font-size:12px;font-weight:bold;border-bottom-style:solid">-->
+                        <!--<span>{{$index + 1}}. {{stepName}}</span></div>-->
+                    <!--<div ng-show="step > $index + 1" style="font-size:12px">-->
+                        <!--<span>{{$index + 1}}. {{stepName}}</span>-->
+                        <!--<i class="glyphicon glyphicon-ok" ng-show="step > $index + 1"></i></div>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div class="col-md-12 well">-->
+            <!--<form class="form-horizontal">-->
+                <!--<div ng-show="step == '1'">-->
+                    <!--<div select-species selected-q="selectedQ" include-layers="false" input-data="inputData"></div>-->
+                <!--</div>-->
+
+                <!--<div ng-show="step == '2'">-->
+                    <!--<div select-area selected-area="selectedArea" unique-id="1" include-default-areas="true"></div>-->
+                <!--</div>-->
+            <!--</form>-->
+        <!--</div>-->
+    <!--</div>-->
+    <div class="col-md-12">
+        <form class="form-horizontal">
+
+            <div class="panel-default well">
+                <i style="float:right;font-size:25px;color:green;" class="glyphicon glyphicon-ok"
+                   ng-hide="getInputChecks(1)"></i>
+                <i style="float:right;font-size:25px;color:red;" class="glyphicon glyphicon-asterisk"
+                   ng-show="getInputChecks(1)"></i>
+
+                <span class="process-description">1.&nbsp{{stepNames[0]}}</span>
+                <div select-species selected-q="selectedQ" include-layers="false" input-data="inputData"></div>
             </div>
-        </div>
-        <div class="col-md-9">
-            <form class="form-horizontal">
-                <div ng-show="step == '1'">
-                    <div select-species selected-q="selectedQ" include-layers="false" input-data="inputData"></div>
-                </div>
+        </form>
+    </div>
+    <div class="col-md-12">
+        <form class="form-horizontal">
+            <div class="panel-default well">
+                <i style="float:right;font-size:25px;color:green;" class="glyphicon glyphicon-ok"
+                   ng-hide="getInputChecks(2)"></i>
+                <i style="float:right;font-size:25px;color:red;" class="glyphicon glyphicon-asterisk"
+                   ng-show="getInputChecks(2)"></i>
 
-                <div ng-show="step == '2'">
-                    <div select-area selected-area="selectedArea" unique-id="1" include-default-areas="true"></div>
-                </div>
-
-            </form>
-        </div>
+                <span class="process-description">2.&nbsp{{stepNames[1]}}</span>
+                <div select-area selected-area="selectedArea" unique-id="1" include-default-areas="true"></div>
+            </div>
+        </form>
     </div>
 </div>
 
 <div class="modal-footer">
-    <button class="btn btn-default" type="button" ng-click="$close()">Cancel</button>
-    <button class="btn btn-default" type="button" ng-click="back()" ng-disabled="step == 1">&lt; Back</button>
+    <button class="btn" type="button" ng-click="$close()">Cancel</button>
+    <!--<button class="btn" type="button" ng-click="back()" ng-disabled="step == 1">&lt; Back</button>-->
     <button class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="isDisabled()">Next &gt;</button>
 </div>
