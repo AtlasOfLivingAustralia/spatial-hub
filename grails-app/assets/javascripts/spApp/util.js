@@ -42,7 +42,7 @@ var Util = {
 
     download: function (url) {
         var link = document.createElement("a");
-        link.target = '_blank';
+        //link.target = '_blank';
         link.href = url;
         link.click();
     }

@@ -81,6 +81,8 @@ grails.project.dependency.resolution = {
             excludes 'resources'
         }
 
+        runtime(':ala-admin-plugin:1.3-SNAPSHOT')
+
         compile 'org.grails.plugins:ziplet:0.4'
     }
 }

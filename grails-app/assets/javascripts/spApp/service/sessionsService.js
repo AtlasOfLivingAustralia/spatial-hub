@@ -16,7 +16,7 @@
                     }
                 },
                 list: function () {
-                    return $http.get("portal/listSaves").then(function (response) {
+                    return $http.get("portal/sessions").then(function (response) {
                         return response.data
                     });
                 },
@@ -30,7 +30,7 @@
                                     name = 'My saved session'
                                 }
                                 data.name = name;
-                                return $http.post("portal/saveData?sessionId=" + $SH.sessionId, data).then(function (response) {
+                                return $http.post("portal/session/" + $SH.sessionId, data).then(function (response) {
                                     bootbox.alert('<h3>Session Saved</h3><br/><br/>URL to retrived this saved session<br/><br/><a target="_blank" href="' + response.data.url + '">' + response.data.url + '</a>')
                                 });
                             }
@@ -39,7 +39,7 @@
                 },
                 saveAndLogin: function (data, urlTemplate, encode, skipALALoginUrl) {
                     //this is not a permanent save
-                    return $http.post("portal/saveAny?sessionId=" + $SH.sessionId + "&save=false", data).then(function (response) {
+                    return $http.post("portal/sessionCache/" + $SH.sessionId + "?save=false", data).then(function (response) {
                         //Not sure why service is not preserved and the additional / is added. Workaround with /?
                         var url = response.data.url.replace("?", "/?");
 
@@ -53,12 +53,12 @@
                     });
                 },
                 get: function (sessionId) {
-                    return $http.get("portal/getSaved?sessionId=" + sessionId).then(function (response) {
+                    return $http.get("portal/session/" + sessionId).then(function (response) {
                         return response.data
                     });
                 },
                 'delete': function (sessionId) {
-                    return $http.get("portal/deleteSaved?sessionId=" + sessionId).then(function (response) {
+                    return $http.delete("portal/session/" + sessionId).then(function (response) {
                         return response.data
                     });
                 },

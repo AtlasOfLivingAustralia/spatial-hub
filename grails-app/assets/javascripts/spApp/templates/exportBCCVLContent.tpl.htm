@@ -23,31 +23,32 @@
         <!--</div>-->
     <!--</div>-->
 
-    <div class="col-md-12">
-        <form class="form-horizontal">
+    <div class="row">
+        <div class="col-md-12">
+            <form class="form-horizontal">
 
-            <div class="panel-default well">
+                <div class="panel-default well">
 
-                <div ng-show="step == '2'">
-                    <span class="process-description">1.&nbsp{{stepNames[0]}}</span>
+                    <div ng-show="step == '2'">
+                        <span class="process-description">1.&nbsp{{stepNames[0]}}</span>
 
-                    <i style="float:right;font-size:25px;color:green;" class="glyphicon glyphicon-ok"
-                       ng-hide="isDisabled()"></i>
-                    <i style="float:right;font-size:25px;color:red;" class="glyphicon glyphicon-asterisk"
-                       ng-show="isDisabled()"></i>
+                        <i style="float:right;font-size:25px;color:green;" class="glyphicon glyphicon-ok"
+                           ng-hide="isDisabled()"></i>
+                        <i style="float:right;font-size:25px;color:red;" class="glyphicon glyphicon-asterisk"
+                           ng-show="isDisabled()"></i>
 
-                    <div select-species on-custom="setQ" selected-q="selectedQs"></div>
+                        <div select-species on-custom="setQ" selected-q="selectedQs"></div>
+                    </div>
+                    <div ng-show="step == '3'">
+                        <span class="process-description">Export Status</span>
+                        <div ng-show="bccvlOpenUrl == ''">exporting to BCCVL ...</div>
+                        <div ng-show="bccvlOpenUrl != ''">Finished uploading to BCCVL</div>
+                    </div>
+
                 </div>
-                <div ng-show="step == '3'">
-                    <span class="process-description">Export Status</span>
-                    <div ng-show="bccvlOpenUrl == ''">exporting to BCCVL ...</div>
-                    <div ng-show="bccvlOpenUrl != ''">Finished uploading to BCCVL</div>
-                </div>
-
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
-
 </div>
 
 <div class="modal-footer">

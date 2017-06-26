@@ -22,25 +22,27 @@
             <!--</form>-->
         <!--</div>-->
     <!--</div>-->
-    <div class="col-md-12">
-        <form class="form-horizontal">
+    <div class="row">
+        <div class="col-md-12">
+            <form class="form-horizontal">
 
-            <div class="panel-default well">
-                <i style="float:right;font-size:25px;color:green;" class="glyphicon glyphicon-ok"
-                   ng-hide="isDisabled()"></i>
-                <i style="float:right;font-size:25px;color:red;" class="glyphicon glyphicon-asterisk"
-                   ng-show="isDisabled()"></i>
+                <div class="panel-default well">
+                    <i style="float:right;font-size:25px;color:green;" class="glyphicon glyphicon-ok"
+                       ng-hide="isDisabled()"></i>
+                    <i style="float:right;font-size:25px;color:red;" class="glyphicon glyphicon-asterisk"
+                       ng-show="isDisabled()"></i>
 
-                <span class="process-description">1.&nbsp{{stepNames[0]}}</span>
+                    <span class="process-description">1.&nbsp{{stepNames[0]}}</span>
 
-                <br/>
-                <input type="checkbox" ng-model="geospatialkoshertrue">Include spatially-valid records<br/>
-                <input type="checkbox" ng-model="geospatialkosherfalse">Include spatially-suspect records<br/>
-                <input type="checkbox" ng-model="endemic">Include endemic species only<br/>
-                <br/>
-                <div select-area on-custom="setArea" selected-area="selectedArea"></div>
-            </div>
-        </form>
+                    <br/>
+                    <input type="checkbox" ng-model="geospatialkoshertrue">Include spatially-valid records<br/>
+                    <input type="checkbox" ng-model="geospatialkosherfalse">Include spatially-suspect records<br/>
+                    <input type="checkbox" ng-model="endemic">Include endemic species only<br/>
+                    <br/>
+                    <div select-area on-custom="setArea" selected-area="selectedArea"></div>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 

@@ -3,84 +3,85 @@
 </div>
 
 <div class="modal-body">
-    <div class="col-md-12">
-        <form class="form-horizontal" ng-init="stepCount = []">
+    <div class="row">
+        <div class="col-md-12">
+            <form class="form-horizontal" ng-init="stepCount = []">
 
-            <div ng-show="stepView && step <= stepsActual">
-                <div id="tool-items" ng-repeat="(key, sv) in stepView" ng-init="idx = $index">
-                    <div ng-repeat="i in sv.inputArr"
-                         ng-init="v=cap[selectedCapability].input[i]; status_open = $first" ng-if="v.type != 'auto'"
-                         class="panel-default well" heading="{{v.description}}" is-open="status_open">
+                <div ng-show="stepView && step <= stepsActual">
+                    <div id="tool-items" ng-repeat="(key, sv) in stepView" ng-init="idx = $index">
+                        <div ng-repeat="i in sv.inputArr"
+                             ng-init="v=cap[selectedCapability].input[i]; status_open = $first" ng-if="v.type != 'auto'"
+                             class="panel-default well" heading="{{v.description}}" is-open="status_open">
 
-                        <span ng-if="v.type != 'boolean'" class="process-description">{{stepCount[idx - 1] + $index + 1}}.&nbsp{{v.description}}</span>
+                            <span ng-if="v.type != 'boolean'" class="process-description">{{stepCount[idx - 1] + $index + 1}}.&nbsp{{v.description}}</span>
 
-                        <i style="float:right;font-size:25px;color:green;" class="glyphicon glyphicon-ok"
-                           ng-hide="getInputChecks(i)"></i>
-                        <i style="float:right;font-size:25px;color:red;" class="glyphicon glyphicon-asterisk"
-                           ng-show="getInputChecks(i)"></i>
+                            <i style="float:right;font-size:25px;color:green;" class="glyphicon glyphicon-ok"
+                               ng-hide="getInputChecks(i)"></i>
+                            <i style="float:right;font-size:25px;color:red;" class="glyphicon glyphicon-asterisk"
+                               ng-show="getInputChecks(i)"></i>
 
-
-                        <div ng-if="v.type == 'area' && !(v.constrains.max>1)">
-                            <div select-area selected-area="values[i]" unique-id="i"></div>
+                            <div ng-if="v.type == 'area' && !(v.constrains.max>1)">
+                                <div select-area selected-area="values[i]" unique-id="i"></div>
+                            </div>
+                            <div ng-if="v.type == 'area' && v.constrains.max>1">
+                                <div select-area selected-area="values[i]" unique-id="i"></div>
+                            </div>
+                            <div ng-if="v.type == 'species'">
+                                <div select-species selected-q="values[i]" unique-id="i" min="v.constraints.min"></div>
+                            </div>
+                            <div ng-if="v.type == 'double'">
+                                <input style="width:300px" type="number" max="{{v.constraints.max}}"
+                                       min="{{v.constraints.min}}"
+                                       ng-model="values[i]">
+                            </div>
+                            <div ng-if="v.type == 'layer'">
+                                <div select-layers selected-layers="values[i]"
+                                     min-count="v.constraints.min"
+                                     max-count="v.constraints.max"
+                                     mandatory="v.constraints.mandatory"
+                                     environmental="v.constrains.environmental"
+                                     contextual="v.constrains.contextual"
+                                     analysis="v.constrains.analysis"
+                                     unique-id="i"
+                                ></div>
+                            </div>
+                            <div ng-if="v.type == 'boolean'">
+                                <span class="process-description" style="margin-bottom:0px">{{stepCount[idx - 1] + $index + 1}}.&nbsp{{v.description}}</span>
+                                <input style="margin-left:30px;" type="checkbox" ng-model="values[i]">
+                            </div>
+                            <div ng-if="v.type == 'int'">
+                                <input style="width:300px" type="number" max="{{v.constraints.max}}"
+                                       min="{{v.constraints.min}}"
+                                       ng-model="values[i]">
+                            </div>
+                            <div ng-if="v.type == 'list' && v.constraints.selection == 'single'">
+                                <select ng-model="values[i]">
+                                    <option ng-repeat="x in v.constraints.content" ng-value="x">{{x}}</option>
+                                </select>
+                            </div>
+                            <div ng-if="v.type == 'list' && v.constraints.selection != 'single'">
+                                <select ng-model="values[i]" multiple>
+                                    <option ng-repeat="x in v.constraints.content" ng-value="x">{{x}}</option>
+                                </select>
+                            </div>
+                            <div ng-if="v.type == 'phylogeneticTree'">
+                                <div style="height:300px;overflow:scroll;display:block"
+                                     select-phylo selected-phylo="values[i]"></div>
+                            </div>
                         </div>
-                        <div ng-if="v.type == 'area' && v.constrains.max>1">
-                            <div select-area selected-area="values[i]" unique-id="i"></div>
-                        </div>
-                        <div ng-if="v.type == 'species'">
-                            <div select-species selected-q="values[i]" unique-id="i" min="v.constraints.min"></div>
-                        </div>
-                        <div ng-if="v.type == 'double'">
-                            <input style="width:300px" type="number" max="{{v.constraints.max}}"
-                                   min="{{v.constraints.min}}"
-                                   ng-model="values[i]">
-                        </div>
-                        <div ng-if="v.type == 'layer'">
-                            <div select-layers selected-layers="values[i]"
-                                 min-count="v.constraints.min"
-                                 max-count="v.constraints.max"
-                                 mandatory="v.constraints.mandatory"
-                                 environmental="v.constrains.environmental"
-                                 contextual="v.constrains.contextual"
-                                 analysis="v.constrains.analysis"
-                                 unique-id="i"
-                            ></div>
-                        </div>
-                        <div ng-if="v.type == 'boolean'">
-                            <span class="process-description" style="margin-bottom:0px">{{stepCount[idx - 1] + $index + 1}}.&nbsp{{v.description}}</span>
-                            <input style="margin-left:30px;" type="checkbox" ng-model="values[i]">
-                        </div>
-                        <div ng-if="v.type == 'int'">
-                            <input style="width:300px" type="number" max="{{v.constraints.max}}"
-                                   min="{{v.constraints.min}}"
-                                   ng-model="values[i]">
-                        </div>
-                        <div ng-if="v.type == 'list' && v.constraints.selection == 'single'">
-                            <select ng-model="values[i]">
-                                <option ng-repeat="x in v.constraints.content" ng-value="x">{{x}}</option>
-                            </select>
-                        </div>
-                        <div ng-if="v.type == 'list' && v.constraints.selection != 'single'">
-                            <select ng-model="values[i]" multiple>
-                                <option ng-repeat="x in v.constraints.content" ng-value="x">{{x}}</option>
-                            </select>
-                        </div>
-                        <div ng-if="v.type == 'phylogeneticTree'">
-                            <div style="height:300px;overflow:scroll;display:block"
-                                 select-phylo selected-phylo="values[i]"></div>
-                        </div>
+                        <span ng-repeat-end ng-init="stepCount[idx] = stepCount[idx - 1] + sv.inputArr.length"></span>
                     </div>
-                    <span ng-repeat-end ng-init="stepCount[idx] = stepCount[idx - 1] + sv.inputArr.length"></span>
                 </div>
-            </div>
 
-            <div ng-show="step > stepsActual">
-                <h3>Wait for task to complete</h3>
+                <div ng-show="step > stepsActual">
+                    <h3>Wait for task to complete</h3>
 
-                <div>{{status}}</div>
-                <textarea ng-model="logText "
-                          style="height:300px;width:100%;overflow:scroll;display:block"></textarea>
-            </div>
-        </form>
+                    <div>{{status}}</div>
+                    <textarea ng-model="logText "
+                              style="height:300px;width:100%;overflow:scroll;display:block"></textarea>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 

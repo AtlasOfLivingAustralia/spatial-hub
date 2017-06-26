@@ -4,9 +4,9 @@ import grails.converters.JSON
 import org.apache.commons.httpclient.methods.StringRequestEntity
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.client.methods.HttpPost
+import org.codehaus.groovy.grails.web.servlet.HttpHeaders
 import org.springframework.web.multipart.MultipartHttpServletRequest
 import org.springframework.web.multipart.commons.CommonsMultipartFile
-import org.codehaus.groovy.grails.web.servlet.HttpHeaders
 
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
@@ -15,6 +15,23 @@ import java.util.zip.ZipInputStream
  * Controller for all spatial-hub web services.
  */
 class PortalController {
+
+    static allowedMethods = [index:['GET'],
+                             messages:['GET'],
+                             session: ['POST', 'DELETE', 'GET'],
+                             sessions: 'GET',
+                             sessionCache: 'POST',
+                             resetCache:['GET'],
+                             postAreaWkt: 'POST',
+                             postAreaFile: 'POST',
+                             postArea: 'POST',
+                             postTask: 'POST',
+                             postSpeciesList: 'POST',
+                             q: 'POST',
+                             proxy: ['GET', 'POST'],
+                             viewConfig: 'GET',
+                             getSampleCSV: 'GET',
+                             ping: 'POST']
 
     def hubWebService
     def grailsApplication
@@ -62,38 +79,35 @@ class PortalController {
         response.contentType = 'text/javascript'
     }
 
-    def listSaves() {
+    def sessions() {
         render sessionService.list(authService.userId) as JSON
     }
 
-    def saveAny() {
+    def sessionCache(Long sessionId) {
+        //TODO: validate sessionId
+
         //no user id
         def userId = null
 
         //use a new id
         def id = sessionService.newId(userId)
 
-        render sessionService.put(id, userId, request.JSON, params?.save ?: true) as JSON
+        render sessionService.put(id, userId, request.JSON, false) as JSON
     }
 
-    def saveData() {
-        def userId = authService.userId
-
-        //use a new id
-        def id = sessionService.newId(userId)
-
-        render sessionService.put(id, userId, request.JSON, params?.save ?: true) as JSON
-    }
-
-    def deleteSaved() {
-        def list = sessionService.updateUserSave(params.sessionId, authService.userId,
-                SessionService.TYPE_DELETE, null, null)
-
-        render list as JSON
-    }
-
-    def getSaved() {
-        render sessionService.get(params.sessionId) as JSON
+    def session(Long sessionId) {
+        if (request.method == 'POST') {
+            //save
+            render sessionService.put(sessionService.newId(authService.userId), authService.userId, request.JSON,
+                    true) as JSON
+        } else if (request.method == 'DELETE') {
+            //delete
+            render sessionService.updateUserSave(sessionId, authService.userId,
+                    SessionService.TYPE_DELETE, null, null) as JSON
+        } else if (request.method == 'GET') {
+            //retrieve
+            render sessionService.get(sessionId) as JSON
+        }
     }
 
     def postAreaWkt() {
@@ -172,7 +186,7 @@ class PortalController {
         }
     }
 
-    def addNewSpecies() {
+    def postSpeciesList() {
         def r
 
         if (authService.userId) {

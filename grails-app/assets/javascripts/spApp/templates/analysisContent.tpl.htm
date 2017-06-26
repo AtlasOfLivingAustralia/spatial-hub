@@ -3,25 +3,23 @@
 </div>
 
 <div class="modal-body">
-    <div class="well">
-        <div class="row">
-            <div class="col-sm-4">
+    <div row>
+        <div class="well">
+            <div class="col-sm-6">
                 Task id
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-6">
                 <input type="number" min="0" ng-model="taskId"/>
             </div>
-        </div>
-        <br/>
-        <div class="row">
-            <div class="col-sm-4">
+            <br/>
+            <br/>
+            <div class="col-sm-6">
                 Download result
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-6">
                 <input type="checkbox" ng-model="doDownload"/>
             </div>
-        </div>
-        <div class="row">
+            </div>
             <div class="col-sm-12">
                 <table class="table table-condensed">
                     <tr ng-repeat="item in list" ng-show="item.data && item.data.taskId && item.data.metadataUrl">

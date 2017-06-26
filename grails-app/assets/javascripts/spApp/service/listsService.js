@@ -37,7 +37,7 @@
                         "description": description,
                         "isPrivate": makePrivate
                     };
-                    return $http.post("portal/addNewSpecies", list, {withCredentials: true}).then(function (resp) {
+                    return $http.post("portal/postSpeciesList", list, {withCredentials: true}).then(function (resp) {
                         $log.debug("Successfully call in list service: " + resp.status + " " + resp.data.message);
                         return resp;
                     }, function (resp) {

@@ -52,10 +52,10 @@ class SessionService {
         newId
     }
 
-    def put(id, userId, data, save) {
+    def put(id, userId, data, persist) {
         sessionCache.put(id, data)
 
-        if (save) {
+        if (persist) {
             saveFile(id).parentFile.mkdirs()
 
             FileUtils.writeStringToFile(saveFile(id), (data as JSON).toString())

@@ -29,32 +29,34 @@
             <!--</form>-->
         <!--</div>-->
     <!--</div>-->
-    <div class="col-md-12">
-        <form class="form-horizontal">
+    <div class="row">
+        <div class="col-md-12">
+            <form class="form-horizontal">
 
-            <div class="panel-default well">
-                <i style="float:right;font-size:25px;color:green;" class="glyphicon glyphicon-ok"
-                   ng-hide="getInputChecks(1)"></i>
-                <i style="float:right;font-size:25px;color:red;" class="glyphicon glyphicon-asterisk"
-                   ng-show="getInputChecks(1)"></i>
+                <div class="panel-default well">
+                    <i style="float:right;font-size:25px;color:green;" class="glyphicon glyphicon-ok"
+                       ng-hide="getInputChecks(1)"></i>
+                    <i style="float:right;font-size:25px;color:red;" class="glyphicon glyphicon-asterisk"
+                       ng-show="getInputChecks(1)"></i>
 
-                <span class="process-description">1.&nbsp{{stepNames[0]}}</span>
-                <div select-species selected-q="selectedQ" include-layers="false" input-data="inputData"></div>
-            </div>
-        </form>
-    </div>
-    <div class="col-md-12">
-        <form class="form-horizontal">
-            <div class="panel-default well">
-                <i style="float:right;font-size:25px;color:green;" class="glyphicon glyphicon-ok"
-                   ng-hide="getInputChecks(2)"></i>
-                <i style="float:right;font-size:25px;color:red;" class="glyphicon glyphicon-asterisk"
-                   ng-show="getInputChecks(2)"></i>
+                    <span class="process-description">1.&nbsp{{stepNames[0]}}</span>
+                    <div select-species selected-q="selectedQ" include-layers="false" input-data="inputData"></div>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-12">
+            <form class="form-horizontal">
+                <div class="panel-default well">
+                    <i style="float:right;font-size:25px;color:green;" class="glyphicon glyphicon-ok"
+                       ng-hide="getInputChecks(2)"></i>
+                    <i style="float:right;font-size:25px;color:red;" class="glyphicon glyphicon-asterisk"
+                       ng-show="getInputChecks(2)"></i>
 
-                <span class="process-description">2.&nbsp{{stepNames[1]}}</span>
-                <div select-area selected-area="selectedArea" unique-id="1" include-default-areas="true"></div>
-            </div>
-        </form>
+                    <span class="process-description">2.&nbsp{{stepNames[1]}}</span>
+                    <div select-area selected-area="selectedArea" unique-id="1" include-default-areas="true"></div>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 

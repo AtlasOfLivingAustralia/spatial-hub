@@ -117,8 +117,8 @@ log4j = {
  *  NOTE: Some of these will be ignored if default_config exists
  \******************************************************************************/
 security.cas.casServerName = 'https://auth.ala.org.au'
-security.cas.uriFilterPattern = '/portal.*,,/'
-security.cas.uriExclusionFilterPattern = '/portal/messages.*,/portal/saveAny.*,/static.*,/assets.*'
+security.cas.uriFilterPattern = '/portal.*,,/,/alaAdmin,/alaAdmin.*'
+security.cas.uriExclusionFilterPattern = '/portal/messages.*,/portal/sessionCache.*,/static.*,/assets.*'
 security.cas.authenticateOnlyIfLoggedInFilterPattern = ''
 security.cas.loginUrl = 'https://auth.ala.org.au/cas/login'
 security.cas.logoutUrl = 'https://auth.ala.org.au/cas/logout'
