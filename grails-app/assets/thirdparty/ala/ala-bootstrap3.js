@@ -1,4 +1,4 @@
-// http://www2.ala.org.au/commonui-bs3/js/application.js
+// https://www2.ala.org.au/commonui-bs3/js/application.js
 
 var navbarCollapseMinWidth = 768;
 var _navbarWidthCheck = function() {
@@ -36,7 +36,7 @@ $(function(){
     });
     setTimeout(navbarWidthCheck, 100);
 
-    var autocompleteUrl = 'http://bie.ala.org.au/ws/search/auto.jsonp';
+    var autocompleteUrl = 'https://bie.ala.org.au/ws/search/auto.jsonp';
 
     if(typeof BIE_VARS != 'undefined' && BIE_VARS.autocompleteUrl){
         autocompleteUrl = BIE_VARS.autocompleteUrl;

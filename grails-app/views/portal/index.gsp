@@ -57,8 +57,9 @@
         validUrls: [
             'self',
             'http://*.ala.org.au/**',
-            'http://www.openstreetmap.org/**',
-            'http://www.google.com/**',
+            'https://*.ala.org.au/**',
+            'https://www.openstreetmap.org/**',
+            'https://www.google.com/**',
             '${config.grails.serverURL}/**',
             '${config.biocache.url}/**',
             '${config.biocacheService.url}/**',

@@ -128,18 +128,18 @@ security.cas.bypass = false // set to true for non-ALA deployment
 security.cas.casServerUrlPrefix = 'https://auth.ala.org.au/cas'
 security.cas.disableCAS = false
 
-autocompleteUrl = 'http://bie.ala.org.au/ws/search/auto.jsonp'
+autocompleteUrl = 'https://bie.ala.org.au/ws/search/auto.jsonp'
 
 auth.admin_role = 'ROLE_ADMIN'
 app.http.header.userId = 'X-ALA-userId'
 
-headerAndFooter.baseURL = 'http://www2.ala.org.au/commonui-bs3'
-ala.baseURL = 'http://www.ala.org.au'
-bie.baseURL = 'http://bie.ala.org.au'
+headerAndFooter.baseURL = 'https://www2.ala.org.au/commonui-bs3'
+ala.baseURL = 'https://www.ala.org.au'
+bie.baseURL = 'https://bie.ala.org.au'
 bie.searchPath = '/search'
 
-layersService.url = 'http://spatial.ala.org.au/layers-service/'
-lists.url = 'http://lists.ala.org.au'
+layersService.url = 'https://spatial.ala.org.au/layers-service/'
+lists.url = 'https://lists.ala.org.au'
 collections.url = 'http://collections.ala.org.au'
 sandbox.url = 'http://sandbox.ala.org.au/ala-hub'
 sandboxService.url = 'http://sandbox.ala.org.au/biocache-service'
@@ -148,8 +148,8 @@ sandbox.uiUrl = 'http://sandbox.ala.org.au/datacheck'
 gazField = 'cl915'
 userObjectsField = 'cl1082'
 
-biocache.url = 'http://biocache.ala.org.au'
-biocacheService.url = 'http://biocache.ala.org.au/ws'
+biocache.url = 'https://biocache.ala.org.au'
+biocacheService.url = 'https://biocache.ala.org.au/ws'
 sampling.url = 'http://ala-dylan.it.csiro.au/sampling-service'
 geoserver.url = 'http://spatial-test.ala.org.au/geoserver'
 
@@ -208,19 +208,19 @@ startup.baselayers = [
         layerType: 'ROADMAP',
         type: 'google',
         exportType: 'normal',
-        link: 'http://www.google.com/intl/en_au/help/terms_maps.html'
+        link: 'https://www.google.com/intl/en_au/help/terms_maps.html'
     ],
     google_hybrid: [
         name: 'Hybrid',
         layerType: 'HYBRID',
         type: 'google',
         exportType: 'hybrid',
-        link: 'http://www.google.com/intl/en_au/help/terms_maps.html'
+        link: 'https://www.google.com/intl/en_au/help/terms_maps.html'
     ],
     outline: [
         name: 'Outline',
         type: 'wms',
-        url: 'http://spatial.ala.org.au/geoserver/gwc/service/wms/reflect?',
+        url: 'https://spatial.ala.org.au/geoserver/gwc/service/wms/reflect?',
         layerParams: [
             layers: 'ALA:world',
             format: 'image/png'
@@ -229,17 +229,17 @@ startup.baselayers = [
     ],
     osm: [
         name: 'Open Street Map',
-        url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         type: 'xyz',
         exportType: 'minimal',
-        link: 'http://www.openstreetmap.org/about'
+        link: 'https://www.openstreetmap.org/about'
     ],
     google_satellite: [
         name: 'Satellite',
         layerType: 'SATELLITE',
         type: 'google',
         exportType: 'normal',
-        link: 'http://www.google.com/intl/en_au/help/terms_maps.html'
+        link: 'https://www.google.com/intl/en_au/help/terms_maps.html'
     ]
 ]
 
