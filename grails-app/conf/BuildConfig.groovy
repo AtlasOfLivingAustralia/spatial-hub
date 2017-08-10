@@ -43,7 +43,7 @@ grails.project.dependency.resolution = {
 
     repositories {
         mavenLocal()
-        mavenRepo('http://nexus.ala.org.au/content/groups/public/') {
+        mavenRepo('https://nexus.ala.org.au/content/groups/public/') {
             updatePolicy 'always'
         }
     }
