@@ -1,0 +1,40 @@
+<div ng-repeat="x in layerAreas" class="checkbox"><label>
+    <input type="checkbox" ng-model="x.selected" ng-change="updateSelection(x)"
+           ng-value="x">{{x.name}}</label></div>
+
+<div ng-repeat="x in defaultAreas" class="checkbox"><label>
+    <input type="checkbox" ng-model="x.selected" ng-change="updateSelection(x)"
+           ng-value="x">{{x.name}}</label></div>
+
+<div ng-show="_includeInOutLayer" class="checkbox"><label>
+    <input type="checkbox" ng-model="pickInOutLayer"
+           ng-value="x.name" name="selectedArea">(2 areas) In/Out of a contextual layer</label></div>
+
+<div ng-if="pickInOutLayer" class="well-lg">
+    <div class="alert alert-ala-success" ng-show="pickInOutLayerName.length > 0">
+        <div ng-show="pickInOutLayerName.length > 0" class="btn-group btn-group-sm" style="float: right; margin-top: -3px;">
+            <button class="btn btn-default"
+                    ng-click='editPickInOutLayerVisible()'>Edit selection
+            </button>
+        </div>
+        <p>{{pickInOutLayerName}}</p>
+    </div>
+    <div ng-if="pickInOutLayerVisible" select-layers selected-layers="selectedInOutLayer"
+         min-count="1" max-count="1" mandatory="false" environmental="false" contextual="true" analysis="false" unique-id="inout"></div>
+</div>
+
+<div class="checkbox"><label>
+    <input type="checkbox" ng-model="pickContextualLayer" name="selectedArea">Select all areas of a contextual
+    layer</label></div>
+<div ng-show="pickContextualLayer" class="well-lg">
+    <div class="alert alert-ala-success" ng-show="pickContextualLayerName.length > 0">
+        <div ng-show="pickContextualLayerName.length > 0" class="btn-group btn-group-sm" style="float: right; margin-top: -3px;">
+            <button class="btn btn-default"
+                    ng-click='editPickContextualLayerVisible()'>Edit selection
+            </button>
+        </div>
+        <p>{{pickContextualLayerName}}</p>
+    </div>
+    <div ng-if="pickContextualLayerVisible" select-layers selected-layers="selectedLayer"
+         min-count="1" max-count="1" mandatory="false" environmental="false" contextual="true" analysis="false"></div>
+</div>

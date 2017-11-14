@@ -45,6 +45,9 @@
                 getObject: function (id) {
                     return $http.get(this.url() + '/object/' + id)
                 },
+                getObjects: function (id) {
+                    return $http.get(this.url() + '/objects/' + id)
+                },
                 getWkt: function (id) {
                     return $http.get(this.url() + '/shape/wkt/' + id)
                 },
@@ -65,11 +68,11 @@
                     }
                 },
                 uploadAreaFile: function (file, type, name, desc) {
-                    var uploadType = "/shp";
+                    var uploadType = "shp";
                     if (type === 'importKML') {
-                        uploadType = "/kml";
+                        uploadType = "kml";
                     }
-                    var uploadURL = "portal/postAreaFile/" + uploadType + "?" + name + "&description=" + desc;
+                    var uploadURL = "portal/postAreaFile/" + uploadType + "?name=" + name + "&description=" + desc;
 
                     file.upload = Upload.upload({
                         url: uploadURL,
@@ -86,6 +89,45 @@
                         featureIdx: featureIdx
                     };
                     return $http.post('portal/postArea', param);
+                },
+                /**
+                 *
+                 * @param type. 'distribution', 'checklist', or 'track'
+                 * @param lsid
+                 * @returns {HttpPromise}
+                 */
+                findOtherArea: function(type, lsid, area) {
+                    return $http.get(this.url() + '/' + type + '/lsid/' + lsid + '?nowkt=true')
+                },
+                convertFieldDataToMapLayer: function (fieldData, isSelected) {
+                    return {
+                        id: fieldData.id,
+                        classification1: fieldData.layer.classification1,
+                        classification2: fieldData.layer.classification2,
+                        classification: fieldData.layer.classification1 + ' / ' + fieldData.layer.classification2,
+                        name: fieldData.name,
+                        type: fieldData.type,
+                        dist: 2,
+                        selected: isSelected,
+                        layerId: fieldData.layer.id,
+                        bbox: [[fieldData.layer.minlatitude, fieldData.layer.minlongitude], [fieldData.layer.maxlatitude, fieldData.layer.maxlongitude]]
+                    }
+                },
+                convertFieldIdToMapLayer: function (fieldId, isSelected) {
+                    var fieldData = this.getLayer(fieldId);
+
+                    return {
+                        id: fieldData.id,
+                        classification1: fieldData.layer.classification1,
+                        classification2: fieldData.layer.classification2,
+                        classification: fieldData.layer.classification1 + ' / ' + fieldData.layer.classification2,
+                        name: fieldData.name,
+                        type: fieldData.type,
+                        dist: 2,
+                        selected: isSelected,
+                        layerId: fieldData.layer.id,
+                        bbox: [[fieldData.layer.minlatitude, fieldData.layer.minlongitude], [fieldData.layer.maxlatitude, fieldData.layer.maxlongitude]]
+                    }
                 }
             }
         }])

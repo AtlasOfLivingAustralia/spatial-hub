@@ -1,35 +1,45 @@
 <div class="modal-header">
-    <div class="modal-title">Area report - {{area.name}}</div>
+    <button type="button" class="close" ng-click="$close()">×</button>
+    <h4 class="modal-title">Area report - {{area.name}}</h4>
 </div>
 
 <div class="modal-body">
-    <div class="container well">
+    <uib-progressbar class="progress-striped active" ng-show="items === undefined || items.length == 0"
+                     value="100" type='info' title="Updating">Loading...</uib-progressbar>
+
         <table class="table table-striped">
             <tbody >
             <tr ng-repeat="item in items">
                 <td style="width:250px;vertical-align: middle;">{{item.name}}</td>
                 <td style="text-align:right;width:80px;vertical-align: middle;" ng-switch="item.value">
-                    <i ng-switch-when="" class="fa fa-refresh fa-spin" style="font-size:18px"></i>
-                    <span ng-switch-default>{{item.value}}</span></td>
-                <td style="width:70px">
-                    <button style="float:right;"
-                            ng-show="item.query !== undefined && (item.occurrences === undefined || !item.occurrences) && item.value !== 0"
-                            class="btn btn-xs btn-default" ng-click="list(item)">list
-                    </button>
+                    <i ng-switch-when="" style="width:16px" class="species-spinner">&nbsp;</i>
+                    <span ng-switch-default>{{item.value}}</span>
                 </td>
                 <td style="width:70px">
-                    <button style="float:right;"
-                            ng-show="item.query !== undefined && (item.map === undefined || item.map) && item.value !== 0"
-                            class="btn btn-xs btn-default"
-                            ng-click="map($event, item)">Map all
-                    </button>
+                    <div class="btn-group btn-group-xs">
+                        <button style="float:right;"
+                                ng-show="item.query !== undefined && (item.occurrences === undefined || !item.occurrences) && item.value !== 0"
+                                class="btn btn-default" ng-click="list(item)">List
+                        </button>
+                    </div>
                 </td>
                 <td style="width:70px">
-                    <button style="float:right;"
-                            ng-show="item.query !== undefined && (item.map === undefined || item.map) && item.value !== 0"
-                            class="btn btn-xs btn-default"
-                            ng-click="sample(item)">Sample
-                    </button>
+                    <div class="btn-group btn-group-xs">
+                        <button style="float:right;"
+                                ng-show="item.query !== undefined && (item.map === undefined || item.map) && item.value !== 0"
+                                class="btn btn-default"
+                                ng-click="map($event, item)">Map all
+                        </button>
+                    </div>
+                </td>
+                <td style="width:70px">
+                    <div class="btn-group btn-group-xs">
+                        <button style="float:right;"
+                                ng-show="item.query !== undefined && (item.map === undefined || item.map) && item.value !== 0"
+                                class="btn btn-default"
+                                ng-click="sample(item)">Sample
+                        </button>
+                    </div>
                 </td>
                 <td style="width:100px;padding-left:20px;vertical-align: middle;"><a
                         ng-show="item.query !== undefined && (item.occurrences === undefined || item.occurrences) && item.value !== 0"
@@ -44,7 +54,6 @@
            ng-href="{{exportUrl}}" ng-disabled="exportUrl == null">
             <i class="glyphicon glyphicon-download-alt"></i>Download
         </a>
-    </div>
 </div>
 
 <div class="modal-footer">

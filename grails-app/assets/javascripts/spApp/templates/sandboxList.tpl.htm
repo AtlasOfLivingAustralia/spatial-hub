@@ -10,7 +10,7 @@
                         <div class="input-group">
                             <input type="text" class="form-control" placeholder="Search Dataset"
                                    ng-model="searchSandbox">
-                            <div class="input-group-addon"><i class="fa fa-search"></i></div>
+                            <div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
                         </div>
                     </div>
                 </div>
@@ -21,19 +21,19 @@
                 <th>
                     <a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
                         Name
-                        <span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
-                        <span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
+                        <span ng-show="sortType == 'name' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
+                        <span ng-show="sortType == 'name' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                     </a></th>
                 <th><a href="#" ng-click="sortType = 'updated'; sortReverse = !sortReverse">
                     Last updated
-                    <span ng-show="sortType == 'updated' && !sortReverse" class="fa fa-caret-down"></span>
-                    <span ng-show="sortType == 'updated' && sortReverse" class="fa fa-caret-up"></span>
+                    <span ng-show="sortType == 'updated' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
+                    <span ng-show="sortType == 'updated' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                 </a></th>
                 <th>
                     <a href="#" ng-click="sortType = 'count'; sortReverse = !sortReverse">
                         Number of records
-                        <span ng-show="sortType == 'count' && !sortReverse" class="fa fa-caret-down"></span>
-                        <span ng-show="sortType == 'count' && sortReverse" class="fa fa-caret-up"></span>
+                        <span ng-show="sortType == 'count' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
+                        <span ng-show="sortType == 'count' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                     </a></th>
             </tr>
             </thead>

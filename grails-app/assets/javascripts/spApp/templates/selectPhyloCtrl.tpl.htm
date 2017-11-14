@@ -1,4 +1,7 @@
-<table class="table table-striped">
+<uib-progressbar ng-show="loading" class="progress-striped"
+                 ng-class="{ active: true }" value="100" type='info' title="Updating">loading...</uib-progressbar>
+
+<table class="table table-striped" ng-if="!loading">
     <thead>
     <td></td>
     <td>Group</td>

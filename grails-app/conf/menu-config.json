@@ -1,0 +1,172 @@
+[
+  {
+    "name": "Add to map",
+    "width": 110,
+    "items": [
+      {
+        "name": "Species",
+        "ng-click": ["open", "tool", {"processName": "ToolAddSpeciesService"}]
+      },
+      {
+        "name": "Area",
+        "ng-click": ["open", "addArea"]
+      },
+      {
+        "name": "Layer",
+        "ng-click": ["open", "tool", {"processName": "ToolAddLayerService"}]
+      },
+      {
+        "name": "Facet",
+        "ng-click": ["open", "tool", {"processName": "ToolAddFacetService"}]
+      }
+    ]
+  },
+  {
+    "name": "Tools",
+    "width": 70,
+    "items": [
+      {
+        "ng-click": ["open", "tool", {"processName": "ToolAreaReportService"}],
+        "name": "Area Report"
+      },
+      {
+        "ng-click": ["open", "tool", {"processName": "AreaReport"}],
+        "name": "Detailed Area Report (PDF)"
+      },
+      {
+        "ng-click": ["open", "tool", {"processName": "AooEoo"}],
+        "name": "Calculate AOO and EOO"
+      },
+      {
+        "ng-click": ["openPanel", "nearestLocality"],
+        "name": "Nearest locality"
+      },
+      {
+        "ng-click": ["openPanel", "pointComparison"],
+        "name": "Point comparisons"
+      },
+      {
+        "ng-click": ["open", "tool", {"processName": "ScatterplotCreate"}],
+        "name": "Scatterplot"
+      },
+      {
+        "ng-click": ["open", "tool", {"processName": "ScatterplotList"}],
+        "name": "Scatterplot List"
+      },
+      {
+        "ng-click": ["open", "tabulate"],
+        "name": "Tabulate"
+      },
+      {
+        "ng-click": ["open", "compareAreas"],
+        "name": "Compare areas"
+      },
+      {
+        "ng-click": ["open", "tool", {"processName": "PointsToGrid"}],
+        "name": "Points to Grid"
+      },
+      {
+        "ng-click": ["open", "tool", {"processName": "GeneratePoints"}],
+        "name": "Generate Points"
+      },
+      {
+        "ng-click": ["open", "tool", {"processName": "PhylogeneticDiversity"}],
+        "name": "Phylogenetic Diversity"
+      },
+      {
+        "ng-click": ["open", "tool", {"processName": "Classification"}],
+        "name": "Classify"
+      },
+      {
+        "ng-click": ["open", "tool", {"processName": "Maxent"}],
+        "name": "Predict"
+      },
+      {
+        "ng-click": ["open", "tool", {"processName": "GDMStep1"}],
+        "name": "GDM"
+      },
+      {
+        "ng-click": ["open", "analysis"],
+        "name": "Restore prior analysis"
+      }
+    ]
+  },
+  {
+    "name": "Import",
+    "width": 78,
+    "items": [
+      {
+        "name": "Points",
+        "ng-click": ["open", "sandBox", {"display": { "size": "full"}}]
+      },
+      {
+        "name": "Species List",
+        "ng-click": ["open", "addSpecies", {"speciesOption": "speciesList", "importList": true}]
+      },
+      {
+        "name": "Areas",
+        "ng-click": ["open", "addArea", {"importArea": true}]
+      },
+      {
+        "name": "Restore prior analysis",
+        "ng-click": ["open", "analysis"]
+      }
+    ]
+  },
+  {
+    "name": "Export",
+    "width": 77,
+    "items": [
+      {
+        "name": "Map",
+        "ng-click": ["exportMap"]
+      },
+      {
+        "name": "Species list",
+        "ng-click": ["open", "tool", {"processName": "ToolExportChecklistService"}]
+      },
+      {
+        "name": "Points",
+        "ng-click": ["open", "tool", {"processName": "ToolExportSampleService"}]
+      },
+      {
+        "name": "Areas",
+        "ng-click": ["open", "tool", {"processName": "ToolExportAreaService"}]
+      },
+      {
+        "name": "Export to BCCVL",
+        "ng-click": ["open", "exportBccvl"]
+      },
+      {
+        "name": "Session",
+        "ng-click": ["saveSession"]
+      }
+    ]
+  },
+  {
+    "name": "Help",
+    "width": 69,
+    "items": [
+      {
+        "name": "Getting Started",
+        "url": "https://www.ala.org.au/spatial-portal-help/getting-started"
+      },
+      {
+        "name": "Add to map",
+        "url": "https://www.ala.org.au/spatial-portal-help/add-to-map"
+      },
+      {
+        "name": "Tools",
+        "url": "https://www.ala.org.au/spatial-portal-help/tools"
+      },
+      {
+        "name": "Import",
+        "url": "https://www.ala.org.au/spatial-portal-help/import"
+      },
+      {
+        "name": "Export",
+        "url": "https://www.ala.org.au/spatial-portal-help/export"
+      }
+    ]
+  }
+]

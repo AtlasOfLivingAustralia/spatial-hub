@@ -1,0 +1,39 @@
+    <div ng-show="_spatialValidity" class="checkbox">
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" ng-model="_value.spatiallyValid">Include spatially-valid records
+            </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" ng-model="_value.spatiallySuspect">Include spatially-suspect records
+            </label>
+        </div>
+        <hr ng-show="_areaIncludes || _endemicIncludes">
+    </div>
+
+    <div ng-show="_areaIncludes">
+        <div class="checkbox">
+            <label><input type="checkbox" ng-model="_value.includeExpertDistributions">Include Expert Distribution areas
+            </label>
+        </div>
+        <div class="checkbox">
+            <label><input type="checkbox" ng-model="_value.includeAnimalMovement">Include Animal Movement Data
+            </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" ng-model="_value.includeChecklists">Include Checklist areas
+            </label>
+        </div>
+        <hr ng-show="_endemicIncludes">
+    </div>
+
+    <div ng-show="_endemicIncludes">
+        <div class="checkbox">
+            <label><input type="checkbox" ng-model="_value.includeEndemic">Include Endemics
+            </label>
+        </div>
+        <hr>
+    </div>
+</div>

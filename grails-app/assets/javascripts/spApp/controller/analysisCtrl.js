@@ -24,7 +24,7 @@
                 $scope.taskId = undefined;
 
                 $scope.list = [];
-                $scope.doDownload = false;
+                $scope.downloadImmediately = false;
 
                 $scope.ok = function () {
                     if (angular.isDefined($scope.taskId)) {
@@ -34,7 +34,7 @@
                                     processName: resp.data.name,
                                     stage: 'output',
                                     taskId: resp.data.id,
-                                    doDownload: $scope.doDownload
+                                    downloadImmediately: $scope.downloadImmediately
                                 };
                                 LayoutService.openModal('tool', processData, false)
                             }, 0)
@@ -46,6 +46,10 @@
 
                 $scope.openUrl = function (url) {
                     LayoutService.openIframe(url, false)
+                };
+
+                $scope.getInputChecks = function() {
+                    return $scope.taskId == undefined || $scope.taskId == null || $scope.taskId.length == 0
                 }
 
             }])

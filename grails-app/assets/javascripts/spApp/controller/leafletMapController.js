@@ -2,8 +2,9 @@
     'use strict';
     angular.module('leaflet-map-controller', ['leaflet-directive', 'map-service', 'popup-service'])
         .controller('LeafletMapController', ["$scope", "LayoutService", "$http", "leafletData", "leafletBoundsHelpers",
-            "MapService", '$timeout', 'leafletHelpers', 'PopupService',
-            function ($scope, LayoutService, $http, leafletData, leafletBoundsHelpers, MapService, $timeout, leafletHelpers, popupService) {
+            "MapService", '$timeout', 'leafletHelpers', 'PopupService', 'ToolsService',
+            function ($scope, LayoutService, $http, leafletData, leafletBoundsHelpers, MapService, $timeout, leafletHelpers, popupService, ToolsService) {
+                //ToolsService included so it is initiated
 
                 angular.extend($scope, {
                     layercontrol: {
@@ -175,6 +176,37 @@
                     });
                 }, true);
 
+                $scope.toggleExpandLeft = function (context) {
+                    if ($("#right-panel")[0].style.marginLeft == "0px") {
+                        $("#left-panel")[0].style.marginLeft = "0px";
+                        $("#right-panel")[0].style.marginLeft = "420px";
+                    } else {
+                        $("#left-panel")[0].style.marginLeft = "-420px";
+                        $("#right-panel")[0].style.marginLeft = "0px";
+                    };
+                    context.invalidateSize()
+                };
+
+                $scope.toggleExpandUp = function (context) {
+                    if (!context) {
+                        context = this;
+                    }
+                    if (getComputedStyle($("body")[0]).paddingTop == "0px") {
+                        $(".navbar-default").show();
+                        $("body")[0].style.paddingTop = "";
+                    } else {
+                        $("body")[0].style.paddingTop = "0px";
+                        $(".navbar-default").hide();
+                    };
+
+                    var headerHeight = getComputedStyle($('.navbar-default')[0]).height.replace("px","").replace("auto", "0");
+                    $("#map").height($(window).height() - headerHeight);
+                    // $("#legend").height($(window).height() - headerHeight - 210);
+                    $("body")[0].style.paddingTop = headerHeight + "px";
+                    $("#defaultPanel").height($(window).height() - headerHeight - 20 - getComputedStyle($('#spMenu')[0]).height.replace("px","").replace("auto", "0"));
+
+                    context.invalidateSize()
+                };
 
                 $scope.addPointsToMap = function (data) {
                     leafletData.getMap().then(function () {
@@ -298,9 +330,17 @@
 
                             L.control.scale({position: 'bottomright'}).addTo(map);
 
-
                             new L.Control.InfoPanel({
                                 data: []
+                            }).addTo(map);
+
+                            new L.Control.FullScreen({
+                                data: []
+                            }).addTo(map);
+
+                            new L.Control.Expand({
+                                toggleExpandUp: $scope.toggleExpandUp,
+                                toggleExpandLeft: $scope.toggleExpandLeft
                             }).addTo(map);
 
                             map.on('draw:created', function (e) {
@@ -336,6 +376,11 @@
                                     popupService.click(latlng)
                                 }
                             });
+
+                            //all setup finished
+                            if ($spMapLoaded !== undefined) {
+                                $spMapLoaded(event);
+                            }
                         })
                     });
                 };
@@ -344,7 +389,7 @@
                     $scope.invalidate();
                     $timeout(function () {
                         $scope.setupTriggers();
-                    }, 500)
+                    }, 0)
                 }, 0)
 
             }])

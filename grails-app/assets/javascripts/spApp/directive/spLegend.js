@@ -1,6 +1,6 @@
 (function (angular) {
     'use strict';
-    angular.module('legend-directive', ['map-service', 'biocache-service', 'layers-service'])
+    angular.module('sp-legend-directive', ['map-service', 'biocache-service', 'layers-service'])
         .directive('spLegend', ['$timeout', 'MapService', 'BiocacheService', 'LayersService', '$http', 'LayoutService',
             function ($timeout, MapService, BiocacheService, LayersService, $http, LayoutService) {
                 return {
@@ -29,6 +29,7 @@
                         };
 
                         scope.updateContextualList = function () {
+                            console.log(scope.selected.layer.contextualList)
                             if (scope.selected.layer !== null && scope.selected.layer.contextualPage !== undefined) {
                                 LayersService.getField(scope.selected.layer.id,
                                     (scope.selected.layer.contextualPage - 1) * scope.selected.layer.contextualPageSize,
@@ -39,6 +40,7 @@
                                             scope.selected.layer.contextualList[i].selected = (scope.selected.layer.contextualSelection[scope.selected.layer.contextualList[i].name] !== undefined)
                                         }
                                     }
+                                    console.log(scope.selected.layer.contextualList)
                                 })
                             }
                         };
@@ -249,15 +251,19 @@
                             var sel = '';
                             var invert = false;
                             var count = 0;
+                            var sum = 0;
                             for (var i = 0; i < scope.selected.layer.facetList[scope.selected.layer.facet].length; i++) {
                                 if (scope.selected.layer.facetList[scope.selected.layer.facet][i].selected) {
                                     var fq = scope.selected.layer.facetList[scope.selected.layer.facet][i].fq;
                                     if (fq.startsWith('-') && (fq.endsWith(':*') || fq.endsWith('[* TO *]'))) {
                                         invert = true
                                     }
-                                    count++
+                                    count++;
+                                    sum += scope.selected.layer.facetList[scope.selected.layer.facet][i].count;
                                 }
                             }
+                            scope.selected.layer.facetSelectionCount = sum;
+
                             if (count === 1) invert = false;
                             for (i = 0; i < scope.selected.layer.facetList[scope.selected.layer.facet].length; i++) {
                                 if (scope.selected.layer.facetList[scope.selected.layer.facet][i].selected) {

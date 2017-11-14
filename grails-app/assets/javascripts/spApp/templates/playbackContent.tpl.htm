@@ -1,11 +1,11 @@
 <div>
-    <h5 style="float:left;width:150px;">Time series animation</h5>
-    <div style="float:left;margin-top:5px" class="btn btn-sm"
+    <h5 style="float:left;width:150px;margin-top: 13px;">Time series animation</h5>
+    <div style="float:left;margin-top:5px;" class="btn btn-sm"
          ng-class="{active: _selected.layer.playback && _selected.layer.playback.option}" ng-click="onOptions()"
          title="Playback settings"><i
             class="glyphicon glyphicon-cog"></i></div>
 
-    <div class="form-group row padding-top-5" style="float:left;padding-left:40px"
+    <div class="form-group row padding-top-5" style="float:left;padding-left:20px"
          ng-if="_selected.layer.playback && _selected.layer.playback.option && (_selected.layer.playback && _selected.layer.playback.type == 'month' || showYear())">
         <div class="col-sm-12 text-center">
             <div class="btn btn-sm"

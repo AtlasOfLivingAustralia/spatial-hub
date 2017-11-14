@@ -8,6 +8,17 @@
                 $scope.showLegend = LayoutService.showLegend;
                 $scope.toOpenStack = LayoutService.toOpenStack;
                 $scope.panelData = LayoutService.panelData;
+                $scope.optionsVisible = true;
+
+                $scope.toggleOptions = function(show) {
+                    if (show) {
+                        $scope.optionsVisible = true;
+                        $SH.defaultPaneResizer.show('south');
+                    } else {
+                        $scope.optionsVisible = false;
+                        $SH.defaultPaneResizer.hide('south');
+                    }
+                };
 
                 $scope.$watch('toOpenStack', function () {
                     if (LayoutService.toOpenStack.length > 0) {

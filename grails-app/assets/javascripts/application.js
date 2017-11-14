@@ -1,6 +1,7 @@
 //jquery
 //= require jquery/jquery.min.js
 //= require jquery-ui/jquery-ui.min.js
+//= require jquery-layout/jquery.layout.min.js
 
 //ala-bootstrap3
 //= require html5.js
@@ -14,7 +15,9 @@
 //= require leaflet-draw/dist/leaflet.draw.js
 //= require L.Google/L.Google.js
 //= require leaflet-control-window/L.Control.Window.js
+//= require leaflet-fullscreen/Control.FullScreen.js
 //= require spApp/leaflet/infoPanel.js
+//= require spApp/leaflet/expandScreen.js
 //= require spApp/leaflet/leaflet.util.getParamString.js
 //= require spApp/leaflet/quickLinks.js
 //= require wellknown/wellknown.js
@@ -45,5 +48,6 @@
 
 //spatial-hub
 //= require jquery-csv/jquery.csv.js
+//= require spAppModules.js
 //= require_tree spApp
 

@@ -1,46 +1,90 @@
-<div class="row" name="pointComparison" style="padding-left:10px">
-    <h3 class="modal-title">Point comparison</h3>
-    <br/>
-
-    <div>
-        <table class="table" style="width: 380px">
-            <tr style="font-weight: bold">
-                <td class="td-vertical-align text-center">id</td>
-                <td class="td-vertical-align text-center">longitude</td>
-                <td class="td-vertical-align text-center">latitude</td>
-                <td></td>
-            </tr>
-            <tr ng-repeat="x in points">
-                <td class="td-vertical-align text-right">{{ $index }}</td>
-                <td class="td-vertical-align text-right"><input ng-model="x[1]" ng-change="update()"/></td>
-                <td class="td-vertical-align text-right"><input ng-model="x[2]" ng-change="update()"/></td>
-                <td class="td-vertical-align">
-                    <i style="float:right" class="glyphicon glyphicon-trash" ng-click="remove($index)"></i>
-                </td>
-            </tr>
-        </table>
-        <button class="btn" ng-disabled="placingMarker" ng-click="addMarker()">Add point</button>
-        <span class="text-info" ng-show="placingMarker">click map to place marker</span>
-
-            <!--<button class="btn" ng-click="addMarker()">Add point</button>-->
-            <a style="margin-left:30px" ng-show="comparison.length > 0" download="pointComparison.csv"
-               ng-href="{{exportUrl}}" ng-disabled="exportUrl == null">
-                Download
-            </a>
-
-        <div style="float:right;margin-right:30px">
-            <button class="btn" ng-click="cancel()">Close</button>
-            <button class="btn btn-primary" ng-click="compare()">Compare &gt;</button>
+<div class="row" name="pointComparison" style="padding-left:10px;width: 400px">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title" style="margin-bottom: 0px">
+                <button type="button" class="close" ng-click="cancel()">×</button>
+                <div>Point comparison</div>
+            </h3>
         </div>
 
-
-        <br/><br/>
-        <div ng-show="comparison.length > 0">
-            <table class="table" style="width: 380px">
-                <tr ng-repeat="row in comparison">
-                    <td class="td-vertical-align text-right" ng-repeat="value in row track by $index">{{ value }}</td>
-                </tr>
+        <div class="panel-body" style="width: 390px;overflow:scroll">
+            <table class="table table-striped" ng-show="points.length > 0">
+                <thead>
+                    <tr>
+                        <th class="td-vertical-align text-center">Id</th>
+                        <th class="td-vertical-align text-center">Longitude</th>
+                        <th class="td-vertical-align text-center">Latitude</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="x in points">
+                        <td class="td-vertical-align text-right">{{ $index }}</td>
+                        <td class="td-vertical-align text-right"><input ng-model="x[1]" ng-change="update()"/></td>
+                        <td class="td-vertical-align text-right"><input ng-model="x[2]" ng-change="update()"/></td>
+                        <td class="td-vertical-align">
+                            <i style="float:right" class="glyphicon glyphicon-trash" ng-click="remove($index)"></i>
+                        </td>
+                    </tr>
+                </tbody>
             </table>
+
+            <a download="pointComparison.csv" ng-show="comparison.length > 0 && !searching"
+               ng-href="{{exportUrl}}" ng-disabled="exportUrl == null" style="float:left;">
+                <i class="glyphicon glyphicon-download-alt"></i>Download
+            </a>
+
+            <div style="margin-bottom:70px;">
+                <div class="btn-group btn-group-sm" style="float:right;">
+                    <button class="btn btn-default" ng-disabled="placingMarker" ng-click="addMarker()">Add point</button>
+                    <button class="btn btn-primary" ng-click="compare()" ng-disabled="points.length == 0">Compare</button>
+                </div>
+            </div>
+
+            <div class="alert alert-ala-success" role="alert" ng-show="placingMarker">
+                <div class="container">
+                    <p style="display:inline;"><strong>Click map to add a point.</strong></p>
+                </div>
+            </div>
+
+            <div ng-show="searching"  >
+                <hr/>
+                <uib-progressbar class="progress-striped active"
+                                 value="100" type='info' title="Updating">Loading...</uib-progressbar>
+            </div>
+            <div ng-show="comparison.length > 0 && !searching" >
+                <hr/>
+                <h4>Comparison Result</h4>
+                <div>
+                    <input style="width:200px" type="text" ng-model="searchText.name"/>
+                    <button ng-click="searchText.name=''" class="btn btn-xs btn-default"
+                            ng-disabled="searchText.name == ''">clear filter
+                    </button>
+                </div>
+                <div  style="max-width: 360px; overflow: scroll">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th class="td-vertical-align text-right" ng-repeat="value in header">{{value}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="row in comparison | filter:searchText.name">
+                                <td class="td-vertical-align text-right" ng-repeat="value in row track by $index">{{ value }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <a download="nearestLocalities_{{point.longitude}}_{{point.latitude}}.csv" ng-show="comparison.length > 0 && !searching"
+           ng-href="{{exportUrl}}" ng-disabled="exportUrl == null" style="margin-right:30px">
+            <i class="glyphicon glyphicon-download-alt"></i>Download
+        </a>
+        <div class="btn-group btn-group-sm">
+            <button class="btn btn-primary" ng-click="cancel()">Close</button>
         </div>
     </div>
 </div>

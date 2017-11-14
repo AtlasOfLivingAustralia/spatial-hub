@@ -1,83 +1,218 @@
 (function (angular) {
     'use strict';
     angular.module('select-multiple-area-directive', ['map-service', 'predefined-areas-service'])
-        .directive('selectMultipleArea', ['$http', 'MapService', 'PredefinedAreasService',
-            'LayoutService', function ($http, MapService, PredefinedAreasService, LayoutService) {
+        .directive('selectMultipleArea', ['$http', 'MapService', 'PredefinedAreasService', 'LayoutService',
+            'LayersService', '$q', function ($http, MapService, PredefinedAreasService, LayoutService, LayersService, $q) {
 
                 return {
-                    template: '<div><div ng-repeat="x in layerAreas" >\
-                                    <input type="checkbox" ng-model="area[x + idx]" \
-                                        ng-value="x" name="selectedArea">{{x.name}}<br/>\
-                                </div><div ng-repeat="x in defaultAreas">\
-                                    <input type="checkbox" ng-model="selectedArea.area[0]" \
-                                        ng-value="x" name="selectedArea">{{x.name}}<br/>\
-                                </div>\
-                                <div>\
-                                <input type="checkbox" ng-model="pickContextualLayer" name="selectedArea">Select all areas of a contextual layers<br/>\
-                                    <div ng-if="pickContextualLayer" select-layers selected-layers="selectedLayer" \
-                                    min-count="1" max-count="1" mandatory="false" environmental="false" contextual="true" analysis="false" \
-                                 ></div>\
-                                </div>\
-                                </div>',
+                    templateUrl: '/spApp/selectMultipleAreaCtrl.htm',
                     scope: {
                         _custom: '&onCustom',
                         _selectedArea: '=selectedArea',
                         _includeDefaultAreas: '=includeDefaultAreas',
                         _uniqueId: '=uniqueId'
+                        //_includeInOutLayer: '=includeInOutLayer' // in/out layer selection is can only be queried. Mapping is not implemented.
                         // ,
                         // maxAreas: '=maxAreas',
                         // minAreas: '=minAreas'
                     },
                     link: function (scope, element, attrs) {
 
-                        scope.selectedLayer = undefined; //watch for change
+                        scope.selectedLayer = {layers:[]}; //watch for change
                         scope.pickContextualLayer = undefined;
+                        scope.pickContextualLayerName = "";
+                        scope.pickContextualLayerVisible = true;
 
-                        if (scope._selectedArea.area.length === 0) scope._selectedArea.area = [{}];
-                        // if (!scope.minAreas) scope.minAreas = 1
-                        // if (!scope.maxAreas) scope.maxAreas = 1
+                        scope.selectedInOutLayer = {layers:[]}; //watch for change
+                        scope.pickInOutLayer = undefined;
+                        scope.pickInOutLayerName = "";
+                        scope.pickInOutLayerVisible = true;
+
+                        scope._includeInOutLayer = true;
+
+                        scope.isSelected = function (item) {
+                            var a = scope._selectedArea.area;
+                            var len = a.length;
+                            for (var i = 0; i < len; i++) {
+                                // mapped layers
+                                if (item.uid !== undefined && a[i].uid === item.uid) {
+                                    return true;
+                                }
+                                // contextual layers
+                                if (item.id !== undefined && a[i].id === item.id) {
+                                    return true;
+                                }
+                                // predefined areas
+                                if (item.name !== undefined && a[i].name === item.name) {
+                                    return true;
+                                }
+                            }
+                            return false;
+                        };
 
                         scope.layerAreas = $.map(MapService.areaLayers(), function (x, idx) {
-                            return {
+                            var area = {
                                 name: x.name,
                                 q: x.q,
                                 wkt: x.wkt,
                                 bbox: x.bbox,
                                 pid: x.pid,
                                 area_km: x.area_km,
-                                uid: x.uid
-                            }
+                                uid: x.uid,
+                                selected: scope.isSelected(x)
+                            };
+                            return area;
                         });
 
                         scope.defaultAreas = [];
                         if (scope._includeDefaultAreas !== false) {
                             scope.defaultAreas = $.map(PredefinedAreasService.getList(), function (x, idx) {
+                                x.selected = scope.isSelected(x);
                                 return x
                             })
                         }
 
-                        function selectPredefinedArea(uid) {
-                            scope.layerAreas.forEach(function (layer) {
-                                if (uid === layer.uid) {
-                                    scope.selectedArea.area[0] = layer
+                        LayoutService.addToSave(scope);
+
+                        scope.editPickContextualLayerVisible = function() {
+                            scope.pickContextualLayerVisible = true;
+                            scope.pickContextualLayerName = ""
+                        };
+                        scope.editPickInOutLayerVisible = function() {
+                            scope.pickInOutLayerVisible = true;
+                            scope.pickInOutLayerName = ""
+                        };
+
+                        scope.removeInOutLayer = function () {
+                            var a = scope._selectedArea.area;
+                            var len = a.length;
+                            var i;
+                            for (i = len - 1; i >= 0; i--) {
+                                if (a[i].inOutLayer) {
+                                    a.splice(i, 1);
                                 }
-                            })
-                        }
-
-                        if (scope._selectedArea && scope._selectedArea.area && scope._selectedArea.area.length > 0 &&
-                            scope._selectedArea.area[0].name) {
-                            selectPredefinedArea(scope._selectedArea.area[0].uid)
-                        } else {
-                            scope._selectedArea.area = [scope.defaultAreas[0]];
-                            if (!scope._selectedArea.area && scope.defaultAreas.length) {
-                                scope._selectedArea.area = [scope.defaultAreas[0]]
                             }
-                        }
+                        };
 
-                        LayoutService.addToSave(scope)
+                        scope.$watch('selectedInOutLayer.layers.length', function(newValue, oldValue) {
+                            //remove all inOutLayers
+                            scope.removeInOutLayer();
 
+                            //add selected
+                            var a = scope.selectedInOutLayer.layers;
+                            var len = a.length;
+                            for (i = 0; i < len; i++) {
+                                var x = a[i];
 
+                                scope.pickInOutLayerVisible = false;
+                                scope.pickInOutLayerName = a[i].name;
+
+                                var areaIn = {
+                                    name: x.name,
+                                    q: x.id + ":*",
+                                    inOutLayer: true,
+                                    inOutLayerObj: x
+                                };
+                                scope._selectedArea.area.push(areaIn);
+
+                                var areaOut = {
+                                    name: x.name,
+                                    q: "-" + x.id + ":*",
+                                    inOutLayer: true,
+                                    inOutLayerObj: x
+                                };
+                                scope._selectedArea.area.push(areaOut);
+
+                                scope.selectedInOutLayer.layers.splice(0, scope.selectedInOutLayer.layers.length);
+                            }
+                        });
+
+                        scope.updateSelection = function (area) {
+                            if (!area) {
+                                if (!scope.pickInOutLayer) {
+                                    scope.removeInOutLayer();
+                                }
+                                if (!scope.pickContextualLayer) {
+                                    scope.removeContextualLayer();
+                                }
+                            } else {
+                                if (area.selected) {
+                                    scope._selectedArea.area.push(area)
+                                } else {
+                                    var a = scope._selectedArea.area;
+                                    var len = a.length;
+                                    var i;
+                                    console.log('removing')
+
+                                    console.log(area)
+                                    for (i = len - 1; i >= 0; i--) {
+                                        if (a[i] == area) {
+                                            console.log('removed')
+                                            console.log(a[i])
+                                            a.splice(i, 1);
+                                        }
+                                    }
+                                }
+                            }
+                        };
+
+                        scope.removeContextualLayer = function () {
+                            var a = scope._selectedArea.area;
+                            var len = a.length;
+                            var i;
+                            for (i = len - 1; i >= 0; i--) {
+                                if (a[i].allLayer) {
+                                    a.splice(i, 1);
+                                }
+                            }
+                        };
+
+                        scope.$watch('selectedLayer.layers.length', function(newValue, oldValue) {
+                            //remove all inOutLayers
+                            scope.removeContextualLayer();
+
+                            //add selected
+                            var a = scope.selectedLayer.layers;
+                            var len = a.length;
+                            for (i = 0; i < len; i++) {
+                                scope.pickContextualLayerVisible = false;
+                                scope.pickContextualLayerName = a[i].name;
+
+                                var x = a[i];
+                                var area = {
+                                    name: x.name,
+                                    q: x.id + ":*",
+                                    allLayer: true,
+                                    allLayerObj: x
+                                };
+
+                                //TODO: Make the corresponding spatial-service change to recognise this aggregation.
+                                scope._selectedArea.area.push(area);
+
+                                scope.selectedLayer.layers.splice(0, scope.selectedLayer.layers.length);
+                            }
+                        });
+
+                        // apply existing selection
+                        scope.applyLayersSelections = function() {
+                            var allLayerObjAdded = false;
+                            var InOutLayerObjAdded = false;
+                            for (var i = scope._selectedArea.area.length; i >= 0; i--) {
+                                var a = scope._selectedArea.area[i];
+                                if (a !== undefined && a.allLayerObj && !allLayerObjAdded) {
+                                    allLayerObjAdded = true;
+                                    scope.selectedLayer.layers.push(a);
+                                }
+                                if (a !== undefined && a.inOutLayerObj && !InOutLayerObjAdded) {
+                                    InOutLayerObjAdded = true;
+                                    scope.selectedInOutLayer.layers.push(a);
+                                }
+                            }
+                        };
+
+                        scope.applyLayersSelections();
                     }
+
                 }
 
             }])

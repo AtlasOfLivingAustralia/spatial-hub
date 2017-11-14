@@ -1,17 +1,21 @@
 <div>
-    <div ng-repeat="x in layerAreas">
-        <input type="radio" ng-change="change(x)" ng-model="selected"
-               ng-value="x.uid" name="selectedArea">{{x.name}}<br/>
+    <div ng-repeat="x in layerAreas" class="radio">
+        <label>
+            <input type="radio" ng-change="change(x)" ng-model="selected"
+               ng-value="x.uid" name="selectedArea">{{x.name}}</label><br/>
     </div>
     <br ng-show="layerAreas.length > 0"/>
-    <div ng-repeat="x in defaultAreas">
-        <input type="radio" ng-change="change(x)" ng-model="selected"
-               ng-value="x.name" name="selectedArea">{{x.name}}<br/>
+    <div ng-repeat="x in defaultAreas" class="radio">
+        <label>
+            <input type="radio" ng-change="change(x)" ng-model="selected"
+               ng-value="x.name" name="selectedArea">{{x.name}}</label><br/>
     </div>
-    <br ng-show="defaultAreas.length > 0"/>
+    <br ng-show="defaultAreas.length > 0" class="radio"/>
+
     <div>
-        <input type="radio" ng-click="createArea()" ng-model="selected"
+        <label>
+            <input type="radio" ng-click="createArea()" ng-model="selected"
                 ng-model="_selectedArea.area[0]" ng-value="create"
-                name="selectedArea">Define new area...<br/>
+                name="selectedArea">Define new area...</label><br/>
     </div>
 </div>

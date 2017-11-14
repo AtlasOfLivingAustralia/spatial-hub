@@ -1,131 +1,17 @@
 <div class="row" name="divMenu">
     <div class="btn-group" id="menu-content">
-        <div class="btn-group" uib-dropdown class="width:100px">
-            <button id="menu-add" type="button" class="btn btn-primary" uib-dropdown-toggle
-                    ng-disabled="disabled">
-                Add to map <span class="caret"></span>
+
+        <div class="btn-group" role="group" ng-repeat="menu in menuConfig">
+            <button style="width:{{ menu.width }}px" id="menu-{{ $index }}" type="button" class="btn btn-default dropdown-toggle"
+                    data-toggle="dropdown" aria-haspopup="true"  aria-expanded="false" ng-disabled="disabled">
+                {{ menu.name }}&nbsp;<span class="caret"></span>
             </button>
-            <ul uib-dropdown-menu role="menu" aria-labelledby="menu-add">
-                <li role="menuitem"><a href="#" ng-click="open('addSpecies')">Species</a></li>
-                <li role="menuitem"><a href="#" ng-click="open('addArea', {display: { size: 'sm'}})">Area</a></li>
-                <li role="menuitem"><a href="#" ng-click="open('addLayer')">Layer</a></li>
-                <li role="menuitem"><a href="#" ng-click="open('addFacet')">Facet</a></li>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="menu-{{ $index }}">
+                <li role="menuitem" ng-repeat="button in menu.items">
+                    <a ng-if="button['ng-click']" href="#" ng-click="run(button['ng-click'])">{{ button.name }}</a>
+                    <a ng-if="button['url']" target="_blank" href="{{ button.url }}">{{ button.name }}</a>
+                </li>
             </ul>
-        </div>
-
-        <div class="btn-group" uib-dropdown class="width:60px">
-            <button id="menu-tools" type="button" class="btn btn-primary" uib-dropdown-toggle
-                    ng-disabled="disabled">
-                Tools<span class="caret"></span>
-            </button>
-            <ul uib-dropdown-menu role="menu" aria-labelledby="menu-tools">
-                <li role="menuitem"><a href="#" ng-click="open('toolAreaReport', {display: { size: 'sm'}})">Area
-                    Report</a></li>
-                <li role="menuitem"><a href="#"
-                                       ng-click="open('tool', {processName: 'AreaReport'})">Detailed
-                    Area Report (PDF)</a></li>
-                <!--<li class="divider"></li>-->
-                <li role="menuitem"><a href="#"
-                                       ng-click="open('tool', {processName: 'AooEoo'})">Calculate AOO and EOO</a></li>
-                <li role="menuitem"><a href="#" ng-click="openPanel('nearestLocality')">Nearest locality</a></li>
-                <li role="menuitem"><a href="#" ng-click="openPanel('pointComparison')">Point comparisons</a></li>
-                <!--<li class="divider"></li>-->
-                <li role="menuitem"><a href="#"
-                                       ng-click="open('tool', {processName: 'ScatterplotCreate'})">Scatterplot</a>
-                </li>
-                <li role="menuitem"><a href="#"
-                                       ng-click="open('tool', {processName: 'ScatterplotList'})">Scatterplot List</a>
-                </li>
-                <!--<li class="divider"></li>-->
-                <li role="menuitem"><a href="#" ng-click="open('tabulate')">Tabulate</a></li>
-                <li role="menuitem"><a href="#" ng-click="open('tabulate')">(TODO) Compare areas</a></li>
-                <li role="menuitem"><a href="#"
-                                       ng-click="open('tool', {processName: 'PointsToGrid'})">Points
-                    to Grid</a></li>
-                <li role="menuitem"><a href="#"
-                                       ng-click="open('tool', {processName: 'GeneratePoints'})">Generate Points</a></li>
-                <!--<li class="divider"></li>-->
-                <li role="menuitem"><a href="#" ng-click="open('tool', {processName: 'PhylogeneticDiversity'})">Phylogenetic
-                    Diversity</a></li>
-                <li role="menuitem"><a href="#"
-                                       ng-click="open('tool', {processName: 'Classification'})">Classify</a>
-                </li>
-                <li role="menuitem"><a href="#"
-                                       ng-click="open('tool', {processName: 'Maxent'})">Predict</a>
-                </li>
-
-                <li role="menuitem"><a href="#"
-                                       ng-click="open('tool', {processName: 'GDMStep1'})">(TODO) GDM</a>
-                </li>
-                <li role="menuitem"><a href="#" ng-click="open('analysis')">Restore prior analysis</a></li>
-            </ul>
-        </div>
-
-        <div class="btn-group" uib-dropdown class="width:70px">
-            <button id="menu-import" type="button" class="btn btn-primary" uib-dropdown-toggle
-                    ng-disabled="disabled">
-                Import <span class="caret"></span>
-            </button>
-            <ul uib-dropdown-menu role="menu" aria-labelledby="menu-import">
-                <li role="menuitem"><a href="#" ng-click="isLoggedIn() && open('sandBox', {display: { size: 'full'}})">Points<span
-                        ng-show="!isLoggedIn()">&nbsp;(must be logged in)</span></a></li>
-                <li role="menuitem"><a href="#"
-                                       ng-click="isLoggedIn() && open('addSpecies', {speciesOption: 'speciesList', importList: true})">Species
-                    List<span
-                            ng-show="!isLoggedIn()">&nbsp;(must be logged in)</span></a></li>
-                <li role="menuitem"><a href="#" ng-click="isLoggedIn() && open('addArea',  {display: { size: 'sm'}, importArea: true})">Areas<span
-                        ng-show="!isLoggedIn()">&nbsp;(must be logged in)</span></a></li>
-                <li role="menuitem"><a href="#" ng-click="open('analysis')">Restore prior analysis</a></li>
-                <li style="display:none" role="menuitem"><a href="#" ng-click="open('sessions')" id="sessionsButton">Restore
-                    saved session</a></li>
-            </ul>
-        </div>
-
-        <div class="btn-group" uib-dropdown class="width:70px">
-            <button id="menu-export" type="button" class="btn btn-primary" uib-dropdown-toggle
-                    ng-disabled="disabled">
-                Export <span class="caret"></span>
-            </button>
-            <ul uib-dropdown-menu role="menu" aria-labelledby="menu-export">
-                <li role="menuitem"><a href="#" ng-click="open('exportMap')">Map</a></li>
-                <li role="menuitem"><a href="#" ng-click="open('exportChecklist')">Checklist</a></li>
-                <li role="menuitem"><a href="#" ng-click="open('exportSample')">Point Sample</a></li>
-                <li role="menuitem"><a href="#" ng-click="open('exportArea')">Areas</a></li>
-                <li role="menuitem"><a href="#" ng-click="open('exportBCCVL')">Export to BCCVL</a></li>
-                <li style="display:none" role="menuitem"><a href="#" ng-click="saveSession()" id="saveSessionButton">Save
-                    Session</a></li>
-            </ul>
-        </div>
-
-        <div class="btn-group" uib-dropdown class="width:70px">
-            <button id="menu-help" type="button" class="btn btn-primary" uib-dropdown-toggle
-                    ng-disabled="disabled">
-                Help <span class="caret"></span>
-            </button>
-            <ul uib-dropdown-menu role="menu" aria-labelledby="menu-help">
-                <li role="menuitem"><a target="_blank"
-                                       href="https://www.ala.org.au/spatial-portal-help/getting-started">Getting
-                    Started</a>
-                </li>
-                <li class="divider"></li>
-                <li role="menuitem"><a target="_blank"
-                                       href="https://www.ala.org.au/spatial-portal-help/add-to-map">Add to Map</a>
-                </li>
-                <li role="menuitem"><a target="_blank"
-                                       href="https://www.ala.org.au/spatial-portal-help/tools">Tools</a></li>
-                <li role="menuitem"><a target="_blank"
-                                       href="https://www.ala.org.au/spatial-portal-help/import">Import</a></li>
-                <li role="menuitem"><a target="_blank"
-                                       href="https://www.ala.org.au/spatial-portal-help/export">Export</a></li>
-
-            </ul>
-        </div>
-
-        <div class="btn-group" uib-dropdown class="width:10px">
-            <button style="padding-left:5px;" type="button"
-                    class="btn btn-primary" uib-dropdown-toggle ng-click="hidePanel()">
-                &lt;
-            </button>
         </div>
     </div>
 

@@ -60,6 +60,7 @@
             'https://*.ala.org.au/**',
             'https://www.openstreetmap.org/**',
             'https://www.google.com/**',
+            'http://zoatrack.org/**',
             '${config.grails.serverURL}/**',
             '${config.biocache.url}/**',
             '${config.biocacheService.url}/**',
@@ -71,12 +72,13 @@
             '${config.geoserver.url}/**',
             '${config.collections.url}/**',
             '${config.phylolink.url}/**'
-        ]
+        ],
+        i18n: '${config.i18n?.region?:"default"}'
     };
 
     BIE_VARS = {
         autocompleteUrl: '${config.autocompleteUrl}'
-    }
+    };
 
     var SANDBOX_CONFIG = {
         autocompleteColumnHeadersUrl: '${sandboxUrl}/dataCheck/autocomplete',
@@ -99,16 +101,41 @@
     };
 </script>
 
-<div style="width:400px" class="pull-left" ng-controller="LayoutCtrl" id="left-panel">
+<div class="page-loading">
+    <div class="progress">
+        <div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar" aria-valuenow="100"
+             aria-valuemin="0" aria-valuemax="100">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+</div>
+
+<div style="width:410px;padding-left:25px;overflow-y:visible;overflow-x:visible" class="pull-left" ng-controller="LayoutCtrl" id="left-panel">
+
     <div ng-show="panelMode[0] == 'default'">
-        <div sp-menu></div>
-        <div sp-map></div>
-        <div class="row" name="divSelectedLayer" id="legend" style="display:block;overflow:scroll;background-color: #fff">
-            <ala:systemMessage/>
-            <div class="panel panel-default" style="box-shadow: 0 0px; border: 0">
-                <div class="panel-body" style="padding-top:0px;padding-left:5px">
-                    <div ng-show="showOptions[0]" style="padding-right:15px" sp-options></div>
-                    <div sp-legend ng-show="showLegend[0]"></div>
+        <div id="spMenu" sp-menu></div>
+        <div class="ui-layout-container" id="defaultPanel" style="height:500px;width:400px;margin-left:-15px;">
+            <div class="ui-layout-center ui-layout-pane ui-layout-pane-center">
+                <div class="row" sp-map style="margin-left:15px;margin-right: 0px;height:100%;"></div>
+            </div>
+
+            <div class="ui-layout-south ui-layout-pane ui-layout-pane-south" name="divSelectedLayer" id="legend"
+                 ng-show="showOptions[0] || showLegend[0]"
+                 style="display:block;overflow:hidden;background-color: #fff;height:100%">
+                <div class="col-md-12" style="padding-left:0px;padding-right:0px;height:100%;padding-bottom:10px">
+                    <div class="panel panel-default" style="overflow:hidden;height:100%">
+                        <div class="panel-heading">
+                            <i style="float:right" class="glyphicon glyphicon-menu-down" ng-click="toggleOptions(false)"></i>
+                            <h3 class="panel-title">
+                                <div ng-show="showOptions[0]">Edit map options</div>
+                                <div ng-show="showLegend[0]">Edit layer options</div>
+                            </h3>
+                        </div>
+                        <div class="panel-body" style="padding-left:5px;overflow:scroll;height:100%;">
+                            <div sp-options ng-show="showOptions[0]" style="padding-right:15px"></div>
+                            <div sp-legend ng-show="showLegend[0]"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -119,7 +146,8 @@
     <div ng-if="panelMode[0] == 'pointComparison'" point-comparison></div>
 </div>
 
-<div style="margin-left:400px" id="right-panel">
+<div style="margin-left:420px" id="right-panel">
+    <area-create style="height:500px;width:500px;"></area-create>
     <div class="row" style="margin:0px" ng-controller="LeafletMapController as leafletMapController">
         <leaflet id="map" lf-center="australia" layers="layers" controls="controls"
                  bounds="bounds" defaults="defaults" width="100%" height="480px">

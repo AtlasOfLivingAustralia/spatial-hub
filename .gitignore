@@ -1,0 +1,14 @@
+*.iml
+target/*
+.idea/*
+.slcache/*
+*.tgz
+.settings/
+.project
+.classpath
+node_modules
+.cache-main
+.cache-tests
+.tmpBin/
+grails-app/assets/compile/
+

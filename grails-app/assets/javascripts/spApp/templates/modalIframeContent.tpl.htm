@@ -9,8 +9,7 @@
         <label>{{notes}}</label>
     </div>
 </div>
-
-<div class="modal-body" style="height:500px">
+<div class="modal-body" style="height:{{height}}px" ng-if="src != undefined" >
     <iframe src="{{src}}" style="height:100%;width:100%">
     </iframe>
 </div>

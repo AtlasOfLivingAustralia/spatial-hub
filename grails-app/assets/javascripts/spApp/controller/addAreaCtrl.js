@@ -28,6 +28,11 @@
                 $scope.areaname = '';
                 $scope.intersect = {};
 
+                $scope.uploadingFile = false;
+                $scope.uploadProgress = 0;
+
+                $scope.selectionDone = false;
+
                 $scope.circle = {
                     longitude: '',
                     latitude: '',
@@ -193,6 +198,8 @@
                         return;
                     }
 
+                    $scope.uploadingFile = true;
+
                     LayersService.uploadAreaFile(file, $scope.area, $scope.myAreaName, file.name).then(function (response) {
 
                         $scope.fileName = file.name;
@@ -201,21 +208,26 @@
                             $scope.areaHeader = [];
                             if (response.data.area.length > 0) {
                                 $scope.areaHeader = Object.keys(response.data.area[0].values);
+                                $scope.shpImg = LayersService.getShpImageUrl($scope.shapeId, "all");
                             }
                             $scope.areaList = response.data.area;
                         } else if ($scope.area === 'importKML') {
-                            if (response.data.length > 0) {
-                                $scope.setPid(response.data[0].id, true)
+                            if (response.data.shapeId) {
+                                $scope.setPid(response.data.shapeId, true);
+                                $scope.step = 'default';
                             }
                         }
+                        $scope.myAreaName = file.name;
+                        $scope.selectionDone = true;
                         file.result = response.data;
+                        $scope.uploadingFile = false;
                     }, function (response) {
                         $scope.errorMsg = response.status + ': ' + response.data;
+                        $scope.uploadingFile = false;
                     }, function (evt) {
                         $scope.uploadProgress = parseInt(100.0 * evt.loaded / evt.total);
                     });
                 };
-
 
                 $scope.showWkt = function () {
                     MapService.leafletScope.addWktToMap([$scope.selectedArea.wkt])
@@ -273,8 +285,7 @@
                     return false
                 };
 
-                $scope.isLoggedIn = function () {
-                    return $SH.userId !== undefined && $SH.userId !== null && $SH.userId.length > 0
-                }
+                $scope.isLoggedIn = $scope.isLoggedIn = $SH.userId !== undefined && $SH.userId !== null && $SH.userId.length > 0;
+                $scope.isNotLoggedIn = !$scope.isLoggedIn;
             }])
 }(angular));

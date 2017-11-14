@@ -1,129 +1,227 @@
 <div class="modal-header">
+    <button type="button" class="close" ng-click="$close()">×</button>
     <h4 class="modal-title">Add area</h4>
 </div>
 
 <div class="modal-body">
-    <div class="well">
-        <div ng-show="step == 'default'">
-            <span>Select method to define area.</span><br/>
+    <div class="row">
+        <div class="col-md-12">
+            <form class="form-horizontal">
+                <div class="panel panel-default" ng-show="step == 'default'">
+                    <div class="panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Select method to define area.</h3>
+                        </div>
 
-            <div ng-show="!inputData.importArea">
-                <br/><span>Interact with the map</span><br/>
-                <input type="radio" ng-model="area" name="addArea_area" value="drawBoundingBox">Draw bounding box<br/>
-                <input type="radio" ng-model="area" name="addArea_area" value="drawPolygon">Draw polygon<br/>
-                <input type="radio" ng-model="area" name="addArea_area" value="drawPointRadius">Draw point and radius<br/>
-                <input type="radio" ng-model="area" name="addArea_area"
-                       value="pointOnLayer">Select area from polygonal layer<br/>
+                        <div class="panel-body">
 
-                <br/><span>Searching</span><br/>
-                <input type="radio" ng-model="area" name="addArea_area"
-                       value="addressRadius">Radius centered on street address<br/>
-                <input type="radio" ng-model="area" name="addArea_area" value="pointRadius">Create radius from point<br/>
-                <input type="radio" ng-model="area" name="addArea_area" value="gazetteer">Gazetteer polygon<br/>
+                            <div ng-show="!inputData.importArea" class="area-types">
+                                <label><span>Interact with the map</span></label>
+                                <div class="checkbox"><label><input type="radio" ng-disabled="selectionDone" ng-model="area" name="addArea_area" value="drawBoundingBox">Draw
+                                    bounding box</label></div>
+                                <div class="checkbox"><label><input type="radio" ng-disabled="selectionDone" ng-model="area" name="addArea_area" value="drawPolygon">Draw polygon</label></div>
+                                <div class="checkbox"><label><input type="radio" ng-disabled="selectionDone" ng-model="area" name="addArea_area" value="drawPointRadius">Draw
+                                    point and radius</label></div>
+                                <div class="checkbox"><label><input type="radio" ng-model="area" name="addArea_area"
+                                                                    value="pointOnLayer">Select area from polygonal layer</label></div>
+                            </div>
 
-                <br/><span>Preset areas</span><br/>
-                <input type="radio" ng-model="area" name="addArea_area" value="preset_World">World<br/>
-                <input type="radio" ng-model="area" name="addArea_area" value="preset_Australia">Australia<br/>
-                <input type="radio" ng-model="area" name="addArea_area" value="preset_Current_extent">Current extent<br/>
-            </div>
+                            <div ng-show="!inputData.importArea" class="area-types">
+                                <label><span>Searching</span></label>
+                                <div class="checkbox"><label><input type="radio" ng-model="area" name="addArea_area"
+                                              value="addressRadius" ng-disabled="selectionDone">Radius centered on street address</label></div>
+                                <div class="checkbox"><label><input type="radio" ng-model="area" name="addArea_area"
+                                                                    value="pointRadius" ng-disabled="selectionDone">Create
+                                radius from point</label></div>
+                                <div class="checkbox"><label><input type="radio" ng-model="area" name="addArea_area"
+                                                                    value="gazetteer" ng-disabled="selectionDone">Gazetteer
+                                polygon</label></div>
+                            </div>
 
-            <br/><span>Import</span><br/>
-            <input type="radio" ng-model="area" value="importShapefile" ng-disabled="!isLoggedIn()">Import Shapefile<span
-                ng-show="!isLoggedIn()">&nbsp;(must be logged in)</span><br/>
-            <input type="radio" ng-model="area" value="importKML" ng-disabled="!isLoggedIn()">Import KML<span
-                ng-show="!isLoggedIn()">&nbsp;(must be logged in)</span><br/>
+                            <div ng-show="!inputData.importArea" class="area-types">
+                                <label><span>Preset areas</span></label>
+                                <div class="checkbox"><label><input type="radio" ng-model="area" name="addArea_area" value="preset_World" ng-disabled="selectionDone">World</label></div>
+                                <div class="checkbox"><label><input type="radio" ng-model="area" name="addArea_area" value="preset_Australia" ng-disabled="selectionDone">Australia</label></div>
+                                <div class="checkbox"><label><input type="radio" ng-model="area" name="addArea_area" value="preset_Current_extent" ng-disabled="selectionDone">Current
+                                extent</label></div>
+                            </div>
 
-            <br/><span>Other</span><br/>
-            <div ng-show="!inputData.importArea">
-                <input type="radio" ng-model="area" name="addArea_area"
-                       value="environmentalEnvelope">Define environmental envelope<br/>
-            </div>
-            <input type="radio" ng-model="area" name="addArea_area" value="wkt">Enter area coordinates (WKT)<br/>
-            <div ng-show="!inputData.importArea">
-                <input type="radio" ng-model="area" value="mergeArea">Merge map areas (TODO)<br/>
-            </div>
-        </div>
+                            <div ng-show="inputData.importArea || inputData.importArea == undefined" class="area-types">
+                                <label><span>Import</span></label>
+                                <div class="checkbox"><label><input type="radio" ng-model="area" value="importShapefile" ng-disabled="isNotLoggedIn || selectionDone">Import
+                                Shapefile<span
+                                    ng-hide="isLoggedIn">&nbsp;(must be logged in)</span></label></div>
+                                <div class="well-lg" ng-show="fileName.length > 0 && area == 'importShapefile'" style="">
+                                    <div class="alert alert-ala-success"><p>Imported shapefile: {{fileName}}</p></div>
+                                </div>
+                                <div class="checkbox"><label><input type="radio" ng-model="area" value="importKML" ng-disabled="isNotLoggedIn || selectionDone">Import
+                                KML<span
+                                    ng-hide="isLoggedIn">&nbsp;(must be logged in)</span></label></div>
+                                <div class="well-lg" ng-show="fileName.length > 0 && area == 'importKML'">
+                                    <div class="alert alert-ala-success"><p>Imported KML file: {{fileName}}</p></div>
+                                </div>
+                            </div>
 
-        <div ng-show="step == 'addressRadius'">
-            <br/><label style="width: 100px">Search address</label>
-            <google-places location="location" area="selectedArea.name"></google-places>
-            <br/><label style="width: 100px" for="radius">Radius (km)</label>
-            <input style="width: 150px" id="radius" ng-model="circle.radius">
-            <br/>
-        </div>
+                            <div ng-show="!inputData.importArea" class="area-types">
+                                <label><span>Other</span></label>
+                                <div class="checkbox"><label><input type="radio" ng-model="area" name="addArea_area" ng-disabled="selectionDone"
+                                       value="environmentalEnvelope">Define environmental envelope</label></div>
+                                <div class="checkbox"><label><input type="radio" ng-model="area" name="addArea_area" value="wkt" ng-disabled="selectionDone">Enter area
+                                coordinates (WKT)</label></div>
+                                <div class="checkbox"><label><input type="radio" ng-model="area" value="mergeArea" ng-disabled="selectionDone">Merge map areas (TODO)</label></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-        <div ng-show="step == 'pointRadius'">
-            <br/><label style="width: 150px">Area name</label>
-            <input ng-model="selectedArea.name"><br/>
-            <label style="width: 250px" for="longitude">Longitude (decimal degrees)</label>
-            <input style="width: 80px" type="number" min='-180' max="180" id="longitude" ng-model="circle.longitude">
-            <br/>
-            <label style="width: 250px" for="latitude">Latitude (decimal degrees)</label>
-            <input style="width: 80px" type="number" min='-90' max="90" id="latitude" ng-model="circle.latitude">
-            <br/>
-            <label style="width: 250px" for="radius2">Radius (km)</label>
-            <input style="width: 80px" id="radius2" ng-model="circle.radius">
-            <br/>
-        </div>
+                <div class="panel panel-default" ng-show="step == 'addressRadius'">
+                    <div class="panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Search for an address<.</h3>
+                        </div>
 
-        <div ng-show="step == 'gazetteer'">
-            <label style="width: 100px" for="gazAutoComplete">Search gazetteer</label>
-            <input style="width:250px" gaz-auto-complete id="gazAutoComplete" on-custom="setPid" userobjects="false">
-            <br/>
-            <div ng-show="selectedArea !== undefined && selectedArea.wkt !== undefined && selectedArea.wkt.startsWith('POINT')">
-                <label style="width: 100px" for="locationRadius">Radius (km)</label>
-                <input style="width:80px" type="number" id="locationRadius" ng-model="locationRadius" value="10">
-            </div>
-        </div>
+                        <div class="panel-body">
+                            <br/><label style="width: 100px">Search address</label>
+                            <google-places location="location" area="selectedArea.name"></google-places>
+                            <br/><label style="width: 100px" for="radius">Radius (km)</label>
+                            <input style="width: 150px" id="radius" ng-model="circle.radius">
+                            <br/>
+                        </div>
+                    </div>
+                </div>
 
-        <div ng-show="step == 'importShapefile' || step == 'importKML'">
-            <label style="width: 100px" for="myAreaName">Area Name</label>
-            <input type="text" style="width:50%" id="myAreaName" ng-model="myAreaName" value="My Area">
-            <button class="btn btn-primary" ngf-select="uploadFile($file)">Import file</button>
-            <uib-progressbar animate="false" value="uploadProgress" type="success"><b>{{uploadProgress}}%</b>
-            </uib-progressbar>
-            <br/>
+                <div class="panel panel-default" ng-show="step == 'pointRadius'">
+                    <div class="panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Search for an address<.</h3>
+                        </div>
 
-            <div ng-show="step == 'importShapefile'">
-                <table class="table table-striped">
-                    <thead>
-                    <tr>
-                        <td align="center"><input type="checkbox" ng-click="toggleAllAreaCheckbox()" ng-model="checkAll">
-                        </td>
-                        <td ng-repeat="header in areaHeader">
-                            <a href="#" ng-click="sortType = header">
-                                {{header}}
-                            </a></td>
-                    </tr>
-                    </thead>
-                    <tbody style="height:200px;overflow:scroll;">
-                    <tr><img ng-src="{{shpImg}}" alt="No image"/></tr>
-                    <tr ng-repeat="area in areaList">
-                        <td align="center"><input type="checkbox" ng-click="selectShpArea()" ng-model="area.selected"></td>
-                        <td ng-repeat="header in areaHeader">
-                            {{area.values[header]}}
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+                        <div class="panel-body">
+                                <br/><label style="width: 150px">Area name</label>
+                                <input ng-model="selectedArea.name"><br/>
+                                <label style="width: 250px" for="longitude">Longitude (decimal degrees)</label>
+                                <input style="width: 80px" type="number" min='-180' max="180" id="longitude"
+                                       ng-model="circle.longitude">
+                                <br/>
+                                <label style="width: 250px" for="latitude">Latitude (decimal degrees)</label>
+                                <input style="width: 80px" type="number" min='-90' max="90" id="latitude"
+                                       ng-model="circle.latitude">
+                                <br/>
+                                <label style="width: 250px" for="radius2">Radius (km)</label>
+                                <input style="width: 80px" id="radius2" ng-model="circle.radius">
+                                <br/>
+                            </div>
 
-        <!-- <div ng-show="step == 'importKML'">
+                    </div>
+                </div>
 
-         </div>-->
+                <div class="panel panel-default" ng-show="step == 'gazetteer'">
+                    <div class="panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Search gazetteer<.</h3>
+                        </div>
 
-        <div ng-show="step == 'wkt'">
-            <label style="width: 100px">Area name</label><input ng-model="selectedArea.name">
-            <br/><label style="width: 100px;vertical-align:top">WKT</label><textarea style="width:250px;height:300px"
-                                                                                     ng-model="selectedArea.wkt"></textarea>
+                        <div class="panel-body">
+                                <input style="width:250px" gaz-auto-complete id="gazAutoComplete" on-custom="setPid"
+                                       userobjects="false">
+                                <br/>
+                                <div ng-show="selectedArea !== undefined && selectedArea.wkt !== undefined && selectedArea.wkt.startsWith('POINT')">
+                                    <label style="width: 100px" for="locationRadius">Radius (km)</label>
+                                    <input style="width:80px" type="number" id="locationRadius"
+                                           ng-model="locationRadius" value="10">
+                                </div>
+                            </div>
+                    </div>
+                </div>
+
+
+                <div class="panel panel-default" ng-show="step == 'importShapefile' || step == 'importKML'">
+                    <div class="panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Import area file</h3>
+                        </div>
+
+                        <div class="panel-body">
+                            <div ng-show="step == 'importShapefile' && fileName.length > 0" >
+                                <label style="width: 100px" for="myAreaName">Area Name</label>
+                                <input type="text" style="width:50%" id="myAreaName" ng-model="myAreaName" value="My Area">
+                            </div>
+
+                            <div ng-show="step == 'importShapefile' && fileName.length > 0" style="margin-top:30px;">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <p>Areas for merging</p>
+                                            <table class="table table-striped panel panel-default" style="height:400px;overflow:scroll;display:block">
+                                                <thead>
+                                                <tr>
+                                                    <th align="center"><input type="checkbox" ng-click="toggleAllAreaCheckbox()"
+                                                                              ng-model="checkAll">
+                                                    </th>
+                                                    <th ng-repeat="header in areaHeader">
+                                                        <a href="#" ng-click="sortType = header">
+                                                            {{header}}
+                                                        </a></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr ng-repeat="area in areaList">
+                                                    <td align="center"><input type="checkbox" ng-click="selectShpArea()"
+                                                                              ng-model="area.selected"></td>
+                                                    <td ng-repeat="header in areaHeader">
+                                                        {{area.values[header]}}
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="col-lg-6" style="height:400px">
+                                            <p>Preview</p>
+                                            <div class="well">
+                                                <img ng-src="{{shpImg}}" alt="No image" style="max-height:100%;max-width:100%;margin-left:auto;margin-right:auto;display:block;"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin-top:30px">
+                                <div class="btn-group btn-group-sm">
+                                    <button ng-show="!uploadingFile && uploadProgress == 0" class="btn btn-default"
+                                            ngf-select="uploadFile($file)">Choose file</button>
+                                </div>
+                                <uib-progressbar ng-show="uploadingFile"
+                                                 animate="true" value="uploadProgress" type="info"
+                                                 class="progress-striped" title="{{uploadProgress}}">
+                                </uib-progressbar>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-default" ng-show="step == 'wkt'">
+                    <div class="panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Import area file</h3>
+                        </div>
+
+                        <div class="panel-body">
+                            <label style="width: 100px">Area name</label><label><input ng-model="selectedArea.name">
+                            <br/>WKT</label><textarea
+                                style="width:250px;height:300px"
+                                ng-model="selectedArea.wkt"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
         </div>
     </div>
 </div>
 
 <div class="modal-footer">
-    <button class="btn" type="button" ng-click="$close()">Cancel</button>
-    <button class="btn" type="button" ng-click="step = 'default'" ng-disabled="step == 'default'">&lt; Back
+    <button class="btn btn-default" type="button" ng-click="$close()">Close</button>
+    <button class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="isDisabled()">Next
+        &gt;
     </button>
-    <button class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="isDisabled()">Next &gt;</button>
 </div>

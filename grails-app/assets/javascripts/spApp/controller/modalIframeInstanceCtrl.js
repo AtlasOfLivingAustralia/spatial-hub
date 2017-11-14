@@ -7,6 +7,7 @@
                 $scope.src = src;
                 $scope.title = title;
                 $scope.notes = notes;
+                $scope.height = $('#map').height() - 50;
 
             }])
 }(angular));

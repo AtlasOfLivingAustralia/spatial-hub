@@ -26,16 +26,22 @@
                         };
 
                         scope.resetMap = function () {
-                            //remove layers
-                            MapService.removeAll();
+                            bootbox.confirm("Reset to the default map?",
+                                function (result) {
+                                    if (result) {
+                                        //remove layers
+                                        MapService.removeAll();
 
-                            //set zoom
-                            MapService.leafletScope.resetZoom();
+                                        //set zoom
+                                        MapService.leafletScope.resetZoom();
 
-                            //set base layer
-                            MapService.setBaseMap($SH.defaultBaseLayer);
+                                        //set base layer
+                                        MapService.setBaseMap($SH.defaultBaseLayer);
 
-                            MapService.leafletScope.baseMap()
+                                        MapService.leafletScope.baseMap()
+                                    }
+                                }
+                            );
                         };
 
                         scope.open = function (type) {

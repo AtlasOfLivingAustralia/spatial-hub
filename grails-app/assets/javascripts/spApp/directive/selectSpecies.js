@@ -11,23 +11,32 @@
                         _inputData: '=inputData',
                         _uniqueId: '=uniqueId',
                         _includeLayers: '=?includeLayers',
-                        _min: '=?min'
+                        _min: '=?min',
+                        _areaIncludes: '=?areaIncludes',
+                        _spatialValidity: '=?spatialValidity',
+                        _speciesOption: '=?speciesOption'
                     },
                     templateUrl: '/spApp/selectSpeciesCtrl.htm',
                     link: function (scope, element, attrs) {
 
+                        //defaults
                         if (scope._min === undefined) scope._min = 1;
+                        if (scope._includeLayers === undefined) scope._includeLayers = true;
+                        if (scope._areaIncludes === undefined) scope._areaIncludes = false;
+                        if (scope._spatialValidity === undefined) scope._spatialValidity = false;
+                        if (scope._speciesOption === undefined) scope._speciesOption = 'searchSpecies';
 
                         scope.spatiallyValid = true;
                         scope.spatiallySuspect = false;
                         scope.useScientificNames = false;
-                        scope.includeExpertDistributions = true;
-                        if (scope._includeLayers === undefined) scope._includeLayers = true;
+                        scope.includeExpertDistributions = scope._areaIncludes;
+                        scope.includeChecklists = scope._areaIncludes;
+                        scope.includeAnimalMovement = scope._areaIncludes;
 
                         if (scope._inputData !== undefined && scope._inputData.speciesOption !== undefined) {
                             scope.speciesOption = scope._inputData.speciesOption
                         } else {
-                            scope.speciesOption = 'searchSpecies'
+                            scope.speciesOption = scope._speciesOption;
                         }
 
                         scope.multiselect = false;
@@ -127,6 +136,8 @@
                                     gs = ["geospatial_kosher:*"]
                                 }
 
+                                scope._selectedQ.includeAnimalMovement = scope.includeAnimalMovement;
+                                scope._selectedQ.includeExpertDistributions = scope.includeExpertDistributions;
                                 scope._selectedQ.q = query.q.concat(gs);
                                 scope._selectedQ.name = query.name;
                                 scope._selectedQ.bs = query.bs;
@@ -180,9 +191,8 @@
                             scope.setMultiQ({q: q, bs: layer.bs, ws: layer.ws, name: layer.name}, item.checked);
                         };
 
-                        scope.isLoggedIn = function () {
-                            return $SH.userId !== undefined && $SH.userId !== null && $SH.userId.length > 0
-                        };
+                        scope.isLoggedIn = $SH.userId !== undefined && $SH.userId !== null && $SH.userId.length > 0;
+                        scope.isNotLoggedIn = !scope.isLoggedIn;
 
                         if (!scope.multiselect) {
                             if (scope._selectedQ.selectOption) {

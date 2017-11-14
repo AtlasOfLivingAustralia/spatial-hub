@@ -3,7 +3,7 @@
     angular.module('layout-service', [])
         .factory("LayoutService", ['$uibModal', '$timeout', function ($uibModal, $timeout) {
 
-            var showLegend = [true];
+            var showLegend = [false];
             var showOptions = [false];
             var layoutStack = [];
             var toOpenStack = [];
@@ -109,7 +109,7 @@
                     if (data && data.display && data.display.size) size = data.display.size;
 
                     var modalInstance = $uibModal.open({
-                        animation: true,
+                        animation: false,
                         templateUrl: '/spApp/' + type + 'Content.htm',
                         controller: type[0].toUpperCase() + type.substring(1) + 'Ctrl',
                         size: size,

@@ -4,11 +4,13 @@
 *= require leaflet/dist/leaflet.css
 *= require leaflet-draw/dist/leaflet.draw.css
 *= require leaflet-control-window/L.Control.Window.css
+*= require leaflet-fullscreen/Control.FullScreen.css
 *= require leaflet-label/leaflet.label.css
 *= require angular/angular-csp.css
 *= require angular-ui-bootstrap/dist/ui-bootstrap-csp.css
 *= require sandbox.css
 *= require angular-loading-bar/build/loading-bar.css
+*= require jquery-layout/jquery.layout.css
 *= require ala/ala-styles.css
 *= require spatial-hub.css
 */

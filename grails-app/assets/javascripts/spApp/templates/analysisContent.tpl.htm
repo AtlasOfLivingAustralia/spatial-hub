@@ -1,39 +1,50 @@
 <div class="modal-header">
-    <h4 class="modal-title">Restore previous analysis</h4>
+    <button type="button" class="close" ng-click="close()">×</button>
+    <h4 class="modal-title">Restore previous analysis.</h4>
 </div>
 
 <div class="modal-body">
-    <div row>
-        <div class="well">
-            <div class="col-sm-6">
-                Task id
-            </div>
-            <div class="col-sm-6">
-                <input type="number" min="0" ng-model="taskId"/>
-            </div>
-            <br/>
-            <br/>
-            <div class="col-sm-6">
-                Download result
-            </div>
-            <div class="col-sm-6">
-                <input type="checkbox" ng-model="doDownload"/>
-            </div>
-            </div>
-            <div class="col-sm-12">
-                <table class="table table-condensed">
-                    <tr ng-repeat="item in list" ng-show="item.data && item.data.taskId && item.data.metadataUrl">
-                        <td ng-click="taskId = item.data.taskId">{{ item.category2 }}</td>
-                        <td>{{ item.created }}</td>
-                        <td><i class="glyphicon glyphicon-info-sign" ng-click="openUrl(item.data.metadataUrl)"></i></td>
-                    </tr>
-                </table>
+        <div class="panel panel-default">
+            <div class="panel">
+                <div class="panel-heading">
+                    <h3 class="panel-title">1.&nbsp;Task ID.</h3>
+                    <i style="float:right;font-size:20px;color:green;margin-top: -20px;" class="glyphicon glyphicon-ok"
+                       ng-hide="getInputChecks()"></i>
+                    <div ng-show="getInputChecks()" style="float:right;font-size:15px;color:red;margin-top:-20px;">
+                        <i  class="glyphicon glyphicon-asterisk"></i>
+                        Mandatory.
+                    </div>
+                </div>
+
+                <div class="panel-body">
+                    <div>
+                        <label>Enter the ID of the task to import</label>
+                        <input type="number" min="1" ng-model="taskId"></input>
+                    </div>
+
+                    <hr/>
+
+                    <div>
+                        <input type="checkbox" ng-model="downloadImmediately"/>&nbsp;<label>Download any associated outputs.</label>
+                    </div>
+                </div>
+
+                <div class="col-sm-12">
+                    <table class="table table-condensed">
+                        <tr ng-repeat="item in list" ng-show="item.data && item.data.taskId && item.data.metadataUrl">
+                            <td ng-click="taskId = item.data.taskId">{{ item.category2 }}</td>
+                            <td>{{ item.created }}</td>
+                            <td><i class="glyphicon glyphicon-info-sign" ng-click="openUrl(item.data.metadataUrl)"></i></td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
 </div>
 
 <div class="modal-footer">
-    <button class="btn" type="button" ng-click="$close()">Cancel</button>
-    <button class="btn btn-primary" type="button" ng-click="ok()">Next &gt;</button>
+    <div class="btn-group">
+        <button class="btn btn-default" type="button" ng-click="$close()">Cancel</button>
+        <button class="btn btn-primary" type="button" ng-click="ok()">Next &gt;</button>
+    </div>
 </div>

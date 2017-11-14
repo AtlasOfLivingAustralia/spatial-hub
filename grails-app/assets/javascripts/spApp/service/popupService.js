@@ -52,7 +52,7 @@
                             popupScope.intersects = intersects;
                             popupScope.olist = occurrences;
                             var html = $compile(content)(popupScope);
-                            popup = L.popup({maxWidth: 500, maxHeight: 600, minWidth: 300, autoPanPadding: 10})
+                            popup = L.popup({maxWidth: 500, maxHeight: 600, minWidth: 410, autoPanPadding: 10})
                                 .setLatLng(latlng)
                                 .setContent(html[0])
                                 .openOn(map);

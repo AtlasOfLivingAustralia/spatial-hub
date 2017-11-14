@@ -89,6 +89,8 @@
             <button ng-click="facetFilter=''" class="btn btn-xs btn-default"
                     ng-disabled="facetFilter == ''">clear filter
             </button>
+            <uib-progressbar ng-show="selected.layer.facetList[selected.layer.facet] === undefined || selected.layer.facetList[selected.layer.facet] == null || selected.layer.facetList[selected.layer.facet] == 0" class="progress-striped" ng-class="{ active: true }" value="100"
+                             type='info' title="Updating">loading...</uib-progressbar>
             <table class="table" style="width:370px;max-height:200px;overflow:scroll;display:block">
                 <tr ng-repeat="x in selected.layer.facetList[selected.layer.facet] | filter:facetFilter">
                     <td style="width:20px"><input type="checkbox" ng-model="x.selected"
@@ -100,7 +102,7 @@
             </table>
 
             <div style="width:100%;padding-right:30px" class="btn-group">
-                <label style="float:left;" ng-show="facetsSelected()">{{facetsSelectedCount()}} selected</label>
+                <label style="float:left;" >{{selected.layer.facetSelectionCount}} selected</label>
                 <button style="float:right;" class="btn btn-xs btn-default" ng-click="facetClearSelection()"
                         ng-disabled="!facetsSelected()">Clear selection
                 </button>
@@ -254,7 +256,7 @@
             </grid>
 
             <div style="float:right; margin-top:-25px;margin-right:100px;width: 40px;">
-                <label><a ng-click="selected.layer.showColourSliders=true" ng-show="!selected.layer.showColourSliders">more</a></label>
+                <label><a ng-click="selected.layer.showColourSliders=true" ng-hide="selected.layer.showColourSliders">more</a></label>
                 <label><a ng-click="selected.layer.showColourSliders=false" ng-show="selected.layer.showColourSliders">less</a></label>
             </div>
 
@@ -317,6 +319,8 @@
                 <input style="width:200px" type="text" ng-model="selected.layer.contextualFilter"/>
                 <button ng-click="updateContextualList()" class="btn btn-xs btn-default">apply filter</button>
                 <button ng-click="clearContextualFilter()" class="btn btn-xs btn-default">clear filter</button>
+                <uib-progressbar ng-show="selected.layer.contextualList === undefined || selected.layer.contextualList == null || selected.layer.contextualList.length == 0" class="progress-striped" ng-class="{ active: true }" value="100"
+                                  type='info' title="Updating">loading...</uib-progressbar>
                 <table class="table" style="width:370px;overflow:scroll;display:block">
                     <tr ng-repeat="x in selected.layer.contextualList | filter:selected.layer.contextualFilter"
                         ng-click="contextualHighlight(x.name)">
@@ -363,7 +367,7 @@
         <div class="form-group row"
              ng-show="selected.layer.layertype == 'species' && selected.layer.colorType != 'grid'">
 
-            <input style="margin-left:70px" type="checkbox" id="uncertainty"
+            <input type="checkbox" id="uncertainty"
                    ng-change="setUncertainty(chkUncertainty)" ng-model="chkUncertainty">
             <label for="uncertainty" style="width:300px">Display spatial uncertainty as a circle</label>
 

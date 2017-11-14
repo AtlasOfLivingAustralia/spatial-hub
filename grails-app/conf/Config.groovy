@@ -80,7 +80,7 @@ grails.exceptionresolver.params.exclude = ['password']
 environments {
     development {
         grails.logging.jul.usebridge = true
-        grails.serverURL = 'http://local.ala.org.au:8081/spatial-hub'
+        grails.serverURL = 'http://local.ala.org.au:8082/spatial-hub'
     }
     production {
         grails.logging.jul.usebridge = false
@@ -137,10 +137,13 @@ headerAndFooter.baseURL = 'https://www2.ala.org.au/commonui-bs3'
 ala.baseURL = 'https://www.ala.org.au'
 bie.baseURL = 'https://bie.ala.org.au'
 bie.searchPath = '/search'
+userdetails.baseUrl = 'https://auth.ala.org.au/userdetails'
+favicon.url = 'https://www.ala.org.au/wp-content/themes/ala2011/images/favicon.ico'
 
-layersService.url = 'https://spatial.ala.org.au/layers-service/'
+//layersService.url = 'https://spatial-test.ala.org.au/layers-service/'
+layersService.url = 'https://localhost:8085/spatial-service/'
 lists.url = 'https://lists.ala.org.au'
-collections.url = 'http://collections.ala.org.au'
+collections.url = 'https://collections.ala.org.au'
 sandbox.url = 'http://sandbox.ala.org.au/ala-hub'
 sandboxService.url = 'http://sandbox.ala.org.au/biocache-service'
 sandbox.uiUrl = 'http://sandbox.ala.org.au/datacheck'
@@ -299,6 +302,12 @@ grails.assets.excludes=['node_modules/**', 'target/**']
 grails.assets.plugin.'sandbox-hub'.excludes = ['**/*.*']
 grails.assets.plugin.'ala-bootstrap3'.excludes = ['**/*.*']
 grails.assets.enableGzip=true
+//grails.assets.bundle=true
+//grails.assets.minifyJs=true
+//grails.assets.minifyCss=true
+//grails.assets.enableSourceMaps=true
+//grails.assets.maxThreads=4
+
 
 character.encoding='UTF-8'
 cache.control='max-age=36000 public must-revalidate'

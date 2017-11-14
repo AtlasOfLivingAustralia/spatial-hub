@@ -1,30 +1,58 @@
-<div class="row" name="nearestLocality" style="padding-left:10px">
-    <h3 class="modal-title">Nearest locality</h3>
-    <br/>
+<div class="row" name="nearestLocality" style="padding-left:10px;width:400px">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title" style="margin-bottom: 0px">
+                <button type="button" class="close" ng-click="cancel()">×</button>
+                <div>Nearest locality</div>
+            </h3>
+        </div>
+        <div class="panel-body">
+            <div class="alert alert-ala-success" role="alert">
+                <div class="container">
+                    <p style="display:inline;" ng-show="pointLabel.length > 0"><strong>{{pointLabel}}</strong></p>
+                    <div class="btn-group btn-group-sm" style="float:right" ng-show="points.length > 0">
+                        <button class="btn btn-default" ng-click="enableDrawing()"
+                                ng-disabled="selectedArea.wkt.length == 0">Edit location
+                        </button>
+                    </div>
+                    <p style="" ng-hide="pointLabel.length > 0">Longitude: {{point.longitude | number : 3}}</p>
+                    <p style="" ng-hide="pointLabel.length > 0">Latitude: {{point.latitude | number : 3}}</p>
+                </div>
+            </div>
 
-    <label style="font-weight: bold">{{pointLabel}}</label>
-    <div>
-        <table class="table" style="width: 380px">
-            <tr style="font-weight: bold">
-                <td>Feature</td>
-                <td>Location</td>
-                <td>Distance (km)</td>
-                <td>Heading (deg)</td>
-            </tr>
-            <tr ng-repeat="x in points">
-                <td class="td-vertical-align table-text-ellipsis">{{ x.name }}</td>
-                <td class="td-vertical-align table-text-ellipsis">{{ x.geometry.replace('POINT(','').replace(')','')
-                    }}
-                </td>
-                <td class="td-vertical-align text-right">{{ x.distance | number : 1 }}</td>
-                <td class="td-vertical-align text-right">{{ x.degrees | number : 1}}</td>
-            </tr>
-        </table>
-        <button class="btn" ng-click="enableDrawing()"
-                ng-disabled="selectedArea.wkt.length == 0">Set a new point
-        </button>
-
-        <button class="btn btn-primary" style="float:right;margin-right:30px;" ng-click="cancel()">Close</button>
+            <div ng-show="searching">
+                <uib-progressbar class="progress-striped active"
+                                 value="100" type='info' title="Updating">Loading...</uib-progressbar>
+            </div>
+            <table ng-show="points.length > 0" class="table table-striped" style="width: 360px">
+                <thead>
+                <tr>
+                    <td>Feature</td>
+                    <td>Location</td>
+                    <td>Distance (km)</td>
+                    <td>Heading (deg)</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="x in points">
+                    <td class="td-vertical-align table-text-ellipsis">{{ x.name }}</td>
+                    <td class="td-vertical-align table-text-ellipsis">{{ x.geometry.replace('POINT(','').replace(')','')
+                        }}
+                    </td>
+                    <td class="td-vertical-align text-right">{{ x.distance | number : 1 }}</td>
+                    <td class="td-vertical-align text-right">{{ x.degrees | number : 1}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <a download="nearestLocalities_{{point.longitude}}_{{point.latitude}}.csv" ng-show="points.length > 0"
+           ng-href="{{exportUrl}}" ng-disabled="exportUrl == null" style="margin-right:30px">
+            <i class="glyphicon glyphicon-download-alt"></i>Download
+        </a>
+        <div class="btn-group btn-group-sm">
+            <button class="btn btn-primary" ng-click="cancel()">Close</button>
         </div>
     </div>
 </div>

@@ -26,16 +26,22 @@
                     };
 
                     scope.deleteAll = function () {
-                        var uids = [], i;
-                        for (i = 0; i < scope.list.length; i++) {
-                            uids.push(scope.list[i].uid)
-                        }
+                        bootbox.confirm("Delete all mapped layers?",
+                            function (result) {
+                                if (result) {
+                                    var uids = [], i;
+                                    for (i = 0; i < scope.list.length; i++) {
+                                        uids.push(scope.list[i].uid)
+                                    }
 
-                        for (i = 0; i < uids.length; i++) {
-                            MapService.remove(uids[i])
-                        }
+                                    for (i = 0; i < uids.length; i++) {
+                                        MapService.remove(uids[i])
+                                    }
 
-                        scope.selectControls()
+                                    scope.selectControls()
+                                }
+                            }
+                        );
                     };
 
                     scope.showAll = function () {

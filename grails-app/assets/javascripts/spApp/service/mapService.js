@@ -1,8 +1,8 @@
 (function (angular) {
     'use strict';
     angular.module('map-service', ['layers-service', 'facet-auto-complete-service', 'biocache-service', 'logger-service'])
-        .factory("MapService", ['LayoutService', '$timeout', 'LayersService', 'FacetAutoCompleteService', 'BiocacheService', 'ColourService', 'LoggerService',
-            function (LayoutService, $timeout, LayersService, FacetAutoCompleteService, BiocacheService, ColourService, LoggerService) {
+        .factory("MapService", ['LayoutService', '$q', '$timeout', 'LayersService', 'FacetAutoCompleteService', 'BiocacheService', 'ColourService', 'LoggerService',
+            function (LayoutService, $q, $timeout, LayersService, FacetAutoCompleteService, BiocacheService, ColourService, LoggerService) {
                 var bounds = {};
                 var layers = [];
                 var leafletLayers = {
@@ -18,7 +18,7 @@
                 var selected = {layer: null};
                 var uid = 1;
 
-                return {
+                var MapService = {
                     mappedLayers: layers,
                     selected: selected,
                     leafletLayers: leafletLayers,
@@ -143,9 +143,70 @@
                         }
                     },
 
+                    addOtherArea: function (type, query, area, include) {
+                        if (include !== true) {
+                            return $q.when()
+                        }
+                        //intersect query (lsid) and area (wkt)
+                        return BiocacheService.facetGeneral("species_guid", query, 1, 0).then(function(response) {
+                            if (response && response.length > 0 && response[0].fieldResult &&
+                                response[0].fieldResult.length > 0 && response[0].fieldResult[0].label !== "") {
+                                return LayersService.findOtherArea(type, response[0].fieldResult[0].label, area).then(function(response) {
+                                    var data = response.data
+                                    if (data && data.length > 0) {
+                                        for (var i in data) {
+                                            var item = data[i];
+
+                                            //map with geom_idx
+                                            var parts = item.wmsurl.split("&");
+                                            parts[0] = parts[0].split("?")[1];
+                                            var parameters = {};
+                                            for (var j in parts) {
+                                                var kv = parts[j].split("=");
+                                                if (kv.length == 2) {
+                                                    parameters[kv[0]] = kv[1]
+                                                }
+                                            }
+
+                                            var name = item.area_name;
+                                            if (name === undefined) {
+                                                name = item.scientific
+                                            }
+                                            var metadataUrl = item.metadata_u;
+
+                                            if (type == 'track' && item.group_name) {
+                                                // override track metadata url with biocache-hub occurrence url
+                                                metadataUrl = $SH.biocacheUrl + '/occurrence/' + item.group_name
+
+                                                // area_name is the external track id, add name as prefix
+                                                name = item.scientific + " (" + name + ")"
+                                            }
+
+                                            MapService.add( {
+                                                query: query,
+                                                geom_idx: item.geom_idx,
+                                                layertype: "area",
+                                                name: name,
+                                                layerParams: parameters,
+                                                metadataUrl: metadataUrl
+                                            })
+                                        }
+                                    }
+                                    return $q.when()
+                                }, function(data) {
+                                    return $q.when()
+                                })
+                            } else {
+                                return $q.when()
+                            }
+                        })
+                    },
+
                     add: function (id) {
                         id.uid = uid;
                         uid = uid + 1;
+
+                        var promises = [];
 
                         layers.unshift(id);
 
@@ -196,6 +257,7 @@
 
                         if (id.q && id.layertype !== 'area') {
                             LoggerService.log('AddToMap', 'Species', {qid: id.qid});
+
                             id.layertype = 'species';
                             var env = 'colormode%3Agrid%3Bname%3Acircle%3Bsize%3A3%3Bopacity%3A1';
                             if (id && id.layer && id.layer.leaflet && id.layer.leaflet.layerParams &&
@@ -204,11 +266,14 @@
                             } else if (id.colorType === '-1') {
                                 env = 'colormode%3A-1%3Bname%3Acircle%3Bsize%3A3%3Bopacity%3A1%3Bcolor%3A' + id.color;
                             }
+
+                            //backup selection fq
                             var fq = undefined;
-                            if (id && id.layer && id.layer.leaflet && layer.leaflet.layerParams &&
-                                layer.leaflet.layerParams.fq) {
-                                fq = layer.leaflet.layerParams.fq;
+                            if (id && id.layer && id.layer.leaflet && id.layer.leaflet.layerParams &&
+                                id.layer.leaflet.layerParams.fq) {
+                                fq = id.layer.leaflet.layerParams.fq;
                             }
+
                             selected.layer.leaflet = {
                                 name: uid + ': ' + id.name,
                                 type: 'wms',
@@ -226,31 +291,48 @@
                                 }
                             };
 
+                            //restore selection fq
                             if (fq !== undefined) {
-                                layer.leaflet.layerParams.fq = fq;
+                                selected.layer.leaflet.layerParams.fq = fq;
                             }
 
-                            FacetAutoCompleteService.search(id).then(function (data) {
-                                id.list = data
-                            });
+                            promises.add(FacetAutoCompleteService.search(id).then(function (data) {
+                                id.list = data;
+                            }));
 
-                            BiocacheService.bbox(id).then(function (data) {
+                            promises.add(BiocacheService.bbox(id).then(function (data) {
                                 id.bbox = data
-                            });
+                            }));
 
-                            BiocacheService.count(id).then(function (data) {
+                            promises.add(BiocacheService.count(id).then(function (data) {
                                 id.count = data;
                                 if (id.count < 100000) {
                                     id.colorType = '-1'
                                 }
-                            })
+                            }));
                         } else {
                             if (id.layertype === 'area') {
-                                LoggerService.log('AddToMap', 'Area', {pid: id.pid});
+                                LoggerService.log('AddToMap', 'Area', {pid: id.pid, geom_idx: id.geom_idx});
 
+                                //backup sld_body
                                 var sld_body = undefined;
                                 if (id && id.leaflet && id.leaflet.layerParams && id.leaflet.layerParams.sld_body) {
                                     sld_body = id.leaflet.layerParams.sld_body
+                                }
+                                var layerParams;
+                                if (id.layerParams) {
+                                    layerParams = id.layerParams;
+                                    if (id.transparent !== undefined) layerParams.transparent = true;
+                                    if (id.opacity !== undefined) layerParams.opacity = id.opacity / 100.0;
+                                    if (id.format !== undefined) layerParams.format = 'image/png';
+                                } else {
+                                    layerParams = {
+                                        opacity: id.opacity / 100.0,
+                                        layers: 'ALA:Objects',
+                                        format: 'image/png',
+                                        transparent: true,
+                                        viewparams: 's:' + id.pid
+                                    }
                                 }
                                 //user or layer object
                                 selected.layer.leaflet = {
@@ -260,14 +342,10 @@
                                     opacity: id.opacity / 100.0,
                                     url: $SH.geoserverUrl + '/wms',
                                     layertype: 'area',
-                                    layerParams: {
-                                        opacity: id.opacity / 100.0,
-                                        layers: 'ALA:Objects',
-                                        format: 'image/png',
-                                        transparent: true,
-                                        viewparams: 's:' + id.pid
-                                    }
+                                    layerParams: layerParams
                                 };
+
+                                //restore sld_body
                                 if (sld_body) {
                                     selected.layer.leaflet.layerParams.sld_body = sld_body;
                                 } else {
@@ -290,15 +368,15 @@
                                     id.contextualPage = 1;
                                     id.contextualPageSize = 5;
 
-                                    LayersService.getField(id.id, 0, id.contextualPageSize, '').then(function (data) {
+                                    promises.add(LayersService.getField(id.id, 0, id.contextualPageSize, '').then(function (data) {
                                         id.contextualList = data.data.objects;
                                         for (var i in id.contextualList) {
                                             if (id.contextualList.hasOwnProperty(i)) {
                                                 id.contextualList[i].selected = false
                                             }
                                         }
-                                        id.contextualMaxPage = Math.ceil(data.data.number_of_objects / id.contextualPageSize)
-                                    })
+                                        id.contextualMaxPage = Math.ceil(data.data.number_of_objects / id.contextualPageSize);
+                                    }));
                                 } else {
                                     id.layertype = 'grid'
                                 }
@@ -345,7 +423,18 @@
                         $timeout(function () {
                         }, 0);
 
-                        return id.uid
+                        id.includeExpertDistributions = true;
+                        if (id.layertype !== 'area') {
+                            promises.push(MapService.addOtherArea("distribution", id, id.area, id.includeExpertDistributions));
+                            promises.push(MapService.addOtherArea("track", id, id.area, id.includeAnimalMovement));
+                            promises.push(MapService.addOtherArea("checklist", id, id.area, id.includeChecklists))
+                        }
+
+                        //add to promises if waiting is required
+                        return $q.all(promises).then(function (results) {
+                            return id.uid
+                        });
+
                     },
 
                     getLayer: function (id) {
@@ -362,7 +451,8 @@
                     },
 
                     select: function (id) {
-                        selected.layer = id
+                        selected.layer = id;
+                        $SH.defaultPaneResizer.show('south');
                     },
                     objectSld: function (item) {
                         var sldBody = '<?xml version="1.0" encoding="UTF-8"?><StyledLayerDescriptor version="1.0.0" xmlns="http://www.opengis.net/sld"><NamedLayer><Name>ALA:Objects</Name><UserStyle><FeatureTypeStyle><Rule><Title>Polygon</Title><PolygonSymbolizer><Fill><CssParameter name="fill">#.colour</CssParameter></Fill></PolygonSymbolizer></Rule></FeatureTypeStyle></UserStyle></NamedLayer></StyledLayerDescriptor>';
@@ -431,7 +521,7 @@
                         if (item.layertype === 'species') {
                             item.display = {size: 'full'};
                             LayoutService.openModal('speciesInfo', item, false)
-                        } else if (item.layertype === 'area') {
+                        } else if (item.layertype === 'area' && item.metadataUrl === undefined) {
                             var b = item.bbox;
                             if ((item.bbox + '').startsWith('POLYGON')) {
                                 //convert POLYGON box to bounds
@@ -479,6 +569,8 @@
 
                         return idx === 0 ? name : name + ' (' + idx + ')';
                     }
-                }
+                };
+
+                return MapService
             }])
 }(angular));

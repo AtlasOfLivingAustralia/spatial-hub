@@ -1,14 +1,39 @@
 (function (angular) {
     'use strict';
-    angular.module('sp-menu-directive', []).directive('spMenu',
-        ["LayoutService", 'MapService', 'SessionsService', function (LayoutService, MapService, SessionsService) {
+    angular.module('sp-menu-directive', ['layout-service', 'map-service', 'sessions-service', 'menu-service']).directive('spMenu',
+        ["LayoutService", 'MapService', 'SessionsService', 'MenuService',
+            function (LayoutService, MapService, SessionsService, MenuService) {
             return {
                 scope: {},
                 templateUrl: '/spApp/menuContent.htm',
                 link: function (scope, element, attrs) {
+                    scope.menuConfig = [];
+
+                    MenuService.getMenuConfig().then( function (config) {
+                        for (var c in config) {
+                            scope.menuConfig.push(config[c]);
+                        }
+                    });
+
                     scope.open = function (type, data) {
                         LayoutService.clear();
                         LayoutService.openModal(type, data)
+                    };
+
+                    scope.run = function (cmd) {
+                        var func = scope[cmd[0]];
+
+                        if (cmd.length > 1) {
+                            if (cmd.length == 2) {
+                                func(cmd[1])
+                            } else if (cmd.length == 3) {
+                                func(cmd[1], cmd[2])
+                            } else if (cmd.length == 4) {
+                                func(cmd[1], cmd[2], cmd[3])
+                            }
+                        } else {
+                            func()
+                        }
                     };
 
                     scope.openPanel = function (type, data) {
@@ -46,9 +71,12 @@
                         SessionsService.load(sessionId)
                     };
 
-                    scope.isLoggedIn = function () {
-                        return $SH.userId !== undefined && $SH.userId !== null && $SH.userId.length > 0
-                    }
+                    scope.exportMap = function () {
+                        scope.open('tool', {processName: 'ToolExportMapService', overrideValues: { ToolExportMapService: { input: { caption: { constraints: {default: (new Date() ) } } } } } })
+                    };
+
+                    scope.isLoggedIn = $SH.userId !== undefined && $SH.userId !== null && $SH.userId.length > 0;
+                    scope.isNotLoggedIn = !scope.isLoggedIn;
                 }
             };
         }])

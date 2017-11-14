@@ -7,9 +7,6 @@
             function ($http, $timeout, LayersService, LayerDistancesService, MapService,
                       LayoutService, PredefinedLayerListsService) {
 
-                var sortType = 'classification'; // set the default sort type
-                var sortReverse = false;  // set the default sort order
-                var searchLayer = '';    // set the default search/filter term
                 return {
                     templateUrl: '/spApp/selectLayersCtrl.htm',
                     scope: {
@@ -20,6 +17,12 @@
                         _uniqueId: '=uniqueId'
                     },
                     link: function (scope, element, attrs) {
+                        if (scope._maxCount === undefined) scope._maxCount = 10000;
+                        if (scope._minCount === undefined) scope._minCount = 0;
+
+                        scope.sortType = 'classification'; // set the default sort type
+                        scope.sortReverse = false;  // set the default sort order
+                        scope.searchLayer = '';   // set the default search/filter term
 
                         scope.exportUrl = null;
                         scope.validLayerSelection = scope._mandatory === undefined || !scope._mandatory;
@@ -70,18 +73,7 @@
 
                         scope.setLayers = function (data) {
                             for (var i = 0; i < data.length; i++) {
-                                scope.layers.push({
-                                    id: data[i].id,
-                                    classification1: data[i].layer.classification1,
-                                    classification2: data[i].layer.classification2,
-                                    classification: data[i].layer.classification1 + ' / ' + data[i].layer.classification2,
-                                    name: data[i].name,
-                                    type: data[i].type,
-                                    dist: 2,
-                                    selected: scope.isSelected(data[i].id),
-                                    layerId: data[i].layer.id,
-                                    bbox: [[data[i].layer.minlatitude, data[i].layer.minlongitude], [data[i].layer.maxlatitude, data[i].layer.maxlongitude]]
-                                })
+                                scope.layers.push(LayersService.convertFieldDataToMapLayer(data[i], scope.isSelected(data[i].id)))
                             }
                         };
 
@@ -140,7 +132,7 @@
                             for (var i in items) {
                                 var layer = scope.getLayer(items[i]);
 
-                                if (layer && layer.id && !layer.selected) {
+                                if (layer && layer.id && !layer.selected && scope._selection.layers.length < scope._maxCount) {
                                     layer.selected = true;
                                     scope._selection.layers.push(layer)
                                 }
@@ -175,8 +167,7 @@
                         scope.add = function (layerItem) {
                             var layer = scope.getLayer(!layerItem.id ? layerItem : layerItem.id);
 
-                            if (layer && layer.id && !layer.selected) {
-                                layer.selected = true;
+                            if (layer && layer.id && !scope.isSelected(layer.id)) {
                                 scope._selection.layers.push(layer);
                                 scope.updateDist();
 
@@ -199,7 +190,6 @@
                         scope.remove = function (layerItem) {
                             var layer = scope.getLayer(!layerItem.id ? layerItem : layerItem.id);
 
-                            layer.selected = false;
                             for (var i = 0; i < scope._selection.layers.length; i++) {
                                 if (scope._selection.layers[i].id === layer.id) {
                                     scope._selection.layers.splice(i, 1);
@@ -210,10 +200,14 @@
                         };
 
                         scope.toggle = function (layer) {
-                            if (layer.selected) {
+                            if (!layer.selected) {
                                 scope.remove(layer)
-                            } else {
+                            } else if (scope._selection.layers.length < scope._maxCount) {
                                 scope.add(layer)
+                            } else {
+                                $timeout( function () {
+                                    layer.selected = false;
+                                }, 0)
                             }
                             scope.updateExportSet()
                         };
@@ -236,7 +230,7 @@
                             for (i = 0; i < scope.layers.length; i++) {
                                 scope.layers[i].dist = distances[i]
                             }
-                        }
+                        };
                     }
                 }
 

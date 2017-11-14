@@ -2,6 +2,7 @@ package au.org.ala.spatial.portal
 
 import grails.converters.JSON
 import org.apache.commons.httpclient.methods.StringRequestEntity
+import org.apache.commons.io.FileUtils
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.client.methods.HttpPost
 import org.codehaus.groovy.grails.web.servlet.HttpHeaders
@@ -16,6 +17,72 @@ import java.util.zip.ZipInputStream
  */
 class PortalController {
 
+    def propertiesService
+
+    def defaultConfigLabel() {
+        try {
+            "app default: " + new Date(new File(PortalController.classLoader.getResource("menu-config.json").getFile()).lastModified()).toString()
+        } catch (Exception e) {
+            "app default: " + grailsApplication.metadata['app.version'].toString()
+        }
+    }
+
+    def editConfig (String id) {
+        def type = ["view", "menu"].contains(id) ? id : "view"
+        def currentJSON = portalService.getConfig(type, false)
+        def config = (currentJSON as JSON).toString(true)
+        def error = ""
+        if (request.isPost() && params.config) {
+            def newJSON = null
+            try {
+                newJSON = JSON.parse(params.config)
+                config = (newJSON as JSON).toString(true)
+            } catch (Exception e) {
+                error = "Invalid json. " + e.toString()
+                config = params.config
+            }
+            if (!error && newJSON != null) {
+                if (!equals(currentJSON, newJSON)) {
+                    //backup
+                    def current = new File("/data/spatial-hub/config/" + type + "-config.json")
+                    def backup = new File("/data/spatial-hub/config/" + type + "-config." + (new Date()).toString() + ".json")
+
+                    if (current.exists()) {
+                        FileUtils.copyFile(current, backup)
+                    }
+
+                    //write new
+                    FileUtils.writeStringToFile(current, params.config)
+
+                    //update cache
+                    grailsCacheManager.getCache("configCache").clear()
+
+                    error = "Saved"
+                } else {
+                    error = "No change"
+                }
+            }
+        }
+
+        render(view: "editConfig", model: [config: (config), type: type, error: error,
+                                           versions: new File("/data/spatial-hub/config").listFiles().findAll { file -> file.name.startsWith(type)} +
+                                                   defaultConfigLabel()])
+    }
+
+    private boolean equals(a, b) {
+        if (a instanceof Map && b instanceof Map) {
+            if (!((Map)a).keySet().containsAll(((Map)b).keySet()) ||
+                    !((Map)b).keySet().containsAll(((Map)a).keySet())) return false
+            ((Map)a).every { equals(it.value, ((Map)b)[it.key]) }
+        } else if (a instanceof List && b instanceof List) {
+            boolean eq = true
+            a.eachWithIndex { def v, int i -> if (eq && !equals(v, b[i])) eq = false }
+            eq
+        } else {
+            a == b
+        }
+    }
+
     static allowedMethods = [index:['GET'],
                              messages:['GET'],
                              session: ['POST', 'DELETE', 'GET'],
@@ -29,7 +96,7 @@ class PortalController {
                              postSpeciesList: 'POST',
                              q: 'POST',
                              proxy: ['GET', 'POST'],
-                             viewConfig: 'GET',
+                             config: 'GET',
                              getSampleCSV: 'GET',
                              ping: 'POST']
 
@@ -122,7 +189,8 @@ class PortalController {
         render JSON.parse(String.valueOf(r?.text)) as JSON
     }
 
-    def postAreaFile(type) {
+    def postAreaFile(String id) {
+        def type = id
         def mFile = ((MultipartHttpServletRequest) request).getFile('shapeFile')
         def settings = [api_key: grailsApplication.config.api_key]
 
@@ -139,10 +207,17 @@ class PortalController {
             log.error("failed ${type} upload: ${r}")
             render [:] as JSON
         } else {
-            def shapeFileId = r.remove('shp_id')
-            def area = r.collect { key, value ->
-                [id: key, values: value]
+            def json = JSON.parse(String.valueOf(r?.text))
+            def shapeFileId = json.id
+            def area = json.collect { key, value ->
+                if (key == 'shp_id') {
+                    shapeFileId = value
+                    null
+                } else {
+                    [id: key, values: value]
+                }
             }
+            area.remove(null)
             def msg = [shapeId: shapeFileId, area: area]
             render msg as JSON
         }
@@ -272,9 +347,12 @@ class PortalController {
 
         //use caching for GET requests
         if (request.method == HttpGet.METHOD_NAME) {
-            def value = grailsCacheManager.getCache(portalService.caches.PROXY).get(params.url)
+            def value = null;//grailsCacheManager.getCache(portalService.caches.PROXY).get(params.url)
             if (value) {
                 response.setContentType((String) ((Map) value.get()).contentType)
+                ((Map) value.get()).headers.each { k, v ->
+                    response.setHeader(k, v)
+                }
                 response.outputStream << String.valueOf(((Map) value.get()).text)
             } else {def headers = [:]
                 request.headerNames.each { name -> headers.put(name, request.getHeader(name)) }
@@ -303,12 +381,30 @@ class PortalController {
         response.addHeader(HttpHeaders.CACHE_CONTROL, (String) grailsApplication.config.cache.control)
     }
 
-    def viewConfig() {
-        def viewConfig = portalService.viewConfig
+    def config(String id) {
+        def type = ["view", "menu"].contains(id) ? id : "view"
+        def config = portalService.getConfig(type, params?.version?.equalsIgnoreCase(defaultConfigLabel())?:false)
 
-        response.addHeader(HttpHeaders.CACHE_CONTROL, (String) grailsApplication.config.cache.control)
+        if (params.version && !params.version.equalsIgnoreCase(defaultConfigLabel())) {
+            if (params.version != "current" && params.version != "json") {
+                def file = new File("/data/spatial-hub/config/" + type + "-config." + params.version + ".json")
 
-        render viewConfig as JSON
+                if (file.exists()) {
+                    config = JSON.parse(new FileReader(file))
+                } else {
+                    config = ""
+                }
+            }
+        } else {
+            response.addHeader(HttpHeaders.CACHE_CONTROL, (String) grailsApplication.config.cache.control)
+        }
+
+        if (params.text=="true") {
+            response.setContentType("text/plain")
+            response.outputStream << (config as JSON).toString(true)
+        } else {
+            render config as JSON
+        }
     }
 
     def getSampleCSV() {
@@ -339,5 +435,19 @@ class PortalController {
 
     def ping() {
         render status: HttpURLConnection.HTTP_OK
+    }
+
+    def i18n() {
+        Map m = [:]
+
+        if (request.isPost()) {
+            def json = request.JSON;
+            propertiesService.set(params.lang, json.key, json.value)
+        } else {
+            def p = propertiesService.get(params.lang)
+            m.putAll(p)
+        }
+
+        render m as JSON
     }
 }

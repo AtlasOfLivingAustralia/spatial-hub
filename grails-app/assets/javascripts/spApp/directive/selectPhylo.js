@@ -1,8 +1,8 @@
 (function (angular) {
     'use strict';
     angular.module('select-phylo-directive', ['phylo-service'])
-        .directive('selectPhylo', ['$http', 'PhyloService', 'LayoutService',
-            function ($http, PhyloService, LayoutService) {
+        .directive('selectPhylo', ['$http', 'PhyloService', 'LayoutService', '$timeout',
+            function ($http, PhyloService, LayoutService, $timeout) {
 
                 return {
                     templateUrl: '/spApp/selectPhyloCtrl.htm',
@@ -15,6 +15,7 @@
                         LayoutService.addToSave(scope);
 
                         scope.trees = [];
+                        scope.loading = true;
 
                         scope.change = function (tree) {
                             if (tree.checked) {
@@ -47,19 +48,28 @@
                             }
                         };
 
-                        PhyloService.getExpertTrees().then(function (data) {
-                            for (var k in data.data) {
-                                if (data.data.hasOwnProperty(k)) {
-                                    scope.trees.push({
-                                        id: data.data[k].studyId,
-                                        group: data.data[k].focalClade,
-                                        name: data.data[k].studyName,
-                                        leaves: data.data[k].numberOfLeaves,
-                                        checked: false
-                                    })
+
+
+                        scope.init = function () {
+                            PhyloService.getExpertTrees().then(function (data) {
+                                console.log("phylo");
+                                console.log(data);
+                                for (var k in data.data) {
+                                    if (data.data.hasOwnProperty(k)) {
+                                        scope.trees.push({
+                                            id: data.data[k].studyId,
+                                            group: data.data[k].focalClade,
+                                            name: data.data[k].studyName,
+                                            leaves: data.data[k].numberOfLeaves,
+                                            checked: false
+                                        })
+                                    }
                                 }
-                            }
-                        })
+                                scope.loading = false;
+                            })
+                        }
+
+                        $timeout(scope.init, 0);
                     }
                 }
             }])

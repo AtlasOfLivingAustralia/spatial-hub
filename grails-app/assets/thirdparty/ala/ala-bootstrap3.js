@@ -1,31 +1,86 @@
 // https://www2.ala.org.au/commonui-bs3/js/application.js
 
-var navbarCollapseMinWidth = 768;
+var navbarCollapseMinWidth = 320;
 var _navbarWidthCheck = function() {
-    var menu = $('#bs-example-navbar-collapse-1');
+    var menu = $('#login-buttons');
+    var menuDrop = $('#login-buttons-dropdown');
     var button = $('.navbar-toggle');
     var width = $(document).width();
 
-    $('.navbar-header')[0].style.width = ""
+    //$('.navbar-header')[0].style.width = "";
+    var biesearch = $('#biesearch-top');
+    var biesearchDrop = $('#biesearch-dropdown');
 
-    if (width <= navbarCollapseMinWidth || menu.height() > 75) {
+    if (width <= navbarCollapseMinWidth || menu.height() > 60) {
+        //hide search
+        if (biesearch[0].style.display != "none") {
+            biesearch[0].style.display = "none";
+
+            if (!(width <= navbarCollapseMinWidth || menu.height() > 60)) {
+                _navbarWidthCheckFinish()
+                return
+            }
+        }
         if (width > navbarCollapseMinWidth) {
             navbarCollapseMinWidth = width;
         }
+
         menu[0].className = "navbar-collapse collapse";
         button[0].style.display = 'block !important';
         button[0].className = "navbar-toggle";
-        $('.navbar-header')[0].style.width = "100%"
+        // $('.navbar-header')[0].style.width = "100%"
     } else {
-        menu[0].className = "navbar-collapse";
-        button[0].className = "navbar-toggle collapse";
-        button[0].style.display = 'none !important';
+        var d0 = biesearch[0].style.display;
+        if (biesearch[0].style.display == "none") {
+            biesearch[0].style.display = "";
+        }
+        if (!(width <= navbarCollapseMinWidth || menu.height() > 60)) {
+            menu[0].className = "navbar-collapse";
+            button[0].className = "navbar-toggle collapse";
+            button[0].style.display = 'none !important';
+        } else {
+            biesearch[0].style.display = d0;
+        }
     }
-};
-var navbarWidthCheck = function() {
-    _navbarWidthCheck();
 
-    //recheck because _navbarWidthCheck() can expand the menu
+    _navbarWidthCheckFinish()
+};
+
+var _navbarWidthCheckFinish = function() {
+    var menu = $('#login-buttons');
+    var menuDrop = $('#login-buttons-dropdown');
+
+    var logoDrop = $('#logo-dropdown');
+
+    var biesearch = $('#biesearch-top');
+    var biesearchDrop = $('#biesearch-dropdown');
+
+    if (biesearch[0].style.display == "none" || getComputedStyle($('#bs-example-navbar-collapse-1')[0]).display == "none") {
+        biesearchDrop[0].style.display = "";
+    } else {
+        biesearchDrop[0].style.display = "none";
+    }
+
+    if (getComputedStyle($('#bs-example-navbar-collapse-1')[0]).display == "none") {
+        menuDrop[0].style.display = "";
+        logoDrop[0].style.display = "";
+    } else {
+        menuDrop[0].style.display = "none";
+        logoDrop[0].style.display = "none";
+    }
+
+    if (menu.height() > 60) {
+        _navbarWidthCheck();
+    }
+
+    var headerHeight = getComputedStyle($('.navbar-default')[0]).height.replace("px","").replace("auto", "0");
+    $("#map").height($(window).height() - headerHeight);
+    // $("#legend").height($(window).height() - headerHeight - 210);
+    $("body")[0].style.paddingTop = headerHeight + "px";
+    $("#defaultPanel").height($(window).height() - headerHeight - 20 - getComputedStyle($('#spMenu')[0]).height.replace("px","").replace("auto", "0"));
+};
+
+var navbarWidthCheck = function() {
     _navbarWidthCheck();
 };
 
@@ -34,7 +89,7 @@ $(function(){
     $( window ).resize(function() {
         navbarWidthCheck();
     });
-    setTimeout(navbarWidthCheck, 100);
+    setTimeout(navbarWidthCheck, 10);
 
     var autocompleteUrl = 'https://bie.ala.org.au/ws/search/auto.jsonp';
 
@@ -43,14 +98,14 @@ $(function(){
     }
 
     // autocomplete on navbar search input
-    $("input.general-search").autocomplete();
-    $("input.general-search").autocomplete({
+    $("input#biesearch").autocomplete();
+    $("input#biesearch").autocomplete({
         source: function( request, response ) {
             $.ajax( {
                 url: autocompleteUrl,
                 dataType: "jsonp",
                 data: {
-                    term: request.term
+                    q: request.term
                 },
                 extraParams: {limit: 100},
                 success: function( data ) {

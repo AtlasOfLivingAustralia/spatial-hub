@@ -1,6 +1,6 @@
 (function (angular) {
     'use strict';
-    angular.module('google-places', []).directive('googlePlaces', function () {
+    angular.module('google-places-directive', []).directive('googlePlaces', function () {
         return {
             restrict: 'E',
             replace: true,

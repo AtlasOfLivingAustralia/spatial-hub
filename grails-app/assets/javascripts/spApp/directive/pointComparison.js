@@ -12,12 +12,17 @@
                         scope.points = [];
                         scope.comparison = [];
 
+                        scope.header = [];
+                        scope.searchText = { name: '' };
+
                         scope.exportUrl = null;
                         scope.csv = null;
 
                         scope.statusUrl = null;
 
                         scope.placingMarker = false;
+
+                        scope.searching = false;
 
                         scope.cancel = function () {
                             scope.deleteDrawing();
@@ -57,6 +62,9 @@
                         };
 
                         scope.compare = function () {
+
+                            scope.searching = true;
+
                             var points = '';
                             $.map(scope.points, function (p) {
                                 if (points.length > 0)
@@ -93,12 +101,10 @@
 
                                             var csv = $.csv.toArrays(response.data)
 
-                                            var header = [];
+                                            scope.header = [];
                                             $.map(csv, function (row) {
-                                                header.push(row[0] + ' ' + row[1])
+                                                scope.header.push(row[0] + ' ' + row[1])
                                             });
-
-                                            scope.comparison.push(header);
 
                                             for (var i = 2; i < csv[0].length; i++) {
                                                 var row = [Messages.get('facet.' + csv[0][i], csv[0][i])];
@@ -108,8 +114,11 @@
                                                 scope.comparison.push(row);
                                             }
 
-                                            var blob = new Blob([$.csv.fromArrays(scope.comparison)], {type: 'text/plain'});
+                                            var blob = new Blob([$.csv.fromArrays([scope.header]) +
+                                                $.csv.fromArrays(scope.comparison)], {type: 'text/plain'});
                                             scope.exportUrl = (window.URL || window.webkitURL).createObjectURL(blob);
+
+                                            scope.searching = false;
                                         });
                                     } else {
                                         $timeout(scope.checkStatus(), 2000)
@@ -125,13 +134,15 @@
                         $rootScope.$on('setWkt', function (event, data) {
                             if (data[0] === 'point') {
                                 //points must be layer intersected
-                                data[1] = data[1].toFixed(3);
-                                data[2] = data[2].toFixed(3);
+                                data[1] = parseFloat(data[1]).toFixed(3);
+                                data[2] = parseFloat(data[2]).toFixed(3);
 
                                 scope.points.push(data);
                                 scope.update();
                             }
-                        })
+                        });
+
+                        scope.addMarker();
                     }
                 }
             }])

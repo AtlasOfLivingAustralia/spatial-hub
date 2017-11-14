@@ -9,7 +9,8 @@
                     scope: {
                         _selectedArea: '=selectedArea',
                         _includeDefaultAreas: '=includeDefaultAreas',
-                        _uniqueId: '=uniqueId'
+                        _uniqueId: '=uniqueId',
+                        _defaultToWorld: '=?defaultToWorld'
                         // ,
                         // maxAreas: '=maxAreas',
                         // minAreas: '=minAreas'
@@ -52,7 +53,7 @@
                         }
 
                         scope.createArea = function () {
-                            LayoutService.openModal('addArea', {display: {size: 'sm'}}, true);
+                            LayoutService.openModal('addArea');
                         };
 
                         function selectPredefinedArea(uid) {
@@ -73,10 +74,12 @@
                                     scope.selected = scope._selectedArea.area[0].uid
                                 } else {
                                     if (scope.defaultAreas.length > 0) {
+                                        var defaultArea = scope.defaultAreas[0];
+                                        if (scope._defaultToWorld) defaultArea = scope.defaultAreas[scope.defaultAreas.length - 1];
                                         if (scope._selectedArea.area !== undefined) {
-                                            scope._selectedArea.area[0] = scope.defaultAreas[0];
+                                            scope._selectedArea.area[0] = defaultArea;
                                         } else {
-                                            scope._selectedArea = [scope.defaultAreas[0]];
+                                            scope._selectedArea = [defaultArea];
                                         }
                                     }
 

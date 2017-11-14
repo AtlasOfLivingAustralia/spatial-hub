@@ -166,7 +166,7 @@
                         {
                             name: 'Area (sq km)',
                             link: 'http://www.ala.org.au/spatial-portal-help/note-area-sq-km/',
-                            linkName: 'info',
+                            linkName: 'Info',
                             value: $scope.area.area_km.toFixed(2)
                         },
                         {

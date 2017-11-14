@@ -123,10 +123,14 @@
                 facetGeneral: function (facet, query, pageSize, offset, config) {
                     return this.registerQuery(query).then(function (response) {
                         return $http.get(query.bs + "/occurrence/facets?facets=" + facet + "&flimit=" + pageSize + "&foffset=" + offset + "&q=" + response.qid, config).then(function (response) {
-                            $.map(response.data[0].fieldResult, function (v, k) {
-                                v.displaylabel = Messages.get(facet + '.' + v.label, v.label ? v.label : "")
-                            });
-                            return response.data;
+                            if (response.data && response.data[0] && response.data[0].fieldResult) {
+                                $.map(response.data[0].fieldResult, function (v, k) {
+                                    v.displaylabel = Messages.get(facet + '.' + v.label, v.label ? v.label : "")
+                                });
+                                return response.data;
+                            } else {
+                                return []
+                            }
                         });
                     })
                 },
@@ -167,16 +171,17 @@
                         if (fq !== undefined && fq !== null) data.fq = fq;
                         if (query.wkt !== undefined && query.wkt !== null && query.wkt.length > 0) data.wkt = query.wkt;
 
-                        if(((data.fq === undefined || data.fq === null || data.fq.length === 0) &&
-                            (data.wkt === undefined || data.wkt === null || data.wkt.length === 0))) {
-                            query.qid = data.q;
-                            return $q.when(query)
-                        } else {
+                        //TODO: biocache wms request is failing for q=lsid:... when ENV contains a "sel" value. Do not set query.qid=data.q
+                        // if(((data.fq === undefined || data.fq === null || data.fq.length === 0) &&
+                        //     (data.wkt === undefined || data.wkt === null || data.wkt.length === 0))) {
+                        //     query.qid = data.q;
+                        //     return $q.when(query)
+                        // } else {
                             return $http.post("portal/q", data).then(function (response) {
                                 query.qid = 'qid:' + response.data.qid;
                                 return query
                             });
-                        }
+                        // }
                     }
                 },
                 registerParam: function (bs, q, fq, wkt) {

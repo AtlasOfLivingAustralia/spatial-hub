@@ -1,3 +1,5 @@
+import au.org.ala.admin.AlaAdminController
+
 class UrlMappings {
 
     static mappings = {
@@ -7,6 +9,8 @@ class UrlMappings {
                 // apply constraints here
             }
         }
+
+        "/admin"(controller:AlaAdminController, action:"/index")
 
         "/"(controller: "portal", action: "/index")
         "500"(view: '/error')

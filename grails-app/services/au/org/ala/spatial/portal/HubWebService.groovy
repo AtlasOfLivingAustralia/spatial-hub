@@ -111,6 +111,10 @@ class HubWebService {
         }
     }
 
+    def excludedHeaders = org.apache.http.HttpHeaders.fields.collect( { it ->
+        it.name.toLowerCase() as Set
+    })
+
     Map urlResponse(String type, String url, Map nameValues = null, Map headers = null,
                     RequestEntity entity = null, Boolean doAuthentication = null) {
 
@@ -162,7 +166,9 @@ class HubWebService {
 
             if (headers) {
                 headers.each { k, v ->
-                    call.addRequestHeader(String.valueOf(k), String.valueOf(v))
+                    if (!excludedHeaders.contains(k)) {
+                        call.addRequestHeader(String.valueOf(k), String.valueOf(v))
+                    }
                 }
             }
 

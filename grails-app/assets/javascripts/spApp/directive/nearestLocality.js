@@ -9,6 +9,16 @@
                     templateUrl: '/spApp/nearestLocalityContent.htm',
                     link: function (scope, iElement, iAttrs) {
                         scope.name = 'nearestLocalityCtrl';
+                        scope.searching = false;
+
+                        scope.point = {
+                            longitude: 0,
+                            latitude: 0
+                        };
+
+                        scope.defaultLabel = 'Click on the map to set the point.';
+
+                        scope.pointLabel = scope.defaultLabel;
 
                         scope.enableDrawing = function () {
                             scope.pointLabel = scope.defaultLabel;
@@ -65,15 +75,6 @@
                             MapService.leafletScope.deleteDrawing()
                         };
 
-                        scope.point = {
-                            longitude: 0,
-                            latitude: 0
-                        };
-
-                        scope.defaultLabel = 'click on the map to set the point';
-
-                        scope.pointLabel = scope.defaultLabel;
-
                         $rootScope.$on('setWkt', function (event, data) {
                             if (data[0] === 'point') {
                                 //points must be layer intersected
@@ -83,12 +84,28 @@
                                 var url = $SH.layersServiceUrl + "/objects/" + $SH.gazField + "/" +
                                     scope.point.latitude + "/" + scope.point.longitude + "?limit=10";
 
-                                scope.pointLabel = 'searching point... ' + scope.point.longitude.toFixed(3) + ' ' + scope.point.latitude.toFixed(3);
+                                scope.pointLabel = '';
+                                scope.searching = true;
 
                                 $http.get(url).then(function (response) {
                                     scope.points = response.data;
                                     scope.showWkt();
-                                    scope.pointLabel = 'point ' + scope.point.longitude.toFixed(3) + ' ' + scope.point.latitude.toFixed(3)
+                                    scope.searching = false;
+
+                                    var rows = "";
+                                    for (var i=0;i<scope.points.length;i++) {
+                                        var p = scope.points[i];
+                                        rows += "\n\"" + p.name.replace("\"", "\\\"") + "\"," + p.geometry + "," + p.distance + "," + p.degrees
+                                    }
+
+                                    var header = "Longitude," + scope.point.longitude + "\n" +
+                                        "Latitude," + scope.point.latitude + "\n\n" +
+                                        "Feature,Location,Distance (km),Heading (deg)";
+                                    var blob = new Blob([header + rows], {type: 'text/plain'});
+                                    scope.exportUrl = (window.URL || window.webkitURL).createObjectURL(blob);
+                                }, function(response) {
+                                    scope.searching = false;
+                                    scope.pointLabel = "Error"
                                 });
                             }
                         })

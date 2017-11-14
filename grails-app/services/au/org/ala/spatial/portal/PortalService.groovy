@@ -64,19 +64,24 @@ class PortalService {
         grailsApplication.config.invasiveQ = invasiveQ
     }
 
-    @Cacheable('viewConfigCache')
-    def getViewConfig() {
-        def viewConfig
-        def defaultFile = 'view-config.json'
-        def file = new File((String) grailsApplication.config.viewConfig?.json)
+    @Cacheable('configCache')
+    def getConfig(type, showDefault) {
+        def config
+        def defaultFile = type + '-config.json'
+        def file = new File((String) grailsApplication.config[type + "Config"]?.json)
 
         if (file.exists()) {
-            viewConfig = JSON.parse(new FileReader(file))
+            config = JSON.parse(new FileReader(file))
         } else {
-            def text = PortalController.classLoader.getResourceAsStream(defaultFile).text
-            viewConfig = JSON.parse(text)
+            def filename = grailsApplication.config[type + "Config"]?.json?:defaultFile
+            file = new File("/data/spatial-hub/config/" + filename)
+            if (!showDefault && file.exists()) {
+                config = JSON.parse(new FileReader(file))
+            } else {
+                def text = PortalController.classLoader.getResourceAsStream(defaultFile).text
+                config = JSON.parse(text)
+            }
         }
-        viewConfig
+        config
     }
-
 }

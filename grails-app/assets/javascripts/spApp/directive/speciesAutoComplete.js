@@ -13,10 +13,11 @@
                                 response($.map(data.searchResults.results, function (item, idx) {
                                     var distributions = item.distributionsCount > 0 ? '+' + item.distributionsCount + ' expert distribution(s)' : '';
                                     var checklists = item.checklistsCount > 0 ? '+' + item.checklistsCount + ' checklist(s)' : '';
+                                    var tracks = item.tracksCount > 0 ? '+' + item.tracksCount + ' track(s)' : '';
                                     return {
                                         label: item.name,
                                         info: item.rank + (item.commonNameSingle ? ' ' + item.commonNameSingle : ' ') +
-                                        ' - ' + item.occCount + ' found' + distributions + checklists,
+                                        ' - ' + item.occCount + ' found' + distributions + checklists + tracks,
                                         value: item
                                     }
                                 }))

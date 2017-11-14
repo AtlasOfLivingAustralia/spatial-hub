@@ -9,7 +9,7 @@ grails.project.source.level = 1.7
 //grails.plugin.location.'ala-charts-plugin' = '../ala-charts-plugin'
 //grails.plugin.location.'downloads-plugin' = '../downloads-plugin'
 
-grails.server.port.http = 8081
+grails.server.port.http = 8082
 
 grails.project.war.file = "target/${appName}-${appVersion}.war"
 

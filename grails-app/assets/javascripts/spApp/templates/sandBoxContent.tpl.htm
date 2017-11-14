@@ -1,5 +1,6 @@
 <div class="modal-header">
-    <h3 class="modal-title">Import points</h3>
+    <button type="button" class="close" ng-click="$close()">×</button>
+    <h4 class="modal-title">Import points</h4>
 </div>
 
 <div class="modal-body">
@@ -269,8 +270,8 @@
                                              is-open="processedRecord.isOpen">
                             <uib-accordion-heading>
                                 <span ng-bind="preview.processedRecordHeader(processedRecord)"></span><i
-                                    class="pull-right fa fa-chevron-right animate"
-                                    ng-class="{'fa-rotate-90': processedRecord.isOpen }"></i>
+                                    class="pull-right glyphicon glyphicon-chevron-right animate"
+                                    ng-class="{'glyphicon-chevron-down': processedRecord.isOpen, 'glyphicon-chevron-right': !processedRecord.isOpen }"></i>
                             </uib-accordion-heading>
                             <table class="table">
                                 <thead>
@@ -329,5 +330,5 @@
 </div>
 
 <div class="modal-footer">
-    <button class="btn btn-primary" type="button" ng-click="$close()">Close</button>
+    <button class="btn btn-default" type="button" ng-click="$close()">Close</button>
 </div>
