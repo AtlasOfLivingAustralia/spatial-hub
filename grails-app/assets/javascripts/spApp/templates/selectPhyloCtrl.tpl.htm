@@ -1,13 +1,14 @@
 <uib-progressbar ng-show="loading" class="progress-striped"
-                 ng-class="{ active: true }" value="100" type='info' title="Updating">loading...</uib-progressbar>
+                 ng-class="{ active: true }" value="100" type='info' title="Updating"><span i18n="47">Loading...</span>
+</uib-progressbar>
 
 <table class="table table-striped" ng-if="!loading">
     <thead>
     <td></td>
-    <td>Group</td>
-    <td># Leaves</td>
-    <td>Study name</td>
-    <td>Study Id</td>
+    <td i18n="233">Group</td>
+    <td i18n="234"># Leaves</td>
+    <td i18n="235">Study name</td>
+    <td i18n="236">Study Id</td>
     </thead>
     <tbody>
     <tr ng-repeat="tree in trees">

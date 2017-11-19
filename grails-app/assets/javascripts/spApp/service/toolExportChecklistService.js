@@ -4,6 +4,8 @@
         .factory("ToolExportChecklistService", ["$http", "$q", "MapService", "BiocacheService", "LayoutService",
             function ($http, $q, MapService, BiocacheService, LayoutService) {
             return {
+
+                // Override text with view-config.json
                 spec: {
                     "input": [
                         {

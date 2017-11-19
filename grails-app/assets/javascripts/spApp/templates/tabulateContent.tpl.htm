@@ -1,28 +1,29 @@
 <div class="modal-header">
-    <div class="modal-title">Tabulate</div>
+    <div i18n="269" class="modal-title">Tabulate</div>
 </div>
 
 <div class="modal-body">
     <div class="container" >
-        <uib-progressbar  ng-show="loading" class="progress-striped" ng-class="{ active: true }" ng-show="updating"
-                          value="100"
-                          type='info' title="Updating">loading...</uib-progressbar>
+        <uib-progressbar ng-show="loading" class="progress-striped" ng-class="{ active: true }" ng-show="updating"
+                         value="100"
+                         type='info' title="Updating"><span i18n="270">Loading..</span>.
+        </uib-progressbar>
 
         <div ng-hide="loading">
-            Select layers for tabulation.
+            <span i18n="271">Select layers for tabulation.</span>
             <br/>
             <br/>
-            <span style="width:100px;display:inline-block">Layer 1</span>
+            <span i18n="272" style="width:100px;display:inline-block">Layer 1</span>
             <select ng-model="layer1" style="font-size: 12px; width: 400px" >
                 <option ng-repeat="x in tlayers | orderBy:'name'" ng-value="x.id">{{x.name}}</option>
             </select>
             <br/><br/>
-            <span style="width:100px;display:inline-block">Layer 2</span>
+            <span i18n="273" style="width:100px;display:inline-block">Layer 2</span>
             <select ng-model="layer2" style="font-size: 12px; width: 400px" >
                 <option ng-repeat="x in tlayers | orderBy:'name'" ng-value="x.id">{{x.name}}</option>
             </select>
             <br/><br/>
-            <span style="width:100px;display:inline-block">Type</span>
+            <span i18n="274" style="width:100px;display:inline-block">Type</span>
             <select ng-model="type">
                 <option ng-repeat="x in types" ng-value="x">{{x}}</option>
             </select>
@@ -33,6 +34,7 @@
 </div>
 
 <div class="modal-footer">
-    <button class="btn" type="button" ng-click="$close()">Cancel</button>
-    <button class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="isDisabled()">Next &gt;</button>
+    <button i18n="45" class="btn" type="button" ng-click="$close()">Cancel</button>
+    <button i18n="39" class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="isDisabled()">Next &gt;
+    </button>
 </div>

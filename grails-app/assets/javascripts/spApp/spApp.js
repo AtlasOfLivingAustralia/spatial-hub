@@ -34,9 +34,9 @@ function fetchData() {
     var promises = [];
 
     var gLayerDistances = {};
-    var gLang = {};
+    var gMessages = {};
     spApp.constant("gLayerDistances", gLayerDistances);
-    spApp.constant("gLang", gLang);
+    spApp.constant("gMessages", gMessages);
 
     var distancesUrl = $SH.layersServiceUrl + "/layerDistances/layerdistancesJSON";
     $http.get($SH.proxyUrl + "?url=" + encodeURIComponent(distancesUrl)).then(function (response) {
@@ -47,11 +47,20 @@ function fetchData() {
 
     promises.push($http.get($SH.baseUrl + "/portal/i18n?lang=" + $SH.i18n).then(function (result) {
         for (k in result.data) {
-            gLang[k] = result.data[k]
+            gMessages[k] = result.data[k]
+        }
+        $SH.gMessages = gMessages
+        $i18n = function (k) {
+            var key = ("" + k).replace(" ", "_")
+            if ($SH.gMessages[key] !== undefined) {
+                return $SH.gMessages[key]
+            } else {
+                return k
+            }
         }
     }));
 
-    //add to promises if waiting is required
+    // add to promises list if waiting is required before making the page visible
     return $q.all(promises).then(function (results) {
     });
 }
@@ -136,7 +145,6 @@ spApp.config(['$compileProvider',
     }]);
 
 resizeSouth = function(a,b,c) {
-    console.log('resize south');
     $('.ui-layout-resizer')[0].style.marginBottom = '-40px';
     $('.ui-layout-resizer')[0].style.minHeight = '40px';
     $('.ui-layout-resizer')[0].style.background = 'transparent';
@@ -172,6 +180,11 @@ $(window).on("resize", function () {
     setTimeout(function() {
         //$('#left-panel')[0].style.overflowY = "scroll";
         $('#left-panel')[0].style.maxHeight = $('#map').height() + "px";
+
+        setTimeout(function () {
+            $SH.defaultPaneResizer.resizeAll();
+            $SH.defaultPaneResizer.hide('south');
+        }, 100);
     }, 100)
 }).trigger("resize");
 
@@ -190,14 +203,14 @@ $resizeTables = function () {
     //     });
     // })
 };
-
-$(window).resize(function () {
-    $resizeTables()
-    setTimeout( function() {
-        $SH.defaultPaneResizer.resizeAll();
-        $SH.defaultPaneResizer.hide('south');
-    }, 100);
-}).resize(); // Trigger resize handler
+//
+// $(window).resize(function () {
+//     $resizeTables()
+//     setTimeout( function() {
+//         $SH.defaultPaneResizer.resizeAll();
+//         $SH.defaultPaneResizer.hide('south');
+//     }, 100);
+// }).resize(); // Trigger resize handler
 
 jQuery.ui.autocomplete.prototype._resizeMenu = function () {
     var ul = this.menu.element;

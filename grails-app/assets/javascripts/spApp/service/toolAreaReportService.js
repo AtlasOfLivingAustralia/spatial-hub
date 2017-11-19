@@ -3,10 +3,12 @@
     angular.module('tool-area-report-service', [])
         .factory("ToolAreaReportService", ["$http", "$q", "MapService", "LayoutService", function ($http, $q, MapService, LayoutService) {
             return {
+
+                // Override text with view-config.json
                 spec: {
                     "input": [
                         {
-                            "description": "Select area.",
+                            "description": $i18n("Select area."),
                             "type": "area",
                             "constraints": {
                                 "min": 1,
@@ -14,7 +16,7 @@
                                 "optional": false
                             }
                         }],
-                        "description": "Area Report"
+                    "description": $i18n("Area Report")
                     },
 
                 execute: function (inputs) {

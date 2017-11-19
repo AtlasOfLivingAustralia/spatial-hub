@@ -25,7 +25,6 @@
                         scope.enableDrawing = function () {
                             if (scope.deleteDrawing)
                                 scope.deleteDrawing();
-
                             if (scope.type === 'drawBoundingBox') {
                                 scope.typeName = 'rectangle';
                                 scope.addBox()
@@ -109,7 +108,7 @@
                                 scope.wkt = scope.selectedArea.wkt;
                                 scope.q = scope.selectedArea.q;
                                 if (scope.selectedArea.wkt !== undefined && scope.selectedArea.wkt.length > 0) {
-                                    LayersService.createFromWkt(scope.selectedArea.wkt, scope.areaName, 'description').then(function (data) {
+                                    LayersService.createFromWkt(scope.selectedArea.wkt, scope.areaName, '').then(function (data) {
                                         LayersService.getObject(data.data.id).then(function (data) {
                                             data.data.layertype = 'area';
                                             data.data.wkt = scope.wkt;
@@ -183,7 +182,7 @@
                         scope.stopDrawing = function () {
                             var a = $('.leaflet-draw-actions a');
                             for (var i = 0; i < a.length; i++) {
-                                if (a[i].title === 'Cancel drawing') {
+                                if (a[i].title === $i18n('Cancel drawing')) {
                                     a[i].click()
                                 }
                             }

@@ -36,7 +36,6 @@
         geoserverUrl: '${config.geoserver.url}',
         collectionsUrl: '${config.collections.url}',
         userObjectsField: '${config.userObjectsField}',
-        gazField: '${config.gazField}',
         userId: '${userId}',
         hoverLayers: [],
         proxyUrl: '${createLink(controller: 'portal', action: 'proxy')}',
@@ -73,7 +72,8 @@
             '${config.collections.url}/**',
             '${config.phylolink.url}/**'
         ],
-        i18n: '${config.i18n?.region?:"default"}'
+        i18n: '${config.i18n?.region?:"default"}',
+        editable: ${params.edit?:'false'}
     };
 
     BIE_VARS = {

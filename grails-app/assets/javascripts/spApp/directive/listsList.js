@@ -46,15 +46,9 @@
 
                         ListsService.list().then(function (data) {
                             scope.setItems(data);
-                            $timeout(function () {
-                                $resizeTables()
-                            }, 200)
                         });
 
                         scope.$watch('searchLists', function () {
-                            $timeout(function () {
-                                $resizeTables()
-                            }, 200)
                         }, true);
 
                         scope.selection = {};

@@ -25,7 +25,7 @@
                         $http.post("portal/ping?sessionId=" + $SH.sessionId, data).then(function (response) {
                             $timeout(ping, $SH.keepAliveTimeout)
                         }, function (response) {
-                            bootbox.confirm("A problem was detected. Click OK to retry or Cancel to ignore.",
+                            bootbox.confirm($i18n("A problem was detected. Click OK to retry or Cancel to ignore."),
                                 function (result) {
                                     if (result) {
                                         SessionsService.saveAndLogin(SessionsService.current());

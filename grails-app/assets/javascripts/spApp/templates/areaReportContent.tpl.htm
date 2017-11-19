@@ -1,23 +1,23 @@
 <div class="modal-header">
-    <button type="button" class="close" ng-click="$close()">×</button>
-    <h4 class="modal-title">Area report - {{area.name}}</h4>
+    <button i18n="1" type="button" class="close" ng-click="$close()">×</button>
+    <h4 class="modal-title"><span i18n="46">Area report&nbsp;-&nbsp;</span>{{area.name}}</h4>
 </div>
 
 <div class="modal-body">
     <uib-progressbar class="progress-striped active" ng-show="items === undefined || items.length == 0"
-                     value="100" type='info' title="Updating">Loading...</uib-progressbar>
+                     value="100" type='info' title="Updating"><span i18n="47">Loading...</span></uib-progressbar>
 
         <table class="table table-striped">
             <tbody >
             <tr ng-repeat="item in items">
                 <td style="width:250px;vertical-align: middle;">{{item.name}}</td>
                 <td style="text-align:right;width:80px;vertical-align: middle;" ng-switch="item.value">
-                    <i ng-switch-when="" style="width:16px" class="species-spinner">&nbsp;</i>
-                    <span ng-switch-default>{{item.value}}</span>
+                    <i ng-switch-when="" style="width:16px" class="species-spinner"></i>
+                    <span ng-switch-default>&nbsp;{{item.value}}</span>
                 </td>
                 <td style="width:70px">
                     <div class="btn-group btn-group-xs">
-                        <button style="float:right;"
+                        <button i18n="48" style="float:right;"
                                 ng-show="item.query !== undefined && (item.occurrences === undefined || !item.occurrences) && item.value !== 0"
                                 class="btn btn-default" ng-click="list(item)">List
                         </button>
@@ -25,7 +25,7 @@
                 </td>
                 <td style="width:70px">
                     <div class="btn-group btn-group-xs">
-                        <button style="float:right;"
+                        <button i18n="49" style="float:right;"
                                 ng-show="item.query !== undefined && (item.map === undefined || item.map) && item.value !== 0"
                                 class="btn btn-default"
                                 ng-click="map($event, item)">Map all
@@ -34,7 +34,7 @@
                 </td>
                 <td style="width:70px">
                     <div class="btn-group btn-group-xs">
-                        <button style="float:right;"
+                        <button i18n="50" style="float:right;"
                                 ng-show="item.query !== undefined && (item.map === undefined || item.map) && item.value !== 0"
                                 class="btn btn-default"
                                 ng-click="sample(item)">Sample
@@ -45,17 +45,17 @@
                         ng-show="item.query !== undefined && (item.occurrences === undefined || item.occurrences) && item.value !== 0"
                         target="_blank"
                         href="{{item.query.ws}}/occurrences/search?q={{item.query.qid}}&fq={{item.extraQ.join('&fq=')}}">View
-                    Records<br/></a>
+                    Records</a><br/>
                     <a ng-show="item.link" target="_blank" href="{{item.link}}">{{item.linkName}}</a></td>
             </tr>
             </tbody>
         </table>
         <a download="{{area.name}}-area-report"
            ng-href="{{exportUrl}}" ng-disabled="exportUrl == null">
-            <i class="glyphicon glyphicon-download-alt"></i>Download
+            <i class="glyphicon glyphicon-download-alt"></i><span i18n="51">Download</span>
         </a>
 </div>
 
 <div class="modal-footer">
-    <button class="btn btn-primary" type="button" ng-click="$close()">Close</button>
+    <button i18n="38" class="btn btn-primary" type="button" ng-click="$close()">Close</button>
 </div>

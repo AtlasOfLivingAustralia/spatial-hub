@@ -18,7 +18,7 @@
                                     })
                                 }
                                 list.unshift({
-                                    title: "Other",
+                                    title: $i18n("Other"),
                                     facets: dynamicList
                                 })
                             }

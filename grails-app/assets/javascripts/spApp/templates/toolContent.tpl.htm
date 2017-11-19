@@ -1,6 +1,6 @@
 
 <div class="modal-header">
-    <button type="button" class="close" ng-click="close()">×</button>
+    <button i18n="1" type="button" class="close" ng-click="close()">×</button>
     <h4 class="modal-title">{{spec.description}}</h4>
 </div>
 
@@ -116,7 +116,8 @@
                     </div>
                     <div class="panel-body" ng-show="isLocalTask()">
                         <uib-progressbar class="progress-striped active"
-                               value="100" type='info' title="Updating">Loading...</uib-progressbar>
+                                         value="100" type='info' title="Updating"><span i18n="47">Loading...</span>
+                        </uib-progressbar>
                     </div>
                 </div>
             </form>
@@ -125,15 +126,13 @@
 </div>
 
 <div class="modal-footer">
-    <button class="btn btn-default" type="button" ng-click="close()">Cancel</button>
-    <!--<button class="btn" type="button" ng-click="back()" ng-disabled="step == 1 || step > stepsActual">&lt;-->
-        <!--Back-->
-    <!--</button>-->
+    <button i18n="45" class="btn btn-default" type="button" ng-click="close()">Cancel</button>
     <button class="btn btn-primary" type="button" ng-click="ok()" ng-hide="finished" ng-disabled="isDisabled() || step > stepsActual">Next &gt;</button>
 
     <a download ng-href="{{downloadUrl}}" style="float:left" ng-show="finished && downloadUrl != ''">
-        <i class="glyphicon glyphicon-download-alt"></i>Download Result
+        <i class="glyphicon glyphicon-download-alt"></i><span i18n="275">Download Result</span>
     </a>
 
-    <button class="btn btn-primary" type="button" ng-click="close()" ng-show="finished">Finished &gt;</button>
+    <button i18n="276" class="btn btn-primary" type="button" ng-click="close()" ng-show="finished">Finished &gt;
+    </button>
 </div>

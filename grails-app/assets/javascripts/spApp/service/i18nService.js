@@ -1,20 +1,26 @@
 (function (angular) {
     'use strict';
     angular.module('i18n-service', [])
-        .factory("i18nService", ["$http", "gLang", function ($http, gLang) {
-            var map = gLang
+        .factory("i18nService", ["$http", "gMessages", function ($http, gMessages) {
+            var map = gMessages;
 
             var object = {
+                map: map,
                 v: function(k) {
-                    return map[k.replace(" ", "_")]
+                    var key = ("" + k).replace(" ", "_");
+                    if (map[key] !== undefined) {
+                        return map[key]
+                    } else {
+                        return k
+                    }
                 },
                 set: function (k, v) {
-                    k = k.replace(" ", "_");
+                    k = ('' + k).replace(" ", "_");
 
                     map[k] = v;
                 },
                 commit: function (k, v) {
-                    k = k.replace(" ", "_");
+                    k = ('' + k).replace(" ", "_");
 
                     map[k] = v;
 

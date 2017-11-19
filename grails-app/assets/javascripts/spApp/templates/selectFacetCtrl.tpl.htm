@@ -1,5 +1,5 @@
 <div>
-    <label style=";width:70px">Facet</label>
+    <label i18n="127" style=";width:70px">Facet</label>
     <select style=";width:300px" id='facet' ng-model="facet"
             ng-change="resetFacet()">
         <option ng-repeat="x in facets" value="{{x.facet}}"
@@ -12,17 +12,17 @@
 <div style="height:320px;overflow: hidden;" ng-show="updating || facetList.length == 0">
     <uib-progressbar class="progress-striped" ng-class="{ active: true }" ng-show="updating"
                      value="100"
-                     type='info' title="Updating">loading...</uib-progressbar>
+                     type='info' title="Updating"><span i18n="47">Loading...</span></uib-progressbar>
 </div>
 
 <div ng-hide="updating || facetList.length == 0" style="height:320px">
     <hr/>
     <input style="width:200px" type="text" ng-model="facetFilter"/>
     <div class="btn-group btn-group-xs">
-        <button ng-click="offset = 0; updatePage()" class="btn btn-default">
+        <button i18n="141" ng-click="offset = 0; updatePage()" class="btn btn-default">
             apply filter
         </button>
-        <button ng-click="clearFilter()" class="btn btn-default">clear filter
+        <button i18n="129" ng-click="clearFilter()" class="btn btn-default">clear filter
         </button>
     </div>
 
@@ -32,7 +32,7 @@
                                           ng-change="applySelection()"></td>
             <td style="width:330px;display: block;word-wrap:break-word;">{{x.displaylabel}}</td>
             <td style="width:100px">{{x.count}}</td>
-            <td style="background-color:#{{formatColor(x)}};width:20px">&nbsp</td>
+            <td i18n="130" style="background-color:#{{formatColor(x)}};width:20px">&nbsp</td>
         </tr>
     </table>
 
@@ -44,10 +44,10 @@
 
     <div class="btn-group btn-group-xs">
         <button ng-click="previousPage()" class="btn btn-default" ng-disabled="offset == 0">
-            <span aria-hidden="true">«</span>
+            <span i18n="110" aria-hidden="true">«</span>
         </button>
         <button ng-click="nextPage()" class="btn btn-default" ng-disabled="offset + pageSize >= max">
-            <span aria-hidden="true">»</span>
+            <span i18n="111" aria-hidden="true">»</span>
         </button>
     </div>
     <span>Page {{(offset / pageSize) + 1}} of {{maxPages}}</span>
@@ -55,7 +55,7 @@
     <div style="float:right">
         <span style="color:red">{{selection.length}} facets selected</span>
         <div class="btn-group btn-group-xs" >
-            <button ng-click="clearSelection()" class="btn btn-default">Clear selection</button>
+            <button i18n="120" ng-click="clearSelection()" class="btn btn-default">Clear selection</button>
         </div>
     </div>
 </div>

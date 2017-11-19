@@ -14,7 +14,7 @@
 
                 $scope['delete'] = function (sessionId) {
                     bootbox.confirm({
-                        message: "Delete this session?",
+                        message: $i18n("Delete this session?"),
                         size: 'small',
                         callback: function (result) {
                             if (result) {
@@ -35,16 +35,10 @@
                 $scope.getList = function () {
                     SessionsService.list().then(function (data) {
                         $scope.sessions = data;
-                        $timeout(function () {
-                            $resizeTables()
-                        }, 200)
                     })
                 };
 
                 $scope.$watch('sessions', function () {
-                    $timeout(function () {
-                        $resizeTables()
-                    }, 200)
                 }, true);
 
                 $scope.getList()

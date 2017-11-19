@@ -3,7 +3,7 @@
         <table class="table fixed-head" style="table-layout:fixed;width:100%">
             <caption>
                 <div class="row">
-                    <div class="col-sm-6 margin-top-8">
+                    <div i18n="221" class="col-sm-6 margin-top-8">
                         Imported datasets
                     </div>
                     <div class="col-sm-6">
@@ -20,18 +20,18 @@
                 <th></th>
                 <th>
                     <a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
-                        Name
+                        <span i18n="151">Name</span>
                         <span ng-show="sortType == 'name' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
                         <span ng-show="sortType == 'name' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                     </a></th>
                 <th><a href="#" ng-click="sortType = 'updated'; sortReverse = !sortReverse">
-                    Last updated
+                    <span i18n="153">Last updated</span>
                     <span ng-show="sortType == 'updated' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
                     <span ng-show="sortType == 'updated' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                 </a></th>
                 <th>
                     <a href="#" ng-click="sortType = 'count'; sortReverse = !sortReverse">
-                        Number of records
+                        <span i18n="154">Number of records</span>
                         <span ng-show="sortType == 'count' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
                         <span ng-show="sortType == 'count' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                     </a></th>

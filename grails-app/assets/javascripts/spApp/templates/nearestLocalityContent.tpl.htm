@@ -2,8 +2,8 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title" style="margin-bottom: 0px">
-                <button type="button" class="close" ng-click="cancel()">×</button>
-                <div>Nearest locality</div>
+                <button i18n="1" type="button" class="close" ng-click="cancel()">×</button>
+                <div i18n="156">Nearest locality</div>
             </h3>
         </div>
         <div class="panel-body">
@@ -11,26 +11,29 @@
                 <div class="container">
                     <p style="display:inline;" ng-show="pointLabel.length > 0"><strong>{{pointLabel}}</strong></p>
                     <div class="btn-group btn-group-sm" style="float:right" ng-show="points.length > 0">
-                        <button class="btn btn-default" ng-click="enableDrawing()"
+                        <button i18n="157" class="btn btn-default" ng-click="enableDrawing()"
                                 ng-disabled="selectedArea.wkt.length == 0">Edit location
                         </button>
                     </div>
-                    <p style="" ng-hide="pointLabel.length > 0">Longitude: {{point.longitude | number : 3}}</p>
-                    <p style="" ng-hide="pointLabel.length > 0">Latitude: {{point.latitude | number : 3}}</p>
+                    <p style="" ng-hide="pointLabel.length > 0"><span i18n="158">Longitude:&nbsp;</span>{{point.longitude
+                        | number : 3}}</p>
+                    <p style="" ng-hide="pointLabel.length > 0"><span i18n="159">Latitude:&nbsp;</span>{{point.latitude
+                        | number : 3}}</p>
                 </div>
             </div>
 
             <div ng-show="searching">
                 <uib-progressbar class="progress-striped active"
-                                 value="100" type='info' title="Updating">Loading...</uib-progressbar>
+                                 value="100" type='info' title="Updating"><span i18n="47">Loading...</span>
+                </uib-progressbar>
             </div>
             <table ng-show="points.length > 0" class="table table-striped" style="width: 360px">
                 <thead>
                 <tr>
-                    <td>Feature</td>
-                    <td>Location</td>
-                    <td>Distance (km)</td>
-                    <td>Heading (deg)</td>
+                    <td i18n="160">Feature</td>
+                    <td i18n="161">Location</td>
+                    <td i18n="162">Distance (km)</td>
+                    <td i18n="163">Heading (deg)</td>
                 </tr>
                 </thead>
                 <tbody>
@@ -49,10 +52,10 @@
     <div class="modal-footer">
         <a download="nearestLocalities_{{point.longitude}}_{{point.latitude}}.csv" ng-show="points.length > 0"
            ng-href="{{exportUrl}}" ng-disabled="exportUrl == null" style="margin-right:30px">
-            <i class="glyphicon glyphicon-download-alt"></i>Download
+            <i class="glyphicon glyphicon-download-alt"></i><span i18n="51">Download</span>
         </a>
         <div class="btn-group btn-group-sm">
-            <button class="btn btn-primary" ng-click="cancel()">Close</button>
+            <button i18n="38" class="btn btn-primary" ng-click="cancel()">Close</button>
         </div>
     </div>
 </div>

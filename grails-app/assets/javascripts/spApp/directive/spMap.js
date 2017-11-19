@@ -26,7 +26,7 @@
                     };
 
                     scope.deleteAll = function () {
-                        bootbox.confirm("Delete all mapped layers?",
+                        bootbox.confirm($i18n("Delete all mapped layers?"),
                             function (result) {
                                 if (result) {
                                     var uids = [], i;

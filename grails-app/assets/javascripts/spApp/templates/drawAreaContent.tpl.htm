@@ -3,12 +3,12 @@
 
 
     <div ng-show="type == 'pointOnLayer'">
-        <span>Select or search for a contextual layer and click on the map to set the coordinates.</span>
+        <span i18n="71">Select or search for a contextual layer and click on the map to set the coordinates.</span>
         <br/>
         <table class="table table-striped">
             <tbody>
             <tr>
-                <td style="width:100px"><b>Layer</b></td>
+                <td style="width:100px"><b><span i18n="72">Layer</span></b></td>
                 <td style="height-max:200px;display:block;overflow:scroll">
                     <div ng-repeat="layer in mappedLayers">
                         <input type="radio" ng-model="layerSelected.name" ng-value="layer.uid" name="layerChoice">{{layer.name}}
@@ -29,7 +29,9 @@
             <tr>
                 <td><b>Coordinates</b></td>
                 <td>{{intersectPoint}}
-                    <button class="btn btn-default btn-xs" style="float:right" ng-click="enableDrawing()">Reset</button>
+                    <button i18n="73" class="btn btn-default btn-xs" style="float:right" ng-click="enableDrawing()">
+                        Reset
+                    </button>
                 </td>
             </tr>
             <tr>
@@ -41,22 +43,22 @@
     </div>
 
     <div ng-show="type != 'pointOnLayer'">
-        <span>Draw {{typeName}} on the map.</span>
+        <span i18n="74">Draw on the map to create the new area.</span>
         <br/>
         <br/>
-        <span>Area name&nbsp;</span><input ng-model="areaName"></input>
+        <span i18n="75">Area name&nbsp;</span><input ng-model="areaName"></input>
         <br/>
         <br/>
-        <span>WKT</span>
+        <span i18n="76">WKT</span>
         <br/>
         <textarea ng-model="selectedArea.wkt" style="width:350px;height:200px;margin-left:10px" readonly></textarea>
         <br/>
         <br/>
-        <button class="btn" ng-click="enableDrawing()"
+        <button i18n="77" class="btn" ng-click="enableDrawing()"
                 ng-disabled="selectedArea.wkt.length == 0">Delete and redraw
         </button>
     </div>
-    <button class="btn btn-primary" style="float:right;margin-right:20px;" ng-click="ok()">Next &gt;</button>
-    <button class="btn" style="float:right" ng-click="cancel()">Cancel</button>
+    <button i18n="39" class="btn btn-primary" style="float:right;margin-right:20px;" ng-click="ok()">Next &gt;</button>
+    <button i18n="45" class="btn" style="float:right" ng-click="cancel()">Cancel</button>
     <br/>
 </div>

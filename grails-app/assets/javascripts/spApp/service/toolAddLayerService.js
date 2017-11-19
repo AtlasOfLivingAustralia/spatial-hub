@@ -3,6 +3,8 @@
     angular.module('tool-add-layer-service', [])
         .factory("ToolAddLayerService", ["$http", "$q", "MapService", "LayersService", function ($http, $q, MapService, LayersService) {
             return {
+
+                // Override text with view-config.json
                 spec: {
                     "input": [
                         {

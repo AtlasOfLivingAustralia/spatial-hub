@@ -1,6 +1,6 @@
 <div class="modal-header">
-    <button type="button" class="close" ng-click="$close()">×</button>
-    <h4 class="modal-title">Import points</h4>
+    <button i18n="1" type="button" class="close" ng-click="$close()">×</button>
+    <h4 i18n="194" class="modal-title">Import points</h4>
 </div>
 
 <div class="modal-body">
@@ -9,24 +9,26 @@
             <div class="col-sm-12 col-md-12" ng-controller="PreviewCtrl as preview" ng-cloak ng-init="watchStatus()">
 
                 <h1>
-                    <small ng-show="preview.existing.uid"> Reloading {{ preview.dataResourceUid }} ({{preview.datasetName
+                    <small ng-show="preview.existing.uid"><span i18n="195">Reloading </span>{{ preview.dataResourceUid
+                        }} ({{preview.datasetName
                         }})
                     </small>
                 </h1>
 
-                <p>
+                <p i18n="196">
                     This is a sandbox environment for data uploads, to allow users to view their data with mapping &
                     analysis tools.
                 </p>
 
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h2 class="panel-title">1. Load data here</h2>
+                        <h2 i18n="197" class="panel-title">1. Load data here</h2>
                     </div>
 
                     <div class="panel-body">
                         <uib-alert type="info">
-                            <p>Please note that for the records in a data set to be effectively discoverable and able to be
+                            <p i18n="198">Please note that for the records in a data set to be effectively discoverable
+                                and able to be
                                 mapped it
                                 needs to meet a minimum set of standards. Data needs to include, at a minimum: <code>scientificName</code>
                                 /
@@ -39,15 +41,16 @@
                                 match the number
                                 of column headers (problems with this often indicate commas and/or line breaks in the
                                 fields).</p>
-                            <p>Additional fields will increase the usability of the data.</p>
+                            <p i18n="199">Additional fields will increase the usability of the data.</p>
                         </uib-alert>
                         <uib-tabset>
                             <uib-tab heading="Paste CSV" disable="preview.file && preview.fileId">
-                                <p>
+                                <p i18n="200">
                                     This tool accepts comma separated values (CSV) and tab separated data.
                                 </p>
 
-                                <p>To paste your data, click the rectangle below, and type <kbd><kbd>ctrl</kbd> +
+                                <p i18n="201">To paste your data, click the rectangle below, and type
+                                    <kbd><kbd>ctrl</kbd> +
                                     <kbd>V</kbd></kbd> (Windows)
                                     or <kbd><kbd>&#8984;</kbd> + <kbd>V</kbd></kbd> (OS X). For a large amount of data, this
                                     may take a while to parse.
@@ -65,7 +68,7 @@
                                             ng-click="preview.parseColumns()"
                                             ng-disabled="preview.parsing || preview.processingData || preview.uploading"
                                             ng-bind="preview.checkDataLabel()"></button>
-                                    <button type="button" class="btn btn-default"
+                                    <button i18n="55" type="button" class="btn btn-default"
                                             ng-click="preview.text = ''; preview.parseColumns()"
                                             ng-disabled="preview.parsing || preview.processingData || preview.uploading">
                                         Clear
@@ -73,7 +76,7 @@
                                 </div>
                             </uib-tab>
                             <uib-tab heading="Load File" disable="preview.text">
-                                <p>
+                                <p i18n="202">
                                     This is a sandbox environment for data uploads, to allow users to view their data with
                                     ALA tools.
                                     This is currently an <strong>experimental</strong> feature of the Atlas.<br/>
@@ -98,7 +101,7 @@
                                             ng-disabled="preview.parsing || preview.processingData || preview.uploading"
                                             ng-click="preview.uploadCsvFile()"
                                             ng-bind="preview.uploadCsvStatusLabel()"></button>
-                                    <button type="button" class="btn btn-default" ng-show="preview.file"
+                                    <button i18n="55" type="button" class="btn btn-default" ng-show="preview.file"
                                             ng-disabled="preview.parsing || preview.processingData || preview.uploading"
                                             ng-click="preview.file = null; preview.fileId = null; preview.parseColumns()">
                                         Clear
@@ -112,24 +115,22 @@
                 </div><!-- panel -->
                 <div class="panel panel-default" id="recognisedDataDiv" ng-show="preview.previewLoaded">
                     <div class="panel-heading">
-                        <h2 class="panel-title">2. Check our initial interpretation</h2>
+                        <h2 i18n="203" class="panel-title">2. Check our initial interpretation</h2>
                     </div>
 
                     <div class="panel-body">
-                        <p>Adjust headings that have been incorrectly matched using the text boxes.
+                        <p i18n="204">Adjust headings that have been incorrectly matched using the text boxes.
                             Fields marked in <strong>yellow</strong> havent been matched to a recognised field name
-                            (<a href="http://rs.tdwg.org/dwc/terms/" target="_blank">darwin core terms</a>).<br/>
-
-                            After adjusting, click
-                            <button type="button" class="btn btn-default"
-                                    ng-disabled="preview.processingData || preview.uploading"
-                                    ng-click="preview.getProcessedData()" ng-bind="preview.reprocessDataLabel()"></button>
-                        </p>
+                            (<a href="http://rs.tdwg.org/dwc/terms/" target="_blank">darwin core terms</a>).</p>
+                        <p i18n="205">After adjusting, click</p>
+                        <button type="button" class="btn btn-default"
+                                ng-disabled="preview.processingData || preview.uploading"
+                                ng-click="preview.getProcessedData()" ng-bind="preview.reprocessDataLabel()"></button>
 
                         <div class="well">
                             <div id="recognisedData">
                                 <div id="interpretation">
-                                    <label for="firstLineIsData">The first line is:</label>
+                                    <label i18n="206" for="firstLineIsData">The first line is:</label>
                                     <select id="firstLineIsData" name="firstLineIsData"
                                             ng-model="preview.preview.firstLineIsData"
                                             ng-change="preview.reparseColumns()"
@@ -179,17 +180,17 @@
 
                 <div class="panel panel-default" id="processSample" ng-show="preview.previewLoaded">
                     <div class="panel-heading">
-                        <h2 class="panel-title">3. Process sample & upload to sandbox</h2>
+                        <h2 i18n="207" class="panel-title">3. Process sample & upload to sandbox</h2>
                     </div>
 
                     <div class="panel-body">
                         <div id="processSampleUpload">
                             <p style="display:none;">
-                                <label for="customIndexedFields">Custom index fields</label>
+                                <label i18n="208" for="customIndexedFields">Custom index fields</label>
                                 <input type="text" name="customIndexedFields" id="customIndexedFields" value=""/>
                             </p>
 
-                            <p>
+                            <p i18n="209">
                                 The tables below display the first few records and our interpretation. The <strong>Processed
                                 value</strong>
                                 displays the results of name matching, sensitive data lookup and reverse geocoding where
@@ -209,18 +210,18 @@
                                         <span ng-repeat="validationMsg in preview.processedData.validationMessages"><br/><code>{{ validationMsg }} </code></span>
                                     </uib-alert>
                                     <div class="form-group">
-                                        <label for="datasetName" class="datasetName"><strong>Your dataset
-                                            name</strong></label>
+                                        <label i18n="210" for="datasetName" class="datasetName strong">Your dataset
+                                            name</label>
                                         <input id="datasetName" class="datasetName form-control" name="datasetName"
                                                type="text"
                                                ng-model="preview.datasetName" ng-disabled="preview.uploading"/>
                                     </div>
-                                    <button type="button" id="uploadButton" class="btn btn-primary"
+                                    <button i18n="211" type="button" id="uploadButton" class="btn btn-primary"
                                             ng-click="preview.uploadToSandbox()" ng-bind="preview.uploadToSandboxLabel()"
                                             ng-disabled="(preview.uploading || !(preview.processedData.validationMessages.length == 0))">
                                         Upload your data
                                     </button>
-                                    <button type="button" id="resetButton" class="btn btn-warning"
+                                    <button i18n="212" type="button" id="resetButton" class="btn btn-warning"
                                             ng-show="preview.existing.uid"
                                             ng-click="preview.unlinkFromExisting(); preview.uploadToSandbox();"
                                             ng-disabled="preview.uploading">Upload as a new resource instead
@@ -228,10 +229,12 @@
                                 </form>
 
                                 <div id="uploadFeedback" ng-show="preview.uploading || preview.uploadFailed">
-                                    <p ng-show="preview.uploadPercent == 0 && !preview.uploadFailed" class="uploaded">
+                                    <p i18n="213" ng-show="preview.uploadPercent == 0 && !preview.uploadFailed"
+                                       class="uploaded">
                                         Starting upload of dataset....</p>
                                     <span ng-show="preview.uploadPercent > 0 && preview.uploading < 100 && !preview.uploadFailed">Percentage completed: {{ preview.uploadPercent }}%. </span><span>STATUS: {{preview.uploadStatus}}, {{ preview.uploadDescription }}</span>
-                                    <span ng-show="preview.uploadFailed">Dataset upload <strong>failed</strong>. Please email <a
+                                    <span i18n="214"
+                                          ng-show="preview.uploadFailed">Dataset upload <strong>failed</strong>. Please email <a
                                             href="mailto:"></a> with the details of your dataset.</span>
                                 </div>
 
@@ -245,7 +248,7 @@
                                 <div id="optionsAfterDownload" ng-show="preview.uploadPercent == 100"
                                      style="margin-bottom: 0; padding-bottom: 0;">
 
-                                    <h2 style="margin-top:25px;">Next steps:</h2>
+                                    <h2 i18n="215" style="margin-top:25px;">Next steps:</h2>
 
                                     <div class="row">
                                         <div class="col-sm-12">
@@ -264,7 +267,7 @@
                 </div><!-- processSample -->
 
                 <div id="processedData" ng-show="preview.previewLoaded && preview.processedData">
-                    <p>Click to show details of processed sample records</p>
+                    <p i18n="216">Click to show details of processed sample records</p>
                     <uib-accordion close-others="true">
                         <uib-accordion-group ng-repeat="processedRecord in preview.processedData.processedRecords"
                                              is-open="processedRecord.isOpen">
@@ -292,8 +295,8 @@
                                 <tr ng-show="processedRecord.validationMessages && (processedRecord.validationMessages.length > 0)"
                                     class="error">
                                     <td colspan="3" class="error XXassertionHeader">
-                                        <span class="dataQualityHdr">Record Validation error</span>
-                                        <span class="label label-warning">Warnings {{ processedRecord.validationMessages.size() }}</span>
+                                        <span i18n="217" class="dataQualityHdr">Record Validation error</span>
+                                        <span class="label label-warning"><span i18n="218">Warnings</span> {{ processedRecord.validationMessages.size() }}</span>
                                     </td>
                                 </tr>
                                 <tr ng-repeat="vm in processedRecord.validationMessages">
@@ -301,9 +304,10 @@
                                 </tr>
                                 <tr ng-show="processedRecord.assertions" class="error">
                                     <td colspan="3" class="error XXassertionHeader">
-                                        <span class="dataQualityHdr">Data quality tests for this record</span>
-                                        <span class="label label-success">Passed {{ preview.countByQaStatus(processedRecord, 1) }}</span>
-                                        <span class="label label-warning">Warnings {{ preview.countByQaStatus(processedRecord, 0) }}</span>
+                                        <span i18n="219"
+                                              class="dataQualityHdr">Data quality tests for this record</span>
+                                        <span class="label label-success"><span i18n="220">Passed</span> {{ preview.countByQaStatus(processedRecord, 1) }}</span>
+                                        <span class="label label-warning"><span i18n="218">Warnings</span> {{ preview.countByQaStatus(processedRecord, 0) }}</span>
                                     </td>
                                 </tr>
                                 <tr ng-repeat="assertion in processedRecord.assertions">
@@ -330,5 +334,5 @@
 </div>
 
 <div class="modal-footer">
-    <button class="btn btn-default" type="button" ng-click="$close()">Close</button>
+    <button i18n="38" class="btn btn-default" type="button" ng-click="$close()">Close</button>
 </div>

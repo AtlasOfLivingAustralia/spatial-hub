@@ -3,6 +3,8 @@
     angular.module('tool-add-facet-service', [])
         .factory("ToolAddFacetService", ["$http", "$q", "MapService", "LayersService", "BiocacheService", function ($http, $q, MapService, LayersService, BiocacheService) {
             return {
+
+                // Override text with view-config.json
                 spec: {
                     "input": [
                         {
@@ -41,7 +43,7 @@
                     if (speciesOptions.spatiallyValid && speciesOptions.spatiallySuspect) q.push('geospatial_kosher:*');
                     else if (speciesOptions.spatiallyValid) q.push('geospatial_kosher:true');
                     else if (speciesOptions.spatiallySuspect) q.push('geospatial_kosher:false');
-                    var newName = "Facet";
+                    var newName = $i18n("Facet");
                     if (area.name !== undefined) newName += ' (' + area.name + ')';
                     return BiocacheService.newLayer({
                         q: q,

@@ -1,5 +1,5 @@
 <div>
-    <h5 style="float:left;width:150px;margin-top: 13px;">Time series animation</h5>
+    <h5 i18n="168" style="float:left;width:150px;margin-top: 13px;">Time series animation</h5>
     <div style="float:left;margin-top:5px;" class="btn btn-sm"
          ng-class="{active: _selected.layer.playback && _selected.layer.playback.option}" ng-click="onOptions()"
          title="Playback settings"><i
@@ -31,7 +31,7 @@
 <div ng-if="_selected.layer.playback && _selected.layer.playback.option" style="padding-top:40px">
     <div class="form-group row padding-top-5">
         <div class="col-sm-4">
-            <label>Play time series by</label>
+            <label i18n="169">Play time series by</label>
         </div>
         <div class="col-sm-8">
             <div class="btn-group" data-toggle="buttons">
@@ -39,12 +39,12 @@
                     <input type="radio" autocomplete="off"
                            ng-checked="_selected.layer.playback && _selected.layer.playback.type === 'year'"
                            value="year">
-                    Year
+                    <span i18n="170">Year</span>
                 </label>
                 <label class="btn btn-default btn-xs" ng-click="setType('month')">
                     <input type="radio" autocomplete="off"
                            ng-checked="_selected.layer.playback && _selected.layer.playback.type === 'month'"
-                           value="month"> Month
+                           value="month"><span i18n="171">Month</span>
                 </label>
             </div>
         </div>
@@ -53,7 +53,7 @@
     <div ng-if="showYear()">
         <div class="form-group row padding-top-5">
             <div class="col-sm-4">
-                <label>Year range</label>
+                <label i18n="172">Year range</label>
             </div>
             <div class="col-sm-7 padding-top-5">
                 <div ui-slider ng-model="_selected.layer.playback.yearRange" range="true"
@@ -70,7 +70,7 @@
     <div ng-show="_selected.layer.playback.type == 'month'">
         <div class="form-ggit pullroup row padding-top-5">
             <div class="col-sm-4">
-                <label>Month range</label>
+                <label i18n="173">Month range</label>
             </div>
             <div class="col-sm-7 padding-top-5">
                 <div ui-slider ng-model="_selected.layer.playback.monthRange" range="true" min="1" max="12"
@@ -85,7 +85,7 @@
 
     <div class="form-group row padding-top-5" ng-show="showYear()">
         <div class="col-sm-4">
-            <label>Increase year by</label>
+            <label i18n="174">Increase year by</label>
         </div>
         <div class="col-sm-7 padding-top-5">
             <input type="number" min="1" max="200" ng-model="_selected.layer.playback.yearStepSize">
@@ -94,7 +94,7 @@
 
     <div class="form-group row padding-top-5" ng-show="_selected.layer.playback.type == 'month'">
         <div class="col-sm-4">
-            <label>Increase month by</label>
+            <label i18n="175">Increase month by</label>
         </div>
         <div class="col-sm-7 padding-top-5">
             <input type="number" min="1" max="12" ng-model="_selected.layer.playback.monthStepSize">
@@ -103,7 +103,7 @@
 
     <div class="form-group row padding-top-5">
         <div class="col-sm-4">
-            <label>Number of seconds per frame</label>
+            <label i18n="176">Number of seconds per frame</label>
         </div>
         <div class="col-sm-7 padding-top-5">
             <input type="number" min="0" max="300" ng-model="_selected.layer.playback.timeout">

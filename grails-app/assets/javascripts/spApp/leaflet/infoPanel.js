@@ -22,7 +22,7 @@ L.Control.InfoPanel = L.Control.extend({
                 var layer = $SH.hoverLayers.join(",");
                 var split = scope.lastPos.split(' ');
                 var url = $SH.layersServiceUrl + "/intersect/" + layer + "/" + split[1] + "/" + split[0];
-                scope._container.innerHTML = 'searching...' + '<br/>' + scope.lastPos;
+                scope._container.innerHTML = $i18n('searching...') + '<br/>' + scope.lastPos;
                 $.ajax({
                     container: scope._container,
                     hoverSet: scope.hoverSet,
@@ -71,7 +71,11 @@ L.Control.InfoPanel = L.Control.extend({
         this.pos = lng + ' ' + lat;
         this.intersect = '';
         if ($SH.hoverLayers.length > 0) {
-            this._container.innerHTML = "hover to view layers<br/>" + this.pos
+            if ($i18n === undefined) {
+                this._container.innerHTML = "<br/>" + this.pos
+            } else {
+                this._container.innerHTML = $i18n("hover to view layers") + "<br/>" + this.pos
+            }
         } else {
             this._container.innerHTML = this.pos
         }

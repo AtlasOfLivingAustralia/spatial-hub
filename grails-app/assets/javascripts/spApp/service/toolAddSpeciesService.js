@@ -4,6 +4,8 @@
         .factory("ToolAddSpeciesService", ["$http", "$q", "MapService", "BiocacheService",
             function ($http, $q, MapService, BiocacheService) {
             return {
+
+                // Override text with view-config.json
                 spec: {
                     "input": [
                         {

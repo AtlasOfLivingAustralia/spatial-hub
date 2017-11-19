@@ -3,6 +3,7 @@
     angular.module('predefined-layer-lists-service', [])
         .factory("PredefinedLayerListsService", [function () {
             return {
+                // TODO: fetch from external config
                 getList: function () {
                     return [
                         {

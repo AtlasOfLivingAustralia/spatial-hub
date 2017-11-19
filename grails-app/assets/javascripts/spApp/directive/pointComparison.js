@@ -49,7 +49,7 @@
                             scope.placingMarker = false;
                             var a = $('.leaflet-draw-actions a');
                             for (var i = 0; i < a.length; i++) {
-                                if (a[i].title === 'Cancel drawing') {
+                                if (a[i].title === $i18n('Cancel drawing')) {
                                     a[i].click()
                                 }
                             }

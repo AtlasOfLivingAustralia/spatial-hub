@@ -24,7 +24,7 @@
 
                 $scope.step = '1';
 
-                $scope.newListName = 'My species list';
+                $scope.newListName = $i18n('My species list');
                 $scope.newListDescription = '';
                 $scope.newItems = '';
                 $scope.makePrivate = true;
@@ -114,7 +114,7 @@
                                 var listIds = data;
                                 var closeLater = false;
                                 if (listIds.length === 0) {
-                                    bootbox.alert("No matching species found.")
+                                    bootbox.alert($i18n("No matching species found."))
                                 } else {
                                     $scope.selectedQ = {q: [listIds], name: $scope.newListName};
                                     if (inputData !== undefined && inputData.setQ !== undefined) {
@@ -131,7 +131,7 @@
                                     $scope.$close();
                             })
                         } else {
-                            bootbox.alert("Error in creating new species.<br><br>Status code: " + resp.status + "<br>" + resp.data.error);
+                            bootbox.alert($i18n("Error in creating new species.<br><br>Status code: ") + resp.status + "<br>" + resp.data.error);
                             $scope.$close();
                         }
                     })

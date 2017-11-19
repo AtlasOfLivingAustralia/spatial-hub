@@ -495,7 +495,7 @@
                     },
                     getAllSpeciesQuery: function (layer) {
                         var query = {q: [], name: '', bs: '', ws: ''};
-                        query.name = 'All species';
+                        query.name = $i18n('All species');
                         query.bs = $SH.biocacheServiceUrl;
                         query.ws = $SH.biocacheUrl;
                         query.q.push('*:*');
@@ -537,9 +537,9 @@
                             bootbox.alert("<b>Area</b><br/><br/>" +
                                 "<table class='table-striped table table-bordered'>" +
                                 "<tr><td style='width:100px'>Name</td><td>" + item.name + "</td></tr>" +
-                                "<tr><td>Description</td><td>" + item.description + "</td></tr>" +
-                                "<tr><td>Area (sq km)</td><td>" + item.area_km.toFixed(2) + "</td></tr>" +
-                                "<tr><td>Extents</td><td>" + b[0][0] + " " + b[0][1] + ", " +
+                                "<tr><td>" + $i18n("Description") + "</td><td>" + item.description + "</td></tr>" +
+                                "<tr><td>" + $i18n("Area (sq km)") + "</td><td>" + item.area_km.toFixed(2) + "</td></tr>" +
+                                "<tr><td>" + $i18n("Extents") + "</td><td>" + b[0][0] + " " + b[0][1] + ", " +
                                 b[1][0] + " " + b[1][1] + "</td></tr></table>")
                         } else {
                             if (item.metadataUrl !== undefined) {

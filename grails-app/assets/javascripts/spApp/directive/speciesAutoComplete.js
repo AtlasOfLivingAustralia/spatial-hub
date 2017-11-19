@@ -11,13 +11,13 @@
                         source: function (searchTerm, response) {
                             SpeciesAutoCompleteService.search(searchTerm.term, iElement).then(function (data) {
                                 response($.map(data.searchResults.results, function (item, idx) {
-                                    var distributions = item.distributionsCount > 0 ? '+' + item.distributionsCount + ' expert distribution(s)' : '';
-                                    var checklists = item.checklistsCount > 0 ? '+' + item.checklistsCount + ' checklist(s)' : '';
-                                    var tracks = item.tracksCount > 0 ? '+' + item.tracksCount + ' track(s)' : '';
+                                    var distributions = item.distributionsCount > 0 ? '+' + item.distributionsCount + ' ' + $i18n('expert distribution(s)') : '';
+                                    var checklists = item.checklistsCount > 0 ? '+' + item.checklistsCount + ' ' + $i18n('checklist(s)') : '';
+                                    var tracks = item.tracksCount > 0 ? '+' + item.tracksCount + ' ' + $i18n('track(s)') : '';
                                     return {
                                         label: item.name,
                                         info: item.rank + (item.commonNameSingle ? ' ' + item.commonNameSingle : ' ') +
-                                        ' - ' + item.occCount + ' found' + distributions + checklists + tracks,
+                                        ' - ' + item.occCount + ' ' + $i18n('found') + distributions + checklists + tracks,
                                         value: item
                                     }
                                 }))

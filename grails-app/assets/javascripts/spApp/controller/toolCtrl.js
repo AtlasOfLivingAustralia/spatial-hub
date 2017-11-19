@@ -6,7 +6,7 @@
             function ($scope, MapService, $timeout, LayoutService, $uibModalInstance, BiocacheService, $http,
                       LayersService, inputData, LoggerService, ToolsService) {
 
-                $scope.stepNames = ['select process'];
+                $scope.stepNames = [$i18n('select process')];
 
                 $scope.step = 0;
 
@@ -167,7 +167,7 @@
                         }
 
                         if ($scope.finished) {
-                            alert('process finished running. should not be here');
+                            alert($i18n('process finished running. should not be here'));
 
                             return
                         }

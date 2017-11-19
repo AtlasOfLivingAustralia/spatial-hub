@@ -73,6 +73,7 @@
 
                 $scope.invalidate = function () {
                     leafletData.getMap().then(function (map) {
+                        $(window).trigger('resize');
                         map.invalidateSize()
                     });
                 };
@@ -184,6 +185,7 @@
                         $("#left-panel")[0].style.marginLeft = "-420px";
                         $("#right-panel")[0].style.marginLeft = "0px";
                     };
+                    $(window).trigger('resize');
                     context.invalidateSize()
                 };
 
@@ -199,12 +201,14 @@
                         $(".navbar-default").hide();
                     };
 
-                    var headerHeight = getComputedStyle($('.navbar-default')[0]).height.replace("px","").replace("auto", "0");
-                    $("#map").height($(window).height() - headerHeight);
-                    // $("#legend").height($(window).height() - headerHeight - 210);
-                    $("body")[0].style.paddingTop = headerHeight + "px";
-                    $("#defaultPanel").height($(window).height() - headerHeight - 20 - getComputedStyle($('#spMenu')[0]).height.replace("px","").replace("auto", "0"));
+                    // var headerHeight = getComputedStyle($('.navbar-default')[0]).height.replace("px","").replace("auto", "0");
+                    // $("#map").height($(window).height() - headerHeight);
+                    // // $("#legend").height($(window).height() - headerHeight - 210);
+                    // $("body")[0].style.paddingTop = headerHeight + "px";
+                    // $("#defaultPanel").height($(window).height() - headerHeight - 20 - getComputedStyle($('#spMenu')[0]).height.replace("px","").replace("auto", "0"));
 
+                    //
+                    $(window).trigger('resize');
                     context.invalidateSize()
                 };
 
@@ -386,6 +390,7 @@
                 };
 
                 $timeout(function () {
+                    $(window).trigger('resize');
                     $scope.invalidate();
                     $timeout(function () {
                         $scope.setupTriggers();

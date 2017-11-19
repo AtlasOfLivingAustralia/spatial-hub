@@ -56,16 +56,9 @@
 
                         SandboxService.list($SH.userId).then(function (data) {
                             scope.setItems(data);
-
-                            $timeout(function () {
-                                $resizeTables()
-                            }, 200)
                         });
 
                         scope.$watch('sandboxItems', function () {
-                            $timeout(function () {
-                                $resizeTables()
-                            }, 200)
                         }, true);
 
                         scope.selection = {};

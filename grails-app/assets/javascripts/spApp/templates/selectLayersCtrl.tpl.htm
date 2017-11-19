@@ -1,8 +1,8 @@
 
 <select ng-model='mode' ng-change='changeSelectedItem(mode)'>
-    <option value="">Search layers</option>
-    <option value="pasteLayers">Paste a layer set</option>
-    <option value="uploadLayers">Upload a layer set</option>
+    <option i18n="223" value="">Search layers</option>
+    <option i18n="224" value="pasteLayers">Paste a layer set</option>
+    <option i18n="225" value="uploadLayers">Upload a layer set</option>
     <option ng-repeat='x in predefinedLists' value='{{x.value}}'>{{x.label}}</option>
 </select>
 <hr/>
@@ -13,8 +13,8 @@
         <input type="file" id="file" name="file"/>
         <br/>
         <div class="btn-group btn-group-sm">
-            <button class="btn btn-default" ng-click="mode = ''">&lt; Back</button>
-            <button class="btn btn-default" ng-click="upload()">Upload</button>
+            <button i18n="68" class="btn btn-default" ng-click="mode = ''">&lt; Back</button>
+            <button i18n="57" class="btn btn-default" ng-click="upload()">Upload</button>
         </div>
     </div>
 
@@ -22,8 +22,8 @@
         <textarea ng-model="pasteLayersTxt" style="height:200px;width:90%" name="pasteLayers"></textarea>
         <br/>
         <div class="btn-group btn-group-sm">
-            <button class="btn btn-default" ng-click="mode = ''">&lt; Back</button>
-            <button class="btn btn-default" ng-click="addList(pasteLayersTxt);mode = ''">Add</button>
+            <button i18n="68" class="btn btn-default" ng-click="mode = ''">&lt; Back</button>
+            <button i18n="54" class="btn btn-default" ng-click="addList(pasteLayersTxt);mode = ''">Add</button>
         </div>
     </div>
 
@@ -32,11 +32,16 @@
         <div class="container" style="width:680px">
             <div style="margin-left: -15px;">
                 <div ng-hide="layers == undefined || layers.length == 0">
-                    <label style="width:120px">Search</label><input style="width:300px" layer-auto-complete environmental="true" contextual="true" on-custom="add">
+                    <label i18n="226" style="width:120px">Search</label><input style="width:300px" layer-auto-complete
+                                                                               environmental="true" contextual="true"
+                                                                               on-custom="add">
 
                     <br/>
-                    <label style="width:120px;">Filter</label><input type="text" width="150px" placeholder="Filter layers" ng-model="searchLayer">
-                    <label style="padding-left:20px;" ng-show="searchLayer.length > 0">{{(layers | filter:searchLayer).length}} matching layers</label>
+                    <label i18n="227" style="width:120px;">Filter</label><input type="text" width="150px"
+                                                                                placeholder="Filter layers"
+                                                                                ng-model="searchLayer">
+                    <label style="padding-left:20px;" ng-show="searchLayer.length > 0">{{(layers |
+                        filter:searchLayer).length}} <span i18n="228">matching layers</span></label>
 
                     <table class="table table-striped fixed-head layers-table" >
                         <thead>
@@ -45,13 +50,13 @@
                             <th style="width:20px"></th>
                             <th style="width:300px">
                                 <div href="#" ng-click="sortType = 'classification'; sortReverse = !sortReverse">
-                                    Classification
+                                    <span i18n="229">Classification</span>
                                     <span ng-show="sortType == 'classification' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
                                     <span ng-show="sortType == 'classification' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                                 </div></th>
                             <th style="width:300px">
                                 <div href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
-                                    Name
+                                    <span i18n="151">Name</span>
                                     <span ng-show="sortType == 'name' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
                                     <span ng-show="sortType == 'name' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                                 </div></th>
@@ -67,8 +72,11 @@
                                     ng-src="assets/icon_{{layer.type == 'e' ? 'grid':'contextual'}}-layer.png"></td>
                             <td style="width:300px">{{ layer.classification}}</td>
                             <td style="width:300px">{{ layer.name }}</td>
-                            <td style="float:right"><div class="glyphicon glyphicon-info-sign" ng-click="info(layer)">&nbsp;</div></td>
-                            <td style="width:10px;"
+                            <td style="float:right">
+                                <div i18n="109" class="glyphicon glyphicon-info-sign" ng-click="info(layer)">&nbsp;
+                                </div>
+                            </td>
+                            <td i18n="130" style="width:10px;"
                                 class="{{ layer.dist <= 0.1 ? 'bk-green' : (layer.dist <= 0.3 ? 'bk-yellow' : (layer.dist <= 1 ? 'bk-red' : 'bk-white'))}}">
                                 &nbsp
                             </td>
@@ -78,7 +86,8 @@
 
                     <div style="float:left">
                         <div class="btn-group btn-group-sm">
-                            <button class="btn btn-default" ng-click="clearSelection()">Clear selection</button>
+                            <button i18n="120" class="btn btn-default" ng-click="clearSelection()">Clear selection
+                            </button>
                         </div>
                         <a style="padding-left:20px;" download="layerList.txt" ng-href="{{exportUrl}}" ng-disabled="{{exportUrl == null}}">
                             <i class="glyphicon glyphicon-download-alt"></i>Export
@@ -90,7 +99,8 @@
                 </div>
 
                 <uib-progressbar ng-show="layers == undefined || layers.length == 0" class="progress-striped"
-                    ng-class="{ active: true }" value="100" type='info' title="Updating">loading...</uib-progressbar>
+                                 ng-class="{ active: true }" value="100" type='info' title="Updating"><span i18n="47">Loading...</span>
+                </uib-progressbar>
 
             </div>
         </div>

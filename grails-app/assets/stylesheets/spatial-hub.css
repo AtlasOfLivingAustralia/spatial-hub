@@ -2062,10 +2062,19 @@ body > footer > div > div.col-md-12.acknowledgement-callout.acknowledgement-call
 
 .i18n-btn {
     position: absolute;
+    opacity: 0;
 }
 
 .i18n-hover {
     border: 1px dotted red;
     margin: -1px;
     color: red;
+}
+
+.i18n-edit {
+    position: absolute;
+    background: lightgray;
+    width: 100%;
+    top: 0px;
+    z-index: 1000000;;
 }

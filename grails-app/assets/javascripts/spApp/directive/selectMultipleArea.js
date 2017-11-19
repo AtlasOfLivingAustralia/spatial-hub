@@ -142,12 +142,10 @@
                                     var a = scope._selectedArea.area;
                                     var len = a.length;
                                     var i;
-                                    console.log('removing')
 
                                     console.log(area)
                                     for (i = len - 1; i >= 0; i--) {
                                         if (a[i] == area) {
-                                            console.log('removed')
                                             console.log(a[i])
                                             a.splice(i, 1);
                                         }

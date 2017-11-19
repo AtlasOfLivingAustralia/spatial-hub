@@ -16,7 +16,7 @@
 
                 $scope.defaultAreas = PredefinedAreasService.getList();
                 $scope.selectedArea = {
-                    name: 'new area',
+                    name: $i18n('new area'),
                     wkt: '',
                     q: [],
                     legend: '',
@@ -39,7 +39,7 @@
                     radius: '10'
                 };
 
-                $scope.myAreaName = "new area";
+                $scope.myAreaName = $i18n("new area");
 
                 $scope.$watch('area', function (newValue) {
                     // used by click info popup to check if click came while drawing polygon
@@ -194,7 +194,7 @@
                 $scope.uploadFile = function (file) {
 
                     if ($scope.area === 'importShapefile' && file.type !== 'application/zip') {
-                        bootbox.alert("The uploaded file must be shape zipped file");
+                        bootbox.alert($i18n("The uploaded file must be shape zipped file"));
                         return;
                     }
 
@@ -241,7 +241,7 @@
                     LayersService.getObject(pid).then(function (obj) {
                         obj = obj.data;
                         $scope.selectedArea.obj = obj;
-                        $scope.selectedArea.name = obj.name.length > 0 ? obj.name : 'area';
+                        $scope.selectedArea.name = obj.name.length > 0 ? obj.name : $i18n('area');
                         LayersService.getField(obj.fid, 0, 0, '').then(function (data) {
                             if (data.data === undefined || data.data.id === undefined || !data.data.indb) {
                                 LayersService.getWkt(pid).then(function (wkt) {

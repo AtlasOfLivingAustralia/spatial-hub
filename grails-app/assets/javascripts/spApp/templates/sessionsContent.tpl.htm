@@ -1,5 +1,5 @@
 <div class="modal-header">
-    <h3 class="modal-title">Saved Sessions</h3>
+    <h3 i18n="255" class="modal-title">Saved Sessions</h3>
 </div>
 
 <div class="modal-body">
@@ -8,7 +8,7 @@
             <table class="table fixed-head" style="table-layout:fixed;width:100%">
                 <caption>
                     <div class="row">
-                        <div class="col-sm-6 margin-top-8">
+                        <div i18n="256" class="col-sm-6 margin-top-8">
                             Saved Sessions list
                         </div>
                         <div class="col-sm-6">
@@ -25,20 +25,20 @@
                     <th></th>
                     <th>
                         <a href="#" ng-click="sortType = 'time'; sortReverse = !sortReverse">
-                            Date
+                            <span i18n="107">Date</span>
                             <span ng-show="sortType == 'time' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
                             <span ng-show="sortType == 'time' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                         </a>
                     </th>
                     <th>
                         <a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
-                            Name
+                            <span i18n="151">Name</span>
                             <span ng-show="sortType == 'name' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
                             <span ng-show="sortType == 'name' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                         </a>
                     </th>
                     <th><a href="#" ng-click="sortType = 'url'; sortReverse = !sortReverse">
-                        URL
+                        <span i18n="257">URL</span>
                         <span ng-show="sortType == 'url' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
                         <span ng-show="sortType == 'url' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                     </a></th>
@@ -48,8 +48,8 @@
                 <tr ng-repeat="x in sessions | orderBy:sortType:sortReverse | filter:searchLists">
                     <td>
                         <div class="btn-group">
-                            <button class="btn btn-xs btn-default" ng-click="import(x.id)">open</button>
-                            <button class="btn btn-xs btn-default" ng-click="delete(x.id)">delete</button>
+                            <button i18n="258" class="btn btn-xs btn-default" ng-click="import(x.id)">open</button>
+                            <button i18n="259" class="btn btn-xs btn-default" ng-click="delete(x.id)">delete</button>
                         </div>
                     </td>
                     <td>
@@ -69,5 +69,5 @@
 </div>
 
 <div class="modal-footer">
-    <button class="btn btn-primary" type="button" ng-click="$close()">Close</button>
+    <button i18n="38" class="btn btn-primary" type="button" ng-click="$close()">Close</button>
 </div>

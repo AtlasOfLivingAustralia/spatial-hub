@@ -62,7 +62,7 @@
                                         if (!closeLater)
                                             $scope.$close();
                                     } else if (newValue === 'FAILED') {
-                                        alert('failed to import');
+                                        alert($i18n('failed to import'));
                                     }
                                 });
 

@@ -34,7 +34,7 @@
                     $scope.distributions = data;
                     for (var k in $scope.items) {
                         if ($scope.items.hasOwnProperty(k)) {
-                            if ('Expert distributions' === $scope.items[k].name) {
+                            if ($i18n('Expert distributions') === $scope.items[k].name) {
                                 $scope.items[k].value = data.length
                             }
                         }
@@ -46,7 +46,7 @@
                     $scope.journalMap = data;
                     for (var k in $scope.items) {
                         if ($scope.items.hasOwnProperty(k)) {
-                            if ('JournalMap articles' === $scope.items[k].name) {
+                            if ($i18n('JournalMap articles') === $scope.items[k].name) {
                                 $scope.items[k].value = data.count
                             }
                         }
@@ -80,10 +80,10 @@
                     }
                     for (k in $scope.items) {
                         if ($scope.items.hasOwnProperty(k)) {
-                            if ('Checklist species distributions' === $scope.items[k].name) {
+                            if ($i18n('Checklist species distributions') === $scope.items[k].name) {
                                 $scope.items[k].value = data.length
                             }
-                            if ('Checklist areas' === $scope.items[k].name) {
+                            if ($i18n('Checklist areas') === $scope.items[k].name) {
                                 $scope.items[k].value = areaCount
                             }
                         }
@@ -107,7 +107,7 @@
                     $scope.gazPoints = data;
                     for (var k in $scope.items) {
                         if ($scope.items.hasOwnProperty(k)) {
-                            if ('Gazetteer Points' === $scope.items[k].name) {
+                            if ($i18n('Gazetteer Points') === $scope.items[k].name) {
                                 $scope.items[k].value = data.length
                             }
                         }
@@ -130,7 +130,7 @@
                     $scope.poi = data;
                     for (var k in $scope.items) {
                         if ($scope.items.hasOwnProperty(k)) {
-                            if ('Points of interest' === $scope.items[k].name) {
+                            if ($i18n('Points of interest') === $scope.items[k].name) {
                                 $scope.items[k].value = data.length
                             }
                         }
@@ -164,18 +164,18 @@
 
                     $scope.items = [
                         {
-                            name: 'Area (sq km)',
-                            link: 'http://www.ala.org.au/spatial-portal-help/note-area-sq-km/',
-                            linkName: 'Info',
+                            name: $i18n('Area (sq km)'),
+                            link: $i18n('http://www.ala.org.au/spatial-portal-help/note-area-sq-km/'),
+                            linkName: $i18n('Info'),
                             value: $scope.area.area_km.toFixed(2)
                         },
                         {
-                            name: 'Number of species',
+                            name: $i18n('Number of species'),
                             query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
                             map: false
                         },
                         {
-                            name: 'Number of species - spatially valid only',
+                            name: $i18n('Number of species - spatially valid only'),
                             query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
                             map: false,
                             extraQ: ["geospatial_kosher:true"]
@@ -184,12 +184,12 @@
                     if ($scope.endemic) {
                         $.each([
                             {
-                                name: 'Number of endemic species',
+                                name: $i18n('Number of endemic species'),
                                 query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
                                 map: false
                             },
                             {
-                                name: 'Number of endemic - spatially valid only',
+                                name: $i18n('Number of endemic - spatially valid only'),
                                 query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
                                 map: false,
                                 extraQ: ["geospatial_kosher:true"]
@@ -200,48 +200,48 @@
 
                     $.each([
                         {
-                            name: 'Occurrences',
+                            name: $i18n('Occurrences'),
                             query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
                             occurrences: true
                         },
                         {
-                            name: 'Occurrences - spatially valid only',
+                            name: $i18n('Occurrences - spatially valid only'),
                             query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
                             occurrences: true,
                             extraQ: ["geospatial_kosher:true"]
                         },
                         {
-                            name: 'Expert distributions',
+                            name: $i18n('Expert distributions'),
                             list: $scope.distributions,
                             value: ''
                         },
                         {
-                            name: 'Checklist areas',
+                            name: $i18n('Checklist areas'),
                             value: ''
                         },
                         {
-                            name: 'Checklist species distributions',
+                            name: $i18n('Checklist species distributions'),
                             list: $scope.checklists,
                             value: ''
                         },
                         {
-                            name: 'JournalMap articles',
+                            name: $i18n('JournalMap articles'),
                             list: $scope.journalMap,
-                            link: 'https://www.journalmap.org',
-                            linkName: 'JournalMap',
+                            link: $i18n('https://www.journalmap.org'),
+                            linkName: $i18n('JournalMap'),
                             value: ''
                         },
                         {
-                            name: 'Gazetteer Points',
+                            name: $i18n('Gazetteer Points'),
                             mapGaz: true,
                             value: ''
                         },
                         {
-                            name: 'Points of interest',
+                            name: $i18n('Points of interest'),
                             value: ''
                         },
                         {
-                            name: 'Invasive Species',
+                            name: $i18n('Invasive Species'),
                             query: {
                                 q: areaQ.q.concat([$SH.invasiveQ]),
                                 bs: areaQ.bs,
@@ -252,7 +252,7 @@
                             extraQ: [$SH.invasiveQ]
                         },
                         {
-                            name: 'Threatened Species',
+                            name: $i18n('Threatened Species'),
                             query: {
                                 q: areaQ.q.concat([$SH.threatenedQ]),
                                 bs: areaQ.bs,
@@ -262,17 +262,17 @@
                             extraQ: [$SH.threatenedQ]
                         },
                         {
-                            name: 'Migratory species - EPBC',
+                            name: $i18n('Migratory species - EPBC'),
                             query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
                             link: ListsService.url() + '/speciesListItem/list/dr1005',
-                            linkName: 'Full list',
+                            linkName: $i18n('Full list'),
                             extraQ: ["species_list_uid:dr1005"]
                         },
                         {
-                            name: 'Australian iconic species',
+                            name: $i18n('Australian iconic species'),
                             query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
                             link: ListsService.url() + '/speciesListItem/list/dr781',
-                            linkName: 'Full list',
+                            linkName: $i18n('Full list'),
                             extraQ: ["species_list_uid:dr781"]
                         }], function (i, v) {
                         $scope.items.push(v)

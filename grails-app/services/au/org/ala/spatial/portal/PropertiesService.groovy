@@ -15,8 +15,6 @@
 
 package au.org.ala.spatial.portal
 
-import grails.converters.JSON
-import grails.plugin.cache.Cacheable
 import org.apache.commons.io.FileUtils
 
 /**
@@ -27,28 +25,30 @@ class PropertiesService {
     def grailsApplication
 
     def get(type) {
-        def defaultFile = "i18n/" + type + ".properties";
-        def file = new File("/data/spatial-hub/config/" + defaultFile)
-
+        def name = "messages" + (type == "default" ? "" : "_" + type)
+        def defaultFile = "i18n/${name}.properties";
         def properties = new Properties()
-        if (file.exists()) {
-            properties.load(new FileReader(file))
-        } else {
-            def text = PortalController.classLoader.getResourceAsStream(defaultFile)?.text
-            if (text) {
-                properties.load(new StringReader(text))
-            }
+
+        def text = PortalController.classLoader.getResourceAsStream("grails-app/$defaultFile")?.text
+        if (text) {
+            properties.load(new StringReader(text))
         }
 
-        if (properties.size() == 0 && type != 'default') {
-            get('default')
+        def file = new File("/data/spatial-hub/config/" + defaultFile)
+        if (file.exists()) {
+            properties.load(new FileReader(file))
+        }
+
+        if (properties.size() == 0 && type != 'messages') {
+            get('messages')
         } else {
             properties
         }
     }
 
     def set(type, key, value) {
-        def defaultFile = "i18n/${type}.properties";
+        def name = "messages" + (type == "default" ? "" : "_" + type)
+        def defaultFile = "i18n/${name}.properties";
         def file = new File("/data/spatial-hub/config/" + defaultFile)
         file.getParentFile().mkdirs()
 

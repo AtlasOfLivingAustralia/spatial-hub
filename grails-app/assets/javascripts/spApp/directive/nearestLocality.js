@@ -16,7 +16,7 @@
                             latitude: 0
                         };
 
-                        scope.defaultLabel = 'Click on the map to set the point.';
+                        scope.defaultLabel = $i18n('Click on the map to set the point.');
 
                         scope.pointLabel = scope.defaultLabel;
 
@@ -63,7 +63,7 @@
                         scope.stopDrawing = function () {
                             var a = $('.leaflet-draw-actions a');
                             for (var i = 0; i < a.length; i++) {
-                                if (a[i].title === 'Cancel drawing') {
+                                if (a[i].title === $i18n('Cancel drawing')) {
                                     a[i].click()
                                 }
                             }
@@ -105,7 +105,7 @@
                                     scope.exportUrl = (window.URL || window.webkitURL).createObjectURL(blob);
                                 }, function(response) {
                                     scope.searching = false;
-                                    scope.pointLabel = "Error"
+                                    scope.pointLabel = $i18n("Error")
                                 });
                             }
                         })

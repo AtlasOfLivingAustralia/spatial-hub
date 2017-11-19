@@ -46,7 +46,7 @@
                         };
 
                         scope.info = function (item) {
-                            bootbox.alert('Metadata url: <a href="' + item.url + '">' + item.url + '</a>')
+                            bootbox.alert($i18n('Metadata url') + ': <a href="' + item.url + '">' + item.url + '</a>')
                         };
 
                         scope.contextualClearSelection = function () {
@@ -74,12 +74,12 @@
                             var outFq = '-(' + scope.selected.layer.scatterplotFq + ')';
 
                             BiocacheService.newLayerAddFq(scope.selected.layer, inFq,
-                                scope.selected.layer.name + " : in scatterplot selection").then(function (data) {
+                                scope.selected.layer.name + " : " + $i18n("in scatterplot selection")).then(function (data) {
                                 MapService.add(data)
                             });
 
                             BiocacheService.newLayerAddFq(scope.selected.layer, outFq,
-                                scope.selected.layer.name + " : out scatterplot selection").then(function (data) {
+                                scope.selected.layer.name + " : " + $i18n("out scatterplot selection")).then(function (data) {
                                 MapService.add(data)
                             })
                         };
@@ -94,12 +94,12 @@
                             var outFq = '-(id:' + ids.join(' OR id:') + ')';
 
                             BiocacheService.newLayerAddFq(scope.selected.layer, inFq,
-                                scope.selected.layer.name + " : in adhoc").then(function (data) {
+                                scope.selected.layer.name + " : " + $i18n("in adhoc")).then(function (data) {
                                 MapService.add(data)
                             });
 
                             BiocacheService.newLayerAddFq(scope.selected.layer, outFq,
-                                scope.selected.layer.name + " : out adhoc").then(function (data) {
+                                scope.selected.layer.name + " : " + $i18n("out adhoc")).then(function (data) {
                                 MapService.add(data)
                             })
                         };
@@ -123,7 +123,7 @@
                         scope.mapObjectsList = function (ids, fqs, objects, pos, name) {
                             if (pos === ids.length) {
                                 //merge
-                                var metadata = 'Collection of areas from layer: ' + name + ';';
+                                var metadata = $i18n('Collection of areas from layer') + ': ' + name + ';';
                                 var mappingId = '';
                                 for (var i = 0; i < objects.length; i++) {
                                     metadata += ', ' + objects[i].name;
@@ -131,7 +131,7 @@
                                     mappingId += ids[i]
                                 }
                                 var layer = {
-                                    name: pos + ' areas from ' + name,
+                                    name: pos + ' ' + $i18n('areas from') + ' ' + name,
                                     wkt: '',
                                     q: [fqs.join(" OR ")],
                                     legend: '',
@@ -210,14 +210,14 @@
 
                         scope.facetNewLayer = function () {
                             BiocacheService.newLayerAddFq(scope.selected.layer, decodeURIComponent(scope.selected.layer.sel),
-                                scope.selected.layer.name + " : from selected").then(function (data) {
+                                scope.selected.layer.name + " : " + $i18n("from selected")).then(function (data) {
                                 MapService.add(data)
                             })
                         };
 
                         scope.facetNewLayerOut = function () {
                             BiocacheService.newLayerAddFq(scope.selected.layer, decodeURIComponent('-(' + scope.selected.layer.sel + ')'),
-                                scope.selected.layer.name + " : from unselected").then(function (data) {
+                                scope.selected.layer.name + " : " + $i18n("from unselected")).then(function (data) {
                                 MapService.add(data)
                             })
                         };
@@ -560,7 +560,7 @@
                                         'height': 0
                                     }).hide();
 
-                                    scope.status = 'successful';
+                                    scope.status = $i18n('successful');
 
                                     scope.finishedData = response.data;
 
@@ -591,7 +591,7 @@
 
                                                         scope.updateWMS();
                                                         updateNow = false;
-                                                        scope.selected.layer.scatterplotSelectionCount = 'counting...';
+                                                        scope.selected.layer.scatterplotSelectionCount = $i18n('counting...');
                                                         BiocacheService.count(scope.selected.layer, fqs).then(function (count) {
                                                             scope.selected.layer.scatterplotSelectionCount = count;
                                                             layer.scatterplotUpdating = false;

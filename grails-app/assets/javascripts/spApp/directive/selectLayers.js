@@ -87,22 +87,12 @@
 
                         LayersService.getLayers().then(function (data) {
                             scope.setLayers(data.data);
-
-                            $timeout(function () {
-                                $resizeTables()
-                            }, 200)
                         });
 
                         scope.$watch('layers', function () {
-                            $timeout(function () {
-                                $resizeTables()
-                            }, 200)
                         });
 
                         scope.$watch('searchLayer', function () {
-                            $timeout(function () {
-                                $resizeTables()
-                            }, 200)
                         });
 
                         scope.isSelected = function (id) {

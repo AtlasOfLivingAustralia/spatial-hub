@@ -1,27 +1,8 @@
 <div class="modal-header">
-    <h3 class="modal-title">Export to BCCVL</h3>
+    <h3 i18n="88" class="modal-title">Export to BCCVL</h3>
 </div>
 
 <div class="modal-body">
-    <!--<div class="row well">-->
-        <!--<div class="col-md-4">-->
-            <!--<ol class="stepList" style="margin-left:-20px;">-->
-                <!--<li style="font-size:12px" ng-repeat="stepName in stepNames"><span>{{stepName}}&nbsp;</span><i-->
-                        <!--class="glyphicon glyphicon-ok" ng-show="step > $index + 1"></i></li>-->
-            <!--</ol>-->
-        <!--</div>-->
-        <!--<div class="col-md-8">-->
-            <!--<form class="form-horizontal">-->
-                <!--<div ng-show="step == '2'">-->
-                    <!--<div select-species on-custom="setQ" selected-q="selectedQs"></div>-->
-                <!--</div>-->
-                <!--<div ng-show="step == '3'">-->
-                    <!--<div ng-show="bccvlOpenUrl == ''">exporting to BCCVL ...</div>-->
-                    <!--<div ng-show="bccvlOpenUrl != ''">Finished uploading to BCCVL</div>-->
-                <!--</div>-->
-            <!--</form>-->
-        <!--</div>-->
-    <!--</div>-->
 
     <div class="row">
         <div class="col-md-12">
@@ -40,9 +21,9 @@
                         <div select-species on-custom="setQ" selected-q="selectedQs"></div>
                     </div>
                     <div ng-show="step == '3'">
-                        <span class="process-description">Export Status</span>
-                        <div ng-show="bccvlOpenUrl == ''">exporting to BCCVL ...</div>
-                        <div ng-show="bccvlOpenUrl != ''">Finished uploading to BCCVL</div>
+                        <span i18n="89" class="process-description">Export Status</span>
+                        <div i18n="90" ng-show="bccvlOpenUrl == ''">exporting to BCCVL ...</div>
+                        <div i18n="91" ng-show="bccvlOpenUrl != ''">Finished uploading to BCCVL</div>
                     </div>
 
                 </div>
@@ -52,12 +33,14 @@
 </div>
 
 <div class="modal-footer">
-    <button class="btn" type="button" ng-click="$close()">Cancel</button>
-    <button class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="isDisabled()" ng-show="step < 3">Next
+    <button i18n="45" class="btn" type="button" ng-click="$close()">Cancel</button>
+    <button i18n="39" class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="isDisabled()"
+            ng-show="step < 3">Next
         &gt;
     </button>
     <a ng-href="{{bccvlOpenUrl}}" target="_blank" ng-show="step == 3" ng-disabled="bccvlOpenUrl == ''">
-        <button class="btn btn-primary" type="button" ng-click="$close()" ng-disabled="bccvlOpenUrl == ''">Open BCCVL in
+        <button i18n="92" class="btn btn-primary" type="button" ng-click="$close()" ng-disabled="bccvlOpenUrl == ''">
+            Open BCCVL in
             new window &gt;
         </button>
     </a>

@@ -3,6 +3,8 @@
     angular.module('tool-export-sample-service', [])
         .factory("ToolExportSampleService", ["$http", "$q", "MapService", "LayersService", "BiocacheService", function ($http, $q, MapService, LayersService, BiocacheService) {
             return {
+
+                // Override text with view-config.json
                 spec: {
                     "input": [
                         {

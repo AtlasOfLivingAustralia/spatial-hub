@@ -38,10 +38,10 @@
                         "isPrivate": makePrivate
                     };
                     return $http.post("portal/postSpeciesList", list, {withCredentials: true}).then(function (resp) {
-                        $log.debug("Successfully call in list service: " + resp.status + " " + resp.data.message);
+                        $log.debug($i18n("Successfully call in list service") + ": " + resp.status + " " + resp.data.message);
                         return resp;
                     }, function (resp) {
-                        $log.debug("Error in calling list service: " + resp.status + " " + resp.data.error);
+                        $log.debug($i18n("Error in calling list service") + ": " + resp.status + " " + resp.data.error);
                         return resp;
                     });
                 },
