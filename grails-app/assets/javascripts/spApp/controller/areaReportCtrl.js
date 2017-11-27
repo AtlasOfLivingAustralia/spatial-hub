@@ -165,7 +165,7 @@
                     $scope.items = [
                         {
                             name: $i18n('Area (sq km)'),
-                            link: $i18n('http://www.ala.org.au/spatial-portal-help/note-area-sq-km/'),
+                            link: $i18n('https://www.ala.org.au/spatial-portal-help/note-area-sq-km/'),
                             linkName: $i18n('Info'),
                             value: $scope.area.area_km.toFixed(2)
                         },

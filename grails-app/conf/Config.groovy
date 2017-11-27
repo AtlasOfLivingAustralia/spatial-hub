@@ -84,7 +84,7 @@ environments {
     }
     production {
         grails.logging.jul.usebridge = false
-        grails.serverURL = 'http://spatial.ala.org.au/spatial-hub'
+        grails.serverURL = 'https://spatial.ala.org.au/spatial-hub'
     }
 }
 
@@ -180,7 +180,7 @@ grails.cache.config = {
 skin.fluidLayout = true
 skin.layout = 'mainbs3'
 
-logger.baseUrl = 'http://logger.ala.org.au/service'
+logger.baseUrl = 'https://logger.ala.org.au/service'
 
 webservice.readTimeout = 60000
 webservice.connectTimeout = 20000
