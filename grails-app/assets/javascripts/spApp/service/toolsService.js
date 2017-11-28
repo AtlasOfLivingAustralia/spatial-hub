@@ -43,7 +43,7 @@
                 $http.post(url, m).then(function (response) {
                     uiScope.statusUrl = LayersService.url() + '/tasks/status/' + response.data.id;
                     $timeout(function () {
-                        this._checkStatus(uiScope)
+                        _checkStatus(uiScope);
                     }, 5000)
                 });
 
@@ -76,7 +76,7 @@
 
                     if (response.data.status < 2) {
                         uiScope.checkStatusTimeout = $timeout(function () {
-                            this.checkStatus(uiScope)
+                            _checkStatus(uiScope);
                         }, 5000)
                     } else if (response.data.status === 2) {
                         uiScope.status = 'cancelled';

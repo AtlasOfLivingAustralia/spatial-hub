@@ -92,6 +92,10 @@
                                     <label ng-if="sv.name !== undefined && sv.name !== v.description" >{{v.description}}</label>
                                     <textarea class="form-control" rows="3" ng-model="values[i]"></textarea>
                                 </div>
+                                <div ng-if="v.type == 'string'">
+                                    <label ng-if="sv.name !== undefined && sv.name !== v.description" >{{v.description}}</label>
+                                    <input type="text" class="form-control" ng-model="values[i]"/>
+                                </div>
                                 <div ng-if="v.type == 'speciesOptions'">
                                     <div species-options value="values[i]"
                                          area-includes="v.constraints.areaIncludes"
@@ -129,7 +133,7 @@
     <button i18n="45" class="btn btn-default" type="button" ng-click="close()">Cancel</button>
     <button class="btn btn-primary" type="button" ng-click="ok()" ng-hide="finished" ng-disabled="isDisabled() || step > stepsActual">Next &gt;</button>
 
-    <a download ng-href="{{downloadUrl}}" style="float:left" ng-show="finished && downloadUrl != ''">
+    <a download ng-href="{{downloadUrl}}" style="float:left" ng-show="finished && downloadUrl">
         <i class="glyphicon glyphicon-download-alt"></i><span i18n="275">Download Result</span>
     </a>
 

@@ -215,6 +215,7 @@
 
                 $scope.getInputChecks = function (i) {
                     var value = ToolsService.getCap($scope.toolName).input[i];
+                    if (value.constraints === undefined) value.constraints = {};
                     if (value.constraints.optional) {
                         return false
                     } else if (value.type === 'area') {
