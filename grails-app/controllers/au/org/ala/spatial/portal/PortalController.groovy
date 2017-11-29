@@ -5,7 +5,7 @@ import org.apache.commons.httpclient.methods.StringRequestEntity
 import org.apache.commons.io.FileUtils
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.client.methods.HttpPost
-import org.codehaus.groovy.grails.web.servlet.HttpHeaders
+import grails.web.http.HttpHeaders
 import org.springframework.web.multipart.MultipartHttpServletRequest
 import org.springframework.web.multipart.commons.CommonsMultipartFile
 
@@ -101,7 +101,7 @@ class PortalController {
                              ping: 'POST']
 
     def hubWebService
-    def grailsApplication
+//    def grailsApplication
     def sessionService
     def messageService
     def authService
@@ -138,10 +138,15 @@ class PortalController {
         }
 
         //biocache-service facets/i18n
-        response.outputStream << 'Messages = { messages: '
-        response.outputStream << messageService.messages
-        response.outputStream << ',get: function(key, _default) { var value = this.messages[key]; if (!value) { ' +
+        String text = 'Messages = { messages: ' +
+                messageService.messages +
+                ',get: function(key, _default) { var value = this.messages[key]; if (!value) { ' +
                 'if (_default !== undefined) { return _default; } else { return key; } } else { return value } } }; '
+        response.outputStream << text
+//        response.outputStream << 'Messages = { messages: '
+//        response.outputStream << messageService.messages
+//        response.outputStream << ',get: function(key, _default) { var value = this.messages[key]; if (!value) { ' +
+//                'if (_default !== undefined) { return _default; } else { return key; } } else { return value } } }; '
 
         response.contentType = 'text/javascript'
     }

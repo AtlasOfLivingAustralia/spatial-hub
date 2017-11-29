@@ -40,8 +40,8 @@
 //= require bootbox/bootbox.min.js
 
 //sandbox
-//= require angular-aria/angular-aria.js
-//= require angular-loading-bar/build/loading-bar.js
+//= require angular-aria/angular-aria.min.js
+//= require angular-loading-bar/build/loading-bar.min.js
 //= require underscore/underscore.js
 //= require components.js
 //= require sandbox-hub/preview.js

@@ -1,5 +1,8 @@
+package au.org.ala.spatial.portal
+
 import au.org.ala.cas.util.AuthenticationUtils
 import au.org.ala.web.AuthService
+import grails.converters.JSON
 import org.apache.naming.ContextAccessController
 import org.springframework.web.context.request.RequestContextHolder
 
@@ -14,7 +17,7 @@ class BootStrap {
     def grailsApplication
 
     def init = { servletContext ->
-        casConfig()
+        //casConfig()
 
         //This application does not need to be authorised for userdetails. Update AuthService to prevent exceptions.
         AuthService.metaClass.getUserId = {

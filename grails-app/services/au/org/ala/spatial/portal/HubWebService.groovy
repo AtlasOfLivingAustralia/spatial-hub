@@ -26,7 +26,8 @@ import org.apache.commons.httpclient.params.HttpClientParams
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.client.methods.HttpPut
-import org.codehaus.groovy.grails.web.servlet.HttpHeaders
+//import org.codehaus.groovy.grails.web.servlet.HttpHeaders
+import grails.web.http.HttpHeaders
 import org.springframework.web.multipart.commons.CommonsMultipartFile
 
 /**
@@ -124,7 +125,7 @@ class HubWebService {
             client = new HttpClient()
 
             HttpClientParams httpParams = client.params
-            httpParams.setSoTimeout((int) grailsApplication.config.http.so.timeout)
+//            httpParams.setSoTimeout((int) grailsApplication.config.http.so.timeout)
             httpParams.setConnectionManagerTimeout((int) grailsApplication.config.http.timeout)
 
             if (type == HttpGet.METHOD_NAME) {

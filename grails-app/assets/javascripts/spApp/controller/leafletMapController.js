@@ -383,7 +383,7 @@
 
                             //all setup finished
                             if ($spMapLoaded !== undefined) {
-                                $spMapLoaded(event);
+                                $spMapLoaded();
                             }
                         })
                     });
