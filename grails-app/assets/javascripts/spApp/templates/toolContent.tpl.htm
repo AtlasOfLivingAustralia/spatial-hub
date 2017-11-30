@@ -48,6 +48,14 @@
                                            min="v.constraints.min"
                                            ng-model="values[i]">
                                 </div>
+                                <div ng-if="v.type == 'percent'">
+                                    <label ng-if="sv.name !== undefined && sv.name !== v.description" ng-bind="v.description"></label>
+                                    <div class="col-sm-2 input-group">
+                                        <input type="number" class="form-control" max="v.constraints.max" min="v.constraints.min" ng-model="values[i]" sp-percent>
+                                        <span class="input-group-addon">%</span>
+                                    </div>
+
+                                </div>
                                 <div ng-if="v.type == 'layer'">
                                     <div select-layers selected-layers="values[i]"
                                          min-count="v.constraints.min"
@@ -74,14 +82,14 @@
                                     <label ng-if="sv.name !== undefined && sv.name !== v.description" >{{v.description}}</label>
                                     <br ng-if="sv.name !== undefined && sv.name !== v.description" />
                                     <select ng-model="values[i]">
-                                        <option ng-repeat="x in v.constraints.content" ng-value="x">{{x}}</option>
+                                        <option ng-repeat="x in v.constraints.content" ng-value="x" ng-bind="v.constraints.labels[$index] || x"></option>
                                     </select>
                                 </div>
                                 <div ng-if="v.type == 'list' && v.constraints.selection != 'single'">
                                     <label ng-if="sv.name !== undefined && sv.name !== v.description" >{{v.description}}</label>
                                     <br ng-if="sv.name !== undefined && sv.name !== v.description" />
                                     <select ng-model="values[i]" multiple>
-                                        <option ng-repeat="x in v.constraints.content" ng-value="x">{{x}}</option>
+                                        <option ng-repeat="x in v.constraints.content" ng-value="x" ng-bind="v.constraints.labels[$index] || x"></option>
                                     </select>
                                 </div>
                                 <div ng-if="v.type == 'phylogeneticTree'">
