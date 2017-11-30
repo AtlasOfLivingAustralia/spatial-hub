@@ -1,8 +1,5 @@
 ---
 grails:
-#  server:
-#    port:
-#      http : 8080
     profile: web
     codegen:
         defaultPackage: au.org.ala.spatial.portal
@@ -156,38 +153,51 @@ security:
 
 headerAndFooter:
     baseURL : 'https://www2.ala.org.au/commonui-bs3'
+
 ala:
     baseURL : 'https://www.ala.org.au'
+
 bie:
     baseURL : 'https://bie.ala.org.au'
     searchPath : '/search'
+
 userdetails:
     baseUrl : 'https://auth.ala.org.au/userdetails'
+
 favicon:
     url : 'https://www.ala.org.au/wp-content/themes/ala2011/images/favicon.ico'
+
 layersService:
     url : 'https://localhost:8085/spatial-service/'
+
 lists:
     url: 'https://lists.ala.org.au'
     threatenedSpeciesUrl: '/ws/speciesList/?isThreatened=eq:true&isAuthoritative=eq:true'
     invasiveSpeciesUrl: '/ws/speciesList/?isInvasive=eq:true&isAuthoritative=eq:true'
+
 collections:
     url : 'https://collections.ala.org.au'
+
 sandbox:
     url : 'http://sandbox.ala.org.au/ala-hub'
     uiUrl : 'http://sandbox.ala.org.au/datacheck'
+
 sandboxService:
     url : 'http://sandbox.ala.org.au/biocache-service'
 
 gazField : 'cl915'
+
 userObjectsField : 'cl1082'
 
 biocache:
     url : 'https://biocache.ala.org.au'
+
 biocacheService:
     url : 'https://biocache.ala.org.au/ws'
+
 sampling:
     url : 'http://ala-dylan.it.csiro.au/sampling-service'
+
 geoserver:
     url : 'http://spatial-test.ala.org.au/geoserver'
 
@@ -216,21 +226,17 @@ cache:
 phylolink:
     url : 'http://phylolink.ala.org.au'
 
-
 character:
     encoding: UTF-8
 
 http:
-#    so:
-#      timeout:60000
-      timeout: 10000
+    timeout: 10000
 
 bccvl:
     login:
         url : 'https://demo.bccvl.org.au/bccvl/oauth2/authorize?client_id=F031d7ce-abb0-11e6-a678-0242ac120005&response_type=token&redirect_uri='
     post:
         url : 'https://demo.bccvl.org.au/API/dm/v1/import_ala_data'
-
 keep:
     alive:
         timeout:
@@ -275,10 +281,8 @@ startup:
             type: 'google'
             exportType: 'normal'
             link: 'https://www.google.com/intl/en_au/help/terms_maps.html'
-            
     
 ---
-
 environments:
     development:
         grails:

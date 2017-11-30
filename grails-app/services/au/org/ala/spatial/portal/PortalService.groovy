@@ -64,14 +64,14 @@ class PortalService {
         grailsApplication.config.invasiveQ = invasiveQ
     }
 
-//    @Cacheable('configCache')
+    @Cacheable('configCache')
     def getConfig(type, showDefault) {
         def config
         def defaultFile = type + '-config.json'
-        def tstFile = grailsApplication.config[type + "Config"]?.json
+        def configFilename = grailsApplication.config[type + "Config"]?.json
         File file = null
-        if (tstFile) {
-            file = new File((String) tstFile)
+        if (configFilename) {
+            file = new File((String) configFilename)
         }
 
         if (file != null && file.exists()) {
