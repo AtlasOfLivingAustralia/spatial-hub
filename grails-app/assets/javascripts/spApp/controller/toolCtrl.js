@@ -130,8 +130,9 @@
                         var order = 1;
                         // if View-config.json is configured for the selected capability, use that, otherwise, use spec
                         // TODO: can this be separated from downloadImmediately and overrideValues, and moved to ToolsService?
-                        if (ToolsService.getViewConfig($scope.toolName)) {
-                            ToolsService.getViewConfig($scope.toolName).view.forEach(function (v) {
+                        var toolViewConfig = ToolsService.getViewConfig($scope.toolName)
+                        if (toolViewConfig && toolViewConfig.view) {
+                            toolViewConfig.view.forEach(function (v) {
                                 $scope.downloadImmediately = inputData.downloadImmediately === undefined &&
                                     $scope.download !== undefined && !$scope.download;
                                 $scope.stepView[order] = {name: v.name, inputArr: v.inputs};
