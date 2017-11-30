@@ -88,6 +88,10 @@
       {
         "ng-click": ["open", "analysis"],
         "name": "Restore prior analysis"
+      },
+      {
+        "ng-click": ["open", "tool", {"processName": "MergeAreas"}],
+        "name": "Merge Areas"
       }
     ]
   },
