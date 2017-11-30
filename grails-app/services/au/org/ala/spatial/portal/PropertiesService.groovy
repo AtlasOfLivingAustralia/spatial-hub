@@ -26,15 +26,15 @@ class PropertiesService {
 
     def get(type) {
         def name = "messages" + (type == "default" ? "" : "_" + type)
-        def defaultFile = "i18n/${name}.properties";
+        def defaultFile = "${name}.properties";
         def properties = new Properties()
 
-        def text = PortalController.classLoader.getResourceAsStream("grails-app/$defaultFile")?.text
+        def text = PortalController.classLoader.getResourceAsStream("$defaultFile")?.text
         if (text) {
             properties.load(new StringReader(text))
         }
 
-        def file = new File("/data/spatial-hub/config/" + defaultFile)
+        def file = new File("/data/spatial-hub/config/i18n/" + defaultFile)
         if (file.exists()) {
             properties.load(new FileReader(file))
         }

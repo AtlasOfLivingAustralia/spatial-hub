@@ -69,9 +69,12 @@ class PortalService {
         def config
         def defaultFile = type + '-config.json'
         def tstFile = grailsApplication.config[type + "Config"]?.json
-        File file = new File((String) tstFile)
+        File file = null
+        if (tstFile) {
+            file = new File((String) tstFile)
+        }
 
-        if (file.exists()) {
+        if (file != null && file.exists()) {
             config = JSON.parse(new FileReader(file))
         } else {
             def filename = grailsApplication.config[type + "Config"]?.json?:defaultFile

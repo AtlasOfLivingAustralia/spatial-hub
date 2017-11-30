@@ -47,7 +47,7 @@ function fetchData() {
 
     promises.push($http.get($SH.baseUrl + "/portal/i18n?lang=" + $SH.i18n).then(function (result) {
         for (k in result.data) {
-            gMessages[k] = result.data[k]
+            gMessages[k + ""] = result.data[k]
         }
         $SH.gMessages = gMessages
         $i18n = function (k) {

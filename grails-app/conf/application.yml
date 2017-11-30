@@ -3,22 +3,22 @@ grails:
 #  server:
 #    port:
 #      http : 8080
-      profile: web
-      codegen:
-          defaultPackage: au.org.ala.spatial.portal
-      config:
-          locations:
-              - file:/data/spatial-hub/config/spatial-hub-config.properties
-              - file:/data/spatial-hub/config/spatial-hub-config.yml
-              - file:/data/spatial-hub/config/spatial-hub-config.groovy
-      spring:
-          transactionManagement:
-              proxies: false
-      gorm:
-          reactor:
-            # Whether to translate GORM events into Reactor events
-            # Disabled by default for performance reasons
-              events: false
+    profile: web
+    codegen:
+        defaultPackage: au.org.ala.spatial.portal
+    config:
+        locations:
+            - file:/data/spatial-hub/config/spatial-hub-config.properties
+            - file:/data/spatial-hub/config/spatial-hub-config.yml
+            - file:/data/spatial-hub/config/spatial-hub-config.groovy
+    spring:
+        transactionManagement:
+            proxies: false
+    gorm:
+        reactor:
+          # Whether to translate GORM events into Reactor events
+          # Disabled by default for performance reasons
+            events: false
 info:
     app:
         name: '@info.app.name@'
@@ -133,7 +133,6 @@ endpoints:
         
 security:
     cas:
-#        appServerName: 'http://devt.ala.org.au:8080'
         casServerName: 'https://auth.ala.org.au'
         uriFilterPattern: '/portal.*,,/,/alaAdmin,/alaAdmin.*'
         uriExclusionFilterPattern: '/portal/messages.*,/portal/sessionCache.*,/static.*,/assets.*'
@@ -226,10 +225,6 @@ http:
 #      timeout:60000
       timeout: 10000
 
-#lists:
-#    threatenedSpeciesUrl : '/ws/speciesList/?isThreatened=eq:true&isAuthoritative=eq:true'
-#    invasiveSpeciesUrl : '/ws/speciesList/?isInvasive=eq:true&isAuthoritative=eq:true'
-
 bccvl:
     login:
         url : 'https://demo.bccvl.org.au/bccvl/oauth2/authorize?client_id=F031d7ce-abb0-11e6-a678-0242ac120005&response_type=token&redirect_uri='
@@ -248,19 +243,19 @@ startup:
     baselayer:
         default : 'google_roadmaps'
     baselayers:
-        - google_roadmaps:
+        google_roadmaps:
             name: 'Streets'
             layerType: 'ROADMAP'
             type: 'google'
             exportType: 'normal'
             link: 'https://www.google.com/intl/en_au/help/terms_maps.html'
-        - google_hybrid:
-            name: 'Streets'
+        google_hybrid:
+            name: 'Hybrid'
             layerType: 'HYBRID'
             type: 'google'
             exportType: 'hybrid'
             link: 'https://www.google.com/intl/en_au/help/terms_maps.html'
-        - outline:
+        outline:
             name: 'Outline'
             type: 'wms'
             url: 'https://spatial.ala.org.au/geoserver/gwc/service/wms/reflect?'
@@ -268,13 +263,13 @@ startup:
                 layers: 'ALA:world'
                 format: 'image/png'
             exportType: 'outline'
-        - osm:
+        osm:
             name: 'Open Street Map'
             url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
             type: 'xyz'
             exportType: 'minimal'
             link: 'https://www.openstreetmap.org/about'
-        - google_satellite: 
+        google_satellite:
             name: 'Satellite'
             layerType: 'SATELLITE'
             type: 'google'
@@ -283,54 +278,10 @@ startup:
             
     
 ---
-hibernate:
-    cache:
-        queries: false
-        use_second_level_cache: false
-        use_query_cache: false
-dataSource:
-    pooled: true
-    jmxExport: true
-    driverClassName: org.h2.Driver
-    username: sa
-    password: ''
 
 environments:
     development:
-        security:
-            cas:
-                appServerName: http://devt.ala.org.au
         grails:
                 serverURL: http://devt.ala.org.au
-        server:
-            url: http://devt.ala.org.au
-            contextPath: /spatial-hub
-#        dataSource:
-#            dbCreate: create-drop
-#            url: jdbc:h2:mem:devDb;MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE
     test:
-        dataSource:
-            dbCreate: update
-            url: jdbc:h2:mem:testDb;MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE
     production:
-        dataSource:
-            dbCreate: none
-            url: jdbc:h2:./prodDb;MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE
-            properties:
-                jmxEnabled: true
-                initialSize: 5
-                maxActive: 50
-                minIdle: 5
-                maxIdle: 25
-                maxWait: 10000
-                maxAge: 600000
-                timeBetweenEvictionRunsMillis: 5000
-                minEvictableIdleTimeMillis: 60000
-                validationQuery: SELECT 1
-                validationQueryTimeout: 3
-                validationInterval: 15000
-                testOnBorrow: true
-                testWhileIdle: true
-                testOnReturn: false
-                jdbcInterceptors: ConnectionState
-                defaultTransactionIsolation: 2 # TRANSACTION_READ_COMMITTED

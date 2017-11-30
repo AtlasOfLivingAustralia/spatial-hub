@@ -73,7 +73,12 @@
                                             n.textContent = "{{ v() }}";
                                             $compile(n, null, -1)(scope);
                                         } else {
-                                            n.textContent = value;
+                                            if (copy[0].childNodes.length == 1) {
+                                                // write value as HTML
+                                                n = $("<span>" + value + "</span>");
+                                            } else {
+                                                n.textContent = value;
+                                            }
                                         }
                                     } else {
                                         //set this undefined property

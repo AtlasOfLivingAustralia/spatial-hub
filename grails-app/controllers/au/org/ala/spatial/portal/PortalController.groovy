@@ -143,10 +143,6 @@ class PortalController {
                 ',get: function(key, _default) { var value = this.messages[key]; if (!value) { ' +
                 'if (_default !== undefined) { return _default; } else { return key; } } else { return value } } }; '
         response.outputStream << text
-//        response.outputStream << 'Messages = { messages: '
-//        response.outputStream << messageService.messages
-//        response.outputStream << ',get: function(key, _default) { var value = this.messages[key]; if (!value) { ' +
-//                'if (_default !== undefined) { return _default; } else { return key; } } else { return value } } }; '
 
         response.contentType = 'text/javascript'
     }
