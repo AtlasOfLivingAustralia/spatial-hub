@@ -63,22 +63,22 @@ grails:
             csv: text/csv
             form: application/x-www-form-urlencoded
             html:
-              - text/html
-              - application/xhtml+xml
+                - text/html
+                - application/xhtml+xml
             js: text/javascript
             json:
-              - application/json
-              - text/json
+                - application/json
+                - text/json
             multipartForm: multipart/form-data
             pdf: application/pdf
             rss: application/rss+xml
             text: text/plain
             hal:
-              - application/hal+json
-              - application/hal+xml
+                - application/hal+json
+                - application/hal+xml
             xml:
-              - text/xml
-              - application/xml
+                - text/xml
+                - application/xml
     urlmapping:
         cache:
             maxsize: 1000
@@ -145,30 +145,29 @@ security:
         
     auth:
         admin_role: ROLE_ADMIN
-        
     app:
         http:
             header:
                 userId: "X-ALA-userId"
 
 headerAndFooter:
-    baseURL : 'https://www2.ala.org.au/commonui-bs3'
+    baseURL: 'https://www2.ala.org.au/commonui-bs3'
 
 ala:
-    baseURL : 'https://www.ala.org.au'
+    baseURL: 'https://www.ala.org.au'
 
 bie:
-    baseURL : 'https://bie.ala.org.au'
-    searchPath : '/search'
+    baseURL: 'https://bie.ala.org.au'
+    searchPath: '/search'
 
 userdetails:
-    baseUrl : 'https://auth.ala.org.au/userdetails'
+    baseUrl: 'https://auth.ala.org.au/userdetails'
 
 favicon:
-    url : 'https://www.ala.org.au/wp-content/themes/ala2011/images/favicon.ico'
+    url: 'https://www.ala.org.au/wp-content/themes/ala2011/images/favicon.ico'
 
 layersService:
-    url : 'https://localhost:8085/spatial-service/'
+    url: 'https://localhost:8085/spatial-service/'
 
 lists:
     url: 'https://lists.ala.org.au'
@@ -176,55 +175,55 @@ lists:
     invasiveSpeciesUrl: '/ws/speciesList/?isInvasive=eq:true&isAuthoritative=eq:true'
 
 collections:
-    url : 'https://collections.ala.org.au'
+    url: 'https://collections.ala.org.au'
 
 sandbox:
-    url : 'http://sandbox.ala.org.au/ala-hub'
-    uiUrl : 'http://sandbox.ala.org.au/datacheck'
+    url: 'http://sandbox.ala.org.au/ala-hub'
+    uiUrl: 'http://sandbox.ala.org.au/datacheck'
 
 sandboxService:
-    url : 'http://sandbox.ala.org.au/biocache-service'
+    url: 'http://sandbox.ala.org.au/biocache-service'
 
-gazField : 'cl915'
+gazField: 'cl915'
 
-userObjectsField : 'cl1082'
+userObjectsField: 'cl1082'
 
 biocache:
-    url : 'https://biocache.ala.org.au'
+    url: 'https://biocache.ala.org.au'
 
 biocacheService:
-    url : 'https://biocache.ala.org.au/ws'
+    url: 'https://biocache.ala.org.au/ws'
 
 sampling:
-    url : 'http://ala-dylan.it.csiro.au/sampling-service'
+    url: 'http://ala-dylan.it.csiro.au/sampling-service'
 
 geoserver:
-    url : 'http://spatial-test.ala.org.au/geoserver'
+    url: 'http://spatial-test.ala.org.au/geoserver'
 
 viewConfig:
-    json : 'view-config.json'
+    json: 'view-config.json'
 
 sessions:
-    dir : '/data/spatial-hub/sessions'
+    dir: '/data/spatial-hub/sessions'
     
 skin:
-    fluidLayout : true
-    layout : 'mainbs3'
+    fluidLayout: true
+    layout: 'mainbs3'
 
 logger:
-    baseUrl : 'http://logger.ala.org.au/service'
+    baseUrl: 'http://logger.ala.org.au/service'
 
 webservice:
-    readTimeout : 60000
-    connectTimeout : 20000
+    readTimeout: 60000
+    connectTimeout: 20000
 
 cache:
     headers:
-        enabled : true
-        control : 'max-age=36000 public must-revalidate'
+        enabled: true
+        control: 'max-age=36000 public must-revalidate'
 
 phylolink:
-    url : 'http://phylolink.ala.org.au'
+    url: 'http://phylolink.ala.org.au'
 
 character:
     encoding: UTF-8
@@ -234,20 +233,20 @@ http:
 
 bccvl:
     login:
-        url : 'https://demo.bccvl.org.au/bccvl/oauth2/authorize?client_id=F031d7ce-abb0-11e6-a678-0242ac120005&response_type=token&redirect_uri='
+        url: 'https://demo.bccvl.org.au/bccvl/oauth2/authorize?client_id=F031d7ce-abb0-11e6-a678-0242ac120005&response_type=token&redirect_uri='
     post:
-        url : 'https://demo.bccvl.org.au/API/dm/v1/import_ala_data'
+        url: 'https://demo.bccvl.org.au/API/dm/v1/import_ala_data'
 keep:
     alive:
         timeout:
-            ms : 10000    
+            ms: 10000
     
 startup:
-    lat : -25
-    lng : 131
-    zoom : 4
+    lat: -25
+    lng: 131
+    zoom: 4
     baselayer:
-        default : 'google_roadmaps'
+        default: 'google_roadmaps'
     baselayers:
         google_roadmaps:
             name: 'Streets'
