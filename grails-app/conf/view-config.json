@@ -185,15 +185,6 @@
     ]
   },
   "Maxent": {
-    "comments": [
-      "1. Area to restrict prediction",
-      "2. Percentage of records used for testing model?",
-      "3. Occurences to use in prediction.",
-      "4. Use jackknife",
-      "5. Layer resolution to use",
-      "6. Use response curves",
-      "7. Layers to use in the prediction 1 to 10"
-    ],
     "view": [
       {
         "name": "Area to restrict prediction",
