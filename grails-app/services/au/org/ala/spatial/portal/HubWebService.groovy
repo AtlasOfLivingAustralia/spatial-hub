@@ -113,10 +113,10 @@ class HubWebService {
     }
 
     def excludedHeaders = org.apache.http.HttpHeaders.fields.collect( { it ->
-        it.name.toLowerCase() as Set
-    })
+        it.get(org.apache.http.HttpHeaders).toLowerCase()
+    }) as Set
 
-    Map urlResponse(String type, String url, Map nameValues = null, Map headers = null,
+    def urlResponse(String type, String url, Map nameValues = null, Map headers = null,
                     RequestEntity entity = null, Boolean doAuthentication = null) {
 
         HttpClient client = null
@@ -125,7 +125,6 @@ class HubWebService {
             client = new HttpClient()
 
             HttpClientParams httpParams = client.params
-//            httpParams.setSoTimeout((int) grailsApplication.config.http.so.timeout)
             httpParams.setConnectionManagerTimeout((int) grailsApplication.config.http.timeout)
 
             if (type == HttpGet.METHOD_NAME) {
@@ -167,7 +166,7 @@ class HubWebService {
 
             if (headers) {
                 headers.each { k, v ->
-                    if (!excludedHeaders.contains(k)) {
+                    if (!excludedHeaders.contains(k.toString().toLowerCase()) && !HttpHeaders.COOKIE.equalsIgnoreCase(k.toString())) {
                         call.addRequestHeader(String.valueOf(k), String.valueOf(v))
                     }
                 }
