@@ -25,7 +25,6 @@
                         scope.max = 0;
                         scope.maxPages = 0;
 
-                        scope.updating = false;
                         scope.updatingPage = false;
                         scope.downloadSize = 0;
 
@@ -81,11 +80,7 @@
                         };
 
                         scope.update = function (updateAll) {
-                            if (updateAll) {
-                                scope.updating = true;
-                            } else {
-                                scope.updatingPage = true;
-                            }
+                            scope.updatingPage = true;
 
                             var config = {
                                 eventHandlers: {
@@ -119,7 +114,6 @@
                                 scope.updateSel();
                                 scope.updateCheckmarks();
 
-                                scope.updating = false;
                                 scope.updatingPage = false;
                             })
                         };

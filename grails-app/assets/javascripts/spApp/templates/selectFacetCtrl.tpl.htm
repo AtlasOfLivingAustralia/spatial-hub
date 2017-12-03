@@ -9,13 +9,7 @@
     </select>
 </div>
 
-<div style="height:320px;overflow: hidden;" ng-show="updating || facetList.length == 0">
-    <uib-progressbar class="progress-striped" ng-class="{ active: true }" ng-show="updating"
-                     value="100"
-                     type='info' title="Updating"><span i18n="47">Loading...</span></uib-progressbar>
-</div>
-
-<div ng-hide="updating || facetList.length == 0" style="height:320px">
+<div style="height:320px">
     <hr/>
     <input style="width:200px" type="text" ng-model="facetFilter"/>
     <div class="btn-group btn-group-xs">
