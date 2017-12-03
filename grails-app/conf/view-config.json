@@ -243,6 +243,15 @@
         }
       }
     }
+  },
+  "MergeAreas": {
+    "input": {
+      "name": {
+        "constraints": {
+          "default": "my merged area"
+        }
+      }
+    }
   }
 }
 

@@ -39,11 +39,11 @@
       },
       {
         "ng-click": ["openPanel", "nearestLocality"],
-        "name": "Nearest locality"
+        "name": "Nearest Locality"
       },
       {
         "ng-click": ["openPanel", "pointComparison"],
-        "name": "Point comparisons"
+        "name": "Point Comparisons"
       },
       {
         "ng-click": ["open", "tool", {"processName": "ScatterplotCreate"}],
@@ -59,7 +59,11 @@
       },
       {
         "ng-click": ["open", "compareAreas"],
-        "name": "Compare areas"
+        "name": "Compare Areas"
+      },
+      {
+        "ng-click": ["open", "tool", {"processName": "MergeAreas"}],
+        "name": "Merge Areas"
       },
       {
         "ng-click": ["open", "tool", {"processName": "PointsToGrid"}],
@@ -87,11 +91,7 @@
       },
       {
         "ng-click": ["open", "analysis"],
-        "name": "Restore prior analysis"
-      },
-      {
-        "ng-click": ["open", "tool", {"processName": "MergeAreas"}],
-        "name": "Merge Areas"
+        "name": "Restore Prior Analysis"
       }
     ]
   },
@@ -126,7 +126,7 @@
         "ng-click": ["exportMap"]
       },
       {
-        "name": "Species list",
+        "name": "Species List",
         "ng-click": ["open", "tool", {"processName": "ToolExportChecklistService"}]
       },
       {
@@ -138,7 +138,7 @@
         "ng-click": ["open", "tool", {"processName": "ToolExportAreaService"}]
       },
       {
-        "name": "Export to BCCVL",
+        "name": "Points to BCCVL",
         "ng-click": ["open", "exportBccvl"]
       },
       {
@@ -156,7 +156,7 @@
         "url": "https://www.ala.org.au/spatial-portal-help/getting-started"
       },
       {
-        "name": "Add to map",
+        "name": "Add To Map",
         "url": "https://www.ala.org.au/spatial-portal-help/add-to-map"
       },
       {
