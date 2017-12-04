@@ -8,32 +8,36 @@
     <input type="radio" ng-click="addSpecies()"><span i18n="237">Add species...</span>
 </div>
 
-<div ng-if="!multiselect">
+<div ng-show="!multiselect">
     <div ng-show="_spatialValidity" class="checkbox">
         <label>
-            <input type="checkbox" ng-model="spatiallyValid"><span i18n="238">Include spatially-valid records</span>
+            <input type="checkbox" ng-model="spatiallyValid" ng-change="setQ()"><span i18n="238">Include spatially-valid records</span>
         </label>
     </div>
     <div ng-show="_spatialValidity" class="checkbox">
         <label>
-            <input type="checkbox" ng-model="spatiallySuspect"><span i18n="239">Include spatially-suspect records</span>
+            <input type="checkbox" ng-model="spatiallySuspect" ng-change="setQ()"><span i18n="239">Include spatially-suspect records</span>
         </label>
-
-        <hr>
     </div>
+    <div ng-show="_absentOption" class="checkbox">
+        <label>
+            <input type="checkbox" ng-model="includeAbsences" ng-change="setQ()"><span>Include absent occurrences</span>
+        </label>
+    </div>
+    <hr ng-show="_absentOption || _spatialValidity">
     <div ng-show="_areaIncludes">
         <div class="checkbox">
-            <label><input type="checkbox" ng-model="includeExpertDistributions"><span i18n="240">Include Expert Distribution areas</span>
+            <label><input type="checkbox" ng-model="includeExpertDistributions" ng-change="setQ()"><span i18n="240">Include Expert Distribution areas</span>
             </label>
         </div>
         <div class="checkbox">
-            <label><input type="checkbox" ng-model="includeAnimalMovement"><span
+            <label><input type="checkbox" ng-model="includeAnimalMovement" ng-change="setQ()"><span
                     i18n="241">Include Animal Movement Data</span>
             </label>
         </div>
         <div class="checkbox">
             <label>
-                <input type="checkbox" ng-model="includeChecklists"><span i18n="242">Include Checklist areas</span>
+                <input type="checkbox" ng-model="includeChecklists" ng-change="setQ()"><span i18n="242">Include Checklist areas</span>
             </label>
         </div>
         <hr>
@@ -47,7 +51,7 @@
 
     <div ng-repeat="layer in speciesLayers" class="radio">
         <label>
-        <input type="radio" ng-model="$parent.speciesOption" ng-value="layer.uid"
+        <input type="radio" ng-model="$parent.speciesOption" ng-value="layer.uid" value="{{layer.uid}}"
                ng-change="changeOption(layer.uid)">{{layer.name}}</label>
         <br/>
     </div>
@@ -68,13 +72,7 @@
     </div>
 
     <div ng-show="speciesOption == 'searchSpecies'" style="margin-left:15px">
-        <div class="checkbox">
-        <label>
-            <input type="checkbox" ng-checked="useScientificNames"><span i18n="246">Use the scientific names supplied with the
-            records</span></label>
-        </div>
         <div>
-
             <label>
         <input style="width:400px" id="speciesAutoComplete" species-auto-complete on-custom="setQ">
                 <br/><span i18n="247">For example: "Macropus rufus" or "Red Kangaroo"</span>
