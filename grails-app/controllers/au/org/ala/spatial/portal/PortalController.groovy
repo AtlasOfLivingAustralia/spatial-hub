@@ -435,7 +435,8 @@ class PortalController {
     }
 
     def ping() {
-        render status: HttpURLConnection.HTTP_OK
+        response.addHeader("content-type", "application/json")
+        render status: HttpURLConnection.HTTP_OK, text: "{}"
     }
 
     def i18n() {
