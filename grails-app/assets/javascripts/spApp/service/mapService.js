@@ -296,15 +296,15 @@
                                 selected.layer.leaflet.layerParams.fq = fq;
                             }
 
-                            promises.add(FacetAutoCompleteService.search(id).then(function (data) {
+                            promises.push(FacetAutoCompleteService.search(id).then(function (data) {
                                 id.list = data;
                             }));
 
-                            promises.add(BiocacheService.bbox(id).then(function (data) {
+                            promises.push(BiocacheService.bbox(id).then(function (data) {
                                 id.bbox = data
                             }));
 
-                            promises.add(BiocacheService.count(id).then(function (data) {
+                            promises.push(BiocacheService.count(id).then(function (data) {
                                 id.count = data;
                                 if (id.count < 100000) {
                                     id.colorType = '-1'
@@ -368,7 +368,7 @@
                                     id.contextualPage = 1;
                                     id.contextualPageSize = 5;
 
-                                    promises.add(LayersService.getField(id.id, 0, id.contextualPageSize, '').then(function (data) {
+                                    promises.push(LayersService.getField(id.id, 0, id.contextualPageSize, '').then(function (data) {
                                         id.contextualList = data.data.objects;
                                         for (var i in id.contextualList) {
                                             if (id.contextualList.hasOwnProperty(i)) {

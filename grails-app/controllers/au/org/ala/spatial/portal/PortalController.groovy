@@ -301,6 +301,7 @@ class PortalController {
 
     def q() {
         def json = (Map) request.JSON
+        //{"q":"species_list:dr1782","bs":"https://biocache.ala.org.au/ws","fq":["geospatial_kosher:true"]}
 
         //caching
         def value = grailsCacheManager.getCache(portalService.caches.QID).get(json)
@@ -329,13 +330,19 @@ class PortalController {
 
             def r = hubWebService.postUrl("${json.bs}/webportal/params", json)
 
-            value = [qid: r.text] as JSON
+            if (r.statusCode >= 400) {
+                log.error("Couldn't post $json to ${json.bs}/webportal/params, status code ${r.statusCode}, body: ${r.text}")
+                def result = ['error': "${r.statusCode} when calling ${json.bs}"]
+                render result as JSON, status: 500
+            } else {
+                value = [qid: r.text] as JSON
 
-            if (r?.text) {
-                grailsCacheManager.getCache(portalService.caches.QID).put(json, value)
+                if (r?.text) {
+                    grailsCacheManager.getCache(portalService.caches.QID).put(json, value)
+                }
+
+                render value
             }
-
-            render value
         }
     }
 
