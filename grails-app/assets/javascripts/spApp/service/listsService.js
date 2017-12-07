@@ -1,7 +1,7 @@
 (function (angular) {
     'use strict';
     angular.module('lists-service', [])
-        .factory("ListsService", ["$http", '$cacheFactory', '$log', function ($http, $cacheFactory, $log) {
+        .factory("ListsService", ["$http", '$cacheFactory', '$log', '$q', function ($http, $cacheFactory, $log, $q) {
 
             var cache = $cacheFactory('listServiceCache');
 
@@ -45,19 +45,14 @@
                         return resp;
                     });
                 },
-                items: function (listId) {
-                    return $http.get(this.url() + "/ws/speciesListItems/" + listId, {withCredentials: true}).then(function (response) {
+                items: function (listId, params) {
+                    params = params || {};
+                    return $http.get(this.url() + "/ws/speciesListItems/" + listId, {params: params, withCredentials: true}).then(function (response) {
                         return response.data
                     })
                 },
                 getItemsQ: function (listId) {
-                    return this.items(listId).then(function (data) {
-                        return data.filter(function (i) {
-                            return i.lsid !== null
-                        }).map(function (i) {
-                            return "(lsid:" + i.lsid + ")";
-                        }).join(' OR ');
-                    })
+                    return $q.when('species_list:' + listId);
                 },
                 url: function () {
                     return $SH.listsUrl

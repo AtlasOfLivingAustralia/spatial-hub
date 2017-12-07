@@ -110,25 +110,29 @@
                 $scope.addNewSpecies = function () {
                     ListsService.createList($scope.newListName, $scope.newListDescription, $scope.matchedGuids(), $scope.makePrivate).then(function (resp) {
                         if (resp.status === 200) {
-                            ListsService.getItemsQ(resp.data.druid).then(function (data) {
-                                var listIds = data;
-                                var closeLater = false;
+                            var druid  = resp.data.druid;
+                            ListsService.items(druid, {max: 1}).then(function(data) {
                                 if (listIds.length === 0) {
                                     bootbox.alert($i18n("No matching species found."))
                                 } else {
-                                    $scope.selectedQ = {q: [listIds], name: $scope.newListName};
-                                    if (inputData !== undefined && inputData.setQ !== undefined) {
-                                        inputData.setQ($scope.selectedQ)
-                                    } else {
-                                        closeLater = true;
-                                        BiocacheService.newLayer(q, undefined, q.name).then(function (data) {
-                                            MapService.add(data);
+                                    ListsService.getItemsQ(resp.data.druid).then(function (data) {
+                                        var listIds = data;
+                                        var closeLater = false;
+
+                                        $scope.selectedQ = {q: [listIds], name: $scope.newListName};
+                                        if (inputData !== undefined && inputData.setQ !== undefined) {
+                                            inputData.setQ($scope.selectedQ)
+                                        } else {
+                                            closeLater = true;
+                                            BiocacheService.newLayer(q, undefined, q.name).then(function (data) {
+                                                MapService.add(data);
+                                                $scope.$close();
+                                            });
+                                        }
+                                        if (!closeLater)
                                             $scope.$close();
-                                        });
-                                    }
+                                    })
                                 }
-                                if (!closeLater)
-                                    $scope.$close();
                             })
                         } else {
                             bootbox.alert($i18n("Error in creating new species.<br><br>Status code: ") + resp.status + "<br>" + resp.data.error);
