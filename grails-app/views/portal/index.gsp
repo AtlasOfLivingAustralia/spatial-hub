@@ -53,6 +53,10 @@
         defaultZoom: ${config.startup.zoom},
         baseLayers: ${(config.startup.baselayers as grails.converters.JSON).toString().encodeAsRaw()},
         defaultBaseLayer: '${config.startup.baselayer.default}',
+        flickrUrl: '${config.flickr.url}',
+        flickrApiKey: '${config.flickr.apiKey}',
+        flickrTags: '${config.flickr.tags}',
+        flickrExtra: '${config.flickr.extra}',
         validUrls: [
             'self',
             'http://*.ala.org.au/**',

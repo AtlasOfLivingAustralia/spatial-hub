@@ -200,6 +200,13 @@ sampling:
 geoserver:
     url: 'http://spatial-test.ala.org.au/geoserver'
 
+flickr:
+    url: 'https://api.flickr.com/services/rest/?method=flickr.photos.search'
+    apiKey: ''
+    secret: ''
+    tags: ''
+    extra: 'geo,date_taken,owner_name,license,url_t,url_s,url_m,title'
+
 viewConfig:
     json: 'view-config.json'
 

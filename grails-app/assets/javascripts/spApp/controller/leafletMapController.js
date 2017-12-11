@@ -212,6 +212,67 @@
                     context.invalidateSize()
                 };
 
+                $scope.togglePanoramio = function (context){
+                    if (context.panoramioControl._panoramio_state){
+                        $scope.addPanoramioToMap();
+                    }
+                    else {
+                        $scope.deleteDrawing();
+                    }
+                }
+
+                $scope.addPanoramioToMap = function () {
+                    leafletData.getMap().then(function (map) {
+                        // console.log("adding panoramio replacement");
+
+                        var bounds = map.getBounds();
+                        // console.log(bounds);
+
+                        var multipBounds = MapService.splitBounds(bounds.getSouthWest(), bounds.getNorthEast());
+                        // console.log(multipBounds);
+
+                        var url = $SH.flickrUrl + '&api_key=' + $SH.flickrApiKey + '&extras=' + encodeURIComponent($SH.flickrExtra) + '&tags=' + encodeURIComponent($SH.flickrTags)
+                                    + '&format=json&nojsoncallback=1&text=landscape&per_page=10&bbox=';
+                        for (var i = 0; i < multipBounds.length; i++) {
+                            $http.get(url + multipBounds[i]).then(function (response) {
+                                // console.log(response);
+                                $scope.addPhotosToMap(response.data);
+                            })
+                        }
+                    })
+                };
+
+                $scope.addPhotosToMap = function (data) {
+                    var popupHTML = function(photo){
+                        var result = "";
+                        result = '<strong>' + photo.title + '</strong><br>';
+                        result += '<a href="' + photo.url_m + '" target="_blank">';
+                        result += '<img src="' + photo.url_s + '"></a>';
+                        result += '<br/><small>click image to enlarge in new tab</small>';
+                        return result;
+                    };
+
+                    leafletData.getMap().then(function () {
+                        leafletData.getLayers().then(function (baselayers) {
+                            var drawnItems = baselayers.overlays.draw;
+                            if (data.photos) {
+                                for (var i = 0; i < data.photos.photo.length; i++) {
+                                    var photoContent = data.photos.photo[i];
+                                    var photoIcon = L.icon(
+                                        {
+                                            iconUrl: photoContent.url_t,
+                                            iconSize: [photoContent.width_t * 0.5, photoContent.height_t * 0.5]
+                                        }  //reduces thumbnails 50%
+                                    );
+                                    var marker = L.marker([photoContent.latitude, photoContent.longitude], {icon: photoIcon});
+                                    marker.bindPopup(popupHTML(photoContent));
+                                    drawnItems.addLayer(marker);
+                                }
+                            }
+                        })
+                    })
+                };
+
                 $scope.addPointsToMap = function (data) {
                     leafletData.getMap().then(function () {
                         leafletData.getLayers().then(function (baselayers) {
@@ -233,6 +294,7 @@
                         })
                     })
                 };
+
                 $scope.addWktToMap = function (data) {
                     $scope.deleteDrawing();
                     leafletData.getMap().then(function () {
@@ -347,6 +409,10 @@
                                 toggleExpandLeft: $scope.toggleExpandLeft
                             }).addTo(map);
 
+                            new L.Control.Panoramio({
+                                togglePanoramio : $scope.togglePanoramio
+                            }).addTo(map);
+
                             map.on('draw:created', function (e) {
                                 var layer = e.layer;
                                 $scope.deleteDrawing(layer);
@@ -380,6 +446,16 @@
                                     popupService.click(latlng)
                                 }
                             });
+
+                            // map.on('zoomend', function (e) {
+                            //     console.debug("zoomend...");
+                            //     $scope.togglePanoramio();
+                            // })
+
+                            map.on('moveend', function (e) {
+                                console.debug("moveend...");
+                                $scope.togglePanoramio(e.target)
+                            })
 
                             //all setup finished
                             if ($spMapLoaded !== undefined) {

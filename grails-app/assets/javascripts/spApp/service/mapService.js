@@ -102,12 +102,30 @@
                         }
                     },
 
+                    splitBounds: function (min, max) {
+                        var allBounds = []
+
+                        if (min.lng < -180) {
+                            allBounds.push([Math.max(min.lng + 360, -180), min.lat, Math.min(max.lng + 360, 180), max.lat].join(','));
+                        }
+                        //create 2st area, longitude >-180 to <180
+                        if (min.lng < 180 && max.lng > -180) {
+                            allBounds.push([Math.max(min.lng, -180), min.lat, Math.min(max.lng, 180), max.lat].join(','));
+                        }
+                        //create 3rd area, longitude 180 to >180
+                        if (max.lng > 180) {
+                            allBounds.push([Math.max(min.lng - 360, -180), min.lat, Math.min(max.lng - 360, 180), max.lat].join(','));
+                        }
+                        return allBounds;
+                    },
+
                     updateZindex: function () {
                         for (var i = 0; i < this.mappedLayers.length; i++) {
                             this.mappedLayers[i].index = this.mappedLayers.length - i;
                             this.leafletScope.moveLayer(this.getLayer(this.mappedLayers[i].uid), this.mappedLayers[i].index)
                         }
                     },
+
                     removeAll: function () {
                         var layer;
                         while (layer = layers.pop()) {
@@ -122,6 +140,7 @@
                             layers.splice(i, 1)
                         }
                     },
+
                     remove: function (uid) {
                         var deleteIndex;
                         for (var i = 0; i < layers.length; i++) {
