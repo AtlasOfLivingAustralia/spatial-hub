@@ -241,11 +241,11 @@
 
                 $scope.addPhotosToMap = function (data) {
                     var popupHTML = function(photo, licenseName){
-                        var result = "<div style='min-width: 220px;'><h3 class='popover-title'>" + photo.title  + "</h3>";
+                        var result = "<div><h3 class='popover-title'>" + photo.title  + "</h3>";
                         result += "<div class='panel-body'> ";
                         result += "<div class='row'> <div class='col-sm-12'>";
                         result += "<a href='" + photo.url_m + "' target='_blank'>";
-                        result += "<img class='img-thumbnail' src='" + photo.url_s + "' alt='Click to view large image'></a>";
+                        result += "<img class='img-thumbnail' style='display: block; margin: 0 auto;' src='" + photo.url_s + "' alt='Click to view large image'></a>";
                         result += "</div> </div>";
 
                         result += "<div class='row'> <div class='col-sm-12'>";
@@ -279,7 +279,7 @@
                                     var marker = L.marker([photoContent.latitude, photoContent.longitude], {icon: photoIcon});
                                     var license = $scope.licenses[photoContent.license];
                                     // console.debug('license id, name: ' + photoContent.license + "  " + license);
-                                    marker.bindPopup(popupHTML(photoContent, license));
+                                    marker.bindPopup(popupHTML(photoContent, license), {minWidth : 280});
                                     drawnItems.addLayer(marker);
                                 }
                             }
