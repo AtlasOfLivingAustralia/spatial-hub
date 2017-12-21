@@ -2,8 +2,8 @@
     'use strict';
     angular.module('leaflet-map-controller', ['leaflet-directive', 'map-service', 'popup-service'])
         .controller('LeafletMapController', ["$scope", "LayoutService", "$http", "leafletData", "leafletBoundsHelpers",
-            "MapService", '$timeout', 'leafletHelpers', 'PopupService', 'ToolsService',
-            function ($scope, LayoutService, $http, leafletData, leafletBoundsHelpers, MapService, $timeout, leafletHelpers, popupService, ToolsService) {
+            "MapService", '$timeout', 'leafletHelpers', 'PopupService', 'FlickrService', 'ToolsService',
+            function ($scope, LayoutService, $http, leafletData, leafletBoundsHelpers, MapService, $timeout, leafletHelpers, popupService, flickrService, ToolsService) {
                 //ToolsService included so it is initiated
 
                 angular.extend($scope, {
@@ -231,24 +231,36 @@
                         var multipBounds = MapService.splitBounds(bounds.getSouthWest(), bounds.getNorthEast());
                         // console.log(multipBounds);
 
-                        var url = $SH.flickrUrl + '&api_key=' + $SH.flickrApiKey + '&extras=' + encodeURIComponent($SH.flickrExtra) + '&tags=' + encodeURIComponent($SH.flickrTags)
-                                    + '&format=json&nojsoncallback=1&text=landscape&per_page=10&bbox=';
                         for (var i = 0; i < multipBounds.length; i++) {
-                            $http.get(url + multipBounds[i]).then(function (response) {
-                                // console.log(response);
-                                $scope.addPhotosToMap(response.data);
-                            })
+                            flickrService.getPhotos(multipBounds[i]).then(function (data) {
+                                $scope.addPhotosToMap(data);
+                            });
                         }
                     })
                 };
 
                 $scope.addPhotosToMap = function (data) {
-                    var popupHTML = function(photo){
-                        var result = "";
-                        result = '<strong>' + photo.title + '</strong><br>';
-                        result += '<a href="' + photo.url_m + '" target="_blank">';
-                        result += '<img src="' + photo.url_s + '"></a>';
-                        result += '<br/><small>click image to enlarge in new tab</small>';
+                    var popupHTML = function(photo, licenseName){
+                        var result = "<div style='min-width: 220px;'><h3 class='popover-title'>" + photo.title  + "</h3>";
+                        result += "<div class='panel-body'> ";
+                        result += "<div class='row'> <div class='col-sm-12'>";
+                        result += "<a href='" + photo.url_m + "' target='_blank'>";
+                        result += "<img class='img-thumbnail' src='" + photo.url_s + "' alt='Click to view large image'></a>";
+                        result += "</div> </div>";
+
+                        result += "<div class='row'> <div class='col-sm-12'>";
+                        result += "<b>Title: </b>" + photo.title;
+                        result += "</div> </div>";
+                        result += "<div class='row'> <div class='col-sm-12'>";
+                        result += "<b>Date : </b>" + photo.datetaken;
+                        result += "</div> </div>";
+                        result += "<div class='row'> <div class='col-sm-12'>";
+                        result += "<b>Owner: </b>" + photo.ownername;
+                        result += "</div> </div>";
+                        result += "<div class='row'> <div class='col-sm-12'>";
+                        result += "<b>License: </b>" + licenseName;
+                        result += "</div> </div>";
+                        result += "</div> </div>";
                         return result;
                     };
 
@@ -265,7 +277,9 @@
                                         }  //reduces thumbnails 50%
                                     );
                                     var marker = L.marker([photoContent.latitude, photoContent.longitude], {icon: photoIcon});
-                                    marker.bindPopup(popupHTML(photoContent));
+                                    var license = $scope.licenses[photoContent.license];
+                                    // console.debug('license id, name: ' + photoContent.license + "  " + license);
+                                    marker.bindPopup(popupHTML(photoContent, license));
                                     drawnItems.addLayer(marker);
                                 }
                             }
@@ -388,6 +402,12 @@
                     })
                 };
 
+                $scope.getLicenses = function (){
+                    flickrService.getLicenses().then (function (data) {
+                        $scope.licenses = data
+                    });
+                }
+
                 $scope.setupTriggers = function () {
                     leafletData.getMap().then(function (map) {
                         leafletData.getLayers().then(function (baselayers) {
@@ -447,11 +467,6 @@
                                 }
                             });
 
-                            // map.on('zoomend', function (e) {
-                            //     console.debug("zoomend...");
-                            //     $scope.togglePanoramio();
-                            // })
-
                             map.on('moveend', function (e) {
                                 console.debug("moveend...");
                                 $scope.togglePanoramio(e.target)
@@ -470,6 +485,7 @@
                     $scope.invalidate();
                     $timeout(function () {
                         $scope.setupTriggers();
+                        $scope.getLicenses();
                     }, 0)
                 }, 0)
 

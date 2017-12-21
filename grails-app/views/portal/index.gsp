@@ -54,9 +54,13 @@
         baseLayers: ${(config.startup.baselayers as grails.converters.JSON).toString().encodeAsRaw()},
         defaultBaseLayer: '${config.startup.baselayer.default}',
         flickrUrl: '${config.flickr.url}',
+        flickrLicensesInfo: '${config.flickr.licensesInfo}',
+        flickrSearchPhotos: '${config.flickr.searchPhotos}',
         flickrApiKey: '${config.flickr.apiKey}',
         flickrTags: '${config.flickr.tags}',
         flickrExtra: '${config.flickr.extra}',
+        flickrContentType: '${config.flickr.contentType}',
+        flickrGeoContext: '${config.flickr.geoContext}',
         validUrls: [
             'self',
             'http://*.ala.org.au/**',
