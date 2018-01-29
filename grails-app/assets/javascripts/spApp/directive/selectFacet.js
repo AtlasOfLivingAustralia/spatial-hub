@@ -15,6 +15,7 @@
                         scope.facet = {};
                         scope.facets = [];
                         scope.facetList = [];
+                        scope.exportUrl = null;
 
                         FacetAutoCompleteService.search("-*:*").then(function (data) {
                             scope.facets = data
@@ -104,6 +105,7 @@
                             }, pageSize, offset, config).then(function (data) {
                                 if (data.length > 0) {
                                     scope.facetList = data[0].fieldResult;
+                                    scope.exportUrl = BiocacheService.facetDownload(scope.facet);
                                     scope.max = data[0].count;
                                     scope.maxPages = Math.ceil(scope.max / scope.pageSize)
                                 } else {

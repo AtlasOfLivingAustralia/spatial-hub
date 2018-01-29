@@ -134,6 +134,9 @@
                         });
                     })
                 },
+                facetDownload: function(facet){
+                    return $SH.biocacheServiceUrl + '/occurrences/facets/download?facets=' + facet + '&count=true';
+                },
                 joinAndEncode: function (list) {
                     var q = '';
                     if (list instanceof Array) {
