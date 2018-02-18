@@ -20,6 +20,11 @@
         </button>
     </div>
 
+    <a download="facets list"
+       ng-href="{{exportUrl}}" ng-show="exportUrl != null">
+        <span style="float:right" i18n="51">Download</span><i class=" pull-right glyphicon glyphicon-download-alt"></i>
+    </a>
+
     <table ng-hide="updatingPage" class="table layers-table table-striped" style="margin-top:10px;width:100%;height:250px;overflow:scroll;display:block">
         <tr ng-repeat="x in facetList">
             <td style="width:20px"><input type="checkbox" ng-model="x.selected"

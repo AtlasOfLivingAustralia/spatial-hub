@@ -476,6 +476,9 @@
                         });
                     })
                 },
+                facetDownload: function(facet){
+                    return $SH.biocacheServiceUrl + '/occurrences/facets/download?facets=' + facet + '&count=true';
+                },
                 /**
                  * Encode and join a list of q and fq terms
                  *
