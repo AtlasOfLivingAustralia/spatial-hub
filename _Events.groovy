@@ -59,6 +59,19 @@ def build(String baseDir) {
             '/* Do not edit. This file built at compile by _Events.groovy */\n$spAppModules = ["' + moduleList.join('","').replaceAll("\\.js",'') + '"];')
 
 
+    // jsdoc
+    println 'Starting JSDoc'
+    final exec2 = proc.command('npm', 'run', 'jsdoc').start()
+    def exitValue2 = exec2.waitFor()
+    if (exitValue2) {
+        println '*****************************************************'
+        println '* `npm run jsdoc` failed'
+        println "* Exit value: $exitValue                            *"
+        println '*****************************************************'
+    } else {
+        println 'Completed jsdoc'
+    }
+
     //i18n'ify templates
 
     String [] textElements = ["h1", "h2", "h3", "h4", "h5", "h6", "label", "span", "div", "input", "p", "button", "td", "option"]

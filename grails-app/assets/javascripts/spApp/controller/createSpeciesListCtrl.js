@@ -16,6 +16,13 @@
  */
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc controller
+     * @name CreateSpeciesListCtrl
+     * @description
+     *   Create a new species list
+     */
     angular.module('create-species-list-ctrl', ['map-service', 'biocache-service', 'layers-service'/*, 'ala.sandbox.preview'*/])
         .controller('CreateSpeciesListCtrl', ['$scope', '$controller', 'MapService', '$timeout', 'LayoutService', '$uibModalInstance',
             'BiocacheService', 'LayersService', 'ListsService', 'data', 'BieService',

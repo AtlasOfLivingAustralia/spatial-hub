@@ -1,5 +1,12 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc directive
+     * @name nearestLocality
+     * @description
+     *   Panel for map location selection and display of nearest gazetteer points
+     */
     angular.module('nearest-locality-directive', ['map-service', 'layers-service', 'predefined-areas-service'])
         .directive('nearestLocality', ['$rootScope', 'MapService', '$timeout', 'LayersService', 'LayoutService',
             'PredefinedAreasService', "$http", '$filter',
@@ -93,7 +100,7 @@
                                     scope.searching = false;
 
                                     var rows = "";
-                                    for (var i=0;i<scope.points.length;i++) {
+                                    for (var i=0; i<scope.points.length; i++) {
                                         var p = scope.points[i];
                                         rows += "\n\"" + p.name.replace("\"", "\\\"") + "\"," + p.geometry + "," + p.distance + "," + p.degrees
                                     }

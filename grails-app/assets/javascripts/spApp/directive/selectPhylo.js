@@ -1,5 +1,12 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc directive
+     * @name selectPhylo
+     * @description
+     *    Table with selectable phylogenetic trees from phylolink
+     */
     angular.module('select-phylo-directive', ['phylo-service'])
         .directive('selectPhylo', ['$http', 'PhyloService', 'LayoutService', '$timeout',
             function ($http, PhyloService, LayoutService, $timeout) {
@@ -47,7 +54,6 @@
                                 scope._selection.pop()
                             }
                         };
-
 
 
                         scope.init = function () {

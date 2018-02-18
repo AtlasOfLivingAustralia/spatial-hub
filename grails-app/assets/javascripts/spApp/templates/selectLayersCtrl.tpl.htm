@@ -29,7 +29,18 @@
 
     <div ng-show="mode == ''">
 
-        <div class="container" style="width:680px">
+        <div style="float:left;width:150px;margin-right:10px">
+            <p class="small">The colours against the layers are like traffic lights. Green implies the layer is
+                uncorrelated to all selected layers, orange implies some correlation while red implies high correlation.
+                As you select layers, the colours change to reflect correlation with already selected layers. For
+                example a red layer implies high correlation with at least one selected layer while a green layer
+                implies little or no correlation to any selected layer
+                <br/>
+                Note: The correlations are currently based on full layer spatial extents and not any selected sub-area.
+            </p>
+        </div>
+
+        <div class="container" style="width:650px;float:right">
             <div style="margin-left: -15px;">
                 <div ng-hide="layers == undefined || layers.length == 0">
                     <label i18n="226" style="width:120px">Search</label><input style="width:300px" layer-auto-complete

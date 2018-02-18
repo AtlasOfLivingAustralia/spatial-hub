@@ -1,5 +1,12 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc service
+     * @name MapService
+     * @description
+     *   Access to map functions
+     */
     angular.module('map-service', ['layers-service', 'facet-auto-complete-service', 'biocache-service', 'logger-service'])
         .factory("MapService", ['LayoutService', '$q', '$timeout', 'LayersService', 'FacetAutoCompleteService', 'BiocacheService', 'ColourService', 'LoggerService',
             function (LayoutService, $q, $timeout, LayersService, FacetAutoCompleteService, BiocacheService, ColourService, LoggerService) {
@@ -117,9 +124,7 @@
                                 }
                             }
 
-                            delete leafletLayers[layers[i].uid];
-
-                            layers.splice(i, 1)
+                            delete leafletLayers[layer.uid];
                         }
                     },
                     remove: function (uid) {

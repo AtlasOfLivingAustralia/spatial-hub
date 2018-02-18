@@ -1,5 +1,12 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc service
+     * @name PredefinedLayerListsService
+     * @description
+     *   List of predefined layer lists
+     */
     angular.module('predefined-layer-lists-service', [])
         .factory("PredefinedLayerListsService", [function () {
             return {

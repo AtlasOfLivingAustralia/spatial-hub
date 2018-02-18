@@ -16,6 +16,13 @@
  */
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc controller
+     * @name AnalysisCtrl
+     * @description
+     *   Retrieve spatial-service analysis results
+     */
     angular.module('analysis-ctrl', ['layout-service'])
         .controller('AnalysisCtrl', ['$scope', '$rootScope', '$uibModalInstance', '$timeout', '$http', 'LayoutService', 'data', 'LoggerService',
             function ($scope, $rootScope, $uibModalInstance, $timeout, $http, LayoutService, inputData, LoggerService) {

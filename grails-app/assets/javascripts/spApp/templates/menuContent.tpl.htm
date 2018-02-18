@@ -8,8 +8,10 @@
             </button>
             <ul class="dropdown-menu" role="menu" aria-labelledby="menu-{{ $index }}">
                 <li role="menuitem" ng-repeat="button in menu.items">
-                    <a ng-if="button['ng-click']" href="#" ng-click="run(button['ng-click'])">{{ button.name }}</a>
-                    <a ng-if="button['url']" target="_blank" href="{{ button.url }}">{{ button.name }}</a>
+                    <a ng-if="button['open'].match('^https?://.*') == null" href="#" ng-click="run(button)">{{
+                        button.name }}</a>
+                    <a ng-if="button['open'].match('^https?://.*') != null" target="_blank" href="{{ button.open }}">{{
+                        button.name }}</a>
                 </li>
             </ul>
         </div>

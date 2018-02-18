@@ -1,5 +1,12 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc directive
+     * @name selectMultipleArea
+     * @description
+     *    Multiple area selection controls
+     */
     angular.module('select-multiple-area-directive', ['map-service', 'predefined-areas-service'])
         .directive('selectMultipleArea', ['$http', 'MapService', 'PredefinedAreasService', 'LayoutService',
             'LayersService', '$q', function ($http, MapService, PredefinedAreasService, LayoutService, LayersService, $q) {

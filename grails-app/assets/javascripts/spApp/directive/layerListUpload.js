@@ -1,5 +1,12 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc directive
+     * @name layerListUpload
+     * @description
+     *   Control to upload a text file into the client
+     */
     angular.module('layer-list-upload-directive', []).directive('layerListUpload', ['$timeout', function ($timeout) {
         return {
             scope: {

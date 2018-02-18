@@ -1,5 +1,12 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc controller
+     * @name SessionsCtrl
+     * @description
+     *   Display saved sessions
+     */
     angular.module('sessions-ctrl', ['sessions-service'])
         .controller('SessionsCtrl', ['$scope', '$timeout', 'SessionsService', 'MapService', '$uibModalInstance',
             function ($scope, $timeout, SessionsService, MapService, $uibModalInstance) {

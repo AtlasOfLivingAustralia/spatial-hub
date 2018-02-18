@@ -1,5 +1,12 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc service
+     * @name ToolExportSampleService
+     * @description
+     *   Client side tool to export points of occurrence layers
+     */
     angular.module('tool-export-sample-service', [])
         .factory("ToolExportSampleService", ["$http", "$q", "MapService", "LayersService", "BiocacheService", function ($http, $q, MapService, LayersService, BiocacheService) {
             return {
@@ -36,9 +43,9 @@
                                 "optional": true
                             }
                         }
-                        ],
-                        "description": "Export points."
-                    },
+                    ],
+                    "description": "Export points."
+                },
 
                 execute: function (inputs) {
                     var area = inputs[0];

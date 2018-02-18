@@ -1,5 +1,12 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc service
+     * @name LayoutService
+     * @description
+     *   Management of spatial-hub dialogs and panels
+     */
     angular.module('layout-service', [])
         .factory("LayoutService", ['$uibModal', '$timeout', function ($uibModal, $timeout) {
 
@@ -8,6 +15,7 @@
             var layoutStack = [];
             var toOpenStack = [];
             var panelMode = ['default'];
+            var panels = ['default', 'area', 'envelope', 'nearestLocality', 'pointComparison'];
 
             //default, area
             var panelData = {
@@ -95,6 +103,10 @@
                 /* clear all saved panel info */
                 clear: function (data) {
                     layoutStack = []
+                },
+                /* list valid panels */
+                panels: function () {
+                    return panels
                 },
                 /* close a panel */
                 closePanel: function (data) {

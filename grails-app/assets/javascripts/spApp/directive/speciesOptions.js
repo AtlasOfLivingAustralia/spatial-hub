@@ -1,5 +1,12 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc directive
+     * @name speciesOptions
+     * @description
+     *    General occurrence layer filter toggles
+     */
     angular.module('species-options-directive', ['map-service', 'lists-service'])
         .directive('speciesOptions', ['MapService', 'ListsService', '$timeout', 'LayoutService',
             function (MapService, ListsService, $timeout, LayoutService) {

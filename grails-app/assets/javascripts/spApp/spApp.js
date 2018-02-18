@@ -1,6 +1,6 @@
 var spApp = angular.module('spApp', ['leaflet-directive', 'ngAnimate', 'ui.bootstrap', 'ui.sortable', 'ui.slider',
     'ngRoute', 'ngAnimate', 'chieffancypants.loadingBar', 'ngFileUpload', 'ngTouch', 'ala.sandbox.components',
-    'ngAria',
+    'ngAria'
     ].concat($spAppModules))
 
     .factory('ConfigService', [function () {
@@ -10,6 +10,13 @@ var spApp = angular.module('spApp', ['leaflet-directive', 'ngAnimate', 'ui.boots
 
 spApp.value('sandboxConfig', SANDBOX_CONFIG);
 spApp.value('existing', 1);
+
+spApp.config(['$routeProvider', function ($routeProvider) {
+    $routeProvider.otherwise({
+        templateUrl: '/spApp/spApp.htm'
+    });
+
+}]);
 
 spApp.config(['$locationProvider', function ($locationProvider) {
     $locationProvider.html5Mode({
@@ -22,8 +29,6 @@ spApp.config(['$locationProvider', function ($locationProvider) {
 spApp.config(['cfpLoadingBarProvider', function (cfpLoadingBarProvider) {
     cfpLoadingBarProvider.includeSpinner = false;
 }]);
-
-fetchData().then(bootstrapApplication);
 
 function fetchData() {
     var initInjector = angular.injector(["ng"]);
@@ -99,9 +104,16 @@ spApp.config(['$provide', function ($provide) {
     })
 }]);
 
+angular.element($('sp-app')[0]).ready(function () {
+    var view = $('<div ng-view></div>');
+    $('sp-app').append(view);
+
+    fetchData().then(bootstrapApplication);
+});
+
 function bootstrapApplication() {
-    angular.element(document).ready(function () {
-        angular.bootstrap(document, ['spApp'], {
+    angular.element($('sp-app')[0]).ready(function () {
+        angular.bootstrap($('sp-app')[0], ['spApp'], {
             strictDi: true
         });
     });
@@ -118,6 +130,7 @@ $spMapLoaded = function () {
 $spBootstrapReady = function () {
     $spBootstrapState = true;
     setTimeout( $spPageLoadingHide, 0 );
+    setTimeout(initLayoutContainer, 2000);
 };
 $spPageLoadingHide = function () {
     if ($spMapLoadedState && $spBootstrapState) {
@@ -151,66 +164,47 @@ resizeSouth = function(a,b,c) {
     $('.ui-layout-resizer')[0].style.maxWidth = '350px';
 };
 
-$(window).on("resize", function () {
+initLayoutContainer = function () {
+    $(window).on("resize", function () {
+        if ($('.ui-layout-container')[0]) {
+            $SH.defaultPaneResizer = $('.ui-layout-container').layout({
+                west: {
+                    spacing_open: 0,
+                    spacing_closed: 0
+                },
+                east: {
+                    spacing_open: 0,
+                    spacing_closed: 0
+                },
+                north: {
+                    spacing_open: 0,
+                    spacing_closed: 0
+                },
+                south: {
+                    togglerLength_open: 0,
+                    togglerLength_closed: 0,
+                    resizerCursor: "ns-resize",
+                    size: $(window).height() - 350,
+                    spacing_closed: 40,
+                    onresize: 'resizeSouth',
+                    minSize: 40
+                }
+            });
 
-    $SH.defaultPaneResizer = $('.ui-layout-container').layout({
-        west: {
-            spacing_open: 0,
-            spacing_closed: 0
-        },
-        east: {
-            spacing_open: 0,
-            spacing_closed: 0
-        },
-        north: {
-            spacing_open: 0,
-            spacing_closed: 0
-        },
-        south: {
-            togglerLength_open: 0,
-            togglerLength_closed: 0,
-            resizerCursor: "ns-resize",
-            size: $(window).height() - 350,
-            spacing_closed: 40,
-            onresize: 'resizeSouth',
-            minSize: 40
+            setTimeout(function () {
+                //$('#left-panel')[0].style.overflowY = "scroll";
+                $('#left-panel')[0].style.maxHeight = $('#map').height() + "px";
+
+                setTimeout(function () {
+                    $SH.defaultPaneResizer.resizeAll();
+                    $SH.defaultPaneResizer.hide('south');
+                }, 100);
+            }, 100)
         }
-    });
-
-    setTimeout(function() {
-        //$('#left-panel')[0].style.overflowY = "scroll";
-        $('#left-panel')[0].style.maxHeight = $('#map').height() + "px";
-
-        setTimeout(function () {
-            $SH.defaultPaneResizer.resizeAll();
-            $SH.defaultPaneResizer.hide('south');
-        }, 100);
-    }, 100)
-}).trigger("resize");
+    }).trigger("resize");
+}
 
 L.Icon.Default.imagePath = 'assets/leaflet/dist/images';
-
-//call this after adding data to a fixed-head table
-$resizeTables = function () {
-    // var tables = $('table.fixed-head');
-    // tables.each(function () {
-    //     var widths = $(this).find('tbody tr:first').children().map(function (i, v) {
-    //         return $(this).width()
-    //     }).get();
-    //
-    //     $(this).find('thead tr').children().each(function (i, v) {
-    //         $(v).width(widths[i]);
-    //     });
-    // })
-};
-//
-// $(window).resize(function () {
-//     $resizeTables()
-//     setTimeout( function() {
-//         $SH.defaultPaneResizer.resizeAll();
-//         $SH.defaultPaneResizer.hide('south');
-//     }, 100);
-// }).resize(); // Trigger resize handler
 
 jQuery.ui.autocomplete.prototype._resizeMenu = function () {
     var ul = this.menu.element;

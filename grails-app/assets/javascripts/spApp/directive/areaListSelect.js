@@ -1,5 +1,12 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc directive
+     * @name areaListSelect
+     * @description
+     *   Radio button list of predefined areas
+     */
     angular.module('area-list-select-directive', ['predefined-areas-service']).directive('areaListSelect',
         ['PredefinedAreasService', function (PredefinedAreasService) {
             return {

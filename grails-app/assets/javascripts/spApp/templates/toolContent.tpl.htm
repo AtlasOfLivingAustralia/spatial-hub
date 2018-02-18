@@ -82,14 +82,18 @@
                                     <label ng-if="sv.name !== undefined && sv.name !== v.description" >{{v.description}}</label>
                                     <br ng-if="sv.name !== undefined && sv.name !== v.description" />
                                     <select ng-model="values[i]">
-                                        <option ng-repeat="x in v.constraints.content" ng-value="x" ng-bind="v.constraints.labels[$index] || x"></option>
+                                        <option ng-repeat="x in v.constraints.content" ng-value="x">
+                                            {{v.constraints.labels[$index] || x}}
+                                        </option>
                                     </select>
                                 </div>
                                 <div ng-if="v.type == 'list' && v.constraints.selection != 'single'">
                                     <label ng-if="sv.name !== undefined && sv.name !== v.description" >{{v.description}}</label>
                                     <br ng-if="sv.name !== undefined && sv.name !== v.description" />
                                     <select ng-model="values[i]" multiple>
-                                        <option ng-repeat="x in v.constraints.content" ng-value="x" ng-bind="v.constraints.labels[$index] || x"></option>
+                                        <option ng-repeat="x in v.constraints.content" ng-value="x">
+                                            {{v.constraints.labels[$index] || x}}
+                                        </option>
                                     </select>
                                 </div>
                                 <div ng-if="v.type == 'phylogeneticTree'">

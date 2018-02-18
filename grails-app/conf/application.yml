@@ -1,5 +1,7 @@
 ---
 grails:
+    cors:
+        enabled: true
     profile: web
     codegen:
         defaultPackage: au.org.ala.spatial.portal
@@ -101,25 +103,7 @@ grails:
         minifyOptions:
             excludes:
                 - '**/*.min.js'
-        excludes:
-            - 'node_modules/**'
-            - 'target/**'
-        plugin:
-            'sandbox-hub':
-                excludes:
-                    - '**/*.*'
-            'ala-bootstrap3':
-                excludes:
-                    - '**/*.*'
         enableGzip: true
-
-#    ziplet:
-#        urlPatterns :
-#            - '/*'
-#        enabled : true
-#        includeContentTypes:
-#            - 'text/javascript'
-#            - 'application/json'
             
     cache:
         enabled: true
@@ -140,7 +124,7 @@ security:
         casServerUrlPrefix: 'https://auth.ala.org.au/cas'
         bypass: false # set to true for non-ALA deployment
         disableCAS: false
-        
+
         autocompleteUrl: 'https://bie.ala.org.au/ws/search/auto.jsonp'
         
     auth:
@@ -205,6 +189,8 @@ viewConfig:
 
 sessions:
     dir: '/data/spatial-hub/sessions'
+
+admin_role: 'ROLE_ADMIN'
     
 skin:
     fluidLayout: true
@@ -224,6 +210,8 @@ cache:
 
 phylolink:
     url: 'http://phylolink.ala.org.au'
+
+apiKeyCheckUrlTemplate: 'https://auth.ala.org.au/apikey/ws/check?apikey={0}'
 
 character:
     encoding: UTF-8
@@ -280,11 +268,25 @@ startup:
             type: 'google'
             exportType: 'normal'
             link: 'https://www.google.com/intl/en_au/help/terms_maps.html'
-    
+
+defaultareas:
+    - name: 'Australia'
+      fqs: ['longitude:[112 TO 154]', 'latitude:[-44 TO -9]']
+      wkt: 'POLYGON((112.0 -44.0,154.0 -44.0,154.0 -9.0,112.0 -9.0,112.0 -44.0))'
+      areaSqKm: 16322156.76
+      bbox: [112, -44, 154, -9]
+    - name: 'World'
+      fqs: []
+      wkt: 'POLYGON((-180 -90.0,-180.0 90.0,180.0 90.0,180 -90.0,-180 -90.0))'
+      areaSqKm: 510000000
+      bbox: [-180, -90, 180, 90]
+
 ---
 environments:
     development:
         grails:
-                serverURL: http://devt.ala.org.au
+          serverURL: http://devt.ala.org.au
     test:
     production:
+        assets:
+          bundle: true

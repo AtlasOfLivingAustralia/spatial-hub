@@ -3,10 +3,63 @@
  */
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc service
+     * @name UrlParamsService
+     * @description
+     *   Service that alters the map with URL parameters
+     */
     angular.module('url-params-service', ['layers-service', 'facet-auto-complete-service', 'biocache-service', 'map-service', "layout-service"])
         .factory("UrlParamsService", ['$rootScope', '$timeout', 'LayersService', 'BiocacheService', 'MapService', "LayoutService", "SessionsService", "$q",
             function ($rootScope, $timeout, LayersService, BiocacheService, MapService, LayoutService, SessionsService, $q) {
                 var _this = {
+                    /**
+                     * Alter the map with URL parameters
+                     *
+                     * Valid parameters:
+                     * * Settings for all layers added with this method
+                     *  - ```ws```: biocache-hub URL for any layers added with this method. e.g. ```ws=https://biocache.ala.org.au```
+                     *  - ```bs```: biocache-service URL for any layers added with this method. e.g. ```bs=https://biocache.ala.org.au/ws```
+                     * * Global to the whole session
+                     *  - ```wmscache```: ON/OFF for the current session (TODO: implement this)
+                     * * Map control
+                     *  - ```bbox```: zoom to this area with Min Lng, Min Lat, Max Lng, Max Lat. e.g. ```bbox=112,-42,154,-9```
+                     * * Open a tool
+                     *  - ```tool```: name of tool to open. This can be any client side or spatial-service tool (TODO: support more than phylogeneticdiversity and exportBCCVL). e.g. ```tool=exportBCCVL```
+                     *  - ```toolParameters```: JSON Map of inputName:value for 'tool'. e.g. ```toolParameters={}```
+                     * * Add one species layer
+                     *  - ```qname```: display name for the 'q' layer. e.g. ```qname=My URL layer```
+                     *  - ```q```: biocache-service q term for occurrences layer to add. e.g. ```q=state:Queensland```
+                     *  - ```species_lsid```: LSID for occurrences layer to add. e.g. ```species_lsid=urn:lsid:biodiversity.org.au:afd.taxon:e6aff6af-ff36-4ad5-95f2-2dfdcca8caff```
+                     *  - ```fq```: biocache-service fq term for occurrences layer to add. e.g. ```fq=geospatial_kosher:true```
+                     *  - ```qc```: biocache-service fq term for occurrences layer to add. e.g. ```qc=data_hub_uid:dh1```
+                     *  - ```wkt```: WKT value for the occurrences layer to add. e.g. ```wkt=POLYGON((...))```
+                     *  - ```psize```: integer value specifying the default occurrence layer point size (pixel radius) for
+                     *  layer to add. e.g. ```psize=10```
+                     *  - ```popacity```: decimal value (0-1) for opacity of the layer to add. ```e.g. popacity=0.5```
+                     *  - ```pcolour```: RBG colour of the layer being added. e.g. red ```pcolor=FF0000```
+                     *  - ```ptype```: point type of the layer being added. e.g. 'grid' to display as grid values. e.g. ```ptype=grid```
+                     *  - ```cm```: occurrence layer colour mode, e.g. a valid biocache-service facet from ```http://biocache.ala.org.au/fields?filter=indexed:true&max=10&sort=name&order=ASC````
+                     *  - ```lat```: biocache-service lat/lon/radius terms for occurrences layer to add. e.g. ```lat=-22```
+                     *  - ```lon```: biocache-service lat/lon/radius terms for occurrences layer to add. e.g. ```lng=131```
+                     *  - ```radius```: biocache-service lat/lon/radius terms for occurrences layer to add. e.g. ```radius=10```
+                     *  -  ```includeDistributions```: Add expert distributions that match the species
+                     * * Load a previously saved session. Adds layers and changes map state
+                     *  - ```ss```: saved session to load. e.g. ```ss=0029233```
+                     *  - ```dynamic``: e.g. 'true' to support dynamic (TODO: ?)
+                     * * Add one or more areas to the map
+                     *  - pid: comma delimited list of area PIDs to add to the map
+                     * * Add multiple species layers
+                     *  - ```lyN```: (N=1..) name of layer. e.g. ```ly1=My layer```
+                     *  - ```lyN.q```: (N=1..) species query for this layer. e.g. ```ly1.q=state:Queensland```
+                     *  - ```lyN.s```: (N=1..) layer color. e.g. ```ly1.s=FF0000```
+                     * * Add one or more environmental or contextual layers
+                     *  - ```layers```: comma delimited list of layers to add. e.g. ```layers=cl1,el2```
+                     *
+                     * @memberof UrlParamsService
+                     * @param {Map} URL parameters
+                     */
                     processUrlParams: function (params) {
 
                         var biocacheServiceUrl = $SH.biocacheServiceUrl;
@@ -156,15 +209,8 @@
                                 parameters = JSON.parse(toolParameters);
                             if (tool === 'phylogeneticdiversity') {
                                 //TODO: translate SpatialPortal phylogenetic diversity input parameters to SpatialHub format
-                                var input = {};
-                                // for (var k in parameters) {
-                                // }
-                                LayoutService.openModal('tool', {processName: tool, input: input}, false)
-                            } else if (tool === 'exportBCCVL') {
-                                LayoutService.openModal(tool, parameters, false)
-                            } else {
-                                LayoutService.openModal('tool', {processName: tool}, false)
                             }
+                            LayoutService.openModal('tool', {processName: tool, input: parameters}, false)
                         }
                     },
                     mapObjectFromParams: function (params) {

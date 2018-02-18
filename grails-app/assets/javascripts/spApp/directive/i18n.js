@@ -1,5 +1,12 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc directive
+     * @name i18n
+     * @description
+     *   Replace text when there is an i18n replacement
+     */
     angular.module('i18n-directive', []).directive('i18n',
         ['$compile', 'i18nService', '$timeout', function ($compile, i18nService, $timeout) {
             return {

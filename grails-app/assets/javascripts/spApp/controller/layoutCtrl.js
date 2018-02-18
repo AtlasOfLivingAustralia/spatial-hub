@@ -1,5 +1,12 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc controller
+     * @name LayoutCtrl
+     * @description
+     *   main spatial-hub container
+     */
     angular.module('layout-ctrl', ['layout-service', 'url-params-service'])
         .controller('LayoutCtrl', ['$scope', 'LayoutService', 'SessionsService', '$timeout', '$location', 'MapService', 'UrlParamsService',
             function ($scope, LayoutService, SessionsService, $timeout, $location, MapService, UrlParamsService) {
@@ -34,11 +41,11 @@
 
                 //init a saved session
                 $scope.loadSession = function (sessionId) {
-                    // if (sessionId) sessionId = sessionId[0].replace('?ss=', '').replace('&ss=', '');
-                    //
-                    // if (sessionId) {
-                    //     SessionsService.load(sessionId)
-                    // }
+                    if (sessionId) sessionId = sessionId[0].replace('?ss=', '').replace('&ss=', '');
+
+                    if (sessionId) {
+                        SessionsService.load(sessionId)
+                    }
                 };
 
                 $timeout(function () {

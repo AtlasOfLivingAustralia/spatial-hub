@@ -16,6 +16,13 @@
  */
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc directive
+     * @name leafletQuickLinks
+     * @description
+     *   Quicklinks panel
+     */
     angular.module('leaflet-quick-links-directive', ['leaflet-directive'])
         .directive('leafletQuickLinks', [
             function () {

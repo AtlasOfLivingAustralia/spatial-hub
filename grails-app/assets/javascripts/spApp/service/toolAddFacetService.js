@@ -1,5 +1,12 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc service
+     * @name ToolAddFacetService
+     * @description
+     *   Client side tool to add occurrence facet layers to the map
+     */
     angular.module('tool-add-facet-service', [])
         .factory("ToolAddFacetService", ["$http", "$q", "MapService", "LayersService", "BiocacheService", function ($http, $q, MapService, LayersService, BiocacheService) {
             return {
@@ -32,8 +39,8 @@
                                 "optional": false
                             }
                         }],
-                        "description": "Add species using a facet."
-                    },
+                    "description": "Add species using a facet."
+                },
 
                 execute: function (inputs) {
                     var area = inputs[0][0];

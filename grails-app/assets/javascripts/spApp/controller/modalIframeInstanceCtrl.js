@@ -1,5 +1,14 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc controller
+     * @name ModalIframeInstanceCtrl
+     * @description
+     *   Display a modal dialog with contents from one of
+     *   - URL
+     *   - text
+     */
     angular.module('modal-iframe-instance-ctrl', [])
         .controller('ModalIframeInstanceCtrl', ['$scope', '$uibModalInstance', 'src', 'title', 'notes',
             function ($scope, $uibModalInstance, src, title, notes) {

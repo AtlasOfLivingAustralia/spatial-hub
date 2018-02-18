@@ -6,7 +6,6 @@ import org.springframework.context.EnvironmentAware
 import org.springframework.core.env.Environment
 import org.springframework.core.env.PropertiesPropertySource
 
-
 class Application extends GrailsAutoConfiguration implements EnvironmentAware {
     static void main(String[] args) {
         GrailsApp.run(Application, args)
@@ -36,4 +35,35 @@ class Application extends GrailsAutoConfiguration implements EnvironmentAware {
             environment.propertySources.addFirst(new PropertiesPropertySource(envName + "cas", properties))
         }
     }
+//
+//    // 3. **Optionally** define a custom docket or omit this step to use the default
+//     //For grails it is preferrable to use use the following settings.
+//    @Bean
+//    Docket api() {
+//        new Docket(DocumentationType.SWAGGER_2)
+//                .ignoredParameterTypes(MetaClass)
+//                .select()
+//                .paths(regex("/|/portal/.*"))
+//                .build()
+//    }
+//
+//    // 4. **Optionally** in the absense of asset pipeline configure the swagger-ui webjar to serve the scaffolded swagger UI
+//    @Bean
+//    static WebMvcConfigurerAdapter webConfigurer() {
+//        new WebMvcConfigurerAdapter() {
+//            @Override
+//            void addResourceHandlers(ResourceHandlerRegistry registry) {
+//                if (!registry.hasMappingForPattern("/webjars/**")) {
+//                    registry
+//                            .addResourceHandler("/webjars/**")
+//                            .addResourceLocations("classpath:/META-INF/resources/webjars/")
+//                }
+//                if (!registry.hasMappingForPattern("/swagger-ui.html")) {
+//                    registry
+//                            .addResourceHandler("/swagger-ui.html")
+//                            .addResourceLocations("classpath:/META-INF/resources/swagger-ui.html")
+//                }
+//            }
+//        }
+//    }
 }

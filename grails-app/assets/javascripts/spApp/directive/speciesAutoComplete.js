@@ -1,5 +1,12 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc directive
+     * @name selectSpecies
+     * @description
+     *    Species autocomplete
+     */
     angular.module('species-auto-complete-directive', ['species-auto-complete-service'])
         .directive('speciesAutoComplete', ['$timeout', 'SpeciesAutoCompleteService', function ($timeout, SpeciesAutoCompleteService) {
             return {

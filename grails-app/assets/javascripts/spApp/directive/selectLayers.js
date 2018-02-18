@@ -1,5 +1,12 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc directive
+     * @name selectLayers
+     * @description
+     *   Layer selection controls
+     */
     angular.module('select-layers-directive', ['lists-service', 'layer-distances-service', 'map-service',
         'predefined-layer-lists-service'])
         .directive('selectLayers', ['$http', '$timeout', 'LayersService', 'LayerDistancesService', 'MapService',
