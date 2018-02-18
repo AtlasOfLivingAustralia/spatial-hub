@@ -16,6 +16,13 @@
  */
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc service
+     * @name PopupService
+     * @description
+     *   Map popup generation
+     */
     angular.module('popup-service', ['leaflet-directive', 'map-service', 'biocache-service'])
         .factory("PopupService", ['$rootScope', '$compile', '$http', '$window', '$templateRequest', 'leafletData', 'MapService', 'BiocacheService',
             function ($rootScope, $compile, $http, $window, $templateRequest, leafletData, mapService, biocacheService) {
@@ -234,6 +241,32 @@
                 }
 
                 return {
+                    /**
+                     * Open a popup on the map with information about a coordinate.
+                     *
+                     * @memberof PopupService
+                     * @param (latlng) latlng coordinate input coordinate as {lat:latitude, lng:longitude}
+                     *
+                     * @example:
+                     * Input:
+                     * - latlng
+                     *  {lat:latitude, lng:longitude}
+                     * Output:
+                     *  [{
+                        "studyId": 92,
+                        "focalClade": "Acacia",
+                        "treeFormat": "newick",
+                        "studyName": "Miller, J. T., Murphy, D. J., Brown, G. K., Richardson, D. M. and González-Orozco, C. E. (2011), The evolution and phylogenetic placement of invasive Australian Acacia species. Diversity and Distributions, 17: 848–860. doi: 10.1111/j.1472-4642.2011.00780.x",
+                        "year": 2011,
+                        "authors": "Acacia – Miller et al 2012",
+                        "doi": "http://onlinelibrary.wiley.com/doi/10.1111/j.1472-4642.2011.00780.x/full",
+                        "numberOfLeaves": 510,
+                        "numberOfInternalNodes": 509,
+                        "treeId": null,
+                        "notes": null,
+                        "treeViewUrl": "http://phylolink.ala.org.au/phylo/getTree?studyId=92&treeId=null"
+                        }]
+                     */
                     click: function (latlng) {
                         if (!latlng) {
                             return;
@@ -281,7 +314,7 @@
 
                             if (areaLayers.length) {
                                 areaLayers.forEach(function (layer) {
-                                    self.getAreaIntersects(layer, latlng).then(function (resp) {
+                                    self.getAreaIntersects(layer.pid, latlng).then(function (resp) {
                                         if (resp.data.name) {
                                             addPopupToMap(loc, leafletMap, templatePromise, intersects, occurrenceList);
                                             intersects.push({layername: $i18n('Area'), value: resp.data.name})
@@ -294,6 +327,36 @@
                             occurrenceList = new OccurrenceList(speciesLayers)
                         })
                     },
+                    /**
+                     * Get layer values for a coordinate.
+                     *
+                     * TODO: Move to LayersService
+                     *
+                     * @memberOf PopupService
+                     * @param {list} layers list of layer names or fieldIds
+                     * @param {latlng} latlng coordinate to inspect as {lat:latitude, lng:longitude}
+                     * @returns {HttpPromise}
+                     *
+                     * @example:
+                     * Input:
+                     * - layers
+                     *  ["cl22", "el899"]
+                     * - latlng
+                     *  {lat:-22, lng:131}
+                     * Output:
+                     *  [{
+                         "field": "cl22",
+                         "layername": "Australian States and Territories",
+                         "pid": "67620",
+                         "value": "Northern Territory"
+                         },
+                     {
+                     "field": "el899",
+                     "layername": "Species Richness",
+                     "units": "frequency",
+                     "value": 0.037037037
+                     }]
+                     */
                     getIntersects: function (layers, latlng) {
                         if (typeof layers === "string") {
                             layers = [layers]
@@ -302,8 +365,39 @@
                         var url = $SH.layersServiceUrl + "/intersect/" + layers.join(',') + "/" + latlng.lat + "/" + latlng.lng;
                         return $http.get(url)
                     },
-                    getAreaIntersects: function (layer, latlng) {
-                        var url = $SH.layersServiceUrl + "/object/intersect/" + layer.pid + "/" + latlng.lat + "/" + latlng.lng;
+                    /**
+                     * Test if an area intersects with a coordinate
+                     *
+                     * TODO: Move to LayersService
+                     *
+                     * @memberOf PopupService
+                     * @param {list} pid area id
+                     * @param {latlng} latlng coordinate to inspect as {lat:latitude, lng:longitude}
+                     * @returns {HttpPromise}
+                     *
+                     * @example
+                     * Input:
+                     * - pid
+                     *  67620
+                     * - latlng
+                     *  {lat:-22, lng:131}
+                     * Output:
+                     * {
+                            "name_id": 0,
+                            "pid": "67620",
+                            "id": "Northern Territory",
+                            "fieldname": "Australian States and Territories",
+                            "featureType": "MULTIPOLYGON",
+                            "area_km": 1395847.4575625565,
+                            "description": "null",
+                            "bbox": "POLYGON((128.999222 -26.002015,128.999222 -10.902499,137.996094 -10.902499,137.996094 -26.002015,128.999222 -26.002015))",
+                            "fid": "cl22",
+                            "wmsurl": "https://spatial.ala.org.au/geoserver/wms?service=WMS&version=1.1.0&request=GetMap&layers=ALA:Objects&format=image/png&viewparams=s:67620",
+                            "name": "Northern Territory"
+                        }
+                     */
+                    getAreaIntersects: function (pid, latlng) {
+                        var url = $SH.layersServiceUrl + "/object/intersect/" + pid + "/" + latlng.lat + "/" + latlng.lng;
                         return $http.get(url)
                     }
                 }

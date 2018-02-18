@@ -1,5 +1,12 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc service
+     * @name ToolAreaReportService
+     * @description
+     *   Client side tool to generate and display an area report
+     */
     angular.module('tool-area-report-service', [])
         .factory("ToolAreaReportService", ["$http", "$q", "MapService", "LayoutService", function ($http, $q, MapService, LayoutService) {
             return {
@@ -17,7 +24,7 @@
                             }
                         }],
                     "description": $i18n("Area Report")
-                    },
+                },
 
                 execute: function (inputs) {
                     LayoutService.openModal('areaReport', inputs[0][0], false);

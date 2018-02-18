@@ -1,0 +1,292 @@
+---
+grails:
+    cors:
+        enabled: true
+    profile: web
+    codegen:
+        defaultPackage: au.org.ala.spatial.portal
+    config:
+        locations:
+            - file:/data/spatial-hub/config/spatial-hub-config.properties
+            - file:/data/spatial-hub/config/spatial-hub-config.yml
+            - file:/data/spatial-hub/config/spatial-hub-config.groovy
+    spring:
+        transactionManagement:
+            proxies: false
+    gorm:
+        reactor:
+          # Whether to translate GORM events into Reactor events
+          # Disabled by default for performance reasons
+            events: false
+info:
+    app:
+        name: '@info.app.name@'
+        version: '@info.app.version@'
+        grailsVersion: '@info.app.grailsVersion@'
+spring:
+    main:
+        banner-mode: "off"
+    groovy:
+        template:
+            check-template-location: false
+    http:
+        multipart:
+            max-file-size: 50MB
+            max-request-size: 50MB
+    server:
+        session:
+            timeout: 7200 # seconds, 2 hours
+        tomcat:
+            port-header: 'X-Forwarded-Port'
+            protocol-header: 'X-Forwarded-Proto'
+            remote-ip-header: 'X-Forwarded-For'
+
+# Spring Actuator Endpoints are Disabled by Default
+endpoints:
+    enabled: false
+    jmx:
+        enabled: true
+
+---
+grails:
+    mime:
+        disable:
+            accept:
+                header:
+                    userAgents:
+                        - Gecko
+                        - WebKit
+                        - Presto
+                        - Trident
+        types:
+            all: '*/*'
+            atom: application/atom+xml
+            css: text/css
+            csv: text/csv
+            form: application/x-www-form-urlencoded
+            html:
+                - text/html
+                - application/xhtml+xml
+            js: text/javascript
+            json:
+                - application/json
+                - text/json
+            multipartForm: multipart/form-data
+            pdf: application/pdf
+            rss: application/rss+xml
+            text: text/plain
+            hal:
+                - application/hal+json
+                - application/hal+xml
+            xml:
+                - text/xml
+                - application/xml
+    urlmapping:
+        cache:
+            maxsize: 1000
+    controllers:
+        defaultScope: singleton
+    converters:
+        encoding: UTF-8
+    views:
+        default:
+            codec: html
+        gsp:
+            encoding: UTF-8
+            htmlcodec: xml
+            codecs:
+                expression: html
+                scriptlets: html
+                taglib: none
+                staticparts: none
+    assets:
+        minifyOptions:
+            excludes:
+                - '**/*.min.js'
+        enableGzip: true
+            
+    cache:
+        enabled: true
+
+endpoints:
+    jmx:
+        unique-names: true
+        
+security:
+    cas:
+        casServerName: 'https://auth.ala.org.au'
+        uriFilterPattern: '/portal.*,,/,/alaAdmin,/alaAdmin.*'
+        uriExclusionFilterPattern: '/portal/messages.*,/portal/sessionCache.*,/static.*,/assets.*'
+        authenticateOnlyIfLoggedInPattern: ''
+        loginUrl: 'https://auth.ala.org.au/cas/login'
+        logoutUrl: 'https://auth.ala.org.au/cas/logout'
+        gateway: false
+        casServerUrlPrefix: 'https://auth.ala.org.au/cas'
+        bypass: false # set to true for non-ALA deployment
+        disableCAS: false
+
+        autocompleteUrl: 'https://bie.ala.org.au/ws/search/auto.jsonp'
+        
+    auth:
+        admin_role: ROLE_ADMIN
+    app:
+        http:
+            header:
+                userId: "X-ALA-userId"
+
+headerAndFooter:
+    baseURL: 'https://www2.ala.org.au/commonui-bs3'
+
+ala:
+    baseURL: 'https://www.ala.org.au'
+
+bie:
+    baseURL: 'https://bie.ala.org.au'
+    searchPath: '/search'
+
+userdetails:
+    baseUrl: 'https://auth.ala.org.au/userdetails'
+
+favicon:
+    url: 'https://www.ala.org.au/wp-content/themes/ala2011/images/favicon.ico'
+
+layersService:
+    url: 'https://localhost:8085/spatial-service/'
+
+lists:
+    url: 'https://lists.ala.org.au'
+    threatenedSpeciesUrl: '/ws/speciesList/?isThreatened=eq:true&isAuthoritative=eq:true'
+    invasiveSpeciesUrl: '/ws/speciesList/?isInvasive=eq:true&isAuthoritative=eq:true'
+
+collections:
+    url: 'https://collections.ala.org.au'
+
+sandbox:
+    url: 'http://sandbox.ala.org.au/ala-hub'
+    uiUrl: 'http://sandbox.ala.org.au/datacheck'
+
+sandboxService:
+    url: 'http://sandbox.ala.org.au/biocache-service'
+
+gazField: 'cl915'
+
+userObjectsField: 'cl1082'
+
+biocache:
+    url: 'https://biocache.ala.org.au'
+
+biocacheService:
+    url: 'https://biocache.ala.org.au/ws'
+
+sampling:
+    url: 'http://ala-dylan.it.csiro.au/sampling-service'
+
+geoserver:
+    url: 'http://spatial-test.ala.org.au/geoserver'
+
+viewConfig:
+    json: 'view-config.json'
+
+sessions:
+    dir: '/data/spatial-hub/sessions'
+
+admin_role: 'ROLE_ADMIN'
+    
+skin:
+    fluidLayout: true
+    layout: 'mainbs3'
+
+logger:
+    baseUrl: 'http://logger.ala.org.au/service'
+
+webservice:
+    readTimeout: 60000
+    connectTimeout: 20000
+
+cache:
+    headers:
+        enabled: true
+        control: 'max-age=36000 public must-revalidate'
+
+phylolink:
+    url: 'http://phylolink.ala.org.au'
+
+apiKeyCheckUrlTemplate: 'https://auth.ala.org.au/apikey/ws/check?apikey={0}'
+
+character:
+    encoding: UTF-8
+
+http:
+    timeout: 10000
+
+bccvl:
+    login:
+        url: 'https://demo.bccvl.org.au/bccvl/oauth2/authorize?client_id=F031d7ce-abb0-11e6-a678-0242ac120005&response_type=token&redirect_uri='
+    post:
+        url: 'https://demo.bccvl.org.au/API/dm/v1/import_ala_data'
+keep:
+    alive:
+        timeout:
+            ms: 10000
+    
+startup:
+    lat: -25
+    lng: 131
+    zoom: 4
+    baselayer:
+        default: 'google_roadmaps'
+    baselayers:
+        google_roadmaps:
+            name: 'Streets'
+            layerType: 'ROADMAP'
+            type: 'google'
+            exportType: 'normal'
+            link: 'https://www.google.com/intl/en_au/help/terms_maps.html'
+        google_hybrid:
+            name: 'Hybrid'
+            layerType: 'HYBRID'
+            type: 'google'
+            exportType: 'hybrid'
+            link: 'https://www.google.com/intl/en_au/help/terms_maps.html'
+        outline:
+            name: 'Outline'
+            type: 'wms'
+            url: 'https://spatial.ala.org.au/geoserver/gwc/service/wms/reflect?'
+            layerParams:
+                layers: 'ALA:world'
+                format: 'image/png'
+            exportType: 'outline'
+        osm:
+            name: 'Open Street Map'
+            url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+            type: 'xyz'
+            exportType: 'minimal'
+            link: 'https://www.openstreetmap.org/about'
+        google_satellite:
+            name: 'Satellite'
+            layerType: 'SATELLITE'
+            type: 'google'
+            exportType: 'normal'
+            link: 'https://www.google.com/intl/en_au/help/terms_maps.html'
+
+defaultareas:
+    - name: 'Australia'
+      fqs: ['longitude:[112 TO 154]', 'latitude:[-44 TO -9]']
+      wkt: 'POLYGON((112.0 -44.0,154.0 -44.0,154.0 -9.0,112.0 -9.0,112.0 -44.0))'
+      areaSqKm: 16322156.76
+      bbox: [112, -44, 154, -9]
+    - name: 'World'
+      fqs: []
+      wkt: 'POLYGON((-180 -90.0,-180.0 90.0,180.0 90.0,180 -90.0,-180 -90.0))'
+      areaSqKm: 510000000
+      bbox: [-180, -90, 180, 90]
+
+---
+environments:
+    development:
+        grails:
+          serverURL: http://devt.ala.org.au
+    test:
+    production:
+        assets:
+          bundle: true

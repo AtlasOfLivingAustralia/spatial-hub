@@ -1,5 +1,12 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc service
+     * @name ToolAddLayerService
+     * @description
+     *   Client side tool to add spatial-service layers to the map
+     */
     angular.module('tool-add-layer-service', [])
         .factory("ToolAddLayerService", ["$http", "$q", "MapService", "LayersService", function ($http, $q, MapService, LayersService) {
             return {
@@ -15,8 +22,8 @@
                                 "optional": false
                             }
                         }],
-                        "description": "Add environmental and contextual layers to the map."
-                    },
+                    "description": "Add environmental and contextual layers to the map."
+                },
 
                 execute: function (inputs) {
                     var promises = [];

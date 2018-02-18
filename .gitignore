@@ -1,5 +1,6 @@
 *.iml
-target/*
+build/*
+.gradle/*
 .idea/*
 .slcache/*
 *.tgz

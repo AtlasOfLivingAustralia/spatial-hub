@@ -1,5 +1,12 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc directive
+     * @name googlePlaces
+     * @description
+     *   Location search using Google places
+     */
     angular.module('google-places-directive', []).directive('googlePlaces', function () {
         return {
             restrict: 'E',

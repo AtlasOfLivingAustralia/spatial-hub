@@ -1,5 +1,12 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc directive
+     * @name gazAutoComplete
+     * @description
+     *   Gazetteer autocomplete
+     */
     angular.module('gaz-auto-complete-directive', ['gaz-auto-complete-service']).directive('gazAutoComplete',
         ['$timeout', 'GazAutoCompleteService', function ($timeout, GazAutoCompleteService) {
             return {

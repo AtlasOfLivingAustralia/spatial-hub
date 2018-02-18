@@ -1,17 +1,12 @@
-import groovy.util.slurpersupport.NodeChild
-import groovy.xml.DOMBuilder
 import org.apache.commons.io.FileUtils
 import org.apache.commons.lang.StringUtils
-import org.cyberneko.html.parsers.SAXParser
 
-import static com.google.common.base.CaseFormat.LOWER_CAMEL
-import static com.google.common.base.CaseFormat.LOWER_HYPHEN
-import static com.google.common.base.CaseFormat.LOWER_UNDERSCORE
+def build(String baseDir) {
 
-eventCompileStart = { kind ->
     println 'Starting NPM install'
-    final workdir = new File(grailsSettings.baseDir, '')
-    final exec = new ProcessBuilder().inheritIO().directory(workdir).command('npm', 'install').start()
+    final workdir = new File(baseDir, '')
+    final proc = new ProcessBuilder().inheritIO()
+    final exec = proc.command('npm', 'install').start()
     def exitValue = exec.waitFor()
     if (exitValue) {
         println '*****************************************************'
@@ -24,21 +19,21 @@ eventCompileStart = { kind ->
     }
 
     println 'Copying files to grails-app/assets/node_modules'
-    new ProcessBuilder().inheritIO().directory(workdir).command('rm', '-r', 'grails-app/assets/node_modules').start().waitFor()
+    new ProcessBuilder().inheritIO().command('rm', '-r', 'grails-app/assets/node_modules').start().waitFor()
 
     def files = ['angular/angular.min.js', 'angular-animate/angular-animate.min.js', 'angular-aria/angular-aria.min.js',
-        'angular-leaflet-directive/dist/angular-leaflet-directive.min.js', 'angular-route/angular-route.min.js',
-        'angular-touch/angular-touch.min.js', 'angular-ui-bootstrap/dist/ui-bootstrap-tpls.js',
-        'angular-ui-bootstrap/dist/ui-bootstrap-csp.css', 'bootbox/bootbox.min.js', 'jquery/dist/jquery.min.js',
-        'ng-file-upload/dist/ng-file-upload.js', 'ngbootbox/dist/ngBootbox.min.js',
-        'bootstrap/dist/', 'leaflet/dist/', 'leaflet-draw/dist/']
+                 'angular-leaflet-directive/dist/angular-leaflet-directive.min.js', 'angular-route/angular-route.min.js',
+                 'angular-touch/angular-touch.min.js', 'angular-ui-bootstrap/dist/ui-bootstrap-tpls.js',
+                 'angular-ui-bootstrap/dist/ui-bootstrap-csp.css', 'bootbox/bootbox.min.js', 'jquery/dist/jquery.min.js',
+                 'ng-file-upload/dist/ng-file-upload.js', 'ngbootbox/dist/ngBootbox.min.js',
+                 'bootstrap/dist/', 'leaflet/dist/', 'leaflet-draw/dist/']
     files.each { name ->
-        def dst = new File(grailsSettings.baseDir.getPath() + '/grails-app/assets/node_modules/' + name)
+        def dst = new File(baseDir + '/grails-app/assets/node_modules/' + name)
         dst.getParentFile().mkdirs()
         if (name.endsWith('/')) {
-            FileUtils.copyDirectory(new File(grailsSettings.baseDir.getPath() + '/node_modules/' + name), dst)
+            FileUtils.copyDirectory(new File(baseDir + '/node_modules/' + name), dst)
         } else {
-            FileUtils.copyFile(new File(grailsSettings.baseDir.getPath() + '/node_modules/' + name), dst)
+            FileUtils.copyFile(new File(baseDir + '/node_modules/' + name), dst)
         }
     }
 
@@ -46,23 +41,36 @@ eventCompileStart = { kind ->
     def dirs = ['controller', 'directive', 'service']
     def moduleList = []
     dirs.each { name ->
-        def list = new File(grailsSettings.baseDir.getPath() + '/grails-app/assets/javascripts/spApp/' + name).listFiles()
+        def list = new File(baseDir + '/grails-app/assets/javascripts/spApp/' + name).listFiles()
         list.each { file ->
             if (name == 'directive') {
                 //append -directive to module name
-                moduleList.push(LOWER_CAMEL.to(LOWER_HYPHEN, file.name) + '-directive')
+                moduleList.push(com.google.common.base.CaseFormat.LOWER_CAMEL.to(com.google.common.base.CaseFormat.LOWER_HYPHEN, file.name) + '-directive')
             } else {
-                moduleList.push(LOWER_CAMEL.to(LOWER_HYPHEN, file.name))
+                moduleList.push(com.google.common.base.CaseFormat.LOWER_CAMEL.to(com.google.common.base.CaseFormat.LOWER_HYPHEN, file.name))
             }
         }
     }
-    def file = new File(grailsSettings.baseDir.getPath() + '/grails-app/assets/compile/spAppModules.js')
+    def file = new File(baseDir + '/grails-app/assets/compile/spAppModules.js')
     if (!file.getParentFile().exists()) {
         file.getParentFile().mkdirs()
     }
     FileUtils.writeStringToFile(file,
             '/* Do not edit. This file built at compile by _Events.groovy */\n$spAppModules = ["' + moduleList.join('","').replaceAll("\\.js",'') + '"];')
 
+
+    // jsdoc
+    println 'Starting JSDoc'
+    final exec2 = proc.command('npm', 'run', 'jsdoc').start()
+    def exitValue2 = exec2.waitFor()
+    if (exitValue2) {
+        println '*****************************************************'
+        println '* `npm run jsdoc` failed'
+        println "* Exit value: $exitValue                            *"
+        println '*****************************************************'
+    } else {
+        println 'Completed jsdoc'
+    }
 
     //i18n'ify templates
 
@@ -74,7 +82,7 @@ eventCompileStart = { kind ->
     def newProperties = new StringBuilder()
 
     // load existing defaults
-    def p = new File(grailsSettings.baseDir.getPath() + '/grails-app/i18n/messages.properties')
+    def p = new File(baseDir + '/grails-app/i18n/messages.properties')
     def prop = new Properties()
     prop.load(new FileReader(p))
     // reverse lookup
@@ -84,7 +92,7 @@ eventCompileStart = { kind ->
     }
 
     // get last idx value from templates
-    for (File f : new File(grailsSettings.baseDir.getPath() + '/grails-app/assets/javascripts/spApp/templates/').listFiles()) {
+    for (File f : new File(baseDir + '/grails-app/assets/javascripts/spApp/templates/').listFiles()) {
 
         String input = FileUtils.readFileToString(f)
 
@@ -109,7 +117,7 @@ eventCompileStart = { kind ->
 
     def totalNewProperties = 0
 
-    for (File f : new File(grailsSettings.baseDir.getPath() + '/grails-app/assets/javascripts/spApp/templates/').listFiles()) {
+    for (File f : new File(baseDir + '/grails-app/assets/javascripts/spApp/templates/').listFiles()) {
 
         if (f.name != "legendContent.tmp.htm") continue
 
@@ -142,7 +150,7 @@ eventCompileStart = { kind ->
                     def s = input.substring(next, end2)
                     while (end2 > 0 && (end1 == -1 || end1 > end2) &&
                             (StringUtils.countMatches(s, "{{") < StringUtils.countMatches(s, "}}") ||
-                                s.matches(".*\\sng-[^\\s=]+=(('[^']*)|(\"[^\"]*))\$"))) {
+                                    s.matches(".*\\sng-[^\\s=]+=(('[^']*)|(\"[^\"]*))\$"))) {
                         end2 = input.indexOf(">", end2 + 1)
                     }
 
@@ -232,3 +240,5 @@ def process(doc, nextIdx, update) {
 
     return nextIdx
 }
+
+build("./")

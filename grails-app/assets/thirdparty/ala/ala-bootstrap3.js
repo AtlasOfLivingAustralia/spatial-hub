@@ -29,7 +29,7 @@ var _navbarWidthCheck = function() {
         button[0].style.display = 'block !important';
         button[0].className = "navbar-toggle";
         // $('.navbar-header')[0].style.width = "100%"
-    } else {
+    } else if (biesearch[0]) {
         var d0 = biesearch[0].style.display;
         if (biesearch[0].style.display == "none") {
             biesearch[0].style.display = "";
@@ -55,29 +55,37 @@ var _navbarWidthCheckFinish = function() {
     var biesearch = $('#biesearch-top');
     var biesearchDrop = $('#biesearch-dropdown');
 
-    if (biesearch[0].style.display == "none" || getComputedStyle($('#bs-example-navbar-collapse-1')[0]).display == "none") {
-        biesearchDrop[0].style.display = "";
-    } else {
-        biesearchDrop[0].style.display = "none";
+    if (biesearch[0]) {
+        if (biesearch[0].style.display == "none" || getComputedStyle($('#bs-example-navbar-collapse-1')[0]).display == "none") {
+            biesearchDrop[0].style.display = "";
+        } else {
+            biesearchDrop[0].style.display = "none";
+        }
+
+        if (getComputedStyle($('#bs-example-navbar-collapse-1')[0]).display == "none") {
+            menuDrop[0].style.display = "";
+            logoDrop[0].style.display = "";
+        } else {
+            menuDrop[0].style.display = "none";
+            logoDrop[0].style.display = "none";
+        }
+
+        if (menu.height() > 60) {
+            _navbarWidthCheck();
+        }
     }
 
-    if (getComputedStyle($('#bs-example-navbar-collapse-1')[0]).display == "none") {
-        menuDrop[0].style.display = "";
-        logoDrop[0].style.display = "";
-    } else {
-        menuDrop[0].style.display = "none";
-        logoDrop[0].style.display = "none";
+    var headerHeight = 0;
+    var navbar = $('.navbar-default')[0];
+    if (navbar) {
+        headerHeight = getComputedStyle(navbar).height.replace("px", "").replace("auto", "0");
     }
-
-    if (menu.height() > 60) {
-        _navbarWidthCheck();
-    }
-
-    var headerHeight = getComputedStyle($('.navbar-default')[0]).height.replace("px","").replace("auto", "0");
     $("#map").height($(window).height() - headerHeight);
-    // $("#legend").height($(window).height() - headerHeight - 210);
     $("body")[0].style.paddingTop = headerHeight + "px";
-    $("#defaultPanel").height($(window).height() - headerHeight - 20 - getComputedStyle($('#spMenu')[0]).height.replace("px","").replace("auto", "0"));
+    if ($('#spMenu')[0]) {
+        $("#defaultPanel").height($(window).height() - headerHeight - 20 - getComputedStyle($('#spMenu')[0]).height.replace("px", "").replace("auto", "0"));
+    }
+
 };
 
 var navbarWidthCheck = function() {

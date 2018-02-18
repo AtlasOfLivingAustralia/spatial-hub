@@ -1,5 +1,12 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc controller
+     * @name ExportBccvlCtrl
+     * @description
+     *   Manage export of occurrence layers to BCCVL
+     */
     angular.module('export-bccvl-ctrl', ['map-service']).controller('ExportBccvlCtrl', ['$scope', 'MapService',
         '$timeout', 'LayoutService', 'BiocacheService', '$window', '$uibModalInstance', 'SessionsService', '$http', '$q', 'data',
         function ($scope, MapService, $timeout, LayoutService, BiocacheService, $window, $uibModalInstance,

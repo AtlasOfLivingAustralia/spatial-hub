@@ -1,5 +1,12 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc directive
+     * @name selectFacet
+     * @description
+     *   Facet selection controls
+     */
     angular.module('select-facet-directive', ['map-service', 'predefined-areas-service'])
         .directive('selectFacet', ['$http', 'MapService', 'PredefinedAreasService', '$timeout', 'FacetAutoCompleteService', 'BiocacheService',
             'LayoutService', function ($http, MapService, PredefinedAreasService, $timeout, FacetAutoCompleteService, BiocacheService, LayoutService) {
@@ -15,6 +22,7 @@
                         scope.facet = {};
                         scope.facets = [];
                         scope.facetList = [];
+                        scope.exportUrl = null;
 
                         FacetAutoCompleteService.search("-*:*").then(function (data) {
                             scope.facets = data
@@ -25,7 +33,6 @@
                         scope.max = 0;
                         scope.maxPages = 0;
 
-                        scope.updating = false;
                         scope.updatingPage = false;
                         scope.downloadSize = 0;
 
@@ -81,11 +88,7 @@
                         };
 
                         scope.update = function (updateAll) {
-                            if (updateAll) {
-                                scope.updating = true;
-                            } else {
-                                scope.updatingPage = true;
-                            }
+                            scope.updatingPage = true;
 
                             var config = {
                                 eventHandlers: {
@@ -109,6 +112,7 @@
                             }, pageSize, offset, config).then(function (data) {
                                 if (data.length > 0) {
                                     scope.facetList = data[0].fieldResult;
+                                    scope.exportUrl = BiocacheService.facetDownload(scope.facet);
                                     scope.max = data[0].count;
                                     scope.maxPages = Math.ceil(scope.max / scope.pageSize)
                                 } else {
@@ -119,7 +123,6 @@
                                 scope.updateSel();
                                 scope.updateCheckmarks();
 
-                                scope.updating = false;
                                 scope.updatingPage = false;
                             })
                         };

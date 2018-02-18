@@ -1,5 +1,12 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc controller
+     * @name SpeciesInfoCtrl
+     * @description
+     *   Display occurrence layer information
+     */
     angular.module('species-info-ctrl', ['map-service', 'biocache-service'])
         .controller('SpeciesInfoCtrl', ['$scope', 'MapService', '$timeout', 'LayoutService', '$uibModalInstance', 'BiocacheService', 'BieService', 'data',
             function ($scope, MapService, $timeout, LayoutService, $uibModalInstance, BiocacheService, BieService, data) {

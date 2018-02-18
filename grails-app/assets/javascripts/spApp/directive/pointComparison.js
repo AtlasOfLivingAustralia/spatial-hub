@@ -1,5 +1,12 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc directive
+     * @name pointComparison
+     * @description
+     *   Panel for map location selection and display spatial-service layer intersections
+     */
     angular.module('point-comparison-directive', ['map-service', 'layers-service', 'predefined-areas-service'])
         .directive('pointComparison', ['$rootScope', 'MapService', '$timeout', 'LayersService', 'LayoutService',
             'PredefinedAreasService', "$http", '$filter',
@@ -95,7 +102,7 @@
                                         scope.statusUrl = response.data.statusUrl
                                         $timeout(scope.checkStatus(), 2000)
                                     } else if (response.data.downloadUrl) {
-                                        $http.get('portal/getSampleCSV?url=' + encodeURIComponent(response.data.downloadUrl)).then(function (response) {
+                                        $http.get($SH.baseUrl + '/portal/getSampleCSV?url=' + encodeURIComponent(response.data.downloadUrl)).then(function (response) {
                                             if (scope.comparison.length > 0)
                                                 scope.comparison.splice(0, scope.comparison.length);
 
@@ -115,7 +122,7 @@
                                             }
 
                                             var blob = new Blob([$.csv.fromArrays([scope.header]) +
-                                                $.csv.fromArrays(scope.comparison)], {type: 'text/plain'});
+                                            $.csv.fromArrays(scope.comparison)], {type: 'text/plain'});
                                             scope.exportUrl = (window.URL || window.webkitURL).createObjectURL(blob);
 
                                             scope.searching = false;

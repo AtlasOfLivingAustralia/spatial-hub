@@ -1,5 +1,12 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc directive
+     * @name spLegend
+     * @description
+     *    Panel displaying selected map layer information and controls
+     */
     angular.module('sp-legend-directive', ['map-service', 'biocache-service', 'layers-service'])
         .directive('spLegend', ['$timeout', 'MapService', 'BiocacheService', 'LayersService', '$http', 'LayoutService',
             function ($timeout, MapService, BiocacheService, LayersService, $http, LayoutService) {
@@ -534,7 +541,7 @@
                                 task.input.selection = scope.selected.layer.scatterplotSelection;
                             }
                             task.input.wkt = [{pid: scope.selected.layer.highlightWkt}];
-                            $http.post('portal/postTask?sessionId=' + $SH.sessionId, task).then(function (response) {
+                            $http.post($SH.baseUrl + '/portal/postTask?sessionId=' + $SH.sessionId, task).then(function (response) {
                                 scope.checkScatterplotStatus(LayersService.url() + '/tasks/status/' + response.data.id, scope.selected.layer)
                             })
                         };

@@ -22,6 +22,8 @@ import java.util.concurrent.atomic.AtomicLong
 
 /**
  * Store for spatial-hub client session states.
+ *
+ * TODO: Add config option to persist in spatial-service instead of file system
  */
 class SessionService {
 
@@ -33,23 +35,23 @@ class SessionService {
     def currentId = new AtomicLong(System.currentTimeMillis())
 
     static final String SAVED_SESSION_PARAM = '?ss='
-    static final String TYPE_ADD = 'add'
-    static final String TYPE_DELETE = 'delete'
+    static final String ADD = 'add'
+    static final String DELETE = 'delete'
 
     //sessions saves that do not persist on restart
     def tmpSaves = [:]
 
     def newId(userId) {
         //get id
-        def newId = currentId.incrementAndGet()
+        def id = currentId.updateAndGet({ v -> Math.max(v + 1, System.currentTimeMillis()) })
 
         //update session log
-        sessionLog.push([newId, 'newSession', userId])
+        sessionLog.push([id, 'newSession', userId])
 
         //update session cache
-        sessionCache.put(newId, [:])
+        sessionCache.put(id, [:])
 
-        newId
+        id
     }
 
     def put(id, userId, data, persist) {
@@ -60,7 +62,7 @@ class SessionService {
 
             FileUtils.writeStringToFile(saveFile(id), (data as JSON).toString())
 
-            updateUserSave(id, userId, TYPE_ADD, data?.name, System.currentTimeMillis())
+            updateUserSave(id, userId, ADD, data?.name, System.currentTimeMillis())
         } else {
             tmpSaves.put(id, data)
         }
@@ -71,9 +73,9 @@ class SessionService {
     def updateUserSave(id, userId, type, name, time) {
         def list = (List) (userFile(userId).exists() ? JSON.parse(FileUtils.readFileToString(userFile(userId))) : [])
 
-        if (TYPE_ADD == type) {
+        if (ADD == type) {
             list.push([id: id, name: name, time: time])
-        } else if (TYPE_DELETE == type) {
+        } else if (DELETE == type) {
             list = list.findAll { ((Map) it).id.toString() != id }
         }
 

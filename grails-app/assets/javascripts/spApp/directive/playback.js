@@ -16,6 +16,13 @@
  */
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc directive
+     * @name playback
+     * @description
+     *   Panel of controls for time series map layer filter and animation playback
+     */
     angular.module('playback-directive', ['map-service']).directive('playback',
         ['$timeout', 'MapService', 'BiocacheService', function ($timeout, MapService, BiocacheService) {
             return {

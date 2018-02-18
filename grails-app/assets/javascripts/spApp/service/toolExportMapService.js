@@ -1,5 +1,12 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc service
+     * @name ToolExportMapService
+     * @description
+     *   Client side tool to export the map as an image
+     */
     angular.module('tool-export-map-service', [])
         .factory("ToolExportMapService", ["$http", "$q", "MapService", "LayersService", function ($http, $q, MapService, LayersService) {
             return {
@@ -31,8 +38,8 @@
                             }
 
                         }],
-                        "description": "Export areas."
-                    },
+                    "description": "Export areas."
+                },
 
                 execute: function (inputs) {
                     var leafletmap = $('.angular-leaflet-map');

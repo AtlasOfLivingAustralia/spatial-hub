@@ -1,5 +1,12 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc controller
+     * @name CsvCtrl
+     * @description
+     *   Display a CSV
+     */
     angular.module('csv-ctrl', ['map-service', 'biocache-service'])
         .controller('CsvCtrl', ['$scope', 'MapService', '$timeout', 'LayoutService', '$uibModalInstance', 'BiocacheService', 'data',
             function ($scope, MapService, $timeout, LayoutService, $uibModalInstance, BiocacheService, data) {

@@ -1,5 +1,12 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc controller
+     * @name TabulateCtrl
+     * @description
+     *   Choose an available tabulation
+     */
     angular.module('tabulate-ctrl', ['map-service', 'biocache-service', 'layers-service'])
         .controller('TabulateCtrl', ['$scope', 'MapService', '$timeout', 'LayoutService', '$uibModalInstance',
             'BiocacheService', '$http', 'LayersService',

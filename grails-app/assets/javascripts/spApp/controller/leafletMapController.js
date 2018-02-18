@@ -199,13 +199,7 @@
                     } else {
                         $("body")[0].style.paddingTop = "0px";
                         $(".navbar-default").hide();
-                    };
-
-                    // var headerHeight = getComputedStyle($('.navbar-default')[0]).height.replace("px","").replace("auto", "0");
-                    // $("#map").height($(window).height() - headerHeight);
-                    // // $("#legend").height($(window).height() - headerHeight - 210);
-                    // $("body")[0].style.paddingTop = headerHeight + "px";
-                    // $("#defaultPanel").height($(window).height() - headerHeight - 20 - getComputedStyle($('#spMenu')[0]).height.replace("px","").replace("auto", "0"));
+                    }
 
                     //
                     $(window).trigger('resize');
@@ -383,7 +377,7 @@
 
                             //all setup finished
                             if ($spMapLoaded !== undefined) {
-                                $spMapLoaded(event);
+                                $spMapLoaded();
                             }
                         })
                     });

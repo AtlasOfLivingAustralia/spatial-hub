@@ -1,5 +1,12 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc directive
+     * @name envelope
+     * @description
+     *   A panel with controls for creating environmental envelopes
+     */
     angular.module('envelope-directive', ['biocache-service', 'map-service', 'layers-service', 'facet-auto-complete-service'])
         .directive('envelope', ['LayoutService', 'MapService', '$timeout', 'LayersService', 'BiocacheService', 'PredefinedAreasService',
             'FacetAutoCompleteService',

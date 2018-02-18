@@ -1,5 +1,12 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc directive
+     * @name drawArea
+     * @description
+     *   A panel with controls for drawing a new area on the map
+     */
     angular.module('draw-area-directive', ['map-service', 'layers-service', 'layout-service'])
         .directive('drawArea', ['$rootScope', 'LayoutService', 'MapService', '$timeout', 'LayersService',
 
@@ -32,6 +39,7 @@
                                 scope.typeName = 'polygon';
                                 scope.addPolygon()
                             } else if (scope.type === 'pointOnLayer') {
+                                scope.intersect.data = {};
                                 scope.addMarker();
                                 scope.mappedLayers = MapService.contextualLayers();
                                 scope.mappedLayers.push({uid: 'search', name: 'Search for a layer'});
@@ -85,10 +93,12 @@
                         };
 
                         scope.ok = function () {
-                            // used by click info popup to check if click came while drawing polygon
-                            LayoutService.areaCtrlAreaValue = undefined;
+                            if (intersect.value.length > 0 || selectedArea.wkt.length > 0) {
+                                // used by click info popup to check if click came while drawing polygon
+                                LayoutService.areaCtrlAreaValue = undefined;
 
-                            scope.addToMapAndClose();
+                                scope.addToMapAndClose();
+                            }
                         };
 
                         scope.wkt = undefined;
@@ -201,7 +211,7 @@
                                 //points must be layer intersected
 
                                 scope.setWkt(null);
-                                scope.intersectPoint = data[1] + ' ' + data[2];
+                                scope.intersectPoint = data[1].toFixed(4) + ' ' + data[2].toFixed(4);
 
                                 scope.updateIntersect()
                             } else {

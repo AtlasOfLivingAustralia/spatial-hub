@@ -16,6 +16,13 @@
  */
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc directive
+     * @name leafletQuickLinks
+     * @description
+     *   Quicklinks panel
+     */
     angular.module('leaflet-quick-links-directive', ['leaflet-directive'])
         .directive('leafletQuickLinks', [
             function () {
@@ -31,6 +38,37 @@
                             $scope.toggle = function () {
                                 $scope.expanded = !$scope.expanded;
                                 event.stopPropagation()
+                            };
+
+                            $scope.setDefault = function (data, key, value) {
+                                if (data.overrideValues === undefined) data.overrideValues = {};
+                                if (data.overrideValues.input === undefined) data.overrideValues.input = {};
+                                if (data.overrideValues.input[key] === undefined) data.overrideValues.input[key] = {};
+                                if (data.overrideValues.input[key].constraints === undefined) data.overrideValues.input[key].constraints = {};
+                                data.overrideValues.input[key].constraints['default'] = value;
+                            };
+
+                            $scope.open = function (name, data, includeSpecies, includeArea) {
+                                if (includeSpecies === undefined || includeSpecies !== false) {
+                                    var species = MapService.getSpeciesLayerQuery($scope.species);
+                                    if (includeSpecies === undefined || includeSpecies === true) {
+                                        $scope.setDefault(data, 'species', species);
+                                    } else {
+                                        $scope.setDefault(data, includeSpecies, species);
+                                    }
+                                }
+                                if (includeArea === undefined || includeArea !== false) {
+                                    var area = MapService.getAreaLayerQuery($scope.area);
+                                    if (includeArea === undefined || includeArea === true) {
+                                        $scope.setDefault(data, 'area', area);
+                                    } else {
+                                        $scope.setDefault(data, includeArea, area);
+                                    }
+                                }
+                                data.processName = name;
+
+                                LayoutService.clear();
+                                LayoutService.openModal('tool', data)
                             };
 
                             $scope.delegateCall = function (type, inputs) {
@@ -53,186 +91,59 @@
                                     case 'download':
                                         switch (inputs) {
                                             case 'speciesarea':
-                                                data.selectedQ = MapService.getSpeciesLayerQuery($scope.species);
-                                                data.selectedArea = MapService.getAreaLayerQuery($scope.area);
-                                                LayoutService.openModal('exportSample', data);
+                                                $scope.open("ToolExportSampleService", data);
                                                 break;
                                             case 'specieslist':
-                                                data.step = 1;
-                                                data.selectedArea = MapService.getAreaLayerQuery($scope.area);
-                                                LayoutService.openModal('exportChecklist', data);
+                                                $scope.open("ToolExportChecklistService", data);
                                                 break;
                                             case 'area':
-                                                data.step = 1;
-                                                data.selectedQ = MapService.getAllSpeciesQuery();
-                                                data.selectedArea = MapService.getAreaLayerQuery($scope.area);
-                                                LayoutService.openModal('exportSample', data);
+                                                $scope.open("ToolExportSampleService", data, false);
                                                 break;
                                             case 'species':
-                                                data.step = 1;
-                                                data.selectedQ = MapService.getSpeciesLayerQuery($scope.species);
-                                                data.speciesOption = 'selectedSpecies';
-                                                data.includeDefaultAreas = true;
-                                                LayoutService.openModal('exportSample', data);
+                                                $scope.open("ToolExportSampleService", data, true, false);
                                                 break;
                                         }
                                         break;
                                     case 'export':
                                         switch (inputs) {
                                             case 'area':
-                                                data.step = 1;
-                                                data.selectedArea = MapService.getAreaLayerQuery($scope.area);
-                                                LayoutService.openModal('exportArea', data);
+                                                $scope.open("ToolExportAreaService", data);
                                                 break;
                                         }
                                         break;
                                     case 'areareport':
-                                        data.selectedArea = MapService.getAreaLayerQuery($scope.area);
-                                        LayoutService.openModal('toolAreaReport', data);
+                                        $scope.open("ToolAreaReportService", data);
                                         break;
                                     case 'classification':
-                                        data = {opening: true, processName: 'Classification'};
-                                        data.overrideValues = {
-                                            Classification: {
-                                                input: {
-                                                    area: {
-                                                        constraints: {
-                                                            'default': MapService.getAreaLayerQuery($scope.area)
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        };
-                                        data.selectedArea = MapService.getAreaLayerQuery($scope.area);
-                                        LayoutService.openModal('tool', data);
+                                        $scope.open("Classification", {opening: true});
                                         break;
                                     case 'scatterplot':
                                         switch (inputs) {
                                             case 'species':
-                                                data = {opening: true, processName: 'ScatterplotCreate'};
-                                                data.overrideValues = {
-                                                    ScatterplotCreate: {
-                                                        input: {
-                                                            species1: {
-                                                                constraints: {
-                                                                    'default': MapService.getSpeciesLayerQuery($scope.species)
-                                                                }
-                                                            },
-                                                            species2: {
-                                                                constraints: {
-                                                                    'default': MapService.getSpeciesLayerQuery($scope.species)
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                };
-
-                                                LayoutService.openModal('tool', data);
+                                                $scope.open("ScatterplotCreate", {opening: true}, "species1", false);
                                                 break;
                                             case 'speciesarea':
-                                                data = {opening: true, processName: 'ScatterplotCreate'};
-                                                data.overrideValues = {
-                                                    ScatterplotCreate: {
-                                                        input: {
-                                                            species1: {
-                                                                constraints: {
-                                                                    'default': MapService.getSpeciesLayerQuery($scope.species)
-                                                                }
-                                                            },
-                                                            species2: {
-                                                                constraints: {
-                                                                    'default': MapService.getSpeciesLayerQuery($scope.species)
-                                                                }
-                                                            },
-                                                            area: {
-                                                                constraints: {
-                                                                    'default': MapService.getAreaLayerQuery($scope.area)
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                };
-
-                                                LayoutService.openModal('tool', data);
+                                                $scope.open("ScatterplotCreate", {opening: true}, "species1", "area");
                                                 break;
                                         }
                                         break;
                                     case 'prediction':
                                         switch (inputs) {
                                             case 'species':
-                                                data = {opening: true, processName: 'Maxent'};
-                                                data.overrideValues = {
-                                                    Maxent: {
-                                                        input: {
-                                                            species: {
-                                                                constraints: {
-                                                                    'default': MapService.getSpeciesLayerQuery($scope.species)
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                };
-                                                LayoutService.openModal('tool', data);
+                                                $scope.open("Maxent", {opening: true}, "species", false);
                                                 break;
                                             case 'speciesarea':
-                                                data = {opening: true, processName: 'Maxent'};
-                                                data.overrideValues = {
-                                                    Maxent: {
-                                                        input: {
-                                                            species: {
-                                                                constraints: {
-                                                                    'default': MapService.getSpeciesLayerQuery($scope.species)
-                                                                }
-                                                            },
-                                                            area: {
-                                                                constraints: {
-                                                                    'default': MapService.getAreaLayerQuery($scope.area)
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                };
-
-                                                LayoutService.openModal('tool', data)
+                                                $scope.open("Maxent", {opening: true}, "species", "area");
+                                                break;
                                         }
                                         break;
                                     case 'pointstogrid':
                                         switch (inputs) {
                                             case 'species':
-                                                data = {opening: true, processName: 'PointsToGrid'};
-                                                data.overrideValues = {
-                                                    PointsToGrid: {
-                                                        input: {
-                                                            species: {
-                                                                constraints: {
-                                                                    'default': MapService.getSpeciesLayerQuery($scope.species)
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                };
-                                                LayoutService.openModal('tool', data);
+                                                $scope.open("PointsToGrid", {opening: true}, true, false);
                                                 break;
                                             case 'speciesarea':
-                                                data = {opening: true, processName: 'PointsToGrid'};
-                                                data.overrideValues = {
-                                                    PointsToGrid: {
-                                                        input: {
-                                                            species: {
-                                                                constraints: {
-                                                                    'default': MapService.getSpeciesLayerQuery($scope.species)
-                                                                }
-                                                            },
-                                                            area: {
-                                                                constraints: {
-                                                                    'default': MapService.getAreaLayerQuery($scope.area)
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                };
-                                                LayoutService.openModal('tool', data);
-                                                break;
+                                                $scope.open("PointsToGrid", {opening: true}, true, true);
                                         }
 
                                         break;
@@ -295,8 +206,12 @@
                                 $scope.selectedlayer = MapService.selected
                             });
 
-                            $scope.openModal = function (type) {
-                                LayoutService.openModal(type)
+                            $scope.openModal = function (type, data) {
+                                LayoutService.clear();
+                                LayoutService.openModal(type, data)
+                            };
+                            $scope.openTool = function (type) {
+                                $scope.openModal('tool', { processName: type })
                             };
 
                             $timeout(function() {

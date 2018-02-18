@@ -1,5 +1,12 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc controller
+     * @name AreaReportCtrl
+     * @description
+     *   Generate and display an area report
+     */
     angular.module('area-report-ctrl', ['map-service', 'biocache-service', 'lists-service', 'layers-service'])
         .controller('AreaReportCtrl', ['$scope', 'MapService', '$timeout', 'LayoutService', '$uibModalInstance',
             'BiocacheService', 'data', '$http', 'ListsService', 'LayersService',

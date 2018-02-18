@@ -1,5 +1,12 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc directive
+     * @name selectSpecies
+     * @description
+     *    Species selection control
+     */
     angular.module('select-species-directive', ['map-service', 'lists-service'])
         .directive('selectSpecies', ['MapService', 'ListsService', '$timeout', 'LayoutService',
             function (MapService, ListsService, $timeout, LayoutService) {
@@ -14,7 +21,8 @@
                         _min: '=?min',
                         _areaIncludes: '=?areaIncludes',
                         _spatialValidity: '=?spatialValidity',
-                        _speciesOption: '=?speciesOption'
+                        _speciesOption: '=?speciesOption',
+                        _absentOption: '=?absentOption'
                     },
                     templateUrl: '/spApp/selectSpeciesCtrl.htm',
                     link: function (scope, element, attrs) {
@@ -25,13 +33,15 @@
                         if (scope._areaIncludes === undefined) scope._areaIncludes = false;
                         if (scope._spatialValidity === undefined) scope._spatialValidity = false;
                         if (scope._speciesOption === undefined) scope._speciesOption = 'searchSpecies';
+                        if (scope._absentOption === undefined) scope._absentOption = true;
 
                         scope.spatiallyValid = true;
                         scope.spatiallySuspect = false;
-                        scope.useScientificNames = false;
                         scope.includeExpertDistributions = scope._areaIncludes;
                         scope.includeChecklists = scope._areaIncludes;
                         scope.includeAnimalMovement = scope._areaIncludes;
+
+                        scope.includeAbsences = false;
 
                         if (scope._inputData !== undefined && scope._inputData.speciesOption !== undefined) {
                             scope.speciesOption = scope._inputData.speciesOption
@@ -119,12 +129,13 @@
                         };
 
                         scope.setQ = function (query) {
-                            if (query.q.length === 0) {
+                            if (query && query.q.length === 0) {
                                 scope._selectedQ.name = '';
                                 scope._selectedQ.bs = undefined;
                                 scope._selectedQ.ws = undefined;
                                 scope._selectedQ.q = []
-                            } else {
+                            } else if (scope._selectedQ) {
+                                if (query === undefined) query = scope._selectedQ;
                                 var includeTrue = scope.spatiallyValid;
                                 var includeFalse = scope.spatiallySuspect;
                                 var gs = ["-*:*"];
@@ -136,9 +147,14 @@
                                     gs = ["geospatial_kosher:*"]
                                 }
 
+                                var absent = ["-occurrence_status_s:absent"];
+                                if (scope.includeAbsences) {
+                                    absent = []
+                                }
+
                                 scope._selectedQ.includeAnimalMovement = scope.includeAnimalMovement;
                                 scope._selectedQ.includeExpertDistributions = scope.includeExpertDistributions;
-                                scope._selectedQ.q = query.q.concat(gs);
+                                scope._selectedQ.q = query.q.concat(gs).concat(absent);
                                 scope._selectedQ.name = query.name;
                                 scope._selectedQ.bs = query.bs;
                                 scope._selectedQ.ws = query.ws;
@@ -196,14 +212,12 @@
 
                         if (!scope.multiselect) {
                             if (scope._selectedQ.selectOption) {
-                                scope.speciesOption = scope._selectedQ.selectOption;
-                                scope.changeOption()
+                                scope.changeOption(scope._selectedQ.selectOption)
                             } else if (scope._min === 0) {
                                 scope.speciesOption = 'none'
                             } else if ((scope._inputData === undefined || scope._inputData.speciesOption === undefined) &&
                                 scope.speciesLayers.length > 0) {
-                                scope.speciesOption = scope.speciesLayers[0].uid;
-                                scope.changeOption()
+                                scope.changeOption(scope.speciesLayers[0].uid)
                             } else if (scope._min > 0) {
                                 // select existing layer if selectedQ matches
                                 if (scope._selectedQ.q.length > 0) {

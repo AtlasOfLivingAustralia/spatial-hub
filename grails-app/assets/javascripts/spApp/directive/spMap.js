@@ -1,5 +1,12 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc directive
+     * @name spMap
+     * @description
+     *    Panel displaying the map
+     */
     angular.module('sp-map-directive', ['map-service', 'layout-service', 'layers-service']).directive('spMap', ['$timeout', 'MapService', 'LayoutService', 'LayersService', 'KeepAliveService',
         function ($timeout, MapService, LayoutService, LayersService, KeepAliveService) {
             if ($SH.userId) {

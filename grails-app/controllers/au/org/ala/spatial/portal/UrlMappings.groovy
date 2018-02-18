@@ -1,3 +1,5 @@
+package au.org.ala.spatial.portal
+
 import au.org.ala.admin.AlaAdminController
 
 class UrlMappings {
@@ -10,9 +12,12 @@ class UrlMappings {
             }
         }
 
-        "/admin"(controller:AlaAdminController, action:"/index")
+        "/admin"(controller:AlaAdminController, action:"index")
 
-        "/"(controller: "portal", action: "/index")
+        "/docs"(redirect: "/static/index.html")
+
+        "/"(controller: "portal", action: "index")
         "500"(view: '/error')
+        "404"(view: '/error')
     }
 }

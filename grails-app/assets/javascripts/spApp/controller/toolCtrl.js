@@ -1,5 +1,12 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc controller
+     * @name ToolCtrl
+     * @description
+     *   Display and run a client side or spatial-service tool.
+     */
     angular.module('tool-ctrl', ['map-service', 'biocache-service', 'layers-service'])
         .controller('ToolCtrl', ['$scope', 'MapService', '$timeout', 'LayoutService', '$uibModalInstance',
             'BiocacheService', '$http', 'LayersService', 'data', 'LoggerService', 'ToolsService',

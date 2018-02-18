@@ -1,5 +1,12 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc controller
+     * @name AddAreaCtrl
+     * @description
+     *   Add an area to the map
+     */
     angular.module('add-area-ctrl', ['map-service', 'layers-service', 'predefined-areas-service'])
         .controller('AddAreaCtrl', ['LayoutService', '$scope', 'MapService', '$timeout', 'LayersService',
             '$uibModalInstance', 'PredefinedAreasService', 'data',
@@ -273,8 +280,8 @@
                     } else if ($scope.area === 'importShapefile' || $scope.area === 'importKML') {
                         if ($scope.areaList) {
                             return $scope.areaList.filter(function (area) {
-                                    return area.selected
-                                }) === 0
+                                return area.selected
+                            }) === 0
                         } else {
                             return true
                         }

@@ -1,5 +1,12 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc directive
+     * @name selectArea
+     * @description
+     *   Area selection controls
+     */
     angular.module('select-area-directive', ['map-service', 'predefined-areas-service'])
         .directive('selectArea', ['$http', 'MapService', 'PredefinedAreasService', '$timeout',
             'LayoutService', function ($http, MapService, PredefinedAreasService, $timeout, LayoutService) {
