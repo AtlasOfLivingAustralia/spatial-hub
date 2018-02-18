@@ -31,7 +31,7 @@
                  * }]
                  */
                 classification: function (lsid) {
-                    return $http.get($SH.bieUrl + "/ws/classification/" + lsid).then(function (response) {
+                    return $http.get($SH.bieServiceUrl + "/classification/" + lsid).then(function (response) {
                         var list = response.data;
                         for (var i in list) {
                             if (list.hasOwnProperty(i)) {
@@ -84,7 +84,7 @@
                  *  }]
                  */
                 nameLookup: function (names) {
-                    return $http.post($SH.bieUrl + "/ws/species/lookup/bulk", {
+                    return $http.post($SH.bieServiceUrl + "/species/lookup/bulk", {
                         names: names,
                         vernacular: false
                     }).then(function (response) {
@@ -129,7 +129,7 @@
                  *  }]
                  */
                 guidLookup: function (guids) {
-                    return $http.post($SH.bieUrl + "/ws/species/guids/bulklookup", guids).then(function (response) {
+                    return $http.post($SH.bieServiceUrl + "/species/guids/bulklookup", guids).then(function (response) {
                         var list = response.data.searchDTOList;
                         for (var i in list) {
                             if (list.hasOwnProperty(i)) {

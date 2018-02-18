@@ -24,6 +24,7 @@
         biocacheUrl: '${config.biocache.url}',
         biocacheServiceUrl: '${config.biocacheService.url}',
         bieUrl: '${config.bie.baseURL}',
+        bieServiceUrl: '${config.bieService.baseURL}',
         layersServiceUrl: '${config.layersService.url}',
         samplingUrl: '${config.sampling.url}',
         listsUrl: '${config.lists.url}',
