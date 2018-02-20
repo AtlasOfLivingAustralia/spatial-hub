@@ -116,7 +116,7 @@
                         };
 
                         scope.addSpecies = function () {
-                            LayoutService.openModal('addSpecies', {}, true)
+                            LayoutService.openModal('tool', {processName: 'ToolAddSpeciesService'})
                         };
 
                         scope.compareQ = function (q1, q2) {
