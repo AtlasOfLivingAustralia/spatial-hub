@@ -93,7 +93,7 @@
                         };
 
                         scope.ok = function () {
-                            if (intersect.value.length > 0 || selectedArea.wkt.length > 0) {
+                            if (scope.intersect.value.length > 0 || scope.selectedArea.wkt.length > 0) {
                                 // used by click info popup to check if click came while drawing polygon
                                 LayoutService.areaCtrlAreaValue = undefined;
 
