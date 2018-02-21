@@ -129,10 +129,11 @@ security:
         
     auth:
         admin_role: ROLE_ADMIN
-    app:
-        http:
-            header:
-                userId: "X-ALA-userId"
+
+app:
+    http:
+        header:
+            userId: "X-ALA-userId"
 
 headerAndFooter:
     baseURL: 'https://www2.ala.org.au/commonui-bs3'
@@ -143,6 +144,9 @@ ala:
 bie:
     baseURL: 'https://bie.ala.org.au'
     searchPath: '/search'
+
+bieService:
+    baseURL: 'https://bie.ala.org.au/ws'
 
 userdetails:
     baseUrl: 'https://auth.ala.org.au/userdetails'

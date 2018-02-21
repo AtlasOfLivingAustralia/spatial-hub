@@ -117,12 +117,13 @@
                 $scope.addNewSpecies = function () {
                     ListsService.createList($scope.newListName, $scope.newListDescription, $scope.matchedGuids(), $scope.makePrivate).then(function (resp) {
                         if (resp.status === 200) {
-                            var druid  = resp.data.druid;
+                            var json = JSON.parse(resp.data.text);
+                            var druid = json.druid;
                             ListsService.items(druid, {max: 1}).then(function(data) {
-                                if (listIds.length === 0) {
+                                if (data.length === 0) {
                                     bootbox.alert($i18n("No matching species found."))
                                 } else {
-                                    ListsService.getItemsQ(resp.data.druid).then(function (data) {
+                                    ListsService.getItemsQ(druid).then(function (data) {
                                         var listIds = data;
                                         var closeLater = false;
 
