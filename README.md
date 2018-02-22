@@ -71,4 +71,4 @@ e.g.
 
 # Embedding spatial-hub
 
-Example [embedExample.html](embedExample.html)
+Example [embedExample.html](embedExample.html) (TODO: finish implementation)
