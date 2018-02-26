@@ -75,8 +75,9 @@
                             for (var k in top[1][scopeToSave.componentName]) {
                                 if (!k.startsWith('$') && !k.startsWith('_') && top[1][scopeToSave.componentName].hasOwnProperty(k)) {
                                     var v = top[1][scopeToSave.componentName][k];
-                                    if (scopeToSave[k] && !(v instanceof Function) &&
-                                        (v instanceof Array || v instanceof Object || v instanceof String || v instanceof Number)) {
+                                    if (scopeToSave[k] !== undefined && !(v instanceof Function) &&
+                                        (v instanceof Array || v instanceof Object || v instanceof String ||
+                                            v instanceof Number || typeof(v) == 'string' || typeof(v) == 'number')) {
                                         scopeToSave[k] = v
                                     }
                                 }

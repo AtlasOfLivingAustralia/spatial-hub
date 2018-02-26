@@ -33,12 +33,9 @@
                             } else if (LayoutService.panels().indexOf(cmd.open) >= 0) {
                                 // is panel
                                 scope.openPanel(cmd.open, cmd.params)
-                            } else if (ToolsService.isLocalTask(cmd.open)) {
-                                // is tool
-                                scope.open("tool", {"processName": cmd.open})
                             } else {
-                                // is process
-                                scope.open(cmd.open, cmd.params)
+                                // is tool or process
+                                scope.open("tool", {"processName": cmd.open})
                             }
                         };
 
