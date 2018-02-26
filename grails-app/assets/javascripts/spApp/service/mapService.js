@@ -419,6 +419,7 @@
                                     selected.layer.leaflet.legendurl += "&service=WMS&version=1.1.0&request=GetLegendGraphic&format=image/png"
                                 }
 
+
                                 $SH.hoverLayers.push(selected.layer.id)
                             }
                         }
@@ -427,12 +428,18 @@
                         $timeout(function () {
                         }, 0);
 
+
+
+
                         if (id.q && id.layertype !== 'area') {
                             promises.push(MapService.addOtherArea("distribution", id, id.area, id.includeExpertDistributions));
                             promises.push(MapService.addOtherArea("track", id, id.area, id.includeAnimalMovement));
                             promises.push(MapService.addOtherArea("checklist", id, id.area, id.includeChecklists));
 
                         }
+
+                        promises.push( LayoutService.enable('legend'));
+                        promises.push(MapService.select(selected.layer));
 
                         //add to promises if waiting is required
                         return $q.all(promises).then(function (results) {
