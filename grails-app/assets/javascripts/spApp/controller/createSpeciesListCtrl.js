@@ -55,12 +55,12 @@
                 $scope.matchedItems = [];
 
                 $scope.parseList = function () {
-                    var names = $scope.newItems.replace('\t', '\n').replace(',', '\n').replace(';', '\n').split('\n');
+                    var names = $scope.newItems.split(/[\s,;\t\n]+/);
+                    names = names.filter(function(name){return name !=undefined && name.trim().length > 0 })
                     BieService.nameLookup(names).then(function (list) {
                         for (var i in list) {
                             if (list.hasOwnProperty(i)) {
                                 $scope.getCount(list[i]);
-
                                 $scope.matchedItems.push(list[i])
                             }
                         }
@@ -160,5 +160,16 @@
                         r.readAsBinaryString(f);
                     }
                 };
+
+                $scope.listSrcFile = function () {
+                    var f = document.getElementById('file').files[0];
+                    if (f !== undefined) {
+                        return f.name;
+                    }else{
+                        console.log('Nothing')
+                    }
+                };
+
+
             }])
 }(angular));

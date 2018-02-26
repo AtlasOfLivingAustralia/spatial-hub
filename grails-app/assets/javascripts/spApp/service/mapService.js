@@ -424,14 +424,14 @@
                         }
 
                         leafletLayers[selected.layer.uid] = selected.layer.leaflet;
-
                         $timeout(function () {
                         }, 0);
 
                         if (id.q && id.layertype !== 'area') {
                             promises.push(MapService.addOtherArea("distribution", id, id.area, id.includeExpertDistributions));
                             promises.push(MapService.addOtherArea("track", id, id.area, id.includeAnimalMovement));
-                            promises.push(MapService.addOtherArea("checklist", id, id.area, id.includeChecklists))
+                            promises.push(MapService.addOtherArea("checklist", id, id.area, id.includeChecklists));
+
                         }
 
                         //add to promises if waiting is required

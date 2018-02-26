@@ -72,8 +72,10 @@
                     };
 
                     scope.isSelected = function (item) {
-                        return MapService.selected.layer === item
+                        var isSelected = MapService.selected.layer === item
+                        return isSelected
                     };
+
 
                     scope['delete'] = function (item) {
                         MapService.remove(item['uid']);
