@@ -256,6 +256,13 @@
                 };
 
                 $scope.isDisabled = function () {
+
+                    var inputs = $scope.getInputs();
+                    ToolsService.refresh($scope, $scope.toolName, inputs);
+                    //return true;
+
+
+
                     if ($scope.step === 0) {
                         return $scope.toolName.length === 0
                     } else if ($scope.step > $scope.stepsActual) {
@@ -310,6 +317,7 @@
 
                     ToolsService.execute($scope, $scope.toolName, inputs);
                 };
+
 
                 $scope.getInputs = function () {
                     var c = ToolsService.getCap($scope.toolName).input;

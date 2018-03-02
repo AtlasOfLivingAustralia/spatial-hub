@@ -207,6 +207,10 @@
                     }
                 }
 
+                function refreshLocal(uiScope, toolName, inputs) {
+                    localToolServices[toolName].refresh(inputs, uiScope.spec)
+                }
+
                 function initLocalTools() {
                     //inject all Tools into ToolsService
                     $.each(spApp.requires, function (x) {
@@ -262,6 +266,21 @@
                             return executeRemote(uiScope, inputs)
                         }
                     },
+
+                    /**
+                     * Run a tool
+                     * @memberof ToolsService
+                     * @param {Scope} interface scope
+                     * @param {string} tool name
+                     * @param {Map} input parameters
+                     * @return {Promise(Boolean)} true the tool is successful
+                     */
+                    refresh: function (uiScope, toolName, inputs) {
+                        if (localToolServices[toolName]) {
+                            refreshLocal(uiScope, toolName, inputs)
+                        }
+                    },
+
                     /**
                      * Get tool capabilities (info including inputs/outputs)
                      * @memberof ToolsService

@@ -58,6 +58,7 @@
                         };
 
                         scope.layerAreas = $.map(MapService.areaLayers(), function (x, idx) {
+
                             var area = {
                                 name: x.name,
                                 q: x.q,
@@ -68,6 +69,11 @@
                                 uid: x.uid,
                                 selected: scope.isSelected(x)
                             };
+                            // Remove incompatible areas that have area.pid.contains(':')
+                            if (x.pid){
+                                if (x.pid.contain(':'))
+                                    return null
+                            }
                             return area;
                         });
 
