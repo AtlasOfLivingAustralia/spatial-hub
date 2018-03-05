@@ -259,9 +259,6 @@
 
                     var inputs = $scope.getInputs();
                     ToolsService.refresh($scope, $scope.toolName, inputs);
-                    //return true;
-
-
 
                     if ($scope.step === 0) {
                         return $scope.toolName.length === 0

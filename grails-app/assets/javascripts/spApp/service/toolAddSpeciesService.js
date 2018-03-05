@@ -106,13 +106,11 @@
                         // inputs[0].q = inputs[0].q.concat(gs);
 
                         return BiocacheService.newLayer(inputs[0], inputs[2], newName).then(function (data) {
-
                             if (inputs[1].enabled){
                                 data.includeAnimalMovement = inputs[1].includeAnimalMovement;
                                 data.includeChecklists = inputs[1].includeChecklists;
                                 data.includeExpertDistributions = inputs[1].includeExpertDistributions;
                             }
-
                             return MapService.add(data).then(function() {
                                 return true;
                             })
