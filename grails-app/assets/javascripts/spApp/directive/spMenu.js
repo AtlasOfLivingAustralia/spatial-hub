@@ -30,12 +30,15 @@
                         scope.run = function (cmd) {
                             if (scope[cmd.open] !== undefined) {
                                 scope[cmd.open]()
-                            } else if (LayoutService.panels().indexOf(cmd.open) >= 0) {
+                            } else if (LayoutService.isPanel(cmd.open)) {
                                 // is panel
                                 scope.openPanel(cmd.open, cmd.params)
-                            } else {
-                                // is tool or process
+                            } else if (ToolsService.isTool(cmd.open)) {
+                                // is a tool, local or remote
                                 scope.open("tool", {"processName": cmd.open})
+                            } else {
+                                // is controller
+                                scope.open(cmd.open)
                             }
                         };
 

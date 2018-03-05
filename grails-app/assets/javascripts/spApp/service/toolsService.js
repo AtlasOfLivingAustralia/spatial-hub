@@ -239,13 +239,22 @@
                         });
                     },
                     /**
-                     * Test if a tool is a client side tool
+                     * Test if a tool name is a client side tool
                      * @memberof ToolsService
                      * @param {string} name of tool
                      * @return {boolean} true when it is a client side tool
                      */
                     isLocalTask: function (toolName) {
                         return localToolServices[toolName] !== undefined;
+                    },
+                    /**
+                     * Test if a tool name is a client side or remote tool
+                     * @memberof ToolsService
+                     * @param {string} name of tool
+                     * @return {boolean} true when it is a client side or remote tool
+                     */
+                    isTool: function (toolName) {
+                        return localToolServices[toolName] !== undefined || cap[toolName] !== undefined;
                     },
                     /**
                      * Run a tool

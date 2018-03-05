@@ -260,6 +260,10 @@
                 };
 
                 $scope.isDisabled = function () {
+
+                    $scope.status = 'starting...';
+                    $scope.statusRunning = true;
+
                     if ($scope.step === 0) {
                         return $scope.toolName.length === 0
                     } else if ($scope.step > $scope.stepsActual) {

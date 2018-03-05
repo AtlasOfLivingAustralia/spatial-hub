@@ -242,10 +242,17 @@
 
                 return {
                     /**
+                     * Coordinate
+                     * @typedef {Object} latlng
+                     * @property {number} lat - latitude
+                     * @property {number} lng - longitude
+                     */
+
+                    /**
                      * Open a popup on the map with information about a coordinate.
                      *
                      * @memberof PopupService
-                     * @param (latlng) latlng coordinate input coordinate as {lat:latitude, lng:longitude}
+                     * @param (latlng) latlng coordinate input coordinate
                      *
                      * @example:
                      * Input:
