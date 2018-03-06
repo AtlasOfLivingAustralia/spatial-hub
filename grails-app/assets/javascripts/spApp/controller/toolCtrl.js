@@ -65,7 +65,6 @@
                     });
                 };
 
-                $scope.values = [];
                 $scope.initValues = function () {
                     //no need for initValues when $scope.values is populated from LayoutService.addToSave
                     if ($scope.values.length > 0) return;

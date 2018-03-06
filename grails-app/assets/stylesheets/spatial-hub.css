@@ -1,13 +1,13 @@
 div#statusInfo {
-    position:absolute;
+    position: absolute;
     margin: 10px 60px;
-    z-index:99;
-    border-radius:5px;
-    opacity:0.8;
-    box-shadow: 2px 2px  1px rgba(0,0,0,0.6);
-    -moz-box-shadow: 2px 2px  1px rgba(0,0,0,0.6);
-    -webkit-box-shadow: 2px 2px  1px rgba(0,0,0,0.6);
-    -o-box-shadow: 2px 2px  1px rgba(0,0,0,0.6);
+    z-index: 99;
+    border-radius: 5px;
+    opacity: 0.8;
+    box-shadow: 2px 2px 1px rgba(0, 0, 0, 0.6);
+    -moz-box-shadow: 2px 2px 1px rgba(0, 0, 0, 0.6);
+    -webkit-box-shadow: 2px 2px 1px rgba(0, 0, 0, 0.6);
+    -o-box-shadow: 2px 2px 1px rgba(0, 0, 0, 0.6);
 }
 
 .ui-front {

@@ -429,8 +429,6 @@
                         }, 0);
 
 
-
-
                         if (id.q && id.layertype !== 'area') {
                             promises.push(MapService.addOtherArea("distribution", id, id.area, id.includeExpertDistributions));
                             promises.push(MapService.addOtherArea("track", id, id.area, id.includeAnimalMovement));
@@ -438,7 +436,7 @@
 
                         }
 
-                        promises.push( LayoutService.enable('legend'));
+                        promises.push(LayoutService.enable('legend'));
                         promises.push(MapService.select(selected.layer));
 
                         //add to promises if waiting is required

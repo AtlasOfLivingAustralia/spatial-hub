@@ -48,9 +48,9 @@
                                 '' +
                                 '' +
                                 '<div class="col-md-12">' +
-                                '<button type="button" class="close" data-dismiss="alert" aria-label="Close" title="Close"><span aria-hidden="true">×</span></button>'+
+                                '<button type="button" class="close" data-dismiss="alert" aria-label="Close" title="Close"><span aria-hidden="true">×</span></button>' +
                                 '<p><strong>Warning!</strong> You lost connection, <a href="#" class="alert-link" name = "saveAndLogin">Click</a> to connect again.</p>'
-                                '</div>'
+                            '</div>'
 
                             var js = "<script>$(function(){$('a[name=saveAndLogin]').click( function(){ SessionsService.saveAndLogin(SessionsService.current());});});</script>"
                             $('div#map').prepend(status)

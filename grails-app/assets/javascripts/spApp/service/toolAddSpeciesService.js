@@ -34,7 +34,7 @@
                                     "optional": true,
                                     "spatialValidity": false,
                                     "areaIncludes": true,
-                                    "disable" : false
+                                    "disable": false
                                 }
                             },
                             {
@@ -50,19 +50,14 @@
                     },
 
 
-                    refresh: function(inputs, specs){
+                    refresh: function (inputs, specs) {
 
                         //change inputs
                         // if  inputs[0].q array  lsid: or species_list :   enable 'next'
                         // else
                         //     disable
-                        if (inputs[0].q.length > 0 ){
-                            var enableCheck = this.checkAreaCompatible(inputs[0].q)
-                            if (specs) {
-                                //specs.input[1].constraints.disable = enableCheck
-                                specs.input[1].constraints.disable = !enableCheck
-
-                            }
+                        if (specs) {
+                            specs.input[1].constraints.disable = !this.checkAreaCompatible(inputs[0].q);
                         }
                     },
 
@@ -72,14 +67,14 @@
                         // else
                         //     disable
                         var enableArea = false;
-                        if (q.length > 0) {
+                        if (q !== undefined) {
+                            enableArea = (q.length === 0);
                             for (var i = 0; i < q.length; i++) {
                                 if (q[i].indexOf("lsid:") > -1 || q[i].indexOf("species_list:") > -1) {
                                     enableArea = true;
                                     break;
                                 }
                             }
-
                         }
                         return enableArea
                     },
@@ -90,7 +85,7 @@
                         if (inputs[2][0].name !== undefined)
                             newName += ' (' + inputs[2][0].name + ')';
                         //Check if areas is compatible
-                        inputs[1].enabled = this.checkAreaCompatible(inputs[0].q)
+                        inputs[1].enabled = this.checkAreaCompatible(inputs[0].q);
 
                         //geospatial_kosher if part of inputs[1] instead of inputs[0]
                         // var includeTrue = inputs[1].spatiallyValid;
@@ -106,7 +101,7 @@
                         // inputs[0].q = inputs[0].q.concat(gs);
 
                         return BiocacheService.newLayer(inputs[0], inputs[2], newName).then(function (data) {
-                            if (inputs[1].enabled){
+                            if (inputs[1].enabled) {
                                 data.includeAnimalMovement = inputs[1].includeAnimalMovement;
                                 data.includeChecklists = inputs[1].includeChecklists;
                                 data.includeExpertDistributions = inputs[1].includeExpertDistributions;

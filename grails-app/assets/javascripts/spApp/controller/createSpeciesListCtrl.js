@@ -56,7 +56,9 @@
 
                 $scope.parseList = function () {
                     var names = $scope.newItems.split(/[\s,;\t\n]+/);
-                    names = names.filter(function(name){return name !=undefined && name.trim().length > 0 })
+                    names = names.filter(function (name) {
+                        return name != undefined && name.trim().length > 0
+                    })
                     BieService.nameLookup(names).then(function (list) {
                         for (var i in list) {
                             if (list.hasOwnProperty(i)) {
@@ -166,7 +168,7 @@
                     var f = document.getElementById('file').files[0];
                     if (f !== undefined) {
                         return f.name;
-                    }else{
+                    } else {
                         console.log('Nothing')
                     }
                 };
