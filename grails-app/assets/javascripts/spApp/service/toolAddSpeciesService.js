@@ -33,7 +33,8 @@
                                 "constraints": {
                                     "optional": true,
                                     "spatialValidity": false,
-                                    "areaIncludes": true
+                                    "areaIncludes": true,
+                                    "disable" : false
                                 }
                             },
                             {
@@ -48,12 +49,48 @@
                         "description": "Add a species layer to the map"
                     },
 
+
+                    refresh: function(inputs, specs){
+
+                        //change inputs
+                        // if  inputs[0].q array  lsid: or species_list :   enable 'next'
+                        // else
+                        //     disable
+                        if (inputs[0].q.length > 0 ){
+                            var enableCheck = this.checkAreaCompatible(inputs[0].q)
+                            if (specs) {
+                                //specs.input[1].constraints.disable = enableCheck
+                                specs.input[1].constraints.disable = !enableCheck
+
+                            }
+                        }
+                    },
+
+                    checkAreaCompatible: function (q) {
+                        //change inputs
+                        // if  inputs[0].q array  lsid: or species_list :   enable 'next'
+                        // else
+                        //     disable
+                        var enableArea = false;
+                        if (q.length > 0) {
+                            for (var i = 0; i < q.length; i++) {
+                                if (q[i].indexOf("lsid:") > -1 || q[i].indexOf("species_list:") > -1) {
+                                    enableArea = true;
+                                    break;
+                                }
+                            }
+
+                        }
+                        return enableArea
+                    },
+
                     execute: function (inputs) {
                         var newName = inputs[0].name;
-
                         //append area to the species layer name
                         if (inputs[2][0].name !== undefined)
                             newName += ' (' + inputs[2][0].name + ')';
+                        //Check if areas is compatible
+                        inputs[1].enabled = this.checkAreaCompatible(inputs[0].q)
 
                         //geospatial_kosher if part of inputs[1] instead of inputs[0]
                         // var includeTrue = inputs[1].spatiallyValid;
@@ -69,10 +106,11 @@
                         // inputs[0].q = inputs[0].q.concat(gs);
 
                         return BiocacheService.newLayer(inputs[0], inputs[2], newName).then(function (data) {
-                            data.includeAnimalMovement = inputs[1].includeAnimalMovement;
-                            data.includeChecklists = inputs[1].includeChecklists;
-                            data.includeExpertDistributions = inputs[1].includeExpertDistributions;
-
+                            if (inputs[1].enabled){
+                                data.includeAnimalMovement = inputs[1].includeAnimalMovement;
+                                data.includeChecklists = inputs[1].includeChecklists;
+                                data.includeExpertDistributions = inputs[1].includeExpertDistributions;
+                            }
                             return MapService.add(data).then(function() {
                                 return true;
                             })

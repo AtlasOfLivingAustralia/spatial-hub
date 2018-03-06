@@ -17,7 +17,6 @@
 
                 $scope.step = 0;
 
-                //TODO: is this the correct position? Maybe it should move after $scope.values
                 $scope.values = [];
                 LayoutService.addToSave($scope);
 
@@ -66,6 +65,7 @@
                     });
                 };
 
+                $scope.values = [];
                 $scope.initValues = function () {
                     //no need for initValues when $scope.values is populated from LayoutService.addToSave
                     if ($scope.values.length > 0) return;
@@ -261,8 +261,8 @@
 
                 $scope.isDisabled = function () {
 
-                    $scope.status = 'starting...';
-                    $scope.statusRunning = true;
+                    var inputs = $scope.getInputs();
+                    ToolsService.refresh($scope, $scope.toolName, inputs);
 
                     if ($scope.step === 0) {
                         return $scope.toolName.length === 0

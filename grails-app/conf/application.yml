@@ -182,6 +182,9 @@ biocache:
 biocacheService:
     url: 'https://biocache.ala.org.au/ws'
 
+bieService:
+    baseURL: 'https://bie.ala.org.au/ws'
+
 sampling:
     url: 'http://ala-dylan.it.csiro.au/sampling-service'
 

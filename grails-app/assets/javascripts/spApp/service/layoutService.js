@@ -10,7 +10,7 @@
     angular.module('layout-service', [])
         .factory("LayoutService", ['$uibModal', '$timeout', function ($uibModal, $timeout) {
 
-            var showLegend = [false];
+            var showLegend = [true];
             var showOptions = [false];
             var layoutStack = [];
             var toOpenStack = [];

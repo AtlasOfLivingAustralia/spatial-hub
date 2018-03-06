@@ -252,7 +252,7 @@
                      * Open a popup on the map with information about a coordinate.
                      *
                      * @memberof PopupService
-                     * @param (latlng) latlng coordinate input coordinate
+                     * @param (latlng) latlng coordinate input coordinate as lat,lng
                      *
                      * @example:
                      * Input:

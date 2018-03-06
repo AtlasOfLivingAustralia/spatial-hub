@@ -180,16 +180,19 @@
                                 })
                             } else if (scope.speciesOption === 'searchSpecies') {
                                 scope.clearQ();
+
                             } else if (scope.speciesOption === 'importList') {
                                 scope.clearQ();
                                 scope.openSpeciesList()
                             } else if (scope.speciesOption === 'speciesList') {
                                 scope.clearQ()
+
                             } else if (scope.speciesOption === 'importPoints') {
                                 scope.clearQ();
                                 scope.openSandbox()
                             } else if (scope.speciesOption === 'sandboxPoints') {
                                 scope.clearQ()
+
                             } else if (MapService.getLayer(scope.speciesOption)) {
                                 scope.clearQ();
                                 var layer = MapService.getFullLayer(scope.speciesOption);

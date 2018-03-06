@@ -112,7 +112,9 @@
                                     <div species-options value="values[i]"
                                          area-includes="v.constraints.areaIncludes"
                                          spatial-validity="v.constraints.spatialValidity"
-                                         endemic-includes="v.constraints.endemicIncludes"></div>
+                                         endemic-includes="v.constraints.endemicIncludes"
+                                         disable-check = "v.constraints.disable"
+                                    ></div>
                                 </div>
                                 <div ng-if="v.type == 'facet'">
                                     <div select-facet selected-facet="values[i]"></div>
