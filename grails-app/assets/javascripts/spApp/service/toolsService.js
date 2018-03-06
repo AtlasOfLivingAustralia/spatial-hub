@@ -208,7 +208,8 @@
                 }
 
                 function refreshLocal(uiScope, toolName, inputs) {
-                    localToolServices[toolName].refresh(inputs, uiScope.spec)
+                    if (typeof localToolServices[toolName].refresh === "function")
+                        localToolServices[toolName].refresh(inputs, uiScope.spec)
                 }
 
                 function initLocalTools() {
