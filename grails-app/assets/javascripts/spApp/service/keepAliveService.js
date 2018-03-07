@@ -16,7 +16,7 @@
             var started = false;
 
             var reconnect = function(){
-                SessionsService.saveAndLogin(SessionsService.current());
+                SessionsService.saveAndLogin(SessionsService.current(),null, null, true);
             }
 
             var ping = function () {
@@ -27,7 +27,6 @@
                     status = json;
                     data = json;
                 }
-
                 //check for ala-login timeout
                 $http.post($SH.baseUrl + "/portal/ping?sessionId=" + $SH.sessionId, data).then(function (response) {
                     $timeout(ping, $SH.keepAliveTimeout)
@@ -39,20 +38,8 @@
                         $http.post($SH.baseUrl + "/portal/ping?sessionId=" + $SH.sessionId, data).then(function (response) {
                             $timeout(ping, $SH.keepAliveTimeout)
                         }, function (response) {
-                            // TODO: use less intrusive notification in cases of intermittent connection loss by server or client.
-
-                            // bootbox.confirm($i18n("A problem was detected. Click OK to retry or Cancel to ignore."),
-                            //     function (result) {
-                            //         if (result) {
-                            //             SessionsService.saveAndLogin(SessionsService.current());
-                            //         }
-                            //     }
-                            // );
-                            var status = "<div class='alert alert-ala-danger alert-dismissable' id='statusInfo' role='alert'>" +
-                                '' +
-                                '' +
+                               var status = "<div class='alert alert-ala-danger alert-dismissable' id='statusInfo' role='alert'>" +
                                 '<div class="col-md-12">' +
-                                '<button type="button" class="close" data-dismiss="alert" aria-label="Close" title="Close"><span aria-hidden="true">×</span></button>'+
                                 '<p><strong>Warning!</strong> You lost connection, <a href="#" class="alert-link" ng-click="reconnect()" name = "saveAndLogin">Click</a> to connect again.</p>'
                                 '</div>'
 

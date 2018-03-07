@@ -76,7 +76,7 @@
                  * @param {boolean} true to encode the return URL
                  * @param {boolean} TODO: login not required
                  */
-                saveAndLogin: function (data, urlTemplate, encode, skipALALoginUrl) {
+                saveAndLogin: function (data, urlTemplate, encode, skipALALoskipALALoginUrlginUrl) {
                     //this is not a permanent save
                     return $http.post($SH.baseUrl + "/portal/sessionCache/" + $SH.sessionId + "?save=false", data).then(function (response) {
                         //Not sure why service is not preserved and the additional / is added. Workaround with /?
@@ -86,9 +86,11 @@
                             if (encode)
                                 url = encodeURIComponent(url);
                             window.location.href = urlTemplate.replace("$url", url);
-                        } else {
+                        } else if (skipALALoskipALALoginUrlginUrl) {
+                            window.location.href = url
+                        }else
                             window.location.href = $SH.loginUrl + encodeURIComponent(url)
-                        }
+
                     });
                 },
                 /**
