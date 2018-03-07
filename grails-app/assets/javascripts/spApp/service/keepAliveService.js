@@ -15,6 +15,10 @@
             var status = '{}';
             var started = false;
 
+            var reconnect = function(){
+                SessionsService.saveAndLogin(SessionsService.current());
+            }
+
             var ping = function () {
                 var json = JSON.stringify(SessionsService.current());
 
@@ -49,12 +53,15 @@
                                 '' +
                                 '<div class="col-md-12">' +
                                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close" title="Close"><span aria-hidden="true">×</span></button>'+
-                                '<p><strong>Warning!</strong> You lost connection, <a href="#" class="alert-link" name = "saveAndLogin">Click</a> to connect again.</p>'
+                                '<p><strong>Warning!</strong> You lost connection, <a href="#" class="alert-link" ng-click="reconnect()" name = "saveAndLogin">Click</a> to connect again.</p>'
                                 '</div>'
 
-                            var js = "<script>$(function(){$('a[name=saveAndLogin]').click( function(){ SessionsService.saveAndLogin(SessionsService.current());});});</script>"
-                            $('div#map').prepend(status)
-                            $('div#map').prepend(js)
+                            var js = "<script>$(function(){$('a[name=saveAndLogin]').click( function(){ " +
+                                        "angular.element('div[name=divMappedLayers]').scope().reconnect(); " +
+                                    "});" +
+                                "});</script>"
+                            $('div#map').prepend(status);
+                            $('div#map').prepend(js);
                         });
                     });
                     $('body').append($(html));
@@ -71,6 +78,10 @@
 
                         ping();
                     }
+                },
+
+                reconnect: function(){
+                    reconnect();
                 }
             };
         }])
