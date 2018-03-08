@@ -16,7 +16,7 @@
             var started = false;
 
             var reconnect = function(){
-                SessionsService.saveAndLogin(SessionsService.current(),null, null, true);
+                return SessionsService.saveAndLogin(SessionsService.current(),null, null, true);
             }
 
             var ping = function () {
@@ -39,13 +39,29 @@
                             $timeout(ping, $SH.keepAliveTimeout)
                         }, function (response) {
                                var status = "<div class='alert alert-ala-danger alert-dismissable' id='statusInfo' role='alert'>" +
-                                '<div class="col-md-12">' +
                                 '<p><strong>Warning!</strong> You lost connection, <a href="#" class="alert-link" ng-click="reconnect()" name = "saveAndLogin">Click</a> to connect again.</p>'
                                 '</div>'
 
-                            var js = "<script>$(function(){$('a[name=saveAndLogin]').click( function(){ " +
-                                        "angular.element('div[name=divMappedLayers]').scope().reconnect(); " +
-                                    "});" +
+                            var js = "<script>$(function(){" +
+                                        "function reconnect(){" +
+                                            "var succeed = angular.element('div[name=divMappedLayers]').scope().reconnect(); " +
+                                            "if (!succeed) {" +
+                                            "var countDownDate = new Date().getTime();" +
+                                            "var x = setInterval(function() { " +
+                                            "var now = new Date().getTime();" +
+                                            "var distance = now - countDownDate;"+
+                                            "var remaining = 10 - Math.floor((distance % (1000 * 60)) / 1000);"+
+                                            "$('div#statusInfo > p').html('<strong>Reconnecting failed!</strong>  Try again in <strong>'+ remaining + '</strong> seconds');" +
+                                            "if (remaining <=0) {" +
+                                                "$('div#statusInfo > p').html('Connecting ...');" +
+                                                "clearInterval(x); " +
+                                                "reconnect()}; }, 1000)" +
+                                            "} "+
+                                        "}" +
+
+                                        "$('a[name=saveAndLogin]').click( function(){ " +
+                                            "reconnect()" +
+                                        "});" +
                                 "});</script>"
                             $('div#map').prepend(status);
                             $('div#map').prepend(js);
