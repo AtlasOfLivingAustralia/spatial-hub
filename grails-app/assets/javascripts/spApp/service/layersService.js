@@ -12,7 +12,8 @@
             var layers = [];
 
             var url = $SH.layersServiceUrl + "/fields/search?q=";
-            $http.get($SH.proxyUrl + "?url=" + encodeURIComponent(url)).then(function (data) {
+            //$http.get($SH.proxyUrl + "?url=" + encodeURIComponent(url)).then(function (data) {
+            $http.get(url).then(function (data) {
                 layers = data.data;
             });
 
@@ -65,7 +66,8 @@
                  */
                 getField: function (field, start, max, q) {
                     var url = this.url() + "/field/" + field + "?start=" + start + "&pageSize=" + max + "&q=" + q;
-                    return $http.get($SH.proxyUrl + "?url=" + encodeURIComponent(url))
+                    //return $http.get($SH.proxyUrl + "?url=" + encodeURIComponent(url))
+                    return $http.get(url)
                 },
                 /**
                  * List all fields. See #searchLayers for output example
@@ -74,7 +76,8 @@
                  */
                 getLayers: function () {
                     var url = this.url() + "/fields/search?q=";
-                    return $http.get($SH.proxyUrl + "?url=" + encodeURIComponent(url))
+                    //return $http.get($SH.proxyUrl + "?url=" + encodeURIComponent(url))
+                    return $http.get(url)
                 },
                 /**
                  * Search spatial-service layers
@@ -149,7 +152,8 @@
                  */
                 searchLayers: function (q) {
                     var url = this.url() + '/fields/search?q=' + q;
-                    return $http.get($SH.proxyUrl + "?url=" + encodeURIComponent(url))
+                    //return $http.get($SH.proxyUrl + "?url=" + encodeURIComponent(url))
+                    return $http.get(url)
                 },
                 /**
                  * Intersect layers with a single point

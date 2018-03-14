@@ -73,6 +73,9 @@ def build(String baseDir) {
     }
 
     //i18n'ify templates
+    // This extracts text content from angular html template elements for the values,
+    // creates an attribute 'i18n' for the key,
+    // and stores the key value pairs in grails-app/i18n/messages.properties
     println 'Starting i18n build from templates'
     String [] textElements = ["h1", "h2", "h3", "h4", "h5", "h6", "label", "span", "div", "input", "p", "button", "td", "option"]
 

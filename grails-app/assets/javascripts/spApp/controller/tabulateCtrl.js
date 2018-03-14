@@ -18,7 +18,8 @@
 
                 $scope.loading = true;
 
-                $http.get($SH.proxyUrl + "?url=" + encodeURIComponent(LayersService.url() + '/tabulations.json')).then(function (response) {
+                //$http.get($SH.proxyUrl + "?url=" + encodeURIComponent(LayersService.url() + '/tabulations.json')).then(function (response) {
+                $http.get(LayersService.url() + '/tabulations.json').then(function (response) {
                     $scope.tabulations = response.data;
                     var unique = {};
                     var k;

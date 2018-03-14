@@ -68,7 +68,8 @@ function fetchData() {
     spApp.constant("gMessages", gMessages);
 
     var distancesUrl = $SH.layersServiceUrl + "/layerDistances/layerdistancesJSON";
-    $http.get($SH.proxyUrl + "?url=" + encodeURIComponent(distancesUrl)).then(function (response) {
+    //$http.get($SH.proxyUrl + "?url=" + encodeURIComponent(distancesUrl)).then(function (response) {
+    $http.get(distancesUrl).then(function (response) {
         $.map(response.data, function (v, k) {
             gLayerDistances[k] = v
         });

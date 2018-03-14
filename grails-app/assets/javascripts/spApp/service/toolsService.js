@@ -17,7 +17,8 @@
                 var url = LayersService.url() + '/capabilities';
                 var setup = $http.get($SH.baseUrl + '/portal/config/view').then(function (data) {
                     viewConfig = data.data;
-                    return $http.get($SH.proxyUrl + "?url=" + encodeURIComponent(url)).then(function (data) {
+                    //return $http.get($SH.proxyUrl + "?url=" + encodeURIComponent(url)).then(function (data) {
+                    return $http.get(url).then(function (data) {
                         var k, merged;
                         for (k in data.data) {
                             if (data.data.hasOwnProperty(k)) {
