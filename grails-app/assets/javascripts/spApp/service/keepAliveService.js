@@ -32,12 +32,7 @@
                     $timeout(ping, $SH.keepAliveTimeout)
                 }, function (error) {
                     //try silent login
-                    // var test = $('<iframe src="http://google.om" id="test">')
-                    // $('body').prepend(test)
-                    // document.getElementsById('test').onload=function(){
-                    //     alert('I am fired')
-                    // }
-                    //possbile the server is not accessible
+                    //Server is not accessible
                     if(error.status ==-1){
 
                         var status = "<div class='alert alert-ala-danger alert-dismissable' id='statusInfo' role='alert'>" +
