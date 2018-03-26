@@ -333,7 +333,7 @@
                                 } else {
                                     layerParams = {
                                         opacity: id.opacity / 100.0,
-                                        layers: 'ALA:Objects',
+                                        layers: id.area_km == 0 ? 'ALA:Points':'ALA:Objects',
                                         format: 'image/png',
                                         transparent: true,
                                         viewparams: 's:' + id.pid
@@ -463,10 +463,29 @@
 
                     select: function (id) {
                         selected.layer = id;
-                        $SH.defaultPaneResizer.show('south');
+                        if ($SH.defaultPaneResizer)
+                            $SH.defaultPaneResizer.show('south');
                     },
                     objectSld: function (item) {
-                        var sldBody = '<?xml version="1.0" encoding="UTF-8"?><StyledLayerDescriptor version="1.0.0" xmlns="http://www.opengis.net/sld"><NamedLayer><Name>ALA:Objects</Name><UserStyle><FeatureTypeStyle><Rule><Title>Polygon</Title><PolygonSymbolizer><Fill><CssParameter name="fill">#.colour</CssParameter></Fill></PolygonSymbolizer></Rule></FeatureTypeStyle></UserStyle></NamedLayer></StyledLayerDescriptor>';
+                        var sldBody =''
+                        if (item.area_km == 0)
+                            sldBody = '<?xml version="1.0" encoding="UTF-8"?><StyledLayerDescriptor version="1.0.0" xmlns="http://www.opengis.net/sld"><NamedLayer><Name>ALA:Points</Name><UserStyle><FeatureTypeStyle>\n' +
+                                '     <Rule>\n' +
+                                '       <PointSymbolizer>\n' +
+                                '         <Graphic>\n' +
+                                '           <Mark>\n' +
+                                '             <WellKnownName>circle</WellKnownName>\n' +
+                                '             <Fill>\n' +
+                                '               <CssParameter name="fill">#.colour</CssParameter>\n' +
+                                '             </Fill>\n' +
+                                '           </Mark>\n' +
+                                '           <Size>6</Size>\n' +
+                                '         </Graphic>\n' +
+                                '       </PointSymbolizer>\n' +
+                                '     </Rule>\n' +
+                                '   </FeatureTypeStyle></UserStyle></NamedLayer></StyledLayerDescriptor>';
+                        else
+                             sldBody = '<?xml version="1.0" encoding="UTF-8"?><StyledLayerDescriptor version="1.0.0" xmlns="http://www.opengis.net/sld"><NamedLayer><Name>ALA:Objects</Name><UserStyle><FeatureTypeStyle><Rule><Title>Polygon</Title><PolygonSymbolizer><Fill><CssParameter name="fill">#.colour</CssParameter></Fill></PolygonSymbolizer></Rule></FeatureTypeStyle></UserStyle></NamedLayer></StyledLayerDescriptor>';
                         sldBody = sldBody.replace('.colour', item.color);
                         return sldBody
                     },
