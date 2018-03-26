@@ -15,19 +15,18 @@
 
 package au.org.ala.spatial.portal
 
-import org.apache.commons.httpclient.*
+import grails.web.http.HttpHeaders
+import org.apache.commons.httpclient.HttpClient
+import org.apache.commons.httpclient.HttpMethodBase
+import org.apache.commons.httpclient.SimpleHttpConnectionManager
 import org.apache.commons.httpclient.methods.*
-import org.apache.commons.httpclient.methods.multipart.ByteArrayPartSource
-import org.apache.commons.httpclient.methods.multipart.FilePart
-import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity
-import org.apache.commons.httpclient.methods.multipart.Part
-import org.apache.commons.httpclient.methods.multipart.PartSource
+import org.apache.commons.httpclient.methods.multipart.*
 import org.apache.commons.httpclient.params.HttpClientParams
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.client.methods.HttpPut
+
 //import org.codehaus.groovy.grails.web.servlet.HttpHeaders
-import grails.web.http.HttpHeaders
 import org.springframework.web.multipart.commons.CommonsMultipartFile
 
 /**
@@ -166,7 +165,7 @@ class HubWebService {
 
             if (headers) {
                 headers.each { k, v ->
-                    if (!excludedHeaders.contains(k.toString().toLowerCase()) && !HttpHeaders.COOKIE.equalsIgnoreCase(k.toString())) {
+                    if (k != null && !excludedHeaders.contains(k.toString().toLowerCase()) && !HttpHeaders.COOKIE.equalsIgnoreCase(k.toString())) {
                         call.addRequestHeader(String.valueOf(k), String.valueOf(v))
                     }
                 }

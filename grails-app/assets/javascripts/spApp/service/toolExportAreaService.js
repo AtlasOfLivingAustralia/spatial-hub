@@ -1,5 +1,12 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc service
+     * @name ToolExportAreaService
+     * @description
+     *   Client side tool to export area layers
+     */
     angular.module('tool-export-area-service', [])
         .factory("ToolExportAreaService", ["$http", "$q", "MapService", "LayersService", function ($http, $q, MapService, LayersService) {
             return {
@@ -53,8 +60,8 @@
                             ]
                         }
                     ],
-                        "description": "Export areas."
-                    },
+                    "description": "Export areas."
+                },
 
                 execute: function (inputs) {
                     var url = LayersService.getAreaDownloadUrl(inputs[0].pid, inputs[1], inputs[0].name);

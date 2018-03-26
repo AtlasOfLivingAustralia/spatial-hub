@@ -1,6 +1,14 @@
 (function (angular) {
     'use strict';
-    angular.module('layer-list-select-directive', ['predefined-layer-lists-service']).directive('layerListSelect', ['PredefinedLayerListsService', function (PredefinedLayerListsService) {
+    /**
+     * @memberof spApp
+     * @ngdoc directive
+     * @name layerListSelect
+     * @description
+     *   Select dropdown of predefined layer lists
+     */
+    angular.module('layer-list-select-directive', ['predefined-layer-lists-service']).directive('layerListSelect',
+        ['PredefinedLayerListsService', function (PredefinedLayerListsService) {
         return {
             scope: {
                 _custom: '&onCustom'

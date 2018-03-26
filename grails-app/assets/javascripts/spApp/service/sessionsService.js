@@ -1,11 +1,28 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc service
+     * @name SessionsService
+     * @description
+     *   Access to spatial-hub sessions
+     */
     angular.module('sessions-service', [])
         .factory('SessionsService', ['$http', 'MapService', function ($http, MapService) {
 
             var _this = {
+                /**
+                 * Retrieve the current session state
+                 * @memberof SessionsService
+                 * @returns {SessionState}
+                 *
+                 * @example
+                 * Output:
+                 *  {TODO: example}
+                 */
                 current: function () {
                     if (MapService.leafletScope) {
+                        //TODO: remove temporary information from output
                         return {
                             layers: MapService.mappedLayers,
                             extents: MapService.getExtents(),
@@ -15,11 +32,25 @@
                         return {}
                     }
                 },
+                /**
+                 * Retrieve saved sessions for the logged in user
+                 * @memberof SessionsService
+                 * @returns {Promise(List(SessionState))} list of sessions
+                 *
+                 * @example
+                 * Output:
+                 *  {TODO: example}
+                 */
                 list: function () {
-                    return $http.get("portal/sessions").then(function (response) {
+                    return $http.get($SH.baseUrl + "/portal/sessions").then(function (response) {
                         return response.data
                     });
                 },
+                /**
+                 * UI prompt to name and save the current session
+                 * @memberof SessionsService
+                 *
+                 */
                 save: function (data) {
                     bootbox.prompt({
                         title: $i18n("Enter a name to save this session"),
@@ -30,16 +61,24 @@
                                     name = $i18n('My saved session')
                                 }
                                 data.name = name;
-                                return $http.post("portal/session/" + $SH.sessionId, data).then(function (response) {
+                                return $http.post($SH.baseUrl + "/portal/session/" + $SH.sessionId, data).then(function (response) {
                                     bootbox.alert('<h3>' + $i18n('Session Saved') + '</h3><br/><br/>' + $i18n('URL to retrived this saved session') + '<br/><br/><a target="_blank" href="' + response.data.url + '">' + response.data.url + '</a>')
                                 });
                             }
                         }
                     });
                 },
+                /**
+                 * Do temporary save session and redirect so that a login is prompted and the session is not lost
+                 * @memberof SessionsService
+                 * @param {SessionState} session data
+                 * @param {string} (optional) login template to use instead of the default login URL
+                 * @param {boolean} true to encode the return URL
+                 * @param {boolean} TODO: login not required
+                 */
                 saveAndLogin: function (data, urlTemplate, encode, skipALALoginUrl) {
                     //this is not a permanent save
-                    return $http.post("portal/sessionCache/" + $SH.sessionId + "?save=false", data).then(function (response) {
+                    return $http.post($SH.baseUrl + "/portal/sessionCache/" + $SH.sessionId + "?save=false", data).then(function (response) {
                         //Not sure why service is not preserved and the additional / is added. Workaround with /?
                         var url = response.data.url.replace("?", "/?");
 
@@ -52,16 +91,37 @@
                         }
                     });
                 },
+                /**
+                 * Retrieve saved session state
+                 * @memberof SessionsService
+                 * @param {string} session id
+                 * @return {Promise(SessionState)} saved session state
+                 */
                 get: function (sessionId) {
-                    return $http.get("portal/session/" + sessionId).then(function (response) {
+                    return $http.get($SH.baseUrl + "/portal/session/" + sessionId).then(function (response) {
                         return response.data
                     });
                 },
+                /**
+                 * Delete a saved session. Must be the same user or ADMIN
+                 * @memberof SessionsService
+                 * @param {string} session id
+                 * @return {Promise}
+                 */
                 'delete': function (sessionId) {
-                    return $http.delete("portal/session/" + sessionId).then(function (response) {
+                    return $http.delete($SH.baseUrl + "/portal/session/" + sessionId).then(function (response) {
                         return response.data
                     });
                 },
+                /**
+                 * Load a saved session. This adds layers, changes the basemap and sets the zoom/extents of the
+                 * current session.
+                 *
+                 * Note: map layers are not removed.
+                 *
+                 * @memberof SessionsService
+                 * @param {string} session id
+                 */
                 load: function (sessionId) {
                     return this.get(sessionId).then(function (data) {
                         MapService.removeAll();

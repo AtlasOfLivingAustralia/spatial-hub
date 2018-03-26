@@ -17,6 +17,9 @@ package au.org.ala.spatial.portal
 
 import grails.converters.JSON
 import grails.plugin.cache.Cacheable
+import grails.util.Holders
+
+import java.text.MessageFormat
 
 /**
  * Helper class for invoking other ALA web services.
@@ -27,6 +30,7 @@ class PortalService {
     def hubWebService
 
     static final APP_CONSTANT = 'SPATIAL_PORTAL'
+    static final DEFAULT_USER_ID = -1
 
     def caches = [QID: 'qid', PROXY: 'proxy']
 
@@ -87,5 +91,33 @@ class PortalService {
             }
         }
         config
+    }
+
+    def validKeys = [] as Set
+
+    def isValidApiKey(key) {
+        if (key == null) {
+            return false
+        }
+
+        Boolean result = validKeys.contains(key)
+
+        if (result == null) {
+            String url = MessageFormat.format(grailsApplication.config.apiKeyCheckUrlTemplate.toString(), key)
+
+            result = key == grailsApplication.config.serviceKey || hubWebService.getUrl(url).contains('"valid":true')
+
+            if (result) {
+                validKeys.add(key)
+            }
+        }
+
+        return result
+    }
+
+    def canProxy(url) {
+        url.toString().startsWith(Holders.config.layersService.url) ||
+                url.toString().startsWith(Holders.config.phylolink.url) ||
+                url.toString().startsWith(Holders.config.sampling.url)
     }
 }

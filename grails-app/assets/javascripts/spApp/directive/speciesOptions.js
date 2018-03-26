@@ -1,5 +1,12 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc directive
+     * @name speciesOptions
+     * @description
+     *    General occurrence layer filter toggles
+     */
     angular.module('species-options-directive', ['map-service', 'lists-service'])
         .directive('speciesOptions', ['MapService', 'ListsService', '$timeout', 'LayoutService',
             function (MapService, ListsService, $timeout, LayoutService) {
@@ -9,7 +16,8 @@
                         _value: '=value',
                         _areaIncludes: '=?areaIncludes',
                         _spatialValidity: '=?spatialValidity',
-                        _endemicIncludes: '=?endemicIncludes'
+                        _endemicIncludes: '=?endemicIncludes',
+                        _disabled: "=?disableCheck"
                     },
                     templateUrl: '/spApp/speciesOptionsContent.htm',
                     link: function (scope, element, attrs) {

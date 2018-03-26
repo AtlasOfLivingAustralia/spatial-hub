@@ -1,5 +1,12 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc controller
+     * @name ToolCtrl
+     * @description
+     *   Display and run a client side or spatial-service tool.
+     */
     angular.module('tool-ctrl', ['map-service', 'biocache-service', 'layers-service'])
         .controller('ToolCtrl', ['$scope', 'MapService', '$timeout', 'LayoutService', '$uibModalInstance',
             'BiocacheService', '$http', 'LayersService', 'data', 'LoggerService', 'ToolsService',
@@ -10,7 +17,7 @@
 
                 $scope.step = 0;
 
-                //TODO: is this the correct position? Maybe it should move after $scope.values
+                $scope.values = [];
                 LayoutService.addToSave($scope);
 
                 $scope.stage = inputData && inputData.stage || 'input';
@@ -20,6 +27,7 @@
                 $scope.statusRunning = false;
                 $scope.spec = null;
                 $scope.cancelled = false;
+                $scope.continous = true;
 
                 // mandatory to provide inputData.processName
                 $scope.toolName = inputData !== undefined ? inputData.processName : '';
@@ -57,8 +65,10 @@
                     });
                 };
 
-                $scope.values = [];
                 $scope.initValues = function () {
+                    //no need for initValues when $scope.values is populated from LayoutService.addToSave
+                    if ($scope.values.length > 0) return;
+
                     //defaults
                     var c = $scope.spec.input;
                     var k;
@@ -124,7 +134,7 @@
                 };
 
                 $scope.ok = function () {
-                    if ($scope.step === 0) {
+                    if ($scope.step === 0 || $scope.stepsActual === undefined) {
                         //build stepView
                         $scope.stepView = {};
                         var order = 1;
@@ -176,7 +186,7 @@
 
                     switch ($scope.stage) {
                         case 'input':
-                            if ($scope.step === $scope.stepsActual) {
+                            if ($scope.step !== undefined && $scope.step === $scope.stepsActual) {
                                 var response = $scope.execute();
                                 if (response && response.then) {
                                     response.then(function (data) {
@@ -249,6 +259,10 @@
                 };
 
                 $scope.isDisabled = function () {
+
+                    var inputs = $scope.getInputs();
+                    ToolsService.refresh($scope, $scope.toolName, inputs);
+
                     if ($scope.step === 0) {
                         return $scope.toolName.length === 0
                     } else if ($scope.step > $scope.stepsActual) {

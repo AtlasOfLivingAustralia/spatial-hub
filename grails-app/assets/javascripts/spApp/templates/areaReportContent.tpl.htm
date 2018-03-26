@@ -11,9 +11,10 @@
             <tbody >
             <tr ng-repeat="item in items">
                 <td style="width:250px;vertical-align: middle;">{{item.name}}</td>
-                <td style="text-align:right;width:80px;vertical-align: middle;" ng-switch="item.value">
-                    <i ng-switch-when="" style="width:16px" class="species-spinner"></i>
-                    <span ng-switch-default>&nbsp;{{item.value}}</span>
+                <td style="text-align:right;width:80px;vertical-align: middle;">
+                    <i ng-hide="item.value !== undefined && item.value !== ''" style="width:16px;height:16px"
+                       class="species-spinner"></i>
+                    <span ng-show="item.value !== undefined && item.value !== ''">&nbsp;{{item.value}}</span>
                 </td>
                 <td style="width:70px">
                     <div class="btn-group btn-group-xs">

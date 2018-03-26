@@ -11,6 +11,7 @@
 
 <div style="height:320px">
     <hr/>
+    <!--
     <input style="width:200px" type="text" ng-model="facetFilter"/>
     <div class="btn-group btn-group-xs">
         <button i18n="141" ng-click="offset = 0; updatePage()" class="btn btn-default">
@@ -19,6 +20,13 @@
         <button i18n="129" ng-click="clearFilter()" class="btn btn-default">clear filter
         </button>
     </div>
+
+    -->
+
+    <a download="facets list"
+       ng-href="{{exportUrl}}" ng-show="exportUrl != null">
+        <span style="float:right" i18n="51">Download</span><i class=" pull-right glyphicon glyphicon-download-alt"></i>
+    </a>
 
     <table ng-hide="updatingPage" class="table layers-table table-striped" style="margin-top:10px;width:100%;height:250px;overflow:scroll;display:block">
         <tr ng-repeat="x in facetList">

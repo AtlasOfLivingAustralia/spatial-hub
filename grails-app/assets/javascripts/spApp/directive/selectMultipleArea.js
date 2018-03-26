@@ -1,5 +1,12 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc directive
+     * @name selectMultipleArea
+     * @description
+     *    Multiple area selection controls
+     */
     angular.module('select-multiple-area-directive', ['map-service', 'predefined-areas-service'])
         .directive('selectMultipleArea', ['$http', 'MapService', 'PredefinedAreasService', 'LayoutService',
             'LayersService', '$q', function ($http, MapService, PredefinedAreasService, LayoutService, LayersService, $q) {
@@ -50,18 +57,21 @@
                             return false;
                         };
 
-                        scope.layerAreas = $.map(MapService.areaLayers(), function (x, idx) {
-                            var area = {
-                                name: x.name,
-                                q: x.q,
-                                wkt: x.wkt,
-                                bbox: x.bbox,
-                                pid: x.pid,
-                                area_km: x.area_km,
-                                uid: x.uid,
-                                selected: scope.isSelected(x)
-                            };
-                            return area;
+                        scope.layerAreas = [];
+                        $.map(MapService.areaLayers(), function (x, idx) {
+                            // Remove incompatible areas that have area.pid.contains(':')
+                            if (!x.pid || !x.pid.contain(':')) {
+                                scope.layerAreas.push({
+                                    name: x.name,
+                                    q: x.q,
+                                    wkt: x.wkt,
+                                    bbox: x.bbox,
+                                    pid: x.pid,
+                                    area_km: x.area_km,
+                                    uid: x.uid,
+                                    selected: scope.isSelected(x)
+                                })
+                            }
                         });
 
                         scope.defaultAreas = [];

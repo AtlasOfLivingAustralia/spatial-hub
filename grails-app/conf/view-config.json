@@ -68,40 +68,6 @@
       }
     }
   },
-  "ScatterplotCreate": {
-    "view": [
-      {
-        "name": "Apply to an area",
-        "inputs": [
-          "area"
-        ]
-      },
-      {
-        "name": "Select species",
-        "inputs": [
-          "species1"
-        ]
-      },
-      {
-        "name": "Select background species",
-        "inputs": [
-          "species2"
-        ]
-      },
-      {
-        "name": "Select environmental layers",
-        "inputs": [
-          "grid",
-          "layer"
-        ]
-      }
-    ],
-    "input": {
-      "species1": {
-        "description": "Foreground species description"
-      }
-    }
-  },
   "PointsToGrid": {
     "description": "Create a grid from points.",
     "view": [

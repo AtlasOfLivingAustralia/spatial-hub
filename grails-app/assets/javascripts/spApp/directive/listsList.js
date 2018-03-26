@@ -1,5 +1,12 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc directive
+     * @name listsList
+     * @description
+     *   Table of selectable species-lists
+     */
     angular.module('lists-list-directive', ['lists-service', 'map-service'])
         .directive('listsList', ['$http', '$timeout', 'ListsService', 'MapService', 'LayoutService',
             function ($http, $timeout, ListsService, MapService, LayoutService) {

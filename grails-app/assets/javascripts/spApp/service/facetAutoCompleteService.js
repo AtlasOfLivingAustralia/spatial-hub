@@ -1,11 +1,53 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc service
+     * @name FacetAutoCompleteService
+     * @description
+     *   List of available facets for a biocache-service occurrences layer
+     */
     angular.module('facet-auto-complete-service', [])
         .factory("FacetAutoCompleteService", ["$http", function ($http) {
             return {
-                search: function (q) {
-                    return $http.get($SH.biocacheServiceUrl + "/upload/dynamicFacets?q=" + q).then(function (dynamic) {
-                        return $http.get($SH.biocacheServiceUrl + "/search/grouped/facets").then(function (groups) {
+                /**
+                 * List default facets and data resource specific facets for a biocache-service query
+                 * @memberof FacetAutoCompleteService
+                 * @param {Query} query Optional query or single fq term (e.g. single fq term is used to fetch
+                 * dynamic facets for a data resource)
+                 * @returns {Promise(List)} facet list
+                 *
+                 * @example
+                 * Output:
+                 *  [{
+                 *      "title": "Taxon",
+                 *      "facets": [{
+                 *          "field": "taxon_name",
+                 *          "sort": "index",
+                 *          "description": "Matched Scientific Name",
+                 *          "dwcTerm": "scientificName"
+                 *          },
+                 *          {
+                 *          "field": "raw_taxon_name",
+                 *          "sort": "index",
+                 *          "description": "Scientific Name",
+                 *          "dwcTerm": "scientificName_raw"
+                 *          }]
+                 *      }]
+                 *
+                 * TODO: add option to return /index/fields instead of search/grouped/facets
+                 */
+                search: function (query) {
+                    var bs = query.bs;
+                    if (bs === undefined) {
+                        bs = $SH.biocacheServiceUrl;
+                    }
+                    var q = query.q;
+                    if (q === undefined) {
+                        q = query;
+                    }
+                    return $http.get(bs + "/upload/dynamicFacets?q=" + q).then(function (dynamic) {
+                        return $http.get(bs + "/search/grouped/facets").then(function (groups) {
                             var list = groups.data;
                             var i;
                             if (dynamic.length > 0) {

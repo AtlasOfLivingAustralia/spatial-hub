@@ -1,7 +1,14 @@
 (function (angular) {
     'use strict';
-    angular.module('layer-auto-complete-directive', ['layers-auto-complete-service'])
-        .directive('layerAutoComplete', ['$timeout', 'LayersAutoCompleteService', function ($timeout, LayersAutoCompleteService) {
+    /**
+     * @memberof spApp
+     * @ngdoc directive
+     * @name layerAutoComplete
+     * @description
+     *   Autocomplete for spatial-service layers
+     */
+    angular.module('layer-auto-complete-directive', ['layers-service'])
+        .directive('layerAutoComplete', ['$timeout', 'LayersService', function ($timeout, LayersService) {
             return {
                 restrict: 'A',
                 scope: {
@@ -12,8 +19,8 @@
                 link: function (scope, iElement, iAttrs) {
                     iElement.autocomplete({
                         source: function (searchTerm, response) {
-                            LayersAutoCompleteService.search(searchTerm.term).then(function (data) {
-                                response($.map(data, function (item) {
+                            LayersService.searchLayers(searchTerm.term).then(function (data) {
+                                response($.map(data.data, function (item) {
                                     if ((item.layer.type === 'Environmental' && scope._environmental) ||
                                         (item.layer.type === 'Contextual' && scope._contextual)) {
                                         return {

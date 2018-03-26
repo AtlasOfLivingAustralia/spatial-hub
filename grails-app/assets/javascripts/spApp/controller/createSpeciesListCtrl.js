@@ -16,6 +16,13 @@
  */
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc controller
+     * @name CreateSpeciesListCtrl
+     * @description
+     *   Create a new species list
+     */
     angular.module('create-species-list-ctrl', ['map-service', 'biocache-service', 'layers-service'/*, 'ala.sandbox.preview'*/])
         .controller('CreateSpeciesListCtrl', ['$scope', '$controller', 'MapService', '$timeout', 'LayoutService', '$uibModalInstance',
             'BiocacheService', 'LayersService', 'ListsService', 'data', 'BieService',
@@ -48,12 +55,14 @@
                 $scope.matchedItems = [];
 
                 $scope.parseList = function () {
-                    var names = $scope.newItems.replace('\t', '\n').replace(',', '\n').replace(';', '\n').split('\n');
+                    var names = $scope.newItems.split(/[\s,;\t\n]+/);
+                    names = names.filter(function (name) {
+                        return name != undefined && name.trim().length > 0
+                    })
                     BieService.nameLookup(names).then(function (list) {
                         for (var i in list) {
                             if (list.hasOwnProperty(i)) {
                                 $scope.getCount(list[i]);
-
                                 $scope.matchedItems.push(list[i])
                             }
                         }
@@ -110,12 +119,13 @@
                 $scope.addNewSpecies = function () {
                     ListsService.createList($scope.newListName, $scope.newListDescription, $scope.matchedGuids(), $scope.makePrivate).then(function (resp) {
                         if (resp.status === 200) {
-                            var druid  = resp.data.druid;
+                            var json = JSON.parse(resp.data.text);
+                            var druid = json.druid;
                             ListsService.items(druid, {max: 1}).then(function(data) {
-                                if (listIds.length === 0) {
+                                if (data.length === 0) {
                                     bootbox.alert($i18n("No matching species found."))
                                 } else {
-                                    ListsService.getItemsQ(resp.data.druid).then(function (data) {
+                                    ListsService.getItemsQ(druid).then(function (data) {
                                         var listIds = data;
                                         var closeLater = false;
 
@@ -153,5 +163,16 @@
                         r.readAsBinaryString(f);
                     }
                 };
+
+                $scope.listSrcFile = function () {
+                    var f = document.getElementById('file').files[0];
+                    if (f !== undefined) {
+                        return f.name;
+                    } else {
+                        console.log('Nothing')
+                    }
+                };
+
+
             }])
 }(angular));

@@ -1,13 +1,21 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc service
+     * @name LayoutService
+     * @description
+     *   Management of spatial-hub dialogs and panels
+     */
     angular.module('layout-service', [])
         .factory("LayoutService", ['$uibModal', '$timeout', function ($uibModal, $timeout) {
 
-            var showLegend = [false];
+            var showLegend = [true];
             var showOptions = [false];
             var layoutStack = [];
             var toOpenStack = [];
             var panelMode = ['default'];
+            var panels = ['default', 'area', 'envelope', 'nearestLocality', 'pointComparison'];
 
             //default, area
             var panelData = {
@@ -67,8 +75,9 @@
                             for (var k in top[1][scopeToSave.componentName]) {
                                 if (!k.startsWith('$') && !k.startsWith('_') && top[1][scopeToSave.componentName].hasOwnProperty(k)) {
                                     var v = top[1][scopeToSave.componentName][k];
-                                    if (scopeToSave[k] && !(v instanceof Function) &&
-                                        (v instanceof Array || v instanceof Object || v instanceof String || v instanceof Number)) {
+                                    if (scopeToSave[k] !== undefined && !(v instanceof Function) &&
+                                        (v instanceof Array || v instanceof Object || v instanceof String ||
+                                            v instanceof Number || typeof(v) == 'string' || typeof(v) == 'number')) {
                                         scopeToSave[k] = v
                                     }
                                 }
@@ -95,6 +104,14 @@
                 /* clear all saved panel info */
                 clear: function (data) {
                     layoutStack = []
+                },
+                /* list valid panels */
+                panels: function () {
+                    return panels
+                },
+                /* test if a string is a valid panel name */
+                isPanel: function (name) {
+                    return panels.indexOf(name) >= 0
                 },
                 /* close a panel */
                 closePanel: function (data) {

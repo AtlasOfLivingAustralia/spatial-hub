@@ -14,6 +14,8 @@ class UrlMappings {
 
         "/admin"(controller:AlaAdminController, action:"index")
 
+        "/docs"(redirect: "/static/index.html")
+
         "/"(controller: "portal", action: "index")
         "500"(view: '/error')
         "404"(view: '/error')

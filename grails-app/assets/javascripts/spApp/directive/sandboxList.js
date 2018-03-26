@@ -1,5 +1,12 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc directive
+     * @name sandboxList
+     * @description
+     *   Table of selectable sandbox uploaded layers
+     */
     angular.module('sandbox-list-directive', ['lists-service', 'map-service'])
         .directive('sandboxList', ['$http', '$timeout', 'SandboxService', 'MapService',
             function ($http, $timeout, SandboxService, MapService) {

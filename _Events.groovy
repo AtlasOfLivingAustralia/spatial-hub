@@ -59,8 +59,24 @@ def build(String baseDir) {
             '/* Do not edit. This file built at compile by _Events.groovy */\n$spAppModules = ["' + moduleList.join('","').replaceAll("\\.js",'') + '"];')
 
 
-    //i18n'ify templates
+    // jsdoc
+    println 'Starting JSDoc'
+    final exec2 = proc.command('npm', 'run', 'jsdoc').start()
+    def exitValue2 = exec2.waitFor()
+    if (exitValue2) {
+        println '*****************************************************'
+        println '* `npm run jsdoc` failed'
+        println "* Exit value: $exitValue                            *"
+        println '*****************************************************'
+    } else {
+        println 'Completed jsdoc'
+    }
 
+    //i18n'ify templates
+    // This extracts text content from angular html template elements for the values,
+    // creates an attribute 'i18n' for the key,
+    // and stores the key value pairs in grails-app/i18n/messages.properties
+    println 'Starting i18n build from templates'
     String [] textElements = ["h1", "h2", "h3", "h4", "h5", "h6", "label", "span", "div", "input", "p", "button", "td", "option"]
 
     def start;
@@ -78,9 +94,10 @@ def build(String baseDir) {
         k, v -> all.put(v, k)
     }
 
+    println 'existing i18n keys: ' + prop.size()
+
     // get last idx value from templates
     for (File f : new File(baseDir + '/grails-app/assets/javascripts/spApp/templates/').listFiles()) {
-
         String input = FileUtils.readFileToString(f)
 
         start = 0
@@ -102,18 +119,18 @@ def build(String baseDir) {
 
     idx++
 
+    println 'i18n next available idx: ' + idx
+
     def totalNewProperties = 0
 
+    print 'i18n checking files: '
     for (File f : new File(baseDir + '/grails-app/assets/javascripts/spApp/templates/').listFiles()) {
 
-        if (f.name != "legendContent.tmp.htm") continue
-
-        def label = f.name + " ... "
+        def label = ' ' + f.name
         print (label)
         def newCount = 0
 
         String input = FileUtils.readFileToString(f)
-
 
         def output = new StringBuilder()
 
@@ -169,7 +186,6 @@ def build(String baseDir) {
 
                                 output.append(" i18n=\"${currentIdx}\" ")
 
-
                                 output.append(input.substring(writeAt, txtEnd))
                                 start = txtEnd
                             }
@@ -197,18 +213,18 @@ def build(String baseDir) {
         FileUtils.writeStringToFile(f, output.toString())
 
         if (newCount > 0) {
-            print(label + " inserted $newCount i18n references\n")
+            print " - $newCount new keys, "
         }
     }
 
     // append new properties to messages.properties
     if (totalNewProperties == 0) {
-        println("no new values found")
+        println("\ni18n no new keys")
     } else {
-        println("appended ${totalNewProperties} new entries to ${p.path}")
+        println("\ni18n appended ${totalNewProperties} new entries to ${p.path}")
     }
     FileUtils.writeStringToFile(p, newProperties.toString(), true)
-    println("done")
+    println("i18n done")
 }
 
 def process(doc, nextIdx, update) {

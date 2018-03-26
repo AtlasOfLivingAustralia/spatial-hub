@@ -1,5 +1,12 @@
 (function (angular) {
     'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc directive
+     * @name selectArea
+     * @description
+     *   Area selection controls
+     */
     angular.module('select-area-directive', ['map-service', 'predefined-areas-service'])
         .directive('selectArea', ['$http', 'MapService', 'PredefinedAreasService', '$timeout',
             'LayoutService', function ($http, MapService, PredefinedAreasService, $timeout, LayoutService) {
@@ -28,15 +35,19 @@
 
                         scope.addLayerAreas = function () {
                             $.map(MapService.areaLayers(), function (x, idx) {
-                                scope.layerAreas.push({
-                                    name: x.name,
-                                    q: x.q,
-                                    wkt: x.wkt,
-                                    bbox: x.bbox,
-                                    pid: x.pid,
-                                    area_km: x.area_km,
-                                    uid: x.uid
-                                })
+
+                                // Incompatible areas have area.pid.contains(':')
+                                if (x.pid !== undefined || !x.pid.contain(':')) {
+                                    scope.layerAreas.push({
+                                        name: x.name,
+                                        q: x.q,
+                                        wkt: x.wkt,
+                                        bbox: x.bbox,
+                                        pid: x.pid,
+                                        area_km: x.area_km,
+                                        uid: x.uid
+                                    })
+                                }
                             });
                         };
                         scope.layerAreas = [];
@@ -53,7 +64,7 @@
                         }
 
                         scope.createArea = function () {
-                            LayoutService.openModal('addArea');
+                            LayoutService.openModal('addArea', undefined, undefined, true);
                         };
 
                         function selectPredefinedArea(uid) {

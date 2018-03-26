@@ -5,19 +5,19 @@
     "items": [
       {
         "name": "Species",
-        "ng-click": ["open", "tool", {"processName": "ToolAddSpeciesService"}]
+        "open": "ToolAddSpeciesService"
       },
       {
         "name": "Area",
-        "ng-click": ["open", "addArea"]
+        "open": "addArea"
       },
       {
         "name": "Layer",
-        "ng-click": ["open", "tool", {"processName": "ToolAddLayerService"}]
+        "open": "ToolAddLayerService"
       },
       {
         "name": "Facet",
-        "ng-click": ["open", "tool", {"processName": "ToolAddFacetService"}]
+        "open": "ToolAddFacetService"
       }
     ]
   },
@@ -26,72 +26,72 @@
     "width": 70,
     "items": [
       {
-        "ng-click": ["open", "tool", {"processName": "ToolAreaReportService"}],
-        "name": "Area Report"
+        "name": "Area Report",
+        "open": "ToolAreaReportService"
       },
       {
-        "ng-click": ["open", "tool", {"processName": "AreaReport"}],
-        "name": "Detailed Area Report (PDF)"
+        "name": "Detailed Area Report (PDF)",
+        "open": "AreaReport"
       },
       {
-        "ng-click": ["open", "tool", {"processName": "AooEoo"}],
-        "name": "Calculate AOO and EOO"
+        "name": "Calculate AOO and EOO",
+        "open": "AooEoo"
       },
       {
-        "ng-click": ["openPanel", "nearestLocality"],
-        "name": "Nearest Locality"
+        "name": "Nearest Locality",
+        "open": "nearestLocality"
       },
       {
-        "ng-click": ["openPanel", "pointComparison"],
-        "name": "Point Comparisons"
+        "name": "Point Comparisons",
+        "open": "pointComparison"
       },
       {
-        "ng-click": ["open", "tool", {"processName": "ScatterplotCreate"}],
-        "name": "Scatterplot"
+        "name": "Scatterplot",
+        "open": "ScatterplotCreate"
       },
       {
-        "ng-click": ["open", "tool", {"processName": "ScatterplotList"}],
-        "name": "Scatterplot List"
+        "name": "Scatterplot List",
+        "open": "ScatterplotList"
       },
       {
-        "ng-click": ["open", "tabulate"],
-        "name": "Tabulate"
+        "name": "Tabulate",
+        "open": "tabulate"
       },
       {
-        "ng-click": ["open", "compareAreas"],
-        "name": "Compare Areas"
+        "name": "Compare Areas",
+        "open": "CompareAreas"
       },
       {
-        "ng-click": ["open", "tool", {"processName": "MergeAreas"}],
-        "name": "Merge Areas"
+        "name": "Merge Areas",
+        "open": "MergeAreas"
       },
       {
-        "ng-click": ["open", "tool", {"processName": "PointsToGrid"}],
-        "name": "Points to Grid"
+        "name": "Points to Grid",
+        "open": "PointsToGrid"
       },
       {
-        "ng-click": ["open", "tool", {"processName": "GeneratePoints"}],
-        "name": "Generate Points"
+        "name": "Generate Points",
+        "open": "GeneratePoints"
       },
       {
-        "ng-click": ["open", "tool", {"processName": "PhylogeneticDiversity"}],
-        "name": "Phylogenetic Diversity"
+        "name": "Phylogenetic Diversity",
+        "open": "PhylogeneticDiversity"
       },
       {
-        "ng-click": ["open", "tool", {"processName": "Classification"}],
-        "name": "Classify"
+        "name": "Classify",
+        "open": "Classification"
       },
       {
-        "ng-click": ["open", "tool", {"processName": "Maxent"}],
-        "name": "Predict"
+        "name": "Predict",
+        "open": "Maxent"
       },
       {
-        "ng-click": ["open", "tool", {"processName": "GDMStep1"}],
-        "name": "GDM"
+        "name": "GDM",
+        "open": "GDMStep1"
       },
       {
-        "ng-click": ["open", "analysis"],
-        "name": "Restore Prior Analysis"
+        "name": "Restore Prior Analysis",
+        "open": "analysis"
       }
     ]
   },
@@ -101,19 +101,31 @@
     "items": [
       {
         "name": "Points",
-        "ng-click": ["open", "sandBox", {"display": { "size": "full"}}]
+        "open": "sandBox",
+        "params": {
+          "display": {
+            "size": "full"
+          }
+        }
       },
       {
         "name": "Species List",
-        "ng-click": ["open", "addSpecies", {"speciesOption": "speciesList", "importList": true}]
+        "open": "addSpecies",
+        "params": {
+          "speciesOption": "speciesList",
+          "importList": true
+        }
       },
       {
         "name": "Areas",
-        "ng-click": ["open", "addArea", {"importArea": true}]
+        "open": "addArea",
+        "params": {
+          "importArea": true
+        }
       },
       {
         "name": "Restore prior analysis",
-        "ng-click": ["open", "analysis"]
+        "open": "analysis"
       }
     ]
   },
@@ -123,27 +135,27 @@
     "items": [
       {
         "name": "Map",
-        "ng-click": ["exportMap"]
+        "open": "exportMap"
       },
       {
         "name": "Species List",
-        "ng-click": ["open", "tool", {"processName": "ToolExportChecklistService"}]
+        "open": "ToolExportChecklistService"
       },
       {
         "name": "Points",
-        "ng-click": ["open", "tool", {"processName": "ToolExportSampleService"}]
+        "open": "ToolExportSampleService"
       },
       {
         "name": "Areas",
-        "ng-click": ["open", "tool", {"processName": "ToolExportAreaService"}]
+        "open": "ToolExportAreaService"
       },
       {
         "name": "Points to BCCVL",
-        "ng-click": ["open", "exportBccvl"]
+        "open": "exportBccvl"
       },
       {
         "name": "Session",
-        "ng-click": ["saveSession"]
+        "open": "saveSession"
       }
     ]
   },
@@ -153,23 +165,23 @@
     "items": [
       {
         "name": "Getting Started",
-        "url": "https://www.ala.org.au/spatial-portal-help/getting-started"
+        "open": "https://www.ala.org.au/spatial-portal-help/getting-started"
       },
       {
         "name": "Add To Map",
-        "url": "https://www.ala.org.au/spatial-portal-help/add-to-map"
+        "open": "https://www.ala.org.au/spatial-portal-help/add-to-map"
       },
       {
         "name": "Tools",
-        "url": "https://www.ala.org.au/spatial-portal-help/tools"
+        "open": "https://www.ala.org.au/spatial-portal-help/tools"
       },
       {
         "name": "Import",
-        "url": "https://www.ala.org.au/spatial-portal-help/import"
+        "open": "https://www.ala.org.au/spatial-portal-help/import"
       },
       {
         "name": "Export",
-        "url": "https://www.ala.org.au/spatial-portal-help/export"
+        "open": "https://www.ala.org.au/spatial-portal-help/export"
       }
     ]
   }

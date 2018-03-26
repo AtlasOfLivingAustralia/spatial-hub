@@ -1,52 +1,51 @@
 <div class="">
     <div>
-        <table class="table fixed-head" style="table-layout:fixed;width:100%">
+        <table class="table table-striped fixed-head layers-table">
             <caption>
                 <div class="row">
-                    <div i18n="221" class="col-sm-6 margin-top-8">
-                        Imported datasets
-                    </div>
                     <div class="col-sm-6">
                         <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Search Dataset"
+                            <input type="text" class="form-control" placeholder="Filter"
                                    ng-model="searchSandbox">
                             <div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
                         </div>
                     </div>
                 </div>
             </caption>
-            <thead style="display:block">
+            <thead style="display: block">
             <tr>
-                <th></th>
-                <th>
+                <th style="width:30px"></th>
+                <th style="width:300px">
                     <a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
                         <span i18n="151">Name</span>
                         <span ng-show="sortType == 'name' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
                         <span ng-show="sortType == 'name' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                     </a></th>
-                <th><a href="#" ng-click="sortType = 'updated'; sortReverse = !sortReverse">
-                    <span i18n="153">Last updated</span>
+                <th style="width:100px"><a href="#" ng-click="sortType = 'updated'; sortReverse = !sortReverse">
+                    <span i18n="107">Date</span>
                     <span ng-show="sortType == 'updated' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
                     <span ng-show="sortType == 'updated' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                 </a></th>
-                <th>
+                <th style="width:70px">
                     <a href="#" ng-click="sortType = 'count'; sortReverse = !sortReverse">
-                        <span i18n="154">Number of records</span>
+                        <span i18n="282">Occurrences</span>
                         <span ng-show="sortType == 'count' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
                         <span ng-show="sortType == 'count' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                     </a></th>
             </tr>
             </thead>
-            <tbody style="height:300px;overflow-y:auto;display:block">
+            <tbody style="height:300px;overflow:scroll">
             <tr ng-repeat="item in sandboxItems | orderBy:sortType:sortReverse | filter:searchSandbox">
                 <td style="width:10px" class="td-vertical-align text-center"><input type="checkbox"
                                                                                     ng-model="item.selected"
                                                                                     ng-click="select(item)"></td>
-                <td class="td-vertical-align table-text-ellipsis" title="{{item.name}}">{{ item.name }}</td>
-                <td style="width:80px" class="td-vertical-align table-text-ellipsis" text-right>{{ item.lastUpdated |
+                <td style="width:300px" class="td-vertical-align table-text-ellipsis" title="{{item.name}}">{{ item.name
+                    }}
+                </td>
+                <td style="width:100px" class="td-vertical-align table-text-ellipsis" text-right>{{ item.lastUpdated |
                     date: short}}
                 </td>
-                <td style="width:80px" class="td-vertical-align  text-right">{{ item.numberOfRecords | number}}</td>
+                <td style="width:70px" class="td-vertical-align  text-right">{{ item.numberOfRecords | number}}</td>
             </tr>
             </tbody>
         </table>

@@ -1,15 +1,12 @@
 <div class="">
     <div class="">
         <div class="">
-            <table class="table fixed-head" style="table-layout:fixed">
+            <table class="table table-striped fixed-head layers-table">
                 <caption>
                     <div class="row">
-                        <div class="col-sm-6 margin-top-8">
-
-                        </div>
                         <div class="col-sm-6">
                             <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Search Lists"
+                                <input type="text" class="form-control" placeholder="Filter"
                                        ng-model="searchLists">
                                 <div class="input-group-addon"><i class="fa fa-search"></i></div>
                             </div>
@@ -18,44 +15,46 @@
                 </caption>
                 <thead style="display: block">
                 <tr>
-                    <th></th>
-                    <th>
+                    <th style="width:10px"></th>
+                    <th style="width:300px">
                         <a href="#" ng-click="sortType = 'listName'; sortReverse = !sortReverse">
                             <span i18n="151">Name</span>
                             <span ng-show="sortType == 'listName' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
                             <span ng-show="sortType == 'listName' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                         </a>
                     </th>
-                    <th>
+                    <th style="width:150px">
                         <a href="#" ng-click="sortType = 'fullName'; sortReverse = !sortReverse">
                             <span i18n="152">Full name</span>
                             <span ng-show="sortType == 'fullName' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
                             <span ng-show="sortType == 'fullName' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                         </a>
                     </th>
-                    <th><a href="#" ng-click="sortType = 'lastUpdated'; sortReverse = !sortReverse">
-                        <span i18n="153">Last updated</span>
+                    <th style="width:100px"><a href="#" ng-click="sortType = 'lastUpdated'; sortReverse = !sortReverse">
+                        <span i18n="107">Date</span>
                         <span ng-show="sortType == 'lastUpdated' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
                         <span ng-show="sortType == 'lastUpdated' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                     </a></th>
-                    <th class="text-center">
+                    <th class="text-center" style="width:70px">
                         <a href="#" ng-click="sortType = 'itemCount'; sortReverse = !sortReverse">
-                            <span i18n="154">Number of records</span>
+                            <span i18n="281">Species</span>
                             <span ng-show="sortType == 'itemCount' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
                             <span ng-show="sortType == 'itemCount' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                         </a></th>
                 </tr>
                 </thead>
-                <tbody style="overflow-y:auto; height: 300px; display: block">
+                <tbody style="height:300px;overflow:scroll">
                 <tr ng-repeat="item in items | orderBy:sortType:sortReverse | filter:searchLists">
                     <td style="width:10px" class="td-vertical-align text-center"><input type="checkbox"
                                                                                         ng-model="item.selected"
                                                                                         ng-click="select(item)"></td>
-                    <td class="td-vertical-align table-text-ellipsis"><a target="_blank" href="{{ itemUrl(item) }}">{{
+                    <td class="td-vertical-align table-text-ellipsis" style="width:300px"><a target="_blank"
+                                                                                             href="{{ itemUrl(item) }}">{{
                         item.listName }}</a></td>
-                    <td style="width:80px" class="td-vertical-align table-text-ellipsis">{{ item.fullName }}</td>
-                    <td style="width:80px" class="td-vertical-align text-right">{{ item.lastUpdated | date: short}}</td>
-                    <td style="width:80px" class="td-vertical-align text-right">{{ item.itemCount | number}}</td>
+                    <td style="width:150px" class="td-vertical-align table-text-ellipsis">{{ item.fullName }}</td>
+                    <td style="width:100px" class="td-vertical-align text-right">{{ item.lastUpdated | date: short}}
+                    </td>
+                    <td style="width:70px" class="td-vertical-align text-right">{{ item.itemCount | number}}</td>
                 </tr>
                 </tbody>
             </table>

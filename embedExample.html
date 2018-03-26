@@ -1,0 +1,111 @@
+<html>
+<body>
+<script src="http://local.ala.org.au:9001/spatial-hub/portal/messages.js" type="text/javascript" defer></script>
+<script src="https://maps.google.com/maps/api/js?language=en-US&libraries=places&key=<your google apikey>"
+        type="text/javascript"></script>
+
+<script>
+    //spatial-hub config
+    $SH = {
+        menu: 'https://spatial.ala.org.au/portal/config/menu',
+        baseUrl: 'https://spatial.ala.org.au',
+        biocacheUrl: 'https://biocache.ala.org.au',
+        biocacheServiceUrl: 'https://biocache.ala.org.au/ws',
+        bieUrl: 'https://bie.ala.org.au',
+        layersServiceUrl: 'https://spatial.ala.org.au/ws',
+        samplingUrl: 'http://ala-dylan.it.csiro.au/sampling-service',
+        listsUrl: 'https://lists.ala.org.au',
+        sandboxUrl: 'http://sandbox.ala.org.au/ala-hub',
+        sandboxServiceUrl: 'http://sandbox.ala.org.au/biocache-service',
+        sandboxUiUrl: 'http://sandbox.ala.org.au/datacheck',
+        sandboxUrls: ['http://sandbox.ala.org.au/ala-hub'],
+        sandboxServiceUrls: ['http://sandbox.ala.org.au/biocache-service'],
+        gazField: 'cl915',
+        geoserverUrl: 'https://spatial.ala.org.au/geoserver',
+        collectionsUrl: 'https://collections.ala.org.au',
+        userObjectsField: 'cl1082',
+        userId: '1901',
+        hoverLayers: [],
+        proxyUrl: 'https://spatial.ala.org.au/portal/proxy',
+        url: '/spatial-hub/',
+        sessionId: '1512928529890', //any random value is valid
+        loginUrl: '?service=',
+        phylolinkUrl: 'http://phylolink.ala.org.au',
+        threatenedQ: 'species_list_uid:(dr7904 OR dr649 OR dr656 OR dr650 OR dr651 OR dr653 OR dr654 OR dr655 OR dr2201)',
+        invasiveQ: 'species_list_uid:(dr947 OR dr707 OR dr945 OR dr873 OR dr872 OR dr1105 OR dr1787 OR dr6957 OR dr943 OR dr4361 OR dr877 OR dr878 OR dr1013 OR dr879 OR dr880 OR dr881 OR dr882 OR dr883 OR dr927 OR dr823)',
+        bccvlLoginUrl: 'https://demo.bccvl.org.au/bccvl/oauth2/authorize?client_id=F031d7ce-abb0-11e6-a678-0242ac120005&amp;response_type=token&amp;redirect_uri=',
+        bccvlPostUrl: 'https://demo.bccvl.org.au/API/dm/v1/import_ala_data',
+        keepAliveTimeout: '10000',
+        defaultLat: -35,
+        defaultLng: 149,
+        defaultZoom: 8,
+        baseLayers: {
+            "google_roadmaps": {
+                "name": "Streets",
+                "layerType": "ROADMAP",
+                "type": "google",
+                "exportType": "normal",
+                "link": "https://www.google.com/intl/en_au/help/terms_maps.html"
+            },
+            "google_hybrid": {
+                "name": "Hybrid",
+                "layerType": "HYBRID",
+                "type": "google",
+                "exportType": "hybrid",
+                "link": "https://www.google.com/intl/en_au/help/terms_maps.html"
+            },
+            "outline": {
+                "name": "Outline",
+                "type": "wms",
+                "url": "https://spatial.ala.org.au/geoserver/gwc/service/wms/reflect?",
+                "layerParams": {"layers": "ALA:world", "format": "image/png"},
+                "exportType": "outline"
+            },
+            "osm": {
+                "name": "Open Street Map",
+                "url": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                "type": "xyz",
+                "exportType": "minimal",
+                "link": "https://www.openstreetmap.org/about"
+            },
+            "google_satellite": {
+                "name": "Satellite",
+                "layerType": "SATELLITE",
+                "type": "google",
+                "exportType": "normal",
+                "link": "https://www.google.com/intl/en_au/help/terms_maps.html"
+            }
+        },
+        defaultBaseLayer: 'google_roadmaps',
+        validUrls: [
+            'self',
+            'http://*.ala.org.au/**',
+            'https://*.ala.org.au/**',
+            'https://www.openstreetmap.org/**',
+            'https://www.google.com/**',
+            'http://zoatrack.org/**',
+            'http://local.ala.org.au:9001/spatial-hub/**',
+            'https://biocache.ala.org.au/**',
+            'https://biocache.ala.org.au/ws/**',
+            'https://bie.ala.org.au/**',
+            'https://nectar-spatial-test.ala.org.au/ws/**',
+            'https://lists.ala.org.au/**',
+            'http://sandbox.ala.org.au/ala-hub/**',
+            'http://sandbox.ala.org.au/biocache-service/**',
+            'https://nectar-spatial-test.ala.org.au/geoserver/**',
+            'https://collections.ala.org.au/**',
+            'http://phylolink.ala.org.au/**'
+        ],
+        i18n: 'default',
+        editable: false
+    };
+</script>
+
+<link rel="stylesheet" href="https://spatial.ala.org.au/assets/application.css">
+<script type="text/javascript" src="https://spatial.ala.org.au/assets/application.js" defer></script>
+
+<sp-app></sp-app>
+
+
+</body>
+</html>
