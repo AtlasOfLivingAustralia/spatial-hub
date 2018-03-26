@@ -2,8 +2,8 @@
     'use strict';
     angular.module('leaflet-map-controller', ['leaflet-directive', 'map-service', 'popup-service'])
         .controller('LeafletMapController', ["$scope", "LayoutService", "$http", "leafletData", "leafletBoundsHelpers",
-            "MapService", '$timeout', 'leafletHelpers', 'PopupService', 'ToolsService',
-            function ($scope, LayoutService, $http, leafletData, leafletBoundsHelpers, MapService, $timeout, leafletHelpers, popupService, ToolsService) {
+            "MapService", '$timeout', 'leafletHelpers', 'PopupService', 'FlickrService', 'ToolsService',
+            function ($scope, LayoutService, $http, leafletData, leafletBoundsHelpers, MapService, $timeout, leafletHelpers, popupService, flickrService, ToolsService) {
                 //ToolsService included so it is initiated
 
                 angular.extend($scope, {
@@ -206,6 +206,81 @@
                     context.invalidateSize()
                 };
 
+                $scope.togglePanoramio = function (context){
+                    if (context.panoramioControl._panoramio_state){
+                        $scope.addPanoramioToMap();
+                    }
+                    else {
+                        $scope.deleteDrawing();
+                    }
+                }
+
+                $scope.addPanoramioToMap = function () {
+                    leafletData.getMap().then(function (map) {
+                        // console.log("adding panoramio replacement");
+
+                        var bounds = map.getBounds();
+                        // console.log(bounds);
+
+                        var multipBounds = MapService.splitBounds(bounds.getSouthWest(), bounds.getNorthEast());
+                        // console.log(multipBounds);
+
+                        for (var i = 0; i < multipBounds.length; i++) {
+                            flickrService.getPhotos(multipBounds[i]).then(function (data) {
+                                $scope.addPhotosToMap(data);
+                            });
+                        }
+                    })
+                };
+
+                $scope.addPhotosToMap = function (data) {
+                    var popupHTML = function(photo, licenseName){
+                        var result = "<div><h3 class='popover-title'>" + photo.title  + "</h3>";
+                        result += "<div class='panel-body'> ";
+                        result += "<div class='row'> <div class='col-sm-12'>";
+                        result += "<a href='" + photo.url_m + "' target='_blank'>";
+                        result += "<img class='img-thumbnail' style='display: block; margin: 0 auto;' src='" + photo.url_s + "' alt='Click to view large image'></a>";
+                        result += "</div> </div>";
+
+                        result += "<div class='row'> <div class='col-sm-12'>";
+                        result += "<b>Title: </b>" + photo.title;
+                        result += "</div> </div>";
+                        result += "<div class='row'> <div class='col-sm-12'>";
+                        result += "<b>Date : </b>" + photo.datetaken;
+                        result += "</div> </div>";
+                        result += "<div class='row'> <div class='col-sm-12'>";
+                        result += "<b>Owner: </b>" + photo.ownername;
+                        result += "</div> </div>";
+                        result += "<div class='row'> <div class='col-sm-12'>";
+                        result += "<b>License: </b>" + licenseName;
+                        result += "</div> </div>";
+                        result += "</div> </div>";
+                        return result;
+                    };
+
+                    leafletData.getMap().then(function () {
+                        leafletData.getLayers().then(function (baselayers) {
+                            var drawnItems = baselayers.overlays.draw;
+                            if (data.photos) {
+                                for (var i = 0; i < data.photos.photo.length; i++) {
+                                    var photoContent = data.photos.photo[i];
+                                    var photoIcon = L.icon(
+                                        {
+                                            iconUrl: photoContent.url_t,
+                                            iconSize: [photoContent.width_t * 0.5, photoContent.height_t * 0.5]
+                                        }  //reduces thumbnails 50%
+                                    );
+                                    var marker = L.marker([photoContent.latitude, photoContent.longitude], {icon: photoIcon});
+                                    var license = $scope.licenses[photoContent.license];
+                                    // console.debug('license id, name: ' + photoContent.license + "  " + license);
+                                    marker.bindPopup(popupHTML(photoContent, license), {minWidth : 280});
+                                    drawnItems.addLayer(marker);
+                                }
+                            }
+                        })
+                    })
+                };
+
                 $scope.addPointsToMap = function (data) {
                     leafletData.getMap().then(function () {
                         leafletData.getLayers().then(function (baselayers) {
@@ -227,6 +302,7 @@
                         })
                     })
                 };
+
                 $scope.addWktToMap = function (data) {
                     $scope.deleteDrawing();
                     leafletData.getMap().then(function () {
@@ -320,6 +396,12 @@
                     })
                 };
 
+                $scope.getLicenses = function (){
+                    flickrService.getLicenses().then (function (data) {
+                        $scope.licenses = data
+                    });
+                }
+
                 $scope.setupTriggers = function () {
                     leafletData.getMap().then(function (map) {
                         leafletData.getLayers().then(function (baselayers) {
@@ -339,6 +421,10 @@
                             new L.Control.Expand({
                                 toggleExpandUp: $scope.toggleExpandUp,
                                 toggleExpandLeft: $scope.toggleExpandLeft
+                            }).addTo(map);
+
+                            new L.Control.Panoramio({
+                                togglePanoramio : $scope.togglePanoramio
                             }).addTo(map);
 
                             map.on('draw:created', function (e) {
@@ -375,6 +461,11 @@
                                 }
                             });
 
+                            map.on('moveend', function (e) {
+                                console.debug("moveend...");
+                                $scope.togglePanoramio(e.target)
+                            })
+
                             //all setup finished
                             if ($spMapLoaded !== undefined) {
                                 $spMapLoaded();
@@ -388,6 +479,7 @@
                     $scope.invalidate();
                     $timeout(function () {
                         $scope.setupTriggers();
+                        $scope.getLicenses();
                     }, 0)
                 }, 0)
 

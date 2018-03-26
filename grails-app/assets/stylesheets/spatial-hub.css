@@ -574,6 +574,8 @@ form.banner {
 .icon-expand-up { background-image: url(icon-expand-up.png); background-size: 26px 26px; }
 .icon-expand-right { background-image: url(icon-expand-right.png); background-size: 26px 26px; }
 .icon-expand-down { background-image: url(icon-expand-down.png); background-size: 26px 26px; }
+.icon-panoramio { background-image: url(images_on.png); background-size: 18px 18px; }
+.icon-exit-panoramio { background-image: url(images_off.png); background-size: 18px 18px; }
 
 #legend {
     margin-right:0px;

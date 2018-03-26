@@ -68,7 +68,7 @@ L.Control.InfoPanel = L.Control.extend({
     _onMouseMove: function (e) {
         var lng = L.Util.formatNum(e.latlng.lng, 5);
         var lat = L.Util.formatNum(e.latlng.lat, 5);
-        this.pos = lng + ' ' + lat;
+        this.pos = 'lon: ' + lng + ' lat: ' + lat;
         this.intersect = '';
         if ($SH.hoverLayers.length > 0) {
             if ($i18n === undefined) {
