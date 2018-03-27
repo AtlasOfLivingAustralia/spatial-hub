@@ -89,14 +89,15 @@
                      title="Zoom to the selected record" ng-show="!olist.zoomedToRecord">
                     <i class="glyphicon glyphicon-zoom-in" style="margin:0px;"></i>
                 </div>
-                <div i18n="112" class="btn btn-xs btn-default" ng-click="olist.viewRecord()"
-                     title="View details of this record">
+                <a i18n="112" class="btn btn-xs btn-default" ng-href="{{olist.viewRecordUrl}}"
+                   title="View details of this record" target="_blank">
                     View record
-                </div>
-                <div i18n="113" class="btn btn-xs btn-default" ng-click="olist.listRecords()"
-                     title="List records at this point for this layer" ng-show="!olist.zoomedToRecord">
+                </a>
+                <a i18n="113" class="btn btn-xs btn-default" ng-href="{{olist.listRecordsUrl}}"
+                   title="List records at this point for this layer" ng-show="!olist.zoomedToRecord"
+                   target="_blank" ng-enable="olist.viewRecordsUrl.length > 0">
                     List records at this point
-                </div>
+                </a>
             </div>
         </div>
     </div>

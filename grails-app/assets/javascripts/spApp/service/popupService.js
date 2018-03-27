@@ -58,6 +58,7 @@
 
                             popupScope.intersects = intersects;
                             popupScope.olist = occurrences;
+
                             var html = $compile(content)(popupScope);
                             popup = L.popup({maxWidth: 500, maxHeight: 600, minWidth: 410, autoPanPadding: 10})
                                 .setLatLng(latlng)
@@ -80,6 +81,8 @@
                     this.speciesLayers = undefined;
                     this.config = $SH;
                     this.zoomedToRecord = false;
+                    this.viewRecordUrl = '';
+                    this.listRecordsUrl = '';
 
                     this.getFirstOccurrence = function (layer) {
                         if (isFirstOccurrence) {
@@ -99,7 +102,9 @@
                                 self.occurrences.splice(0, self.occurrences.length);
                                 self.occurrences.push.apply(self.occurrences, data.occurrences);
 
-                                data.occurrences[0].adhocGroup = self.isAdhocGroup()
+                                data.occurrences[0].adhocGroup = self.isAdhocGroup();
+
+                                self.viewRecord()
                             }
                         })
                     };
@@ -201,21 +206,24 @@
 
                     this.listRecords = function () {
                         var q = self.getQueryParams(self.layer);
-                        var url = biocacheService.constructSearchResultUrl(q.query, q.fqs, 10, 0, true).then(function (data) {
-                            $window.open(url, "_blank")
+                        var url = biocacheService.constructSearchResultUrl(q.query, q.fqs, 10, 0, true).then(function (url) {
+                            self.listRecordsUrl = url
                         })
                     };
 
                     this.viewRecord = function () {
-                        var url = self.layer.ws + "/occurrences/" + self.occurrences[0].uuid;
-                        $window.open(url, "_blank")
+                        if (self.occurrences && self.occurrences.length > 0) {
+                            var url = self.layer.ws + "/occurrences/" + self.occurrences[0].uuid;
+                            self.viewRecordUrl = url
+                        }
                     };
 
                     this.zoomToRecord = function () {
                         self.zoomedToRecord = true;
                         var occ = self.occurrences[0];
                         var lattng = L.latLng(occ.decimalLatitude, occ.decimalLongitude);
-                        mapService.leafletScope.zoomToPoint(lattng, 10)
+                        mapService.leafletScope.zoomToPoint(lattng, 10);
+                        $('.leaflet-popup-close-button')[0].click()
                     };
 
                     if (speciesLayers.length > 0) {
@@ -236,6 +244,9 @@
                             if (processedLayers[0] === speciesLayers.length && layers.length + areaLayers.length === 0) {
                                 $('.angular-leaflet-map')[0].style.cursor = ''
                             }
+
+                            self.listRecords();
+                            self.viewRecord();
                         })
                     })
                 }

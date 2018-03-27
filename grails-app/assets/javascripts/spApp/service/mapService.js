@@ -480,7 +480,9 @@
 
                     select: function (id) {
                         selected.layer = id;
-                        $SH.defaultPaneResizer.show('south');
+                        if ($SH.defaultPaneResizer) {
+                            $SH.defaultPaneResizer.show('south');
+                        }
                     },
                     objectSld: function (item) {
                         var sldBody = '<?xml version="1.0" encoding="UTF-8"?><StyledLayerDescriptor version="1.0.0" xmlns="http://www.opengis.net/sld"><NamedLayer><Name>ALA:Objects</Name><UserStyle><FeatureTypeStyle><Rule><Title>Polygon</Title><PolygonSymbolizer><Fill><CssParameter name="fill">#.colour</CssParameter></Fill></PolygonSymbolizer></Rule></FeatureTypeStyle></UserStyle></NamedLayer></StyledLayerDescriptor>';

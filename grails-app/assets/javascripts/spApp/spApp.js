@@ -79,9 +79,9 @@ function fetchData() {
         for (k in result.data) {
             gMessages[k + ""] = result.data[k]
         }
-        $SH.gMessages = gMessages
+        $SH.gMessages = gMessages;
         $i18n = function (k) {
-            var key = ("" + k).replace(" ", "_")
+            var key = ("" + k).replace(" ", "_");
             if ($SH.gMessages[key] !== undefined) {
                 return $SH.gMessages[key]
             } else {
