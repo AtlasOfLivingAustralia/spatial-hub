@@ -469,17 +469,10 @@
                     objectSld: function (item) {
                         var sldBody =''
                         if (item.area_km == 0)
-                            sldBody = '<?xml version="1.0" encoding="UTF-8"?><StyledLayerDescriptor version="1.0.0" xmlns="http://www.opengis.net/sld"><NamedLayer><Name>ALA:Points</Name><UserStyle><FeatureTypeStyle>\n' +
+                            sldBody = '<?xml version="1.0" encoding="UTF-8"?><StyledLayerDescriptor version="1.0.0" xmlns="http://www.opengis.net/sld" xmlns:xlink="http://www.w3.org/1999/xlink"><NamedLayer><Name>ALA:Points</Name><UserStyle><FeatureTypeStyle>\n' +
                                 '     <Rule>\n' +
                                 '       <PointSymbolizer>\n' +
-                                '         <Graphic>\n' +
-                                '           <Mark>\n' +
-                                '             <WellKnownName>circle</WellKnownName>\n' +
-                                '             <Fill>\n' +
-                                '               <CssParameter name="fill">#.colour</CssParameter>\n' +
-                                '             </Fill>\n' +
-                                '           </Mark>\n' +
-                                '           <Size>6</Size>\n' +
+                                '         <Graphic>\n' + '<ExternalGraphic><OnlineResource xlink:type="simple" xlink:href="file:///data/geoserver_data_dir/styles/marker.png" /><Format>image/png</Format></ExternalGraphic><Size>24</Size>' +
                                 '         </Graphic>\n' +
                                 '       </PointSymbolizer>\n' +
                                 '     </Rule>\n' +
