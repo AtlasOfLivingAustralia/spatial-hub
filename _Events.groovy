@@ -172,19 +172,21 @@ def build(String baseDir) {
                                 output.append(input.substring(next, writeAt))
                                 def value = input.substring(txtStart, txtEnd).replaceAll("\\s+", ' ').trim()
 
-                                def currentIdx = idx
-                                if (all.containsKey(value)) {
-                                    currentIdx = all.get(value)
-                                } else {
-                                    all.put(value, idx)
-                                    idx++
+                                if (value != "&nbsp;") {
+                                    def currentIdx = idx
+                                    if (all.containsKey(value)) {
+                                        currentIdx = all.get(value)
+                                    } else {
+                                        all.put(value, idx)
+                                        idx++
 
-                                    newProperties.append("\n${currentIdx}=${value}")
-                                    newCount++
-                                    totalNewProperties++
+                                        newProperties.append("\n${currentIdx}=${value}")
+                                        newCount++
+                                        totalNewProperties++
+                                    }
+
+                                    output.append(" i18n=\"${currentIdx}\" ")
                                 }
-
-                                output.append(" i18n=\"${currentIdx}\" ")
 
                                 output.append(input.substring(writeAt, txtEnd))
                                 start = txtEnd
