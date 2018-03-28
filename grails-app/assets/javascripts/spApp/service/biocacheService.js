@@ -279,11 +279,11 @@
                 queryTitle: function (query, fqs) {
                     var fqList = (fqs === undefined ? '' : '&fq=' + this.joinAndEncode(fqs));
                     return this.registerQuery(query).then(function (response) {
-                        return $http.get(query.bs + "/occurrences/search?facet=false&pageSize=0&q=" + response.qid + fqList).then(function (response) {
-                            if (response.data !== undefined && response.data.queryTitle !== undefined) {
+                        return $http.get(query.bs + "/webportal/params/details/" + response.qid.replace("qid:", "") + fqList).then(function (response) {
+                            if (response.data !== undefined && response.data.displayString !== undefined) {
                                 //remove html wrapping from title
                                 var div = document.createElement('div');
-                                div.innerHTML = response.data.queryTitle;
+                                div.innerHTML = response.data.displayString;
                                 return div.innerText;
                             } else {
                                 return ""

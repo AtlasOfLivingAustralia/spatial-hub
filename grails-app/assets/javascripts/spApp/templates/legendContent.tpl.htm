@@ -285,24 +285,23 @@
             <label i18n="134" style="float:left;width:70px" for="size">Green</label>
             <div style="float:left;width:200px" id="green" ui-slider min="0" max="255"
                  ng-model="selected.layer.green" ng-change="updateColour()" ng-stop="applyColour()"></div>
-            <span i18n="109" style="float:left;width:15px">&nbsp;</span>
+            <span style="float:left;width:15px;height:15px;"></span>
             <span style="float:left">{{selected.layer.green}}</span>
         </div>
         <div class="form-group row" ng-show="selected.layer.showColourSliders" style="padding-bottom:5px">
             <label i18n="135" style="float:left;width:70px" for="size">Blue</label>
             <div style="float:left;width:200px" id="blue" ui-slider min="1" max="255"
                  ng-model="selected.layer.blue" ng-change="updateColour()" ng-stop="applyColour()"></div>
-            <span i18n="109" style="float:left;width:15px">&nbsp;</span>
+            <span style="float:left;width:15px;height:15px;"></span>
             <span style="float:left">{{selected.layer.blue}}</span>
         </div>
 
-        <div class="form-group row"
+        <div class="form-group row" id="helpdebug2"
              ng-show="selected.layer.layertype == 'species' && selected.layer.colorType!='grid'">
             <label i18n="136" style="float:left;width:70px" for="size">Size</label>
-
             <div style="float:left;width:200px" id="size" ui-slider min="1" max="10"
                  ng-model="selected.layer.size"></div>
-            <span i18n="109" style="float:left;width:15px">&nbsp;</span>
+            <span style="float:left;width:15px;height:15px;"></span>
             <span style="float:left">{{selected.layer.size}}</span>
         </div>
 
@@ -311,7 +310,7 @@
 
             <div style="float:left;width:200px" id="opacity" ui-slider min="0" max="100"
                  ng-model="selected.layer.opacity"></div>
-            <span i18n="109" style="float:left;width:15px">&nbsp;</span>
+            <span style="float:left;width:15px;height:15px;"></span>
             <span style="float:left">{{selected.layer.opacity}}%</span>
         </div>
 
@@ -392,7 +391,7 @@
                 30km radius)</label></div>
         </div>
 
-        <div class="form-group row"
+        <div i18n="149" class="form-group row"
              ng-if="selected.layer.layertype == 'species' && selected.layer.adhocGroup !== undefined && selected.layer.adhocGroupSize > 0">
 
             <label><span i18n="150">Adhoc selection:&nbsp;</span>{{ selected.layer.adhocGroupSize }}<span i18n="117">&nbsp;record/s</span></label>

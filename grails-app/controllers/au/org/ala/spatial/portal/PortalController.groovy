@@ -575,4 +575,8 @@ class PortalController {
             render m as JSON
         }
     }
+
+    def embedExample() {
+        render(view: 'embedExample')
+    }
 }

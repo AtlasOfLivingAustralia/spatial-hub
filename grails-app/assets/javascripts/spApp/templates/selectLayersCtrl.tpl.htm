@@ -30,7 +30,8 @@
     <div ng-show="mode == ''">
 
         <div style="float:left;width:150px;margin-right:10px">
-            <p class="small">The colours against the layers are like traffic lights. Green implies the layer is
+            <p i18n="283" class="small">The colours against the layers are like traffic lights. Green implies the layer
+                is
                 uncorrelated to all selected layers, orange implies some correlation while red implies high correlation.
                 As you select layers, the colours change to reflect correlation with already selected layers. For
                 example a red layer implies high correlation with at least one selected layer while a green layer
@@ -88,7 +89,7 @@
                                 </div>
                             </td>
                             <td i18n="130" style="width:10px;"
-                                class="{{ layer.dist <= 0.1 ? 'bk-green' : (layer.dist <= 0.3 ? 'bk-yellow' : (layer.dist <= 1 ? 'bk-red' : 'bk-white'))}}">
+                                class="{{ layer.dist <= 0.1 ? 'bk-red' : (layer.dist <= 0.3 ? 'bk-yellow' : (layer.dist <= 1 ? 'bk-green' : 'bk-white'))}}">
                                 &nbsp
                             </td>
                         </tr>

@@ -106,7 +106,7 @@
                                             if (scope.comparison.length > 0)
                                                 scope.comparison.splice(0, scope.comparison.length);
 
-                                            var csv = $.csv.toArrays(response.data)
+                                            var csv = $.csv.toArrays(response.data);
 
                                             scope.header = [];
                                             $.map(csv, function (row) {

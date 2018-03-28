@@ -182,14 +182,22 @@ biocache:
 biocacheService:
     url: 'https://biocache.ala.org.au/ws'
 
-bieService:
-    baseURL: 'https://bie.ala.org.au/ws'
-
 sampling:
     url: 'http://ala-dylan.it.csiro.au/sampling-service'
 
 geoserver:
     url: 'http://spatial-test.ala.org.au/geoserver'
+
+flickr:
+    url: 'https://api.flickr.com/services/rest/?method='
+    searchPhotos: 'flickr.photos.search'
+    licensesInfo: 'flickr.photos.licenses.getInfo'
+    apiKey: ''
+    secret: ''
+    tags: ''
+    extra: 'geo,date_taken,owner_name,license,url_t,url_s,url_m,title'
+    contentType: ''
+    geoContext: ''
 
 viewConfig:
     json: 'view-config.json'

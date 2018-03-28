@@ -72,8 +72,7 @@
                     };
 
                     scope.isSelected = function (item) {
-                        var isSelected = MapService.selected.layer === item
-                        return isSelected
+                        return MapService.selected.layer === item
                     };
 
 

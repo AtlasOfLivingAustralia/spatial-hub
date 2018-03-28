@@ -17,7 +17,6 @@
 
                 $scope.step = 0;
 
-                //TODO: is this the correct position? Maybe it should move after $scope.values
                 $scope.values = [];
                 LayoutService.addToSave($scope);
 
@@ -260,6 +259,10 @@
                 };
 
                 $scope.isDisabled = function () {
+
+                    var inputs = $scope.getInputs();
+                    ToolsService.refresh($scope, $scope.toolName, inputs);
+
                     if ($scope.step === 0) {
                         return $scope.toolName.length === 0
                     } else if ($scope.step > $scope.stepsActual) {

@@ -1,7 +1,31 @@
+//sandbox config if not defined
+if (SANDBOX_CONFIG === undefined) {
+
+    SANDBOX_CONFIG = {
+        autocompleteColumnHeadersUrl: $SH.sandboxUiUrl + '/dataCheck/autocomplete',
+        biocacheServiceUrl: $SH.sandboxServiceUrl,
+        chartOptionsUrl: $SH.sandboxUiUrl + '/myDatasets/chartOptions',
+        deleteResourceUrl: $SH.sandboxUiUrl + '/myDatasets/deleteResource',
+        getAllDatasetsUrl: $SH.sandboxUiUrl + '/myDatasets/allDatasets',
+        getDatasetsUrl: $SH.sandboxUiUrl + '/myDatasets/userDatasets',
+        keepaliveUrl: $SH.sandboxUiUrl + '/dataCheck/ping',
+        loginUrl: '?service=' + $SH.baseUrl,
+        parseColumnsUrl: $SH.sandboxUiUrl + '/dataCheck/parseColumns',
+        processDataUrl: $SH.sandboxUiUrl + '/dataCheck/processData',
+        reloadDataResourceUrl: $SH.sandboxUiUrl + '/dataCheck/reload',
+        saveChartOptionsUrl: $SH.sandboxUiUrl + '/myDatasets/saveChartOptions',
+        uploadCsvUrl: $SH.sandboxUiUrl + '/dataCheck/uploadFile',
+        uploadToSandboxUrl: $SH.sandboxUiUrl + '/dataCheck/upload',
+        uploadStatusUrl: $SH.sandboxUiUrl + '/dataCheck/uploadStatus',
+        userId: $SH.userId,
+        roles: ["ROLE_ADMIN", "ROLE_API_EDITOR", "ROLE_APPD_USER", "ROLE_BASE", "ROLE_FC_ADMIN", "ROLE_FC_OFFICER", "ROLE_SDS_NSW", "ROLE_SDS_SA", "ROLE_SDS_VIC", "ROLE_SDS_WA", "ROLE_SPATIAL_ADMIN", "ROLE_SYSTEM_ADMIN", "ROLE_USER"]
+    };
+}
+
 var spApp = angular.module('spApp', ['leaflet-directive', 'ngAnimate', 'ui.bootstrap', 'ui.sortable', 'ui.slider',
     'ngRoute', 'ngAnimate', 'chieffancypants.loadingBar', 'ngFileUpload', 'ngTouch', 'ala.sandbox.components',
     'ngAria'
-    ].concat($spAppModules))
+].concat($spAppModules))
 
     .factory('ConfigService', [function () {
         return {}
@@ -44,7 +68,8 @@ function fetchData() {
     spApp.constant("gMessages", gMessages);
 
     var distancesUrl = $SH.layersServiceUrl + "/layerDistances/layerdistancesJSON";
-    $http.get($SH.proxyUrl + "?url=" + encodeURIComponent(distancesUrl)).then(function (response) {
+    //$http.get($SH.proxyUrl + "?url=" + encodeURIComponent(distancesUrl)).then(function (response) {
+    $http.get(distancesUrl).then(function (response) {
         $.map(response.data, function (v, k) {
             gLayerDistances[k] = v
         });
@@ -54,9 +79,9 @@ function fetchData() {
         for (k in result.data) {
             gMessages[k + ""] = result.data[k]
         }
-        $SH.gMessages = gMessages
+        $SH.gMessages = gMessages;
         $i18n = function (k) {
-            var key = ("" + k).replace(" ", "_")
+            var key = ("" + k).replace(" ", "_");
             if ($SH.gMessages[key] !== undefined) {
                 return $SH.gMessages[key]
             } else {
@@ -202,7 +227,7 @@ initLayoutContainer = function () {
             }, 100)
         }
     }).trigger("resize");
-}
+};
 
 L.Icon.Default.imagePath = 'assets/leaflet/dist/images';
 

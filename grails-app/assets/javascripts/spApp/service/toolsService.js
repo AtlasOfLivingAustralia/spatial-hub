@@ -17,7 +17,8 @@
                 var url = LayersService.url() + '/capabilities';
                 var setup = $http.get($SH.baseUrl + '/portal/config/view').then(function (data) {
                     viewConfig = data.data;
-                    return $http.get($SH.proxyUrl + "?url=" + encodeURIComponent(url)).then(function (data) {
+                    //return $http.get($SH.proxyUrl + "?url=" + encodeURIComponent(url)).then(function (data) {
+                    return $http.get(url).then(function (data) {
                         var k, merged;
                         for (k in data.data) {
                             if (data.data.hasOwnProperty(k)) {
@@ -207,6 +208,11 @@
                     }
                 }
 
+                function refreshLocal(uiScope, toolName, inputs) {
+                    if (typeof localToolServices[toolName].refresh === "function")
+                        localToolServices[toolName].refresh(inputs, uiScope.spec)
+                }
+
                 function initLocalTools() {
                     //inject all Tools into ToolsService
                     $.each(spApp.requires, function (x) {
@@ -239,13 +245,22 @@
                         });
                     },
                     /**
-                     * Test if a tool is a client side tool
+                     * Test if a tool name is a client side tool
                      * @memberof ToolsService
                      * @param {string} name of tool
                      * @return {boolean} true when it is a client side tool
                      */
                     isLocalTask: function (toolName) {
                         return localToolServices[toolName] !== undefined;
+                    },
+                    /**
+                     * Test if a tool name is a client side or remote tool
+                     * @memberof ToolsService
+                     * @param {string} name of tool
+                     * @return {boolean} true when it is a client side or remote tool
+                     */
+                    isTool: function (toolName) {
+                        return localToolServices[toolName] !== undefined || cap[toolName] !== undefined;
                     },
                     /**
                      * Run a tool
@@ -262,6 +277,21 @@
                             return executeRemote(uiScope, inputs)
                         }
                     },
+
+                    /**
+                     * Run a tool
+                     * @memberof ToolsService
+                     * @param {Scope} interface scope
+                     * @param {string} tool name
+                     * @param {Map} input parameters
+                     * @return {Promise(Boolean)} true the tool is successful
+                     */
+                    refresh: function (uiScope, toolName, inputs) {
+                        if (localToolServices[toolName]) {
+                            refreshLocal(uiScope, toolName, inputs)
+                        }
+                    },
+
                     /**
                      * Get tool capabilities (info including inputs/outputs)
                      * @memberof ToolsService

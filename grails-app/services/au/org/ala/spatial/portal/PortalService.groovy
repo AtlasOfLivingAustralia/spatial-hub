@@ -117,6 +117,7 @@ class PortalService {
 
     def canProxy(url) {
         url.toString().startsWith(Holders.config.layersService.url) ||
-                url.toString().startsWith(Holders.config.phylolink.url)
+                url.toString().startsWith(Holders.config.phylolink.url) ||
+                url.toString().startsWith(Holders.config.sampling.url)
     }
 }

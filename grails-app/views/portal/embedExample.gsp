@@ -8,13 +8,14 @@
 
     <meta http-equiv="Content-type" content="text/html; charset=utf-8">
     <meta name="layout" content="portal"/>
-    <title>Atlas of Living Australia | Spatial Portal</title>
+    <title>Atlas of Living Australia | Spatial Portal | Embed Example</title>
 </head>
 
 <body>
 
-<script src="portal/messages.js?id=${messagesAge}" type="text/javascript" defer></script>
-<script src="https://maps.google.com/maps/api/js?language=en-US&libraries=places&key=${grailsApplication.config.google.apikey}" type="text/javascript"></script>
+<script src="${config.grails.serverURL}/portal/messages.js?id=${messagesAge}" type="text/javascript" defer></script>
+<script src="https://maps.google.com/maps/api/js?language=en-US&libraries=places&key=${grailsApplication.config.google.apikey}"
+        type="text/javascript"></script>
 
 <g:set var="sandboxUrl" value="${grailsApplication.config.sandbox.uiUrl}"></g:set>
 
@@ -54,14 +55,6 @@
         defaultZoom: ${config.startup.zoom},
         baseLayers: ${(config.startup.baselayers as grails.converters.JSON).toString().encodeAsRaw()},
         defaultBaseLayer: '${config.startup.baselayer.default}',
-        flickrUrl: '${config.flickr.url}',
-        flickrLicensesInfo: '${config.flickr.licensesInfo}',
-        flickrSearchPhotos: '${config.flickr.searchPhotos}',
-        flickrApiKey: '${config.flickr.apiKey}',
-        flickrTags: '${config.flickr.tags}',
-        flickrExtra: '${config.flickr.extra}',
-        flickrContentType: '${config.flickr.contentType}',
-        flickrGeoContext: '${config.flickr.geoContext}',
         menu: '${config.grails.serverURL}/portal/config/menu',
         defaultAreas: ${(config.defaultareas as grails.converters.JSON).toString().encodeAsRaw()},
         validUrls: [
@@ -87,30 +80,10 @@
         editable: ${params.edit?:'false'}
     };
 
-    BIE_VARS = {
-        autocompleteUrl: '${config.autocompleteUrl}'
-    };
-
-    var SANDBOX_CONFIG = {
-        autocompleteColumnHeadersUrl: '${sandboxUrl}/dataCheck/autocomplete',
-        biocacheServiceUrl: '${grailsApplication.config.biocacheServiceUrl}',
-        chartOptionsUrl: '${sandboxUrl}/myDatasets/chartOptions',
-        deleteResourceUrl: '${sandboxUrl}/myDatasets/deleteResource',
-        getAllDatasetsUrl: '${sandboxUrl}/myDatasets/allDatasets',
-        getDatasetsUrl: '${sandboxUrl}/myDatasets/userDatasets',
-        keepaliveUrl: '${sandboxUrl}/dataCheck/ping',
-        loginUrl: '${grailsApplication.config.casServerLoginUrl}?service=${createLink(uri: '/', absolute: true)}',
-        parseColumnsUrl: '${sandboxUrl}/dataCheck/parseColumns',
-        processDataUrl: '${sandboxUrl}/dataCheck/processData',
-        reloadDataResourceUrl: '${sandboxUrl}/dataCheck/reload',
-        saveChartOptionsUrl: '${sandboxUrl}/myDatasets/saveChartOptions',
-        uploadCsvUrl: '${sandboxUrl}/dataCheck/uploadFile',
-        uploadToSandboxUrl: '${sandboxUrl}/dataCheck/upload',
-        uploadStatusUrl: '${sandboxUrl}/dataCheck/uploadStatus',
-        userId: '${u.userId()}',
-        roles:<u:roles />
-    };
 </script>
+
+<link rel="stylesheet" href="${config.grails.serverURL}/assets/application.css">
+<script type="text/javascript" src="${config.grails.serverURL}/assets/application.js"></script>
 
 <sp-app></sp-app>
 

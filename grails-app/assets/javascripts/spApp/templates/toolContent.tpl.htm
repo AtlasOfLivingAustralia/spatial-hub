@@ -52,7 +52,7 @@
                                     <label ng-if="sv.name !== undefined && sv.name !== v.description" ng-bind="v.description"></label>
                                     <div class="col-sm-2 input-group">
                                         <input type="number" class="form-control" max="v.constraints.max" min="v.constraints.min" ng-model="values[i]" sp-percent>
-                                        <span class="input-group-addon">%</span>
+                                        <span i18n="287" class="input-group-addon">%</span>
                                     </div>
 
                                 </div>
@@ -112,7 +112,9 @@
                                     <div species-options value="values[i]"
                                          area-includes="v.constraints.areaIncludes"
                                          spatial-validity="v.constraints.spatialValidity"
-                                         endemic-includes="v.constraints.endemicIncludes"></div>
+                                         endemic-includes="v.constraints.endemicIncludes"
+                                         disable-check="v.constraints.disable"
+                                    ></div>
                                 </div>
                                 <div ng-if="v.type == 'facet'">
                                     <div select-facet selected-facet="values[i]"></div>

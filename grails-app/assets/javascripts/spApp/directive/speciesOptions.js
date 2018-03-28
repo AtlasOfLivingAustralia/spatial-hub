@@ -16,7 +16,8 @@
                         _value: '=value',
                         _areaIncludes: '=?areaIncludes',
                         _spatialValidity: '=?spatialValidity',
-                        _endemicIncludes: '=?endemicIncludes'
+                        _endemicIncludes: '=?endemicIncludes',
+                        _disabled: "=?disableCheck"
                     },
                     templateUrl: '/spApp/speciesOptionsContent.htm',
                     link: function (scope, element, attrs) {

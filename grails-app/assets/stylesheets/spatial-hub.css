@@ -1,3 +1,15 @@
+div#statusInfo {
+    position: absolute;
+    margin: 10px 60px;
+    z-index: 99;
+    border-radius: 5px;
+    opacity: 0.8;
+    box-shadow: 2px 2px 1px rgba(0, 0, 0, 0.6);
+    -moz-box-shadow: 2px 2px 1px rgba(0, 0, 0, 0.6);
+    -webkit-box-shadow: 2px 2px 1px rgba(0, 0, 0, 0.6);
+    -o-box-shadow: 2px 2px 1px rgba(0, 0, 0, 0.6);
+}
+
 .ui-front {
     z-index: 1100;
 }
@@ -562,6 +574,8 @@ form.banner {
 .icon-expand-up { background-image: url(icon-expand-up.png); background-size: 26px 26px; }
 .icon-expand-right { background-image: url(icon-expand-right.png); background-size: 26px 26px; }
 .icon-expand-down { background-image: url(icon-expand-down.png); background-size: 26px 26px; }
+.icon-panoramio { background-image: url(images_on.png); background-size: 18px 18px; }
+.icon-exit-panoramio { background-image: url(images_off.png); background-size: 18px 18px; }
 
 #legend {
     margin-right:0px;

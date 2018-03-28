@@ -109,6 +109,10 @@
                 panels: function () {
                     return panels
                 },
+                /* test if a string is a valid panel name */
+                isPanel: function (name) {
+                    return panels.indexOf(name) >= 0
+                },
                 /* close a panel */
                 closePanel: function (data) {
                     this.panelMode[0] = 'default';
