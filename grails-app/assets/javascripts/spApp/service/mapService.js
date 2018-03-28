@@ -132,7 +132,6 @@
                             this.leafletScope.moveLayer(this.getLayer(this.mappedLayers[i].uid), this.mappedLayers[i].index)
                         }
                     },
-
                     removeAll: function () {
                         var layer;
                         while (layer = layers.pop()) {
@@ -145,7 +144,6 @@
                             delete leafletLayers[layer.uid];
                         }
                     },
-
                     remove: function (uid) {
                         var deleteIndex;
                         for (var i = 0; i < layers.length; i++) {
@@ -352,7 +350,7 @@
                                 } else {
                                     layerParams = {
                                         opacity: id.opacity / 100.0,
-                                        layers: 'ALA:Objects',
+                                        layers: id.area_km == 0 ? 'ALA:Points':'ALA:Objects',
                                         format: 'image/png',
                                         transparent: true,
                                         viewparams: 's:' + id.pid
@@ -448,6 +446,8 @@
                         }, 0);
 
 
+
+
                         if (id.q && id.layertype !== 'area') {
                             promises.push(MapService.addOtherArea("distribution", id, id.area, id.includeExpertDistributions));
                             promises.push(MapService.addOtherArea("track", id, id.area, id.includeAnimalMovement));
@@ -455,7 +455,7 @@
 
                         }
 
-                        promises.push(LayoutService.enable('legend'));
+                        promises.push( LayoutService.enable('legend'));
                         promises.push(MapService.select(selected.layer));
 
                         //add to promises if waiting is required
@@ -480,12 +480,22 @@
 
                     select: function (id) {
                         selected.layer = id;
-                        if ($SH.defaultPaneResizer) {
+                        if ($SH.defaultPaneResizer)
                             $SH.defaultPaneResizer.show('south');
-                        }
                     },
                     objectSld: function (item) {
-                        var sldBody = '<?xml version="1.0" encoding="UTF-8"?><StyledLayerDescriptor version="1.0.0" xmlns="http://www.opengis.net/sld"><NamedLayer><Name>ALA:Objects</Name><UserStyle><FeatureTypeStyle><Rule><Title>Polygon</Title><PolygonSymbolizer><Fill><CssParameter name="fill">#.colour</CssParameter></Fill></PolygonSymbolizer></Rule></FeatureTypeStyle></UserStyle></NamedLayer></StyledLayerDescriptor>';
+                        var sldBody =''
+                        if (item.area_km == 0)
+                            sldBody = '<?xml version="1.0" encoding="UTF-8"?><StyledLayerDescriptor version="1.0.0" xmlns="http://www.opengis.net/sld" xmlns:xlink="http://www.w3.org/1999/xlink"><NamedLayer><Name>ALA:Points</Name><UserStyle><FeatureTypeStyle>\n' +
+                                '     <Rule>\n' +
+                                '       <PointSymbolizer>\n' +
+                                '         <Graphic>\n' + '<ExternalGraphic><OnlineResource xlink:type="simple" xlink:href="file:///data/geoserver_data_dir/styles/marker.png" /><Format>image/png</Format></ExternalGraphic><Size>24</Size>' +
+                                '         </Graphic>\n' +
+                                '       </PointSymbolizer>\n' +
+                                '     </Rule>\n' +
+                                '   </FeatureTypeStyle></UserStyle></NamedLayer></StyledLayerDescriptor>';
+                        else
+                             sldBody = '<?xml version="1.0" encoding="UTF-8"?><StyledLayerDescriptor version="1.0.0" xmlns="http://www.opengis.net/sld"><NamedLayer><Name>ALA:Objects</Name><UserStyle><FeatureTypeStyle><Rule><Title>Polygon</Title><PolygonSymbolizer><Fill><CssParameter name="fill">#.colour</CssParameter></Fill></PolygonSymbolizer></Rule></FeatureTypeStyle></UserStyle></NamedLayer></StyledLayerDescriptor>';
                         sldBody = sldBody.replace('.colour', item.color);
                         return sldBody
                     },

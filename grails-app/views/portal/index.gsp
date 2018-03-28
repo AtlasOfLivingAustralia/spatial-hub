@@ -111,7 +111,7 @@
         roles:<u:roles />
     };
 </script>
-
+<ala:systemMessage/>
 <sp-app></sp-app>
 
 </body>

@@ -98,6 +98,10 @@
                         LayoutService.enable('legend');
                         MapService.select(layer)
                     }
+
+                    scope.reconnect = function() {
+                        KeepAliveService.reconnect();
+                    }
                 }
             };
         }])
