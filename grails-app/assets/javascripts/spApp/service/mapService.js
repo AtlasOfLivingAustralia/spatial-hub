@@ -349,7 +349,7 @@
                                     if (id.format !== undefined) layerParams.format = 'image/png';
                                 } else {
                                     layerParams = {
-                                        opacity: id.opacity / 100.0,
+                                        opacity: id.area_km == 0 ? 0 : id.opacity / 100.0,
                                         layers: id.area_km == 0 ? 'ALA:Points':'ALA:Objects',
                                         format: 'image/png',
                                         transparent: true,
@@ -489,9 +489,18 @@
                             sldBody = '<?xml version="1.0" encoding="UTF-8"?><StyledLayerDescriptor version="1.0.0" xmlns="http://www.opengis.net/sld" xmlns:xlink="http://www.w3.org/1999/xlink"><NamedLayer><Name>ALA:Points</Name><UserStyle><FeatureTypeStyle>\n' +
                                 '     <Rule>\n' +
                                 '       <PointSymbolizer>\n' +
-                                '         <Graphic>\n' + '<ExternalGraphic><OnlineResource xlink:type="simple" xlink:href="file:///data/geoserver_data_dir/styles/marker.png" /><Format>image/png</Format></ExternalGraphic><Size>24</Size>' +
+                                '         <Graphic>\n' + '<ExternalGraphic><OnlineResource xlink:type="simple" xlink:href="https://spatial.ala.org.au/geoserver/styles/marker.png" /><Format>image/png</Format></ExternalGraphic><Size>24</Size>' +
                                 '         </Graphic>\n' +
                                 '       </PointSymbolizer>\n' +
+                                '       <TextSymbolizer><Label>' + item.name + '</Label>' +
+                                '           <Font><CssParameter name="font-family">Roboto</CssParameter>' +
+                                '                 <CssParameter name="font-size">10</CssParameter>' +
+                                '                 <CssParameter name="font-style">normal</CssParameter>' +
+                                '           </Font>' +
+                                '           <LabelPlacement><PointPlacement><AnchorPoint><AnchorPointX>0.5</AnchorPointX><AnchorPointY>0.0</AnchorPointY></AnchorPoint><Displacement><DisplacementX>0</DisplacementX><DisplacementY>5</DisplacementY>' +
+                                '           </Displacement></PointPlacement></LabelPlacement>' +
+                                '           <Fill><CssParameter name="fill">#.colour</CssParameter></Fill>' +
+                                '       </TextSymbolizer>' +
                                 '     </Rule>\n' +
                                 '   </FeatureTypeStyle></UserStyle></NamedLayer></StyledLayerDescriptor>';
                         else
