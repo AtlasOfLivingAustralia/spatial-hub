@@ -462,7 +462,6 @@
                             });
 
                             map.on('moveend', function (e) {
-                                console.debug("moveend...");
                                 $scope.togglePanoramio(e.target)
                             })
 

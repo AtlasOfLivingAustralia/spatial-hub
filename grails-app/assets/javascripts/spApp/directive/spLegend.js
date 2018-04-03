@@ -124,7 +124,7 @@
                                 }
                             }
 
-                            scope.mapObjectsList(ids, fqs, objects, 0, scope.selected.layer.displayname);
+                            scope.mapObjectsList(ids, fqs, objects, 0, scope.selected.layer.name);
                         };
 
                         scope.mapObjectsList = function (ids, fqs, objects, pos, name) {
@@ -132,16 +132,48 @@
                                 //merge
                                 var metadata = $i18n('Collection of areas from layer') + ': ' + name + ';';
                                 var mappingId = '';
+                                var areaKm = 0;
+                                var bbox;
+
                                 for (var i = 0; i < objects.length; i++) {
                                     metadata += ', ' + objects[i].name;
+                                    areaKm += objects[i].area_km;
+
+                                    var bTemp = undefined;
+                                    if (i > 0) bTemp = bbox;
+                                    bbox = objects[i].bbox;
+                                    if ((objects[i].bbox + '').startsWith('POLYGON')) {
+                                        //convert POLYGON box to bounds
+                                        var split = objects[i].bbox.split(',');
+                                        var p1 = split[1].split(' ');
+                                        var p2 = split[3].split(' ');
+
+                                        if (bTemp == undefined) {
+                                            bbox = [[Math.min(p1[1], p2[1]), Math.min(p1[0], p2[0])], [Math.max(p1[1], p2[1]), Math.max(p1[0], p2[0])]]
+                                        } else {
+                                            bbox = [[Math.min(p1[1], p2[1], bTemp[0][0]), Math.min(p1[0], p2[0], bTemp[0][1])], [Math.max(p1[1], p2[1], bTemp[1][0]), Math.max(p1[0], p2[0], bTemp[1][1])]]
+                                        }
+                                    }
+                                    if (objects[i].bbox && objects[i].bbox.length === 4) {
+                                        if (bTemp == undefined) {
+                                            bbox = [[objects[i].bbox[1], objects[i].bbox[0]], [objects[i].bbox[3], objects[i].bbox[2]]]
+                                        } else {
+                                            bbox = [[Math.min(objects[i].bbox[1], bTemp[0][0]), Math.min(objects[i].bbox[0], bTemp[0][1])], [Math.max(objects[i].bbox[3], bTemp[1][0]), Math.max(objects[i].bbox[2], bTemp[1][1])]]
+                                        }
+                                    }
+
                                     if (i > 0) mappingId += '~';
                                     mappingId += ids[i]
                                 }
+
                                 var layer = {
                                     name: pos + ' ' + $i18n('areas from') + ' ' + name,
+                                    description: '',
                                     wkt: '',
                                     q: [fqs.join(" OR ")],
                                     legend: '',
+                                    area_km: areaKm,
+                                    bbox: bbox,
                                     metadata: metadata,
                                     pid: mappingId,
                                     layertype: 'area'
