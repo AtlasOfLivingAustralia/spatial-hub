@@ -119,8 +119,10 @@
                             for (var key in scope.selected.layer.contextualSelection) {
                                 if (scope.selected.layer.contextualSelection.hasOwnProperty(key)) {
                                     var item = scope.selected.layer.contextualSelection[key];
-                                    fqs.push(scope.selected.layer.id + ':"' + item.name + '"');
-                                    ids.push(item.pid)
+                                    if (item.selected) {
+                                        fqs.push(scope.selected.layer.id + ':"' + item.name + '"');
+                                        ids.push(item.pid);
+                                    }
                                 }
                             }
 

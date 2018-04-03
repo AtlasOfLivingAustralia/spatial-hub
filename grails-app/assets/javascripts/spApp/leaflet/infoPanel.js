@@ -21,7 +21,8 @@ L.Control.InfoPanel = L.Control.extend({
             if ($SH.hoverLayers.length > 0) {
                 var layer = $SH.hoverLayers.join(",");
                 var split = scope.lastPos.split(' ');
-                var url = $SH.layersServiceUrl + "/intersect/" + layer + "/" + split[1] + "/" + split[0];
+                // latitude/longitude
+                var url = $SH.layersServiceUrl + "/intersect/" + layer + "/" + split[3] + "/" + split[1];
                 scope._container.innerHTML = $i18n('searching...') + '<br/>' + scope.lastPos;
                 $.ajax({
                     container: scope._container,
