@@ -15,7 +15,8 @@
                         + '&tags=' + encodeURIComponent($SH.flickrTags)
                         + '&geo_context=' + encodeURIComponent($SH.flickrGeoContext)
                         + '&content_type='+ encodeURIComponent($SH.flickrContentType)
-                        + '&format=json&nojsoncallback=1&text=landscape&per_page=50&bbox='; //??? 50 perpage ???
+                        + $SH.flickrFilter
+                        + '&format=json&nojsoncallback=1&bbox='; //??? 50 perpage ???
 
                     return $http.get(url + bbox).then(function (response) {
                         return response.data;

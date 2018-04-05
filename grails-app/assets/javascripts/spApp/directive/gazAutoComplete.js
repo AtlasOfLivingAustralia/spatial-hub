@@ -22,6 +22,7 @@
                                     if (item.fid !== $SH.userObjectsField || scope._userobjects) {
                                         return {
                                             label: item.name + ", " + item.fieldname,
+                                            //item.description
                                             value: item
                                         }
                                     } else {

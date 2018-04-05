@@ -62,6 +62,7 @@
         flickrExtra: '${config.flickr.extra}',
         flickrContentType: '${config.flickr.contentType}',
         flickrGeoContext: '${config.flickr.geoContext}',
+        flickrFilter: '${config.flickr.filter}',
         menu: '${config.grails.serverURL}/portal/config/menu',
         defaultAreas: ${(config.defaultareas as grails.converters.JSON).toString().encodeAsRaw()},
         validUrls: [
