@@ -41,14 +41,17 @@
                             $timeout(function () {
                                 iElement.val(scope.label);
                             }, 0)
-                        }
+                        },
                     });
+
                     a.data('ui-autocomplete')._renderItem = function (ul, item) {
-                        var html = "<div class='autocomplete-item'>" + item.label + "<br><i>" + item.info + "</i></div>";
+                        var html = "<li class='autocomplete-item' >" + item.label + "<br><i>" + item.info + "</i></li>";
                         return $("<li>")
                             .append($("<a>").append(html))
                             .appendTo(ul);
                     };
+
+
                 }
             };
 

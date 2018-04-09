@@ -383,6 +383,33 @@ ol.leaflet-quick-links li {
     font-size: 10px;
 }
 
+/*li > a.ui-state-focus {*/
+    /*background-color: #df4a21;*/
+    /*color: #fff;*/
+/*}*/
+
+.ui-menu .ui-menu-item a.ui-state-focus {
+    background-image: none !important;
+    background-color: #df4a21;
+    color: #fff;
+    border-top-left-radius: 0px !important;
+    border-top-right-radius: 0px !important;
+    border-bottom-left-radius: 0px !important;
+    border-bottom-right-radius: 0px !important;
+}
+
+.ac_results li {
+    margin: 0px;
+    padding: 7px;
+    cursor: default;
+    display: block;
+    font-size: 14px;
+    line-height: 16px;
+    overflow: hidden;
+    text-align: left;
+    color: #333a3f;
+}
+
 .ui-widget-content {
     background-color: white;
 }
