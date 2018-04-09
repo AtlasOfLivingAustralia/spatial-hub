@@ -198,6 +198,7 @@ flickr:
     extra: 'geo,date_taken,owner_name,license,url_t,url_s,url_m,title'
     contentType: ''
     geoContext: ''
+    filter: '&text=landscape&per_page=50'
 
 viewConfig:
     json: 'view-config.json'

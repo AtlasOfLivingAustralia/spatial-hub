@@ -40,21 +40,24 @@
                 function addPopupToMap(latlng, map, templatePromise, intersects, occurrences) {
                     var leafletmap = $('.angular-leaflet-map');
                     var layerCount = layers.length + speciesLayers.length + areaLayers.length;
-                    if (layerCount > 0 && processedLayers[0] < layerCount) {
-                        leafletmap[0].style.cursor = 'wait'
-                    }
+                    // if (layerCount > 0 && processedLayers[0] < layerCount) {
+                    //     leafletmap[0].style.cursor = 'wait'
+                    // }
 
                     if (addPopupFlag) {
                         templatePromise.then(function (content) {
                             var popupScope = $rootScope.$new();
 
                             popupScope.processedLayers = processedLayers;
-                            popupScope.$watch('processedLayers', function (newVal, oldVal) {
-                                var layerCount = layers.length + speciesLayers.length + areaLayers.length;
-                                if (newVal && layerCount > 0 && newVal[0] === layerCount) {
-                                    leafletmap[0].style.cursor = ''
-                                }
-                            });
+                            // leafletmap[0].style.cursor = '';
+
+                            // TODO: build a better progress indicator
+                            // popupScope.$watch('processedLayers', function (newVal, oldVal) {
+                            //     var layerCount = layers.length + speciesLayers.length + areaLayers.length;
+                            //     if (newVal && layerCount > 0 && newVal[0] === layerCount) {
+                            //         leafletmap[0].style.cursor = ''
+                            //     }
+                            // });
 
                             popupScope.intersects = intersects;
                             popupScope.olist = occurrences;
@@ -205,10 +208,12 @@
                     };
 
                     this.listRecords = function () {
-                        var q = self.getQueryParams(self.layer);
-                        var url = biocacheService.constructSearchResultUrl(q.query, q.fqs, 10, 0, true).then(function (url) {
-                            self.listRecordsUrl = url
-                        })
+                        if (self.layer !== undefined) {
+                            var q = self.getQueryParams(self.layer);
+                            var url = biocacheService.constructSearchResultUrl(q.query, q.fqs, 10, 0, true).then(function (url) {
+                                self.listRecordsUrl = url
+                            })
+                        }
                     };
 
                     this.viewRecord = function () {
@@ -226,9 +231,9 @@
                         $('.leaflet-popup-close-button')[0].click()
                     };
 
-                    if (speciesLayers.length > 0) {
-                        $('.angular-leaflet-map')[0].style.cursor = 'wait'
-                    }
+                    // if (speciesLayers.length > 0) {
+                    //     $('.angular-leaflet-map')[0].style.cursor = 'wait'
+                    // }
 
                     speciesLayers.forEach(function (layer) {
                         var q = self.getQueryParams(layer);
@@ -241,9 +246,9 @@
                             }
                             processedLayers[0] += 1;
 
-                            if (processedLayers[0] === speciesLayers.length && layers.length + areaLayers.length === 0) {
-                                $('.angular-leaflet-map')[0].style.cursor = ''
-                            }
+                            // if (processedLayers[0] === speciesLayers.length && layers.length + areaLayers.length === 0) {
+                            //     $('.angular-leaflet-map')[0].style.cursor = ''
+                            // }
 
                             self.listRecords();
                             self.viewRecord();
@@ -323,9 +328,9 @@
                                 var promiseIntersect = self.getIntersects(layers, latlng);
                                 if (promiseIntersect) {
                                     promiseIntersect.then(function (content) {
-                                        addPopupToMap(loc, leafletMap, templatePromise, intersects, occurrenceList);
                                         intersects.push.apply(intersects, content.data);
-                                        processedLayers[0] += 1
+                                        addPopupToMap(loc, leafletMap, templatePromise, intersects, occurrenceList);
+                                        processedLayers[0] += intersects.length;
                                     })
                                 }
                             }
@@ -334,8 +339,8 @@
                                 areaLayers.forEach(function (layer) {
                                     self.getAreaIntersects(layer.pid, latlng).then(function (resp) {
                                         if (resp.data.name) {
+                                            intersects.push({layername: $i18n('Area'), value: resp.data.name});
                                             addPopupToMap(loc, leafletMap, templatePromise, intersects, occurrenceList);
-                                            intersects.push({layername: $i18n('Area'), value: resp.data.name})
                                         }
                                         processedLayers[0] += 1
                                     })

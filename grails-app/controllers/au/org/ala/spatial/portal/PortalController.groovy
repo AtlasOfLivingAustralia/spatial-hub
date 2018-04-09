@@ -428,7 +428,7 @@ class PortalController {
                     value = [qid: r.text] as JSON
 
                     if (r?.text) {
-                        grailsCacheManager.getCache(portalService.caches.QID).put(json, value)
+                        grailsCacheManager.getCache(portalService.caches.QID).put(json, value.toString())
                     }
 
                     render value

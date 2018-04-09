@@ -252,7 +252,7 @@
                         LayersService.getField(obj.fid, 0, 0, '').then(function (data) {
                             if (data.data === undefined || data.data.id === undefined || !data.data.indb) {
                                 LayersService.getWkt(pid).then(function (wkt) {
-                                    $scope.selectedArea.wkt = wkt
+                                    $scope.selectedArea.wkt = wkt.data
                                 })
                             } else {
                                 $scope.selectedArea.q = obj.fid + ':"' + obj.name + '"';
