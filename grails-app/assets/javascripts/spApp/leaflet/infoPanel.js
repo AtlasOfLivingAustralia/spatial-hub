@@ -5,7 +5,11 @@ L.Control.InfoPanel = L.Control.extend({
     timer: -1,
     lastTime: 0,
     pos: '',
+    lat: 0,
+    lng: 0,
     lastPos: '',
+    lastLat: 0,
+    lastLng: 0,
     intersect: '',
 
     hoverSet: function () {
@@ -17,12 +21,13 @@ L.Control.InfoPanel = L.Control.extend({
     hover: function (scope) {
         if (scope.pos !== scope.lastPos) {
             scope.lastPos = scope.pos;
+            scope.lastLat = scope.lat;
+            scope.lastLng = scope.lng;
 
             if ($SH.hoverLayers.length > 0) {
                 var layer = $SH.hoverLayers.join(",");
-                var split = scope.lastPos.split(' ');
                 // latitude/longitude
-                var url = $SH.layersServiceUrl + "/intersect/" + layer + "/" + split[3] + "/" + split[1];
+                var url = $SH.layersServiceUrl + "/intersect/" + layer + "/" + scope.lastLat + "/" + scope.lastLng;
                 scope._container.innerHTML = $i18n('searching...') + '<br/>' + scope.lastPos;
                 $.ajax({
                     container: scope._container,
@@ -34,7 +39,8 @@ L.Control.InfoPanel = L.Control.extend({
                         var d = '';
                         for (var k in data) {
                             if (data.hasOwnProperty(k)) {
-                                d += '<br/>' + data[k].layername + ': ' + data[k].value;
+                                if (d.length > 0) d += '<br/>';
+                                d += data[k].layername + ': ' + data[k].value;
                                 if (data[k].units !== undefined) {
                                     d += ' ' + data[k].units
                                 }
@@ -67,9 +73,11 @@ L.Control.InfoPanel = L.Control.extend({
     },
 
     _onMouseMove: function (e) {
-        var lng = L.Util.formatNum(e.latlng.lng, 5);
-        var lat = L.Util.formatNum(e.latlng.lat, 5);
-        this.pos = 'lon: ' + lng + ' lat: ' + lat;
+        var lng = L.Util.formatNum(e.latlng.lng, 3);
+        var lat = L.Util.formatNum(e.latlng.lat, 3);
+        this.pos = '<span class="coord">' + lng + '</span>&nbsp;<span class="coord">' + lat + '</span>';
+        this.lat = lat;
+        this.lng = lng;
         this.intersect = '';
         if ($SH.hoverLayers.length > 0) {
             if ($i18n === undefined) {

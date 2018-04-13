@@ -1,8 +1,8 @@
 L.Control.Panoramio = L.Control.extend({
     options: {
         position: 'topleft',
-        title: 'Panoramio View',
-        titleCancel: 'Exit Panoramio View',
+        title: 'Show Location Images',
+        titleCancel: 'Hide Location Images',
         togglePanoramio: null
     },
 

@@ -36,8 +36,7 @@
                         };
 
                         scope.updateContextualList = function () {
-                            console.log(scope.selected.layer.contextualList)
-                            if (scope.selected.layer !== null && scope.selected.layer.contextualPage !== undefined) {
+                            if (scope.selected.layer !== undefined && scope.selected.layer !== null && scope.selected.layer.contextualPage !== undefined) {
                                 LayersService.getField(scope.selected.layer.id,
                                     (scope.selected.layer.contextualPage - 1) * scope.selected.layer.contextualPageSize,
                                     scope.selected.layer.contextualPageSize, scope.selected.layer.contextualFilter).then(function (data) {
@@ -47,7 +46,6 @@
                                             scope.selected.layer.contextualList[i].selected = (scope.selected.layer.contextualSelection[scope.selected.layer.contextualList[i].name] !== undefined)
                                         }
                                     }
-                                    console.log(scope.selected.layer.contextualList)
                                 })
                             }
                         };
@@ -57,76 +55,85 @@
                         };
 
                         scope.contextualClearSelection = function () {
-                            var key;
-                            for (key in scope.selected.layer.contextualSelection) {
-                                if (scope.selected.layer.contextualSelection.hasOwnProperty(key)) {
-                                    delete scope.selected.layer.contextualSelection[key]
+                            if (scope.selected.layer !== undefined) {
+                                var key;
+                                for (key in scope.selected.layer.contextualSelection) {
+                                    if (scope.selected.layer.contextualSelection.hasOwnProperty(key)) {
+                                        delete scope.selected.layer.contextualSelection[key]
+                                    }
                                 }
-                            }
-                            for (var i in scope.selected.layer.contextualList) {
-                                if (scope.selected.layer.contextualList.hasOwnProperty(i)) {
-                                    scope.selected.layer.contextualList[i].selected = false
+                                for (var i in scope.selected.layer.contextualList) {
+                                    if (scope.selected.layer.contextualList.hasOwnProperty(i)) {
+                                        scope.selected.layer.contextualList[i].selected = false
+                                    }
                                 }
                             }
                         };
 
                         scope.contextualClearHighlight = function () {
-                            //remove highlight layer
-                            scope.selected.layer.contextualHighlight = ""
+                            if (scope.selected.layer !== undefined) {
+                                //remove highlight layer
+                                scope.selected.layer.contextualHighlight = ""
+                            }
                         };
 
                         scope.scatterplotCreateInOut = function () {
+                            if (scope.selected.layer !== undefined) {
+                                var inFq = scope.selected.layer.scatterplotFq;
+                                var outFq = '-(' + scope.selected.layer.scatterplotFq + ')';
 
-                            var inFq = scope.selected.layer.scatterplotFq;
-                            var outFq = '-(' + scope.selected.layer.scatterplotFq + ')';
+                                BiocacheService.newLayerAddFq(scope.selected.layer, inFq,
+                                    scope.selected.layer.name + " : " + $i18n("in scatterplot selection")).then(function (data) {
+                                    MapService.add(data)
+                                });
 
-                            BiocacheService.newLayerAddFq(scope.selected.layer, inFq,
-                                scope.selected.layer.name + " : " + $i18n("in scatterplot selection")).then(function (data) {
-                                MapService.add(data)
-                            });
-
-                            BiocacheService.newLayerAddFq(scope.selected.layer, outFq,
-                                scope.selected.layer.name + " : " + $i18n("out scatterplot selection")).then(function (data) {
-                                MapService.add(data)
-                            })
+                                BiocacheService.newLayerAddFq(scope.selected.layer, outFq,
+                                    scope.selected.layer.name + " : " + $i18n("out scatterplot selection")).then(function (data) {
+                                    MapService.add(data)
+                                })
+                            }
                         };
 
                         scope.adhocCreateInOut = function () {
-                            var ids = [];
-                            $.map(scope.selected.layer.adhocGroup, function (v, k) {
-                                if (v) ids.push(k)
-                            });
+                            if (scope.selected.layer !== undefined) {
+                                var ids = [];
+                                $.map(scope.selected.layer.adhocGroup, function (v, k) {
+                                    if (v) ids.push(k)
+                                });
 
-                            var inFq = 'id:' + ids.join(' OR id:');
-                            var outFq = '-(id:' + ids.join(' OR id:') + ')';
+                                var inFq = 'id:' + ids.join(' OR id:');
+                                var outFq = '-(id:' + ids.join(' OR id:') + ')';
 
-                            BiocacheService.newLayerAddFq(scope.selected.layer, inFq,
-                                scope.selected.layer.name + " : " + $i18n("in adhoc")).then(function (data) {
-                                MapService.add(data)
-                            });
+                                BiocacheService.newLayerAddFq(scope.selected.layer, inFq,
+                                    scope.selected.layer.name + " : " + $i18n("in adhoc")).then(function (data) {
+                                    MapService.add(data)
+                                });
 
-                            BiocacheService.newLayerAddFq(scope.selected.layer, outFq,
-                                scope.selected.layer.name + " : " + $i18n("out adhoc")).then(function (data) {
-                                MapService.add(data)
-                            })
+                                BiocacheService.newLayerAddFq(scope.selected.layer, outFq,
+                                    scope.selected.layer.name + " : " + $i18n("out adhoc")).then(function (data) {
+                                    MapService.add(data)
+                                })
+                            }
                         };
 
                         scope.contextualCreateArea = function () {
-                            var ids = [];
-                            var fqs = [];
-                            var objects = [];
+                            if (scope.selected.layer !== undefined) {
+                                var ids = [];
+                                var fqs = [];
+                                var objects = [];
 
-                            for (var key in scope.selected.layer.contextualSelection) {
-                                if (scope.selected.layer.contextualSelection.hasOwnProperty(key)) {
-                                    var item = scope.selected.layer.contextualSelection[key];
-                                    if (item.selected) {
-                                        fqs.push(scope.selected.layer.id + ':"' + item.name + '"');
-                                        ids.push(item.pid);
+                                for (var key in scope.selected.layer.contextualSelection) {
+                                    if (scope.selected.layer.contextualSelection.hasOwnProperty(key)) {
+                                        var item = scope.selected.layer.contextualSelection[key];
+                                        if (item.selected) {
+                                            fqs.push(scope.selected.layer.id + ':"' + item.name + '"');
+                                            ids.push(item.pid);
+                                        }
                                     }
                                 }
-                            }
 
-                            scope.mapObjectsList(ids, fqs, objects, 0, scope.selected.layer.name);
+                                scope.mapObjectsList(ids, fqs, objects, 0, scope.selected.layer.name);
+                            }
                         };
 
                         scope.mapObjectsList = function (ids, fqs, objects, pos, name) {
@@ -195,16 +202,20 @@
                         };
 
                         scope.contextualHighlight = function (name) {
-                            scope.selected.layer.contextualHighlight = name
-                            //TODO: create highlight layer
+                            if (scope.selected.layer !== undefined) {
+                                scope.selected.layer.contextualHighlight = name
+                                //TODO: create highlight layer
+                            }
                         };
 
                         scope.contextualSelectionChange = function (item) {
-                            scope.selected.layer.contextualSelection[item.name] = item
+                            if (scope.selected.layer !== undefined) {
+                                scope.selected.layer.contextualSelection[item.name] = item
+                            }
                         };
 
                         scope.contextualPageBack = function () {
-                            if (scope.selected.layer !== null && scope.selected.layer.contextualPage > 1) {
+                            if (scope.selected.layer !== undefined && scope.selected.layer !== null && scope.selected.layer.contextualPage > 1) {
                                 scope.selected.layer.contextualPage--;
                                 scope.updateContextualList()
                             }
@@ -218,11 +229,13 @@
                         };
 
                         scope.clearContextualFilter = function () {
-                            scope.selected.layer.contextualFilter = ''
+                            if (scope.selected.layer !== undefined) {
+                                scope.selected.layer.contextualFilter = ''
+                            }
                         };
 
                         scope.wmsLegendVisible = function () {
-                            return scope.selected.layer !== null &&
+                            return scope.selected.layer !== undefined && scope.selected.layer !== null &&
                                 (scope.selected.layer.layertype === 'grid' || scope.selected.layer.layertype === 'contextual') &&
                                 (scope.selected.hidelegend === undefined || !scope.selected.hidelegend)
                         };
@@ -240,27 +253,35 @@
                         };
 
                         scope.setColor = function (color) {
-                            scope.selected.layer.color = color;
-                            scope.updateWMS()
+                            if (scope.selected.layer !== undefined) {
+                                scope.selected.layer.color = color;
+                                scope.updateWMS()
+                            }
                         };
 
                         scope.setColorType = function (colorType) {
-                            scope.selected.layer.colorType = colorType;
-                            scope.updateWMS()
+                            if (scope.selected.layer !== undefined) {
+                                scope.selected.layer.colorType = colorType;
+                                scope.updateWMS()
+                            }
                         };
 
                         scope.facetNewLayer = function () {
-                            BiocacheService.newLayerAddFq(scope.selected.layer, decodeURIComponent(scope.selected.layer.sel),
-                                scope.selected.layer.name + " : " + $i18n("from selected")).then(function (data) {
-                                MapService.add(data)
-                            })
+                            if (scope.selected.layer !== undefined) {
+                                BiocacheService.newLayerAddFq(scope.selected.layer, decodeURIComponent(scope.selected.layer.sel),
+                                    scope.selected.layer.name + " : " + $i18n("from selected")).then(function (data) {
+                                    MapService.add(data)
+                                })
+                            }
                         };
 
                         scope.facetNewLayerOut = function () {
-                            BiocacheService.newLayerAddFq(scope.selected.layer, decodeURIComponent('-(' + scope.selected.layer.sel + ')'),
-                                scope.selected.layer.name + " : " + $i18n("from unselected")).then(function (data) {
-                                MapService.add(data)
-                            })
+                            if (scope.selected.layer !== undefined) {
+                                BiocacheService.newLayerAddFq(scope.selected.layer, decodeURIComponent('-(' + scope.selected.layer.sel + ')'),
+                                    scope.selected.layer.name + " : " + $i18n("from unselected")).then(function (data) {
+                                    MapService.add(data)
+                                })
+                            }
                         };
 
                         scope.facetsSelected = function () {
@@ -282,58 +303,62 @@
                         };
 
                         scope.facetClearSelection = function () {
-                            for (var i = 0; i < scope.selected.layer.facetList[scope.selected.layer.facet].length; i++) {
-                                scope.selected.layer.facetList[scope.selected.layer.facet][i].selected = false
+                            if (scope.selected.layer !== undefined) {
+                                for (var i = 0; i < scope.selected.layer.facetList[scope.selected.layer.facet].length; i++) {
+                                    scope.selected.layer.facetList[scope.selected.layer.facet][i].selected = false
+                                }
+                                scope.updateSelection()
                             }
-                            scope.updateSelection()
                         };
 
                         scope.updateSelection = function () {
-                            var sel = '';
-                            var invert = false;
-                            var count = 0;
-                            var sum = 0;
-                            for (var i = 0; i < scope.selected.layer.facetList[scope.selected.layer.facet].length; i++) {
-                                if (scope.selected.layer.facetList[scope.selected.layer.facet][i].selected) {
-                                    var fq = scope.selected.layer.facetList[scope.selected.layer.facet][i].fq;
-                                    if (fq.startsWith('-') && (fq.endsWith(':*') || fq.endsWith('[* TO *]'))) {
-                                        invert = true
-                                    }
-                                    count++;
-                                    sum += scope.selected.layer.facetList[scope.selected.layer.facet][i].count;
-                                }
-                            }
-                            scope.selected.layer.facetSelectionCount = sum;
-
-                            if (count === 1) invert = false;
-                            for (i = 0; i < scope.selected.layer.facetList[scope.selected.layer.facet].length; i++) {
-                                if (scope.selected.layer.facetList[scope.selected.layer.facet][i].selected) {
-                                    fq = scope.selected.layer.facetList[scope.selected.layer.facet][i].fq;
-
-                                    if (invert) {
-                                        if (sel.length > 0) sel += " AND ";
-                                        if (fq.startsWith('-') && (fq.endsWith(':*') || fq.endsWith('[* TO *]'))) {
-                                            sel += fq.substring(1)
-                                        } else {
-                                            sel += '-' + fq
-                                        }
-                                    } else {
-                                        if (sel.length > 0) sel += " OR ";
-                                        sel += fq
-                                    }
-                                }
-                            }
-                            if (invert) {
-                                sel = '-(' + sel + ')'
-                            }
                             if (scope.selected.layer !== undefined) {
-                                if (sel.length === 0) {
-                                    scope.selected.layer.sel = ''
-                                } else {
-                                    scope.selected.layer.sel = encodeURIComponent(sel)
+                                var sel = '';
+                                var invert = false;
+                                var count = 0;
+                                var sum = 0;
+                                for (var i = 0; i < scope.selected.layer.facetList[scope.selected.layer.facet].length; i++) {
+                                    if (scope.selected.layer.facetList[scope.selected.layer.facet][i].selected) {
+                                        var fq = scope.selected.layer.facetList[scope.selected.layer.facet][i].fq;
+                                        if (fq.startsWith('-') && (fq.endsWith(':*') || fq.endsWith('[* TO *]'))) {
+                                            invert = true
+                                        }
+                                        count++;
+                                        sum += scope.selected.layer.facetList[scope.selected.layer.facet][i].count;
+                                    }
                                 }
+                                scope.selected.layer.facetSelectionCount = sum;
+
+                                if (count === 1) invert = false;
+                                for (i = 0; i < scope.selected.layer.facetList[scope.selected.layer.facet].length; i++) {
+                                    if (scope.selected.layer.facetList[scope.selected.layer.facet][i].selected) {
+                                        fq = scope.selected.layer.facetList[scope.selected.layer.facet][i].fq;
+
+                                        if (invert) {
+                                            if (sel.length > 0) sel += " AND ";
+                                            if (fq.startsWith('-') && (fq.endsWith(':*') || fq.endsWith('[* TO *]'))) {
+                                                sel += fq.substring(1)
+                                            } else {
+                                                sel += '-' + fq
+                                            }
+                                        } else {
+                                            if (sel.length > 0) sel += " OR ";
+                                            sel += fq
+                                        }
+                                    }
+                                }
+                                if (invert) {
+                                    sel = '-(' + sel + ')'
+                                }
+                                if (scope.selected.layer !== undefined) {
+                                    if (sel.length === 0) {
+                                        scope.selected.layer.sel = ''
+                                    } else {
+                                        scope.selected.layer.sel = encodeURIComponent(sel)
+                                    }
+                                }
+                                scope.updateWMS();
                             }
-                            scope.updateWMS();
                         };
 
                         scope.formatColor = function (item) {
@@ -347,7 +372,7 @@
                         };
 
                         scope.updateFacet = function () {
-                            if (scope.selected.layer !== null && scope.selected.layer.facet !== '-1' &&
+                            if (scope.selected.layer !== undefined && scope.selected.layer !== null && scope.selected.layer.facet !== '-1' &&
                                 scope.selected.layer.facetList[scope.selected.layer.facet] === undefined) {
                                 BiocacheService.facet(scope.selected.layer.facet, scope.selected.layer).then(function (data) {
                                     scope.selected.layer.facetList[scope.selected.layer.facet] = data;
@@ -360,22 +385,28 @@
                         };
 
                         scope.moveUp = function () {
-                            scope.selected.layer.index++;
+                            if (scope.selected.layer !== undefined) {
+                                scope.selected.layer.index++;
 
-                            MapService.leafletScope.moveLayer(MapService.getLayer(scope.selected.layer.uid), scope.selected.layer.index)
+                                MapService.leafletScope.moveLayer(MapService.getLayer(scope.selected.layer.uid), scope.selected.layer.index)
+                            }
                         };
 
                         scope.moveDown = function () {
-                            scope.selected.layer.index--;
+                            if (scope.selected.layer !== undefined) {
+                                scope.selected.layer.index--;
 
-                            MapService.leafletScope.moveLayer(MapService.getLayer(scope.selected.layer.uid), scope.selected.layer.index)
+                                MapService.leafletScope.moveLayer(MapService.getLayer(scope.selected.layer.uid), scope.selected.layer.index)
+                            }
                         };
 
                         scope.setVisible = function (show) {
-                            scope.selected.layer.visible = show;
-                            scope.selected.layer.leaflet.visible = show;
-                            MapService.leafletScope.showLayer(MapService.getLayer(scope.selected.layer.uid), scope.selected.layer.visible);
-                            if (show) MapService.leafletScope.moveLayer(MapService.getLayer(scope.selected.layer.uid), scope.selected.layer.index)
+                            if (scope.selected.layer !== undefined) {
+                                scope.selected.layer.visible = show;
+                                scope.selected.layer.leaflet.visible = show;
+                                MapService.leafletScope.showLayer(MapService.getLayer(scope.selected.layer.uid), scope.selected.layer.visible);
+                                if (show) MapService.leafletScope.moveLayer(MapService.getLayer(scope.selected.layer.uid), scope.selected.layer.index)
+                            }
                         };
 
                         scope.getOpacity = function () {
@@ -407,55 +438,64 @@
                         });
 
                         scope.setOpacity = function (opacity) {
-                            scope.selected.layer.opacity = opacity;
-                            scope.selected.layer.leaflet.opacity = opacity;
-                            MapService.leafletScope.changeOpacity(MapService.getLayer(scope.selected.layer.uid), scope.selected.layer.opacity / 100)
-
+                            if (scope.selected.layer !== undefined) {
+                                scope.selected.layer.opacity = opacity;
+                                scope.selected.layer.leaflet.opacity = opacity;
+                                MapService.leafletScope.changeOpacity(MapService.getLayer(scope.selected.layer.uid), scope.selected.layer.opacity / 100)
+                            }
                         };
 
                         scope.setUncertainty = function (uncertainty) {
-                            scope.selected.layer.uncertainty = uncertainty;
-                            scope.updateWMS()
+                            if (scope.selected.layer !== undefined) {
+                                scope.selected.layer.uncertainty = uncertainty;
+                                scope.updateWMS()
+                            }
                         };
 
                         scope.setSize = function (size) {
-                            scope.selected.layer.size = size;
-                            scope.updateWMS()
+                            if (scope.selected.layer !== undefined) {
+                                scope.selected.layer.size = size;
+                                scope.updateWMS()
+                            }
                         };
 
                         scope.updateWMS = function () {
-                            scope.selected.layer.wms = scope.selected.layer.name + ', ' + scope.selected.layer.color + ', '
-                                + scope.selected.layer.colorType + ', ' + scope.selected.layer.opacity + ', '
-                                + scope.selected.layer.uncertainty + ', ' + scope.selected.layer.size;
+                            if (scope.selected.layer !== undefined) {
+                                scope.selected.layer.wms = scope.selected.layer.name + ', ' + scope.selected.layer.color + ', '
+                                    + scope.selected.layer.colorType + ', ' + scope.selected.layer.opacity + ', '
+                                    + scope.selected.layer.uncertainty + ', ' + scope.selected.layer.size;
 
-                            if (scope.selected.layer.colorType === 'grid') {
-                                scope.selected.layer.leaflet.layerParams.ENV = 'colormode%3Agrid%3Bname%3Acircle%3Bsize%3A' +
-                                    scope.selected.layer.size + '%3Bopacity%3A1'
-                            } else if (scope.selected.layer.colorType === '-1') {
-                                if (scope.selected.layer.facet === '-1') {
-                                    scope.selected.layer.leaflet.layerParams.ENV = 'color%3A' + scope.selected.layer.color + '%3Bname%3Acircle%3Bsize%3A' +
-                                        scope.selected.layer.size + '%3Bopacity%3A1' +
-                                        (scope.selected.layer.uncertainty ? "%3Buncertainty%3A1" : "")
-                                } else {
-                                    scope.selected.layer.leaflet.layerParams.ENV = 'colormode%3A' + scope.selected.layer.facet + '%3Bname%3Acircle%3Bsize%3A' +
-                                        scope.selected.layer.size + '%3Bopacity%3A1' +
-                                        (scope.selected.layer.uncertainty ? "%3Buncertainty%3A1" : "")
+                                if (scope.selected.layer.leaflet) {
+                                    if (scope.selected.layer.colorType === 'grid') {
+                                        scope.selected.layer.leaflet.layerParams.ENV = 'colormode%3Agrid%3Bname%3Acircle%3Bsize%3A' +
+                                            scope.selected.layer.size + '%3Bopacity%3A1'
+                                    } else if (scope.selected.layer.colorType === '-1') {
+                                        if (scope.selected.layer.facet === '-1') {
+                                            scope.selected.layer.leaflet.layerParams.ENV = 'color%3A' + scope.selected.layer.color + '%3Bname%3Acircle%3Bsize%3A' +
+                                                scope.selected.layer.size + '%3Bopacity%3A1' +
+                                                (scope.selected.layer.uncertainty ? "%3Buncertainty%3A1" : "")
+                                        } else {
+                                            scope.selected.layer.leaflet.layerParams.ENV = 'colormode%3A' + scope.selected.layer.facet + '%3Bname%3Acircle%3Bsize%3A' +
+                                                scope.selected.layer.size + '%3Bopacity%3A1' +
+                                                (scope.selected.layer.uncertainty ? "%3Buncertainty%3A1" : "")
+                                        }
+                                        if (scope.selected.layer.sel !== undefined && scope.selected.layer.sel.length > 0) {
+                                            scope.selected.layer.leaflet.layerParams.ENV += '%3Bsel%3A' + scope.selected.layer.sel
+                                        }
+                                    }
+
+                                    if (scope.fq.length) {
+                                        scope.selected.layer.leaflet.layerParams.fq = scope.fq
+                                    } else {
+                                        scope.selected.layer.leaflet.layerParams.fq = undefined
+                                    }
+
+                                    MapService.reMap(scope.selected);
                                 }
-                                if (scope.selected.layer.sel !== undefined && scope.selected.layer.sel.length > 0) {
-                                    scope.selected.layer.leaflet.layerParams.ENV += '%3Bsel%3A' + scope.selected.layer.sel
-                                }
+
+                                $timeout(function () {
+                                }, 0)
                             }
-
-                            if (scope.fq.length) {
-                                scope.selected.layer.leaflet.layerParams.fq = scope.fq
-                            } else {
-                                scope.selected.layer.leaflet.layerParams.fq = undefined
-                            }
-
-                            MapService.reMap(scope.selected);
-
-                            $timeout(function () {
-                            }, 0)
                         };
 
                         scope.startx = 0;

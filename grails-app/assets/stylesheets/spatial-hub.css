@@ -190,13 +190,19 @@ tr, .table > tbody > tr > td {
     display: none;
 }
 
-.leaflet-control-quicklinks {
+.coord {
+    width: 50px;
+    float: right;
+    display: inline-block;
+}
+
+.leaflet-control-quicklinks, .leaflet-control-mouseposition {
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
     background: rgba(255, 255, 255, 0.5);
     border-radius: 5px;
 }
 
-.leaflet-control-quicklinks-body {
+.leaflet-control-quicklinks-body, .leaflet-control-mouseposition {
     padding: 10px;
 }
 
