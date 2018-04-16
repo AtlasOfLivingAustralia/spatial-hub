@@ -398,6 +398,16 @@ ol.leaflet-quick-links li {
     border-bottom-right-radius: 0px !important;
 }
 
+.pac-item:hover {
+    background-image: none !important;
+    background-color: #df4a21;
+    color: #fff;
+    border-top-left-radius: 0px !important;
+    border-top-right-radius: 0px !important;
+    border-bottom-left-radius: 0px !important;
+    border-bottom-right-radius: 0px !important;
+}
+
 .ac_results li {
     margin: 0px;
     padding: 7px;

@@ -15,13 +15,14 @@
                     _custom: '&onCustom'
                 },
                 link: function (scope, iElement, iAttrs) {
-                    iElement.autocomplete({
+                   var a = iElement.autocomplete({
                         source: function (searchTerm, response) {
                             GazAutoCompleteService.search(searchTerm.term).then(function (data) {
                                 response($.map(data, function (item) {
                                     if (item.fid !== $SH.userObjectsField || scope._userobjects) {
                                         return {
-                                            label: item.name + ", " + item.fieldname,
+                                            label: item.name,
+                                            info: item.description? item.description+" ("+item.fieldname+")" : "("+item.fieldname+")",
                                             //item.description
                                             value: item
                                         }
@@ -40,7 +41,16 @@
                                 iElement.val(scope.label);
                             }, 0)
                         }
+
+
                     });
+
+                   a.data("ui-autocomplete")._renderItem = function(ul,item){
+                    var html = "<li class='autocomplete-item' >" + item.label + "<br><i>" + item.info + "</i></li>";
+                    return $("<li>")
+                        .append($("<a>").append(html))
+                        .appendTo(ul);
+                    };
                 }
             };
         }])

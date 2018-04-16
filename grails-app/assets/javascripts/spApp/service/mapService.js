@@ -489,12 +489,12 @@
                             sldBody = '<?xml version="1.0" encoding="UTF-8"?><StyledLayerDescriptor version="1.0.0" xmlns="http://www.opengis.net/sld" xmlns:xlink="http://www.w3.org/1999/xlink"><NamedLayer><Name>ALA:Points</Name><UserStyle><FeatureTypeStyle>\n' +
                                 '     <Rule>\n' +
                                 '       <PointSymbolizer>\n' +
-                                '         <Graphic>\n' + '<ExternalGraphic><OnlineResource xlink:type="simple" xlink:href="https://spatial.ala.org.au/geoserver/styles/marker.png" /><Format>image/png</Format></ExternalGraphic><Size>24</Size>' +
+                                '         <Graphic>\n' + '<ExternalGraphic><OnlineResource xlink:type="simple" xlink:href="https://spatial.ala.org.au/geoserver/styles/marker.png" /><Format>image/png</Format></ExternalGraphic><Size>36</Size>' +
                                 '         </Graphic>\n' +
                                 '       </PointSymbolizer>\n' +
                                 '       <TextSymbolizer><Label>' + item.name + '</Label>' +
                                 '           <Font><CssParameter name="font-family">Roboto</CssParameter>' +
-                                '                 <CssParameter name="font-size">10</CssParameter>' +
+                                '                 <CssParameter name="font-size">12</CssParameter>' +
                                 '                 <CssParameter name="font-style">normal</CssParameter>' +
                                 '           </Font>' +
                                 '           <LabelPlacement><PointPlacement><AnchorPoint><AnchorPointX>0.5</AnchorPointX><AnchorPointY>0.0</AnchorPointY></AnchorPoint><Displacement><DisplacementX>0</DisplacementX><DisplacementY>5</DisplacementY>' +

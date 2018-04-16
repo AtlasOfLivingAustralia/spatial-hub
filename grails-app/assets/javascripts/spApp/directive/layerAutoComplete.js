@@ -17,7 +17,7 @@
                     _custom: '&onCustom'
                 },
                 link: function (scope, iElement, iAttrs) {
-                    iElement.autocomplete({
+                   var a =  iElement.autocomplete({
                         source: function (searchTerm, response) {
                             LayersService.searchLayers(searchTerm.term).then(function (data) {
                                 response($.map(data.data, function (item) {
@@ -25,6 +25,7 @@
                                         (item.layer.type === 'Contextual' && scope._contextual)) {
                                         return {
                                             label: item.name,
+                                            info:  (item.layer.classification1? item.layer.classification1 +': ' : '') + (item.layer.classification2? item.layer.classification2 +': ' : '') + (item.layer.type? item.layer.type : ''),
                                             value: item
                                         }
                                     } else {
@@ -42,6 +43,13 @@
                             }, 0)
                         }
                     });
+
+                    a.data("ui-autocomplete")._renderItem = function(ul,item){
+                        var html = "<li class='autocomplete-item' >" + item.label + "<br><i>" + item.info + "</i></li>";
+                        return $("<li>")
+                            .append($("<a>").append(html))
+                            .appendTo(ul);
+                    };
                 }
             };
         }])
