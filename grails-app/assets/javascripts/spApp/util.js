@@ -45,5 +45,23 @@ var Util = {
         //link.target = '_blank';
         link.href = url;
         link.click();
+    },
+
+    reconnect: function () {
+        var succeed = angular.element('div[name=divMappedLayers]').scope().reconnect();
+        if (!succeed) {
+            var countDownDate = new Date().getTime();
+            var x = setInterval(function () {
+                var now = new Date().getTime();
+                var distance = now - countDownDate;
+                var remaining = 10 - Math.floor((distance % (1000 * 60)) / 1000);
+                $('div#statusInfo > p').html('<strong>Reconnecting failed!</strong>  Try again in <strong>' + remaining + '</strong> seconds');
+                if (remaining <= 0) {
+                    $('div#statusInfo > p').html('Connecting ...');
+                    clearInterval(x);
+                    reconnect()
+                }
+            }, 1000)
+        }
     }
 };

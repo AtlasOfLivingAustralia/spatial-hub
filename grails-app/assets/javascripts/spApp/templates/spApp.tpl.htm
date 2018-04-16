@@ -49,6 +49,15 @@
     <div class="row" style="margin:0px" ng-controller="LeafletMapController as leafletMapController">
         <leaflet id="map" lf-center="australia" layers="layers" controls="controls"
                  bounds="bounds" defaults="defaults" width="100%" height="480px">
+            <div class='alert alert-ala-danger alert-dismissable hide' id='login-again-message' role='alert'>
+                <p><strong>Warning!</strong>
+                    You lost authentication, <a href="#" class="alert-link" click="reconnect()" name="saveAndLogin">Click</a>
+                    to save and login again.
+                </p>
+            </div>
+            <div class='alert alert-ala-danger alert-dismissable hide' id='reconnect-message' role='alert'>
+                <p><strong>Warning!</strong> You lost connection to the server, reconnecting.....</p>
+            </div>
             <leaflet-quick-links></leaflet-quick-links>
         </leaflet>
     </div>

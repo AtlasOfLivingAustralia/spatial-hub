@@ -208,7 +208,8 @@
                  */
                 getLayersUrlLoad: function (layer) {
                     //TODO: refactor LayersService, search and 'layers' with promises
-                    return this.getLayers().then(function (layers) {
+                    return this.getLayers().then(function (response) {
+                        var layers = response.data;
                         for (var i = 0; i < layers.length; i++) {
                             if (layers[i].id === layer || layers[i].layer.name.toLowerCase() === layer.toLowerCase()) {
                                 return layers[i];

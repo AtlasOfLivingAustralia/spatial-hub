@@ -66,7 +66,7 @@
                     speciesLayers: function () {
                         var list = [];
                         for (var i = 0; i < layers.length; i++) {
-                            if (layers[i].q !== undefined) {
+                            if (id.layertype == 'species') {
                                 list.push(layers[i])
                             }
                         }
