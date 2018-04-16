@@ -91,6 +91,17 @@
                                 layers[i].visible = show;
                                 layers[i].leaflet.visible = show;
 
+                                if (show) {
+                                    $SH.hoverLayers.push(layers[i].id);
+                                } else {
+                                    for (var k = 0; k < $SH.hoverLayers.length; k++) {
+                                        if ($SH.hoverLayers[k] === layers[i].id) {
+                                            $SH.hoverLayers.splice(k, 1);
+                                            break;
+                                        }
+                                    }
+                                }
+
                                 this.leafletScope.showLayer(this.getLayer(uid), show);
                                 if (show) this.leafletScope.moveLayer(this.getLayer(uid), layers[i].index);
 
@@ -136,7 +147,7 @@
                         var layer;
                         while (layer = layers.pop()) {
                             for (var k = 0; k < $SH.hoverLayers.length; k++) {
-                                if (layer.layer && ($SH.hoverLayers[k] === layer.layer.id)) {
+                                if (layer.id && ($SH.hoverLayers[k] === layer.id)) {
                                     $SH.hoverLayers.splice(k, 1)
                                 }
                             }
@@ -149,7 +160,7 @@
                         for (var i = 0; i < layers.length; i++) {
                             if (layers[i].uid === uid) {
                                 for (var k = 0; k < $SH.hoverLayers.length; k++) {
-                                    if (layers[i].layer && ($SH.hoverLayers[k] === layers[i].layer.id)) {
+                                    if (layers[i].id && ($SH.hoverLayers[k] === layers[i].id)) {
                                         $SH.hoverLayers.splice(k, 1)
                                     }
                                 }
