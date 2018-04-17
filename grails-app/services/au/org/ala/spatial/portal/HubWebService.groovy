@@ -27,7 +27,7 @@ import org.apache.http.client.methods.HttpPost
 import org.apache.http.client.methods.HttpPut
 
 //import org.codehaus.groovy.grails.web.servlet.HttpHeaders
-import org.springframework.web.multipart.commons.CommonsMultipartFile
+import org.springframework.web.multipart.MultipartFile
 
 /**
  * Helper class for invoking other ALA web services.
@@ -45,14 +45,14 @@ class HubWebService {
         urlResponse(HttpGet.METHOD_NAME, url, null, headers, null, doAuthentication)?.text
     }
 
-    Map postUrl(String url, Map nameValues = null, Map headers = null, CommonsMultipartFile mFile = null,
+    Map postUrl(String url, Map nameValues = null, Map headers = null, MultipartFile mFile = null,
                 Boolean doAuthentication = null) {
         def entity = null
         def nv = nameValues
 
         if (mFile) {
-            PartSource ps = new ByteArrayPartSource(mFile.originalFilename, mFile.bytes)
-            Part part = new FilePart('files', ps, mFile.fileItem.contentType, 'UTF-8')
+            PartSource ps = new ByteArrayPartSource(mFile.originalFilename, mFile.getBytes())
+            Part part = new FilePart('files', ps, mFile.getContentType(), 'UTF-8')
 
             PostMethod postMethod = new PostMethod(url)
             nameValues.each { key, value ->

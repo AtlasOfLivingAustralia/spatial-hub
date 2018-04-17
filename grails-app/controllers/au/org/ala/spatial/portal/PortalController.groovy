@@ -13,6 +13,7 @@ import org.apache.http.client.methods.HttpGet
 import org.apache.http.client.methods.HttpPost
 import org.springframework.web.multipart.MultipartHttpServletRequest
 import org.springframework.web.multipart.commons.CommonsMultipartFile
+import org.springframework.web.multipart.MultipartFile
 
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
@@ -276,7 +277,7 @@ class PortalController {
             notAuthorised()
         } else {
             def type = id
-            def mFile = ((MultipartHttpServletRequest) request).getFile('shapeFile')
+            MultipartFile mFile = ((MultipartHttpServletRequest) request).getFile('shapeFile')
             def settings = [api_key: grailsApplication.config.api_key]
 
             String ce = grailsApplication.config.character.encoding
@@ -284,7 +285,7 @@ class PortalController {
             def r = hubWebService.postUrl("${grailsApplication.config.layersService.url}/shape/upload/${type}?" +
                     "name=${URLEncoder.encode((String) params.name, ce)}&" +
                     "description=${URLEncoder.encode((String) params.description, ce)}&" +
-                    "api_key=${grailsApplication.config.api_key}", (Map) settings, null, (CommonsMultipartFile) mFile)
+                    "api_key=${grailsApplication.config.api_key}", (Map) settings, null, mFile);
 
             if (!r) {
                 render [:] as JSON
