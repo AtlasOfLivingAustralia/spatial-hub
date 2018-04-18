@@ -76,7 +76,7 @@
                     zoom: function (uid) {
                         for (var i = 0; i < layers.length; i++) {
                             if (layers[i].uid === uid) {
-                                if (layers[i].bbox !== undefined) {
+                                if (layers[i].bbox !== undefined  && layers[i].area_km != 0) {
                                     this.leafletScope.zoom(layers[i].bbox);
                                     return
                                 }

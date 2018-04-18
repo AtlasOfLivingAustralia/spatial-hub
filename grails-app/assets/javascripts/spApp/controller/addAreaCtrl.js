@@ -109,7 +109,10 @@
                             }).join();
 
                             LayersService.createArea($scope.myAreaName, $scope.fileName, $scope.shapeId, featureIdxs).then(function (response) {
-                                $scope.setPid(response.data.id, true)
+                                if (response.data.error){
+                                    alert("No areas selected. Points cannot be imported from a shapefile. (Error: " + response.data.error +")");
+                                }else
+                                    $scope.setPid(response.data.id, true)
                             });
 
                             mapNow = false
