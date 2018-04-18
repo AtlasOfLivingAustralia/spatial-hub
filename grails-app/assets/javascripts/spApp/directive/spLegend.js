@@ -117,7 +117,7 @@
                         };
 
                         scope.isCreateAreaDisabled = function () {
-                            if (scope.selected.layer !== undefined) {
+                            if (scope.selected.layer != null && scope.selected.layer !== undefined) {
                                 for (var key in scope.selected.layer.contextualSelection) {
                                     if (scope.selected.layer.contextualSelection.hasOwnProperty(key)) {
                                         var item = scope.selected.layer.contextualSelection[key];
