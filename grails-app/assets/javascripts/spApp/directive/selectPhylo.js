@@ -72,6 +72,11 @@
                                     }
                                 }
                                 scope.loading = false;
+                            },
+                            function(error){
+                              console.log(error)
+                              alert("Aw,Snap! Error: " +error);
+                              scope.loading = false;
                             })
                         }
 

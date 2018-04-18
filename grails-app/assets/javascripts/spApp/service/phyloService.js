@@ -36,12 +36,13 @@
                  */
                 getExpertTrees: function () {
                     //TODO: add parameter to exclude "tree"
-                    var url = $SH.phylolinkUrl + "/phylo/getExpertTrees";
-                    //return $http.get($SH.proxyUrl + "?url=" + encodeURIComponent(url), {headers: {
-                    return $http.get(url, {
+                    var url = $SH.phylolinkUrl + "/phylo/getExpertTrees?noTreeText=true";
+/*                    return $http.get($SH.proxyUrl + "?url=" + encodeURIComponent(url), {headers: {'Content-Type': 'application/json'
+                    }})*/
+                     return $http.get(url, {
                         headers: {
                         'Content-Type': 'application/json'
-                    }})
+                     }})
                 }
             };
         }])
