@@ -79,7 +79,7 @@ spApp.config(['$httpProvider', function($httpProvider )
                         window.location.reload();
                     }
                 }else{
-                    alert('Aw, Snap! Error in request url: ' + rejection.config.url +" (Status: "+ rejection.status +" " + rejection.statusText )
+                    alert('Aw, Snap! Error in request url: ' + rejection.config.url +" (Status: "+ rejection.status +" " + rejection.statusText +" )" )
                 }
                 return $q.reject(rejection);
             }

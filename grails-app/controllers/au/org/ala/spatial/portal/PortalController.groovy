@@ -531,6 +531,7 @@ class PortalController {
             notAuthorised()
         } else {
             InputStream stream = new URL(url).openStream()
+            byte[] buff = new byte[16384];
             try {
                 ZipInputStream zis = new ZipInputStream(stream)
                 ZipEntry ze
@@ -538,16 +539,27 @@ class PortalController {
                     if (ze.name.endsWith('.csv') && !ze.name.endsWith('headings.csv') &&
                             !ze.name.endsWith('citations.csv')) {
                         //unzip the downloads file
+                        //response.outputStream << zis
+                        int size;
+                        while((size = zis.read(buff)) != -1) {
+                            response.outputStream.write(buff, 0, size);
+                        }
                         response.contentType = 'text/csv'
-                        response.outputStream << zis
+                        response.outputStream.flush()
+                        response.outputStream.close();
                     }
                 }
-            } catch (IOException e) {
+            }catch (IOException e) {
                 log.error('failed to get download: ' + url, e)
-            } finally {
-                if (stream) {
+                throw "Failed to download "+url +" (Error: " + e + " )";
+            }catch (Exception e){
+                log.error(e)
+                throw "Error occurs in getting samples :"+ e ;
+            }
+            finally
+            {
+                if (stream)
                     stream.close()
-                }
             }
         }
     }
