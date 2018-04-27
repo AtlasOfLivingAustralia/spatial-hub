@@ -182,7 +182,8 @@
                         LoggerService.log('Tools', uiScope.toolName, '{ "taskId": "' + uiScope.finishedData.id + '"}')
                     }
 
-                    if (uiScope.metadataUrl !== null) uiScope.openUrl(uiScope.metadataUrl);
+                    // if (uiScope.metadataUrl !== null) uiScope.openUrl(uiScope.metadataUrl);
+
 
                     return $q.all(promises).then(function() {
                         uiScope.finished = true;
