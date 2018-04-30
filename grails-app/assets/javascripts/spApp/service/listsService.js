@@ -56,7 +56,34 @@
                     })
                 },
                 getItemsQ: function (listId) {
-                    return $q.when('species_list:' + listId);
+                    // TODO: use 'species_list:' after biocache-service is redeployed
+                    //return $q.when('species_list:' + listId);
+
+                    return this.items(listId, {includeKVP: true}).then(function (data) {
+                        cache.put(listId, data);
+                        var terms = [];
+                        for (var i in data) {
+                            var d = data[i];
+                            var s;
+                            if (d.lsid !== undefined && d.lsid !== null) {
+                                s = "lsid:\"" + d.lsid + "\"";
+                            } else {
+                                s = "taxon_name:\"" + d.name + "\"";
+                            }
+                            if (terms.length % 200 == 0) {
+                                if (terms.length > 0) {
+                                    terms[terms.length - 1] += ")";
+                                }
+                                terms.push("(" + s);
+                            } else {
+                                terms.push(s);
+                            }
+                        }
+                        if (terms.length > 0) {
+                            terms[terms.length - 1] += ")";
+                        }
+                        return $q.when(terms.join(" OR "));
+                    });
                 },
                 url: function () {
                     return $SH.listsUrl

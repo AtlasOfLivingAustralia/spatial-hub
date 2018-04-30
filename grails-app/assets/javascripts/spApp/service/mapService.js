@@ -185,8 +185,8 @@
                             if (response && response.length > 0 && response[0].fieldResult &&
                                 response[0].fieldResult.length > 0 && response[0].fieldResult[0].label !== "") {
                                 return LayersService.findOtherArea(type, response[0].fieldResult[0].label, area).then(function(response) {
-                                    var data = response.data
-                                    if (data && data.length > 0) {
+                                    if (response && response.data && response.data.length > 0) {
+                                        var data = response.data;
                                         for (var i in data) {
                                             var item = data[i];
 

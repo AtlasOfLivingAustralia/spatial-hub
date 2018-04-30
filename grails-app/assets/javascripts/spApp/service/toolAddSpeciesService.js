@@ -53,7 +53,7 @@
                     refresh: function (inputs, specs) {
 
                         //change inputs
-                        // if  inputs[0].q array  lsid: or species_list :   enable 'next'
+                        // if  inputs[0].q array  lsid: /*or species_list*/ :   enable 'next'
                         // else
                         //     disable
                         if (specs) {
@@ -63,14 +63,14 @@
 
                     checkAreaCompatible: function (q) {
                         //change inputs
-                        // if  inputs[0].q array  lsid: or species_list :   enable 'next'
+                        // if  inputs[0].q array  lsid: /*or species_list*/ :   enable 'next'
                         // else
                         //     disable
                         var enableArea = false;
                         if (q !== undefined) {
                             enableArea = (q.length === 0);
                             for (var i = 0; i < q.length; i++) {
-                                if (q[i].indexOf("lsid:") > -1 || q[i].indexOf("species_list:") > -1) {
+                                if (q[i].indexOf("lsid:") > -1) {
                                     enableArea = true;
                                     break;
                                 }

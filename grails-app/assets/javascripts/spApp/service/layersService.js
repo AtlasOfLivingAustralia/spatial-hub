@@ -8,7 +8,7 @@
      *   Access to layer services of spatial-service
      */
     angular.module('layers-service', ['ngFileUpload'])
-        .factory('LayersService', ['$http', '$timeout', 'Upload', function ($http, $timeout, Upload) {
+        .factory('LayersService', ['$http', '$timeout', '$q', 'Upload', function ($http, $timeout, $q, Upload) {
             var layers = [];
 
             var url = $SH.layersServiceUrl + "/fields/search?q=";

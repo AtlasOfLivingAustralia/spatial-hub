@@ -50,35 +50,33 @@ spApp.config(['$locationProvider', function ($locationProvider) {
 
 }]);
 
-spApp.config(function ($provide) {
-    $provide.decorator('$exceptionHandler', function ($delegate) {
-        return function (exception, cause) {
-            //$delegate(exception, cause);
-            alert('Aw, snap! An error occurred! Error: '+exception);
-        };
-    });
-});
+// spApp.config(function ($provide) {
+//     $provide.decorator('$exceptionHandler', function ($delegate) {
+//         return function (exception, cause) {
+//             //$delegate(exception, cause);
+//             alert('Aw, snap! An error occurred! Error: '+exception);
+//         };
+//     });
+// });
 
 spApp.config(['$httpProvider', function($httpProvider )
 {
     $httpProvider.interceptors.push(function($q) {
         return {
-            'responseError': function(rejection) {
+            'responseError': function (rejection, a, c) {
                 // window.informUser('Error '+rejection.status +': ' +rejection.config.url);
                 if (rejection.status == -1){
-                    alert('Request to '+rejection.config.url + ' is not accessible')
-                } else if(rejection.status === 0)
-                {
-                    if(window.isInWrapper)
-                    {
+                    // urls not accessible are ignored.
+                    // alert('Request to '+rejection.config.url + ' is not accessible')
+                } else if (rejection.status === 0) {
+                    if (window.isInWrapper) {
                         //Logout if in an app;
-                        window.location.href='ios:logout';
-                    }
-                    else
-                    {
+                        window.location.href = 'ios:logout';
+                    } else {
                         window.location.reload();
                     }
-                }else{
+                } else if (rejection.status !== 404) {
+                    //Ignore invalid urls
                     alert('Aw, Snap! Error in request url: ' + rejection.config.url +" (Status: "+ rejection.status +" " + rejection.statusText +" )" )
                 }
                 return $q.reject(rejection);

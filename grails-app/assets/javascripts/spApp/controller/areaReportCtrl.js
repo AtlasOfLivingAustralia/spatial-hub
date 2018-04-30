@@ -205,6 +205,7 @@
                         })
                     }
 
+                    // TODO: move this into config and retrieve from $SH
                     $.each([
                         {
                             name: $i18n('Occurrences'),
