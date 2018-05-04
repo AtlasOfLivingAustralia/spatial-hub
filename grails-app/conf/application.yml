@@ -202,7 +202,10 @@ flickr:
     extra: 'geo,date_taken,owner_name,license,url_t,url_s,url_m,title'
     contentType: ''
     geoContext: ''
-    filter: '&text=landscape&per_page=10'
+    filter: '&text=landscape'
+    # flickr always returns 250 per page regardless the value of per_page passed in,
+    # so we config total number of photos to display at one time ourselves
+    nbrOfPhotosToDisplay: 200
 
 viewConfig:
     json: 'view-config.json'

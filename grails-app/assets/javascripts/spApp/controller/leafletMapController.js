@@ -2,8 +2,8 @@
     'use strict';
     angular.module('leaflet-map-controller', ['leaflet-directive', 'map-service', 'popup-service'])
         .controller('LeafletMapController', ["$scope", "LayoutService", "$http", "leafletData", "leafletBoundsHelpers",
-            "MapService", '$timeout', 'leafletHelpers', 'PopupService', 'FlickrService', 'ToolsService',
-            function ($scope, LayoutService, $http, leafletData, leafletBoundsHelpers, MapService, $timeout, leafletHelpers, popupService, flickrService, ToolsService) {
+            "MapService", '$timeout', 'leafletHelpers', 'PopupService', 'FlickrService', 'ToolsService', '$q',
+            function ($scope, LayoutService, $http, leafletData, leafletBoundsHelpers, MapService, $timeout, leafletHelpers, popupService, flickrService, ToolsService, $q) {
                 //ToolsService included so it is initiated
 
                 angular.extend($scope, {
@@ -215,25 +215,39 @@
                     }
                 }
 
+                $scope.existingMarkers = {};
+
                 $scope.addPanoramioToMap = function () {
                     leafletData.getMap().then(function (map) {
-                        // console.log("adding panoramio replacement");
+                        var promises = [];
+
+                        var newMarkers = {};
 
                         var bounds = map.getBounds();
-                        // console.log(bounds);
 
                         var multipBounds = MapService.splitBounds(bounds.getSouthWest(), bounds.getNorthEast());
-                        // console.log(multipBounds);
 
+                        //flickr always returns 250 per page regardless the value of per_page passed in,
+                        // so we config total number of photos to display at one time ourselves
+                        var nbrOfPhotosToDisplay = Math.round($SH.flickrNbrOfPhotosToDisplay/multipBounds.length);
                         for (var i = 0; i < multipBounds.length; i++) {
-                            flickrService.getPhotos(multipBounds[i]).then(function (data) {
-                                $scope.addPhotosToMap(data);
-                            });
+                            promises.push(flickrService.getPhotos(multipBounds[i]).then(function (data) {
+                                if (data.photos){
+                                    for (var i = 0; i < nbrOfPhotosToDisplay; i++) {
+                                        var photoContent = data.photos.photo[i];
+                                        newMarkers[photoContent.id] = photoContent;
+                                    }
+                                }
+                            }));
                         }
+
+                        $q.all(promises).then(function () {
+                            $scope.addPhotosToMap(newMarkers, $scope.existingMarkers);
+                        });
                     })
                 };
 
-                $scope.addPhotosToMap = function (data) {
+                $scope.addPhotosToMap = function (newMarkers, oldMarkers) {
                     var popupHTML = function(photo, licenseName){
                         var result = "<div><h3 class='popover-title'>" + photo.title  + "</h3>";
                         result += "<div class='panel-body'> ";
@@ -258,12 +272,28 @@
                         return result;
                     };
 
+                    var promises = [];
+
                     leafletData.getMap().then(function () {
                         leafletData.getLayers().then(function (baselayers) {
                             var drawnItems = baselayers.overlays.draw;
-                            if (data.photos) {
-                                for (var i = 0; i < data.photos.photo.length; i++) {
-                                    var photoContent = data.photos.photo[i];
+
+                            // remove markers that are not in the new feed
+                            Object.keys(oldMarkers).forEach(function(key) {
+                                // console.log("already drawn: " + oldMarkers.hasOwnProperty(key));
+                                if (!newMarkers.hasOwnProperty(key)) {
+                                    var photoContent = oldMarkers[key];
+                                    var marker = L.marker([photoContent.latitude, photoContent.longitude]);
+                                    promises.push(drawnItems.removeLayer(marker));
+                                }
+                            });
+
+                            // draw new markers
+                            Object.keys(newMarkers).forEach(function(key) {
+                                // console.log("already drawn: " + oldMarkers.hasOwnProperty(key));
+                                // don't redraw
+                                if (!oldMarkers.hasOwnProperty(key)) {
+                                    var photoContent = newMarkers[key];
                                     var photoIcon = L.icon(
                                         {
                                             iconUrl: photoContent.url_t,
@@ -273,10 +303,14 @@
                                     var marker = L.marker([photoContent.latitude, photoContent.longitude], {icon: photoIcon});
                                     var license = $scope.licenses[photoContent.license];
                                     // console.debug('license id, name: ' + photoContent.license + "  " + license);
-                                    marker.bindPopup(popupHTML(photoContent, license), {minWidth : 280});
-                                    drawnItems.addLayer(marker);
+                                    marker.bindPopup(popupHTML(photoContent, license), {minWidth: 280});
+                                    promises.push(drawnItems.addLayer(marker));
                                 }
-                            }
+                            });
+
+                            $q.all(promises).then(function () {
+                                $scope.existingMarkers = Object.assign(newMarkers);
+                            });
                         })
                     })
                 };
