@@ -110,10 +110,34 @@
         uploadStatusUrl: '${sandboxUrl}/dataCheck/uploadStatus',
         userId: '${u.userId()}',
         roles:<u:roles />
+
     };
+
+    function isBrowserSupported(){
+        try
+        {
+            Function("() => {};");
+            return true;
+        }
+        catch(exception)
+        {
+            return false;
+        }
+    }
+
 </script>
+
+<div class="alert alert-ala-danger alert-dismissable " id="warning-message" role='alert' >
+    <p><strong>Warning!</strong>
+        Your web browser is not fully supported!
+    </p>
+</div>
 <ala:systemMessage/>
 <sp-app></sp-app>
 
+<script>
+    if (isBrowserSupported())
+       document.getElementById("warning-message").style.display = "none";
+</script>
 </body>
 </html>

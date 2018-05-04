@@ -184,7 +184,6 @@
 
                     // if (uiScope.metadataUrl !== null) uiScope.openUrl(uiScope.metadataUrl);
 
-
                     return $q.all(promises).then(function() {
                         uiScope.finished = true;
                     })

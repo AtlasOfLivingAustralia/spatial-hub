@@ -31,6 +31,22 @@ var spApp = angular.module('spApp', ['leaflet-directive', 'ngAnimate', 'ui.boots
         return {}
     }]);
 
+/*
+spApp.run(function($rootScope) {
+    try
+    {
+        Function("() => {};");
+        $('#warning-message').show()
+        return true;
+    }
+    catch(exception)
+    {
+        $('#warning-message').show()
+        return alert('Your web browser is not fully supported!');
+    }
+});
+
+*/
 
 spApp.value('sandboxConfig', SANDBOX_CONFIG);
 spApp.value('existing', 1);
@@ -77,6 +93,8 @@ spApp.config(['$httpProvider', function($httpProvider )
                     }
                 } else if (rejection.status !== 404) {
                     //Ignore invalid urls
+                    //HTTP interceptor can decorate the promise rejection with a property handled to indicate whether it's handled the error.
+                    rejection.handled = true;
                     alert('Aw, Snap! Error in request url: ' + rejection.config.url +" (Status: "+ rejection.status +" " + rejection.statusText +" )" )
                 }
                 return $q.reject(rejection);
