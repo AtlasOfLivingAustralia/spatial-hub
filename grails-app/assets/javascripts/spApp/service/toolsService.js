@@ -11,34 +11,12 @@
     angular.module('tools-service', [])
         .factory('ToolsService', ['$injector', '$q', '$http', '$timeout', 'MapService', 'LayersService', 'LoggerService',
             function ($injector, $q, $http, $timeout, MapService, LayersService, LoggerService) {
-                var cap = {};
-                var viewConfig = {};
+                var cap = $SH.layersServiceCapabilities;
+                var viewConfig = $SH.viewConfig;
+                var localToolServices = {};
+                var promises = [];
 
-                var url = LayersService.url() + '/capabilities';
-                var setup = $http.get($SH.baseUrl + '/portal/config/view').then(function (data) {
-                    viewConfig = data.data;
-                    //return $http.get($SH.proxyUrl + "?url=" + encodeURIComponent(url)).then(function (data) {
-                    return $http.get(url).then(function (data) {
-                        var k, merged;
-                        for (k in data.data) {
-                            if (data.data.hasOwnProperty(k)) {
-                                merged = data.data[k];
-
-                                // merge spec input values from with view-config.json
-                                if (viewConfig[k]) {
-                                    angular.merge(merged, viewConfig[k]);
-                                    angular.merge(merged.input, viewConfig[k].input)
-                                }
-
-                                cap[data.data[k].name] = merged
-                            }
-                        }
-
-                        initLocalTools();
-
-                        return $q.when(cap)
-                    });
-                });
+                initLocalTools();
 
                 /*
                 uiScope is ToolCtrl
@@ -123,8 +101,6 @@
                         }
                     }
 
-                    var promises = [];
-
                     for (k in uiScope.finishedData.output) {
                         if (uiScope.finishedData.output.hasOwnProperty(k)) {
                             var d = uiScope.finishedData.output[k];
@@ -189,8 +165,6 @@
                     })
                 }
 
-                var localToolServices = {};
-
                 function registerService(toolName, service) {
                     localToolServices[toolName] = service;
                     cap[toolName] = service.spec
@@ -237,12 +211,10 @@
                      * @return {Promise}
                      */
                     init: function (toolName) {
-                        return setup.then(function(data) {
-                            if (localToolServices[toolName] && localToolServices[toolName].init) {
-                                localToolServices[toolName].init();
-                            }
-                            return $q.when(data);
-                        });
+                        if (localToolServices[toolName] && localToolServices[toolName].init) {
+                            localToolServices[toolName].init();
+                        }
+                        return $q.when($SH.layersServiceCapabilities);
                     },
                     /**
                      * Test if a tool name is a client side tool

@@ -109,6 +109,11 @@ spApp.config(['cfpLoadingBarProvider', function (cfpLoadingBarProvider) {
     cfpLoadingBarProvider.includeSpinner = false;
 }]);
 
+/**
+ * Get all data required to run the application.
+ *
+ * @returns {*}
+ */
 function fetchData() {
     var initInjector = angular.injector(["ng"]);
     var $http = initInjector.get("$http");
@@ -143,6 +148,31 @@ function fetchData() {
                 return k
             }
         }
+    }));
+
+    promises.push($http.get($SH.baseUrl + '/portal/config/view').then(function (data) {
+        $SH.viewConfig = data.data;
+        var url = $SH.layersServiceUrl + '/capabilities';
+        return $http.get(url).then(function (data) {
+            var k, merged, cap = {};
+            for (k in data.data) {
+                if (data.data.hasOwnProperty(k)) {
+                    merged = data.data[k];
+
+                    // merge spec input values from with view-config.json
+                    if ($SH.viewConfig[k]) {
+                        angular.merge(merged, $SH.viewConfig[k]);
+                        angular.merge(merged.input, $SH.viewConfig[k].input)
+                    }
+
+                    cap[data.data[k].name] = merged
+                }
+            }
+
+            $SH.layersServiceCapabilities = cap;
+
+            return $q.when(cap)
+        });
     }));
 
     // add to promises list if waiting is required before making the page visible
