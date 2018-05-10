@@ -3,7 +3,7 @@
     angular.module('leaflet-map-controller', ['leaflet-directive', 'map-service', 'popup-service'])
         .controller('LeafletMapController', ["$scope", "LayoutService", "$http", "leafletData", "leafletBoundsHelpers",
             "MapService", '$timeout', 'leafletHelpers', 'PopupService', 'FlickrService', 'ToolsService', '$q',
-            function ($scope, LayoutService, $http, leafletData, leafletBoundsHelpers, MapService, $timeout, leafletHelpers, popupService, flickrService, ToolsService, $q) {
+            function ($scope, LayoutService, $http, leafletData, leafletBoundsHelpers, MapService, $timeout, leafletHelpers, popupService, FlickrService, ToolsService, $q) {
                 //ToolsService included so it is initiated
 
                 angular.extend($scope, {
@@ -241,7 +241,7 @@
                         // so we config total number of photos to display at one time ourselves
                         var nbrOfPhotosToDisplay = Math.round($SH.flickrNbrOfPhotosToDisplay/multipBounds.length);
                         for (var i = 0; i < multipBounds.length; i++) {
-                            promises.push(flickrService.getPhotos(multipBounds[i]).then(function (data) {
+                            promises.push(FlickrService.getPhotos(multipBounds[i]).then(function (data) {
                                 if (data.photos){
                                     for (var i = 0; i < nbrOfPhotosToDisplay; i++) {
                                         var photoContent = data.photos.photo[i];
@@ -459,7 +459,7 @@
                 };
 
                 $scope.getLicenses = function (){
-                    flickrService.getLicenses().then (function (data) {
+                    FlickrService.getLicenses().then(function (data) {
                         $scope.licenses = data
                     });
                 };

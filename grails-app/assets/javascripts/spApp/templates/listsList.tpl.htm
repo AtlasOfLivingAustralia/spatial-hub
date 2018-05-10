@@ -1,7 +1,7 @@
 <div class="">
     <div class="">
         <div class="">
-            <table class="table table-striped fixed-head layers-table">
+            <table class="table table-striped fixed-head layers-table" style="width:430px">
                 <caption>
                     <div class="row">
                         <div class="col-sm-6">
@@ -21,13 +21,6 @@
                             <span i18n="151">Name</span>
                             <span ng-show="sortType == 'listName' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
                             <span ng-show="sortType == 'listName' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
-                        </a>
-                    </th>
-                    <th style="width:150px">
-                        <a href="#" ng-click="sortType = 'fullName'; sortReverse = !sortReverse">
-                            <span i18n="152">Full name</span>
-                            <span ng-show="sortType == 'fullName' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
-                            <span ng-show="sortType == 'fullName' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                         </a>
                     </th>
                     <th style="width:100px"><a href="#" ng-click="sortType = 'lastUpdated'; sortReverse = !sortReverse">
@@ -51,7 +44,6 @@
                     <td class="td-vertical-align table-text-ellipsis" style="width:300px"><a target="_blank"
                                                                                              href="{{ itemUrl(item) }}">{{
                         item.listName }}</a></td>
-                    <td style="width:150px" class="td-vertical-align table-text-ellipsis">{{ item.fullName }}</td>
                     <td style="width:100px" class="td-vertical-align text-right">{{ item.lastUpdated | date: short}}
                     </td>
                     <td style="width:70px" class="td-vertical-align text-right">{{ item.itemCount | number}}</td>

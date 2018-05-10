@@ -24,7 +24,8 @@
                         scope.facetList = [];
                         scope.exportUrl = null;
 
-                        FacetAutoCompleteService.search("-*:*").then(function (data) {
+
+                        FacetAutoCompleteService.search(BiocacheService.newQuery("-*:*")).then(function (data) {
                             scope.facets = data
                         });
 
