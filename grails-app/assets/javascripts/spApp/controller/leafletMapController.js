@@ -108,34 +108,44 @@
                     });
                 };
 
-                $scope.showLayer = function (layer, show) {
+                $scope.showLayer = function (layerIn, show) {
                     leafletData.getMap().then(function (map) {
                         leafletData.getLayers().then(function (leafletLayers) {
                             var ly;
                             for (var k in $scope.layers.overlays) {
                                 if ($scope.layers.overlays.hasOwnProperty(k)) {
-                                    if ($scope.layers.overlays[k] === layer) {
+                                    if ($scope.layers.overlays[k] === layerIn) {
                                         ly = leafletLayers.overlays[k];
                                         break;
                                     }
                                 }
                             }
-
                             if (map.hasLayer(ly)) {
-                                ly.visible = show
+                                // all layers are groups
+                                // when more than one layer in the group, the first is always visible=false
+                                var pos = 0;
+                                for (var i in ly._layers) {
+                                    var layer = ly._layers[i];
+                                    if (pos === 0 && ly._layers.length > 1) {
+                                        layer.visible = false
+                                    } else {
+                                        layer.visible = show
+                                    }
+                                    pos = pos + 1;
+                                }
                             }
                         })
                     })
                 };
 
-                $scope.moveLayer = function (layer, newIndex) {
+                $scope.moveLayer = function (layerIn, newIndex) {
                     leafletData.getMap().then(function (map) {
                         leafletData.getLayers().then(function (leafletLayers) {
                             var ly;
                             var oldLy;
                             for (var k in $scope.layers.overlays) {
                                 if ($scope.layers.overlays.hasOwnProperty(k)) {
-                                    if ($scope.layers.overlays[k] === layer) {
+                                    if ($scope.layers.overlays[k] === layerIn) {
                                         ly = leafletLayers.overlays[k];
                                     }
                                     if ($scope.layers.overlays[k].index === newIndex) {
@@ -213,7 +223,7 @@
                     else {
                         $scope.deleteDrawing();
                     }
-                }
+                };
 
                 $scope.existingMarkers = {};
 
@@ -348,34 +358,48 @@
                     })
                 };
 
-                $scope.changeParams = function (layer, params) {
+                $scope.changeParams = function (layerIn, params) {
                     leafletData.getMap().then(function (map) {
                         leafletData.getLayers().then(function (leafletLayers) {
                             var ly;
                             for (var k in $scope.layers.overlays) {
                                 if ($scope.layers.overlays.hasOwnProperty(k)) {
-                                    if ($scope.layers.overlays[k] === layer) {
+                                    if ($scope.layers.overlays[k] === layerIn) {
                                         ly = leafletLayers.overlays[k];
                                         break;
                                     }
                                 }
                             }
-
                             if (map.hasLayer(ly)) {
-                                if (ly.setParams) {
-                                    var p = ly.wmsParams;
-                                    p.ENV = params.ENV;
-                                    p.uppercase = false;
-                                    if (params.fq && params.fq.length) {
-                                        p.fq = params.fq
-                                    } else {
-                                        delete p.fq
+                                // all layers are groups
+                                var pos = 0;
+                                for (var i in ly._layers) {
+                                    var layer = ly._layers[i];
+                                    if (layer.setParams) {
+                                        var envs = params.ENV;
+                                        var p = layer.wmsParams;
+                                        if (pos > 0) {
+                                            // only apply colour to the first layer in the group
+                                            var currentColour = p.ENV.replace(/.*(color%3A......).*/g, function (a, b) {
+                                                return b;
+                                            });
+                                            envs = envs.replace(/color%3A....../g, currentColour)
+                                        }
+                                        p.ENV = envs;
+                                        p.uppercase = false;
+                                        if (params.fq && params.fq.length) {
+                                            p.fq = params.fq
+                                        } else {
+                                            delete p.fq
+                                        }
+
+                                        if (p.sld_body !== undefined) {
+                                            p.sld_body = params.sld_body
+                                        }
+                                        layer.setParams(p)
                                     }
 
-                                    if (p.sld_body !== undefined) {
-                                        p.sld_body = params.sld_body
-                                    }
-                                    ly.setParams(p)
+                                    pos = pos + 1;
                                 }
                             }
                             $timeout(function () {
@@ -384,13 +408,13 @@
                     });
                 };
 
-                $scope.changeOpacity = function (layer, opacity) {
+                $scope.changeOpacity = function (layerIn, opacity) {
                     leafletData.getMap().then(function (map) {
                         leafletData.getLayers().then(function (leafletLayers) {
                             var ly;
                             for (var k in $scope.layers.overlays) {
                                 if ($scope.layers.overlays.hasOwnProperty(k)) {
-                                    if ($scope.layers.overlays[k] === layer) {
+                                    if ($scope.layers.overlays[k] === layerIn) {
                                         ly = leafletLayers.overlays[k];
                                         break;
                                     }
@@ -398,16 +422,20 @@
                             }
 
                             if (map.hasLayer(ly)) {
-                                if (ly.setOpacity) {
-                                    ly.setOpacity(opacity);
-                                }
+                                // all layers are groups
+                                for (var i in ly._layers) {
+                                    var layer = ly._layers[i];
+                                    if (layer.setOpacity) {
+                                        layer.setOpacity(opacity);
+                                    }
 
-                                if (ly.getLayers && ly.eachLayer) {
-                                    ly.eachLayer(function (lay) {
-                                        if (lay.setOpacity) {
-                                            lay.setOpacity(opacity);
-                                        }
-                                    });
+                                    if (layer.getLayers && layer.eachLayer) {
+                                        layer.eachLayer(function (lay) {
+                                            if (lay.setOpacity) {
+                                                lay.setOpacity(opacity);
+                                            }
+                                        });
+                                    }
                                 }
                             }
                             $timeout(function () {
@@ -434,7 +462,7 @@
                     flickrService.getLicenses().then (function (data) {
                         $scope.licenses = data
                     });
-                }
+                };
 
                 $scope.setupTriggers = function () {
                     leafletData.getMap().then(function (map) {

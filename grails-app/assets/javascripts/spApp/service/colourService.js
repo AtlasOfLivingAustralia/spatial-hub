@@ -24,6 +24,20 @@
                     index++;
 
                     return colour;
+                },
+
+                /**
+                 * Get colour at index as
+                 * @memberof ColourService
+                 * @returns {Object} red, green, blue. e.g. 'red: 255, green: 255, blue: 0'
+                 */
+                getColour: function (pos) {
+                    var c = colours[pos % colours.length];
+                    return {
+                        red: parseInt(c.substr(0, 2), 16),
+                        green: parseInt(c.substr(2, 2), 16),
+                        blue: parseInt(c.substr(4, 2), 16)
+                    }
                 }
             };
         }])

@@ -106,6 +106,9 @@
                                 data.includeChecklists = inputs[1].includeChecklists;
                                 data.includeExpertDistributions = inputs[1].includeExpertDistributions;
                             }
+                            if (inputs[0].species_list) {
+                                data.species_list = inputs[0].species_list;
+                            }
                             return MapService.add(data).then(function() {
                                 return true;
                             })

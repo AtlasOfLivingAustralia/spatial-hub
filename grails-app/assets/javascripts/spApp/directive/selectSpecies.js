@@ -152,6 +152,10 @@
                                     absent = []
                                 }
 
+                                if (query.species_list) {
+                                    scope._selectedQ.species_list = query.species_list
+                                }
+
                                 scope._selectedQ.includeAnimalMovement = scope.includeAnimalMovement;
                                 scope._selectedQ.includeExpertDistributions = scope.includeExpertDistributions;
                                 scope._selectedQ.q = query.q.concat(gs).concat(absent);

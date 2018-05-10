@@ -353,6 +353,10 @@
                                         ws: $scope.values[k].ws,
                                         bs: $scope.values[k].bs,
                                         name: $scope.values[k].name
+                                    };
+                                    // additional species related values
+                                    if ($scope.values[k].species_list) {
+                                        inputs[k].species_list = $scope.values[k].species_list;
                                     }
                                 } else if ($scope.values[k].layers !== undefined) {
                                     var layers = [];

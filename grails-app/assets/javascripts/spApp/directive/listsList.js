@@ -80,7 +80,11 @@
                                 scope.selection = found;
 
                                 ListsService.getItemsQ(found.dataResourceUid).then(function (data) {
-                                    scope._custom()({q: [data], name: found.listName})
+                                    scope._custom()({
+                                        q: [data],
+                                        name: found.listName,
+                                        species_list: found.dataResourceUid
+                                    })
                                 })
 
                             }

@@ -235,13 +235,11 @@
                         })
                     },
 
-                    add: function (id) {
+                    add: function (id, parentLeafletGroup) {
                         id.uid = uid;
                         uid = uid + 1;
 
                         var promises = [];
-
-                        layers.unshift(id);
 
                         if (id.color !== undefined) {
                             id.red = parseInt(id.color.substr(0, 2), 16);
@@ -280,34 +278,43 @@
 
                         id.visible = true;
 
-                        selected.layer = id;
-
                         var idx = 0;
                         for (var k in leafletLayers) {
                             idx++
                         }
-                        selected.layer.index = idx + 1;
+
+                        // do not change the selected layer if this is a sublayer
+                        if (!parentLeafletGroup) {
+                            layers.unshift(id);
+                            selected.layer = id;
+                            selected.layer.index = idx + 1;
+                        }
+
+                        var newLayer = {};
 
                         if (id.q && id.layertype !== 'area') {
                             LoggerService.log('AddToMap', 'Species', {qid: id.qid});
 
                             id.layertype = 'species';
                             var env = 'colormode%3Agrid%3Bname%3Acircle%3Bsize%3A3%3Bopacity%3A1';
-                            if (id && id.layer && id.layer.leaflet && id.layer.leaflet.layerParams &&
-                                id.layer.leaflet.layerParams.ENV) {
-                                env = id.layer.leaflet.layerParams.ENV;
+                            var firstLayer = undefined;
+                            if (id && id.layer && id.layer.leaflet && id.layer.leaflet.layerOptions &&
+                                id.layer.leaflet.layerOptions.layers) {
+                                firstLayer = id.layer.leaflet.layerOptions.layers[0];
+                            }
+                            if (firstLayer && firstLayer.layerParams.ENV) {
+                                env = firstLayer.layerParams.ENV;
                             } else if (id.colorType === '-1') {
                                 env = 'colormode%3A-1%3Bname%3Acircle%3Bsize%3A3%3Bopacity%3A1%3Bcolor%3A' + id.color;
                             }
 
                             //backup selection fq
                             var fq = undefined;
-                            if (id && id.layer && id.layer.leaflet && id.layer.leaflet.layerParams &&
-                                id.layer.leaflet.layerParams.fq) {
-                                fq = id.layer.leaflet.layerParams.fq;
+                            if (firstLayer && firstLayer.layerParams.fq) {
+                                fq = firstLayer.layerParams.fq;
                             }
 
-                            selected.layer.leaflet = {
+                            newLayer = {
                                 name: uid + ': ' + id.name,
                                 type: 'wms',
                                 visible: true,
@@ -326,7 +333,7 @@
 
                             //restore selection fq
                             if (fq !== undefined) {
-                                selected.layer.leaflet.layerParams.fq = fq;
+                                newLayer.layerParams.fq = fq;
                             }
 
                             promises.push(FacetAutoCompleteService.search(id).then(function (data) {
@@ -368,7 +375,7 @@
                                     }
                                 }
                                 //user or layer object
-                                selected.layer.leaflet = {
+                                newLayer = {
                                     name: uid + ': ' + id.name,
                                     type: 'wms',
                                     visible: true,
@@ -380,9 +387,9 @@
 
                                 //restore sld_body
                                 if (sld_body) {
-                                    selected.layer.leaflet.layerParams.sld_body = sld_body;
+                                    newLayer.layerParams.sld_body = sld_body;
                                 } else {
-                                    selected.layer.leaflet.layerParams.sld_body = this.objectSld(selected.layer)
+                                    newLayer.layerParams.sld_body = this.objectSld(id)
                                 }
                             } else {
                                 var layer;
@@ -416,7 +423,7 @@
 
                                 var url = layer.layer.displaypath.replace("&style=", "&ignore=");
 
-                                selected.layer.leaflet = {
+                                newLayer = {
                                     name: uid + ': ' + layer.layer.displayname,
                                     type: 'wms',
                                     visible: true,
@@ -431,33 +438,50 @@
                                     }
                                 };
                                 if (id.sldBody) {
-                                    selected.layer.leaflet.layerParams.sld_body = id.sldBody
-                                    selected.layer.leaflet.url = selected.layer.leaflet.url.replace("gwc/service/", "")
+                                    newLayer.layerParams.sld_body = id.sldBody
+                                    newLayer.url = newLayer.url.replace("gwc/service/", "")
                                 } else {
-                                    //selected.layer.leaflet.layerParams.styles = layer.id
+                                    //id.leaflet.layerParams.styles = layer.id
                                 }
-                                selected.layer.leaflet.legendurl = selected.layer.leaflet.url
+                                newLayer.legendurl = newLayer.url
                                     .replace("gwc/service/", "")
                                     .replace('GetMap', 'GetLegendGraphic')
                                     .replace('layers=', 'layer=')
                                     .replace('_style', '')
                                     .replace("&style=", "&ignore=");
 
-                                if (!selected.layer.leaflet.legendurl.indexOf("GetLegendGraphic") >= 0) {
-                                    selected.layer.leaflet.legendurl += "&service=WMS&version=1.1.0&request=GetLegendGraphic&format=image/png"
+                                if (!newLayer.legendurl.indexOf("GetLegendGraphic") >= 0) {
+                                    newLayer.legendurl += "&service=WMS&version=1.1.0&request=GetLegendGraphic&format=image/png"
                                 }
 
 
-                                $SH.hoverLayers.push(selected.layer.id)
+                                // sublayers do not get added
+                                if (!parentLeafletGroup) {
+                                    $SH.hoverLayers.push(id)
+                                }
                             }
                         }
 
-                        leafletLayers[selected.layer.uid] = selected.layer.leaflet;
-                        $timeout(function () {
-                        }, 0);
+                        // add as a layer group
+                        var layerGroup = parentLeafletGroup || {
+                            type: 'group',
+                            visible: true,
+                            layerOptions: {
+                                layers: []
+                            },
+                            name: newLayer.name
+                        };
 
+                        layerGroup.layerOptions.layers.push(newLayer);
 
+                        id.leaflet = layerGroup;
 
+                        leafletLayers[id.uid] = id.leaflet;
+
+                        if (!parentLeafletGroup) {
+                            $timeout(function () {
+                            }, 0);
+                        }
 
                         if (id.q && id.layertype !== 'area') {
                             promises.push(MapService.addOtherArea("distribution", id, id.area, id.includeExpertDistributions));
@@ -466,8 +490,11 @@
 
                         }
 
-                        promises.push( LayoutService.enable('legend'));
-                        promises.push(MapService.select(selected.layer));
+                        // do not select this layer if it is a child layer
+                        if (!parentLeafletGroup) {
+                            promises.push(LayoutService.enable('legend'));
+                            promises.push(MapService.select(id));
+                        }
 
                         //add to promises if waiting is required
                         return $q.all(promises).then(function (results) {
@@ -519,12 +546,15 @@
                         sldBody = sldBody.replace('.colour', item.color);
                         return sldBody
                     },
+                    _firstLayer: function (layer) {
+                        return layer.layer.leaflet.layerOptions.layers[0];
+                    },
                     reMap: function (layer) {
                         if (layer.layer.layertype === 'area') {
-                            layer.layer.leaflet.layerParams.sld_body = this.objectSld(layer.layer)
+                            this._firstLayer(layer).layerParams.sld_body = this.objectSld(layer.layer)
                         }
 
-                        this.leafletScope.changeParams(this.getLayer(layer.layer.uid), layer.layer.leaflet.layerParams)
+                        this.leafletScope.changeParams(this.getLayer(layer.layer.uid), this._firstLayer(layer).layerParams)
                     },
                     newArea: function (name, q, wkt, area_km, bbox, pid, wms, legend, metadata) {
                         return {
@@ -605,7 +635,7 @@
                             if (item.metadataUrl !== undefined) {
                                 LayoutService.openIframe(item.metadataUrl, '', '')
                             } else {
-                                LayoutService.openIframe(LayersService.url() + '/layer/more/' + item.layer.layer.id, '', '')
+                                LayoutService.openIframe(LayersService.url() + '/layer/more/' + item.layerId, '', '')
                             }
                         }
                     },

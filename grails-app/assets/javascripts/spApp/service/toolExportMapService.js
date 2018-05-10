@@ -56,16 +56,19 @@
                     for (var k in MapService.leafletLayers) {
                         if (MapService.leafletLayers.hasOwnProperty(k)) {
                             if (k !== 'draw') {
-                                var i = MapService.leafletLayers[k];
-                                var url = i.url;
-                                if (url.indexOf('?') < 0) url += '?';
-                                url += "&opacity=" + (i.opacity);
-                                for (var j in i.layerParams) {
-                                    if (i.layerParams.hasOwnProperty(j)) {
-                                        url += '&' + j + '=' + encodeURIComponent(i.layerParams[j])
+                                var group = MapService.leafletLayers[k].layerOptions.layers;
+                                for (var j in group) {
+                                    var i = group[j];
+                                    var url = i.url;
+                                    if (url.indexOf('?') < 0) url += '?';
+                                    url += "&opacity=" + (i.opacity);
+                                    for (var j in i.layerParams) {
+                                        if (i.layerParams.hasOwnProperty(j)) {
+                                            url += '&' + j + '=' + encodeURIComponent(i.layerParams[j])
+                                        }
                                     }
+                                    mapLayers.push(url)
                                 }
-                                mapLayers.push(url)
                             }
                         }
                     }
