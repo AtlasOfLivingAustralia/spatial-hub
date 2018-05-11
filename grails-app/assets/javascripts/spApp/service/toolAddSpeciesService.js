@@ -73,7 +73,7 @@
                         if (q !== undefined) {
                             enableArea = (q.length === 0);
                             for (var i = 0; i < q.length; i++) {
-                                if (q[i].indexOf("lsid:") > -1) {
+                                if (q[i].indexOf("lsid:") === 0) {
                                     enableArea = true;
                                     break;
                                 }

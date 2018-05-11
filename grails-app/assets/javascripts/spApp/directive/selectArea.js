@@ -64,7 +64,7 @@
                         }
 
                         scope.createArea = function () {
-                            LayoutService.openModal('addArea', undefined, undefined, true);
+                            LayoutService.openModal('addArea', undefined, true);
                         };
 
                         function selectPredefinedArea(uid) {
