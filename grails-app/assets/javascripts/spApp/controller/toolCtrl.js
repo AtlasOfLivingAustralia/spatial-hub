@@ -90,7 +90,8 @@
                                 if (value.constraints['spatialValidity'] === undefined) value.constraints['spatialValidity'] = true;
 
                                 //speciesOption can be overridden by inputData
-                                if (value.constraints['speciesOption'] === undefined) value.constraints['speciesOption'] = 'searchSpecies';
+                                //this is the default and does not need to be specified
+                                //if (value.constraints['speciesOption'] === undefined) value.constraints['speciesOption'] = 'searchSpecies';
 
                                 if (value.constraints['default'] !== undefined) v = value.constraints['default'];
                                 else v = {q: [], name: '', bs: '', ws: ''}
