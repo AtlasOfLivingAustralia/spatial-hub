@@ -25,7 +25,7 @@
                                 Mandatory.
                                 </div>
                             </div>
-                            <div class="panel-body">
+                            <div class="panel-body" ng-style="v.constraints.disable && {'display':'none'}">
                                 <div ng-if="v.type == 'area' && !(v.constraints.max>1)">
                                     <div select-area selected-area="values[i]" unique-id="i"
                                          include-default-areas="v.constraints.defaultAreas"

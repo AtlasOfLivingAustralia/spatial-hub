@@ -115,7 +115,7 @@
                                 } else if ("q" === key) {
                                     s = value;
 
-                                    if (value.startsWith("(") && value.endsWith(")") && !value.include(" ")) {
+                                    if (value.match(/^\(/g) && value.match(/\)$/g) && !value.include(" ")) {
                                         s = value.substring(1, value.length() - 2);
                                     }
                                 } else if ("qname" === key) {

@@ -613,7 +613,7 @@
                             LayoutService.openModal('speciesInfo', item, false)
                         } else if (item.layertype === 'area' && item.metadataUrl === undefined) {
                             var b = item.bbox;
-                            if ((item.bbox + '').startsWith('POLYGON')) {
+                            if ((item.bbox + '').match(/^POLYGON/g)) {
                                 //convert POLYGON box to bounds
                                 var split = item.bbox.split(',');
                                 var p1 = split[1].split(' ');

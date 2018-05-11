@@ -176,7 +176,7 @@
                             var count = 0;
                             for (var i = 0; i < scope.selection.length; i++) {
                                 var fq = scope.selection[i].fq;
-                                if (fq.startsWith('-') && (fq.endsWith(':*') || fq.endsWith('[* TO *]'))) {
+                                if (fq.match(/^-/g) && (fq.match(/:\*$/g) || fq.match(/\[\* TO \*\]$/g))) {
                                     invert = true
                                 }
                                 count++
@@ -187,7 +187,7 @@
 
                                 if (invert) {
                                     if (sel.length > 0) sel += " AND ";
-                                    if (fq.startsWith('-') && (fq.endsWith(':*') || fq.endsWith('[* TO *]'))) {
+                                    if (fq.match(/^-/g) && (fq.match(/:\*$/g) || fq.match(/\[\* TO \*\]$/g))) {
                                         sel += fq.substring(1)
                                     } else {
                                         sel += '-' + fq

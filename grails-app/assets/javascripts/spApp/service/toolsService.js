@@ -85,7 +85,7 @@
                     for (k in uiScope.finishedData.output) {
                         if (uiScope.finishedData.output.hasOwnProperty(k)) {
                             var d = uiScope.finishedData.output[k];
-                            if (d.file.endsWith('.zip')) {
+                            if (d.file && d.file.match(/\.zip$/g)) {
                                 uiScope.downloadUrl = LayersService.url() + '/tasks/output/' + uiScope.finishedData.id + '/' + d.file;
 
                                 if (uiScope.downloadImmediately) {
@@ -105,13 +105,13 @@
                         if (uiScope.finishedData.output.hasOwnProperty(k)) {
                             var d = uiScope.finishedData.output[k];
                             if (d.openUrl) {
-                                uiScope.metadataUrl = openUrl
-                            } else if (d.file.endsWith('.zip')) {
+                                uiScope.metadataUrl = d.openUrl
+                            } else if (d.file && d.file.match(/\.zip$/g)) {
                                 //processed earlier
-                            } else if (d.file.endsWith('.html')) {
+                            } else if (d.file && d.file.match(/\.html$/g)) {
                                 uiScope.metadataUrl = LayersService.url() + '/tasks/output/' + uiScope.finishedData.id + '/' + d.file
 
-                            } else if (d.file.endsWith('.tif')) {
+                            } else if (d.file && d.file.match(/\.tif$/g)) {
                                 var name = d.file.replace('/layer/', '').replace('.tif', '');
                                 var layer = {
                                     id: name,
@@ -158,7 +158,7 @@
                         LoggerService.log('Tools', uiScope.toolName, '{ "taskId": "' + uiScope.finishedData.id + '"}')
                     }
 
-                    // if (uiScope.metadataUrl !== null) uiScope.openUrl(uiScope.metadataUrl);
+                    if (uiScope.metadataUrl !== null) uiScope.openUrl(uiScope.metadataUrl);
 
                     return $q.all(promises).then(function() {
                         uiScope.finished = true;
@@ -175,6 +175,8 @@
 
                     if (result && result.then) {
                         result.then(function (response) {
+                            uiScope.finishedData = response;
+                            _executeResult(uiScope);
                             uiScope.$close();
                         })
                     } else {
@@ -191,7 +193,7 @@
                     //inject all Tools into ToolsService
                     $.each(spApp.requires, function (x) {
                         var v = spApp.requires[x];
-                        if (v.endsWith('-service') && v.startsWith('tool-')) {
+                        if (v.match(/-service$/g) && v.match(/^tool-/g)) {
                             var name = v.replace(/-.|^./g, function(match) {return match.toUpperCase().replace('-','')});
                             var tool = $injector.get(name);
 

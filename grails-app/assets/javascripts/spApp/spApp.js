@@ -194,7 +194,7 @@ spApp.config(['$provide', function ($provide) {
     //inject 'componentName' into directive scopes for use by LayoutService
     $.each(spApp.requires, function (x) {
         var v = spApp.requires[x];
-        if (v.endsWith('-directive') && v != 'i18n-directive') {
+        if (v.match(/-directive$/g) && v != 'i18n-directive') {
             $provide.decorator($.camelCase(v), ['$delegate', 'LayoutService', function ($delegate, LayoutService) {
                 var directive = $delegate[0];
 

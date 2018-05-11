@@ -344,6 +344,7 @@
 
                 $scope.map = function (event, item) {
                     event.currentTarget.classList.add('disabled');
+                    if (item.extraQ === undefined) item.extraQ = [];
                     var q = {q: areaQ.q.concat(item.extraQ), ws: areaQ.ws, bs: areaQ.bs, wkt: areaQ.wkt};
                     BiocacheService.registerQuery(q).then(function (response) {
                         BiocacheService.newLayer(response, undefined, item.name).then(function (data) {
@@ -353,12 +354,23 @@
                 };
 
                 $scope.sample = function (item) {
-                    var q = {q: item.extraQ, ws: areaQ.ws, bs: areaQ.bs};
-                    LayoutService.openModal('exportSample', {
-                        selectedQ: q,
-                        selectedArea: $scope.area,
-                        step: 3
-                    }, true)
+                    if (item.extraQ === undefined) item.extraQ = [];
+                    var query = {q: areaQ.q.concat(item.extraQ), ws: areaQ.ws, bs: areaQ.bs, wkt: areaQ.wkt};
+                    var area = {area: [$scope.area]};
+                    var data = {
+                        overrideValues: {
+                            ToolExportSampleService: {
+                                input: {
+                                    species: {constraints: {'default': query, disable: true}},
+                                    area: {constraints: {'default': area, disable: true}}
+                                }
+                            }
+                        },
+                        processName: "ToolExportSampleService"
+                    };
+
+                    LayoutService.clear();
+                    LayoutService.openModal('tool', data)
                 };
 
                 $scope.makeCSV = function () {

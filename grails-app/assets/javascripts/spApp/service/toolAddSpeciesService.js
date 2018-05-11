@@ -16,6 +16,7 @@
                     spec: {
                         "input": [
                             {
+                                "name": "species",
                                 "description": "Select species.",
                                 "type": "species",
                                 "constraints": {
@@ -28,6 +29,7 @@
                                 }
                             },
                             {
+                                "name": "speciesOptions",
                                 "description": "Include related areas.",
                                 "type": "speciesOptions",
                                 "constraints": {
@@ -38,6 +40,7 @@
                                 }
                             },
                             {
+                                "name": "area",
                                 "description": "Restrict to an area.",
                                 "type": "area",
                                 "constraints": {
