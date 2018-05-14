@@ -8,7 +8,8 @@
      *   Client side tool to export the map as an image
      */
     angular.module('tool-export-map-service', [])
-        .factory("ToolExportMapService", ["$http", "$q", "MapService", "LayersService", function ($http, $q, MapService, LayersService) {
+        .factory("ToolExportMapService", ["$http", "$q", "MapService", "LayersService", "LayoutService",
+            function ($http, $q, MapService, LayersService, LayoutService) {
             return {
 
                 // Override text with view-config.json
@@ -86,7 +87,7 @@
                                 mapLayers: {constraints: {'default': mapLayers}}
                             }
                         },
-                        'step': 8
+                        'stage': 'execute'
                     };
                     LayoutService.openModal('tool', data, false);
                 }

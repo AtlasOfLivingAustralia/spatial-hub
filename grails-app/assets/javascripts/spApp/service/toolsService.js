@@ -162,6 +162,7 @@
 
                     return $q.all(promises).then(function() {
                         uiScope.finished = true;
+                        uiScope.$close();
                     })
                 }
 

@@ -56,6 +56,11 @@
                             } else {
                                 $scope.spec = angular.merge({}, specList[k], inputData.overrideValues[k])
                             }
+
+                            //apply override step
+                            if (inputData.overrideValues.stage !== undefined) {
+                                $scope.stage = inputData.overrideValues.stage
+                            }
                         } else {
                             $scope.spec = angular.merge({}, specList[k])
                         }
@@ -104,10 +109,23 @@
                                 v = value.constraints['default']
                             } else if (value.type === 'double') {
                                 v = value.constraints['default']
-                            } else if (value.type === 'list' && value.constraints.selection !== 'single') {
-                                v = [value.constraints['default']]
-                            } else if (value.type === 'list' && value.constraints.selection === 'single') {
-                                v = value.constraints['default']
+                            } else if (value.type === 'list') {
+                                if (value.constraints.selection !== 'single') {
+                                    v = [value.constraints['default']];
+                                } else {
+                                    v = value.constraints['default'];
+                                }
+                                // convert to array of labels and values
+                                value.constraints._list = [];
+                                if (value.constraints.labels === undefined) {
+                                    value.constraints.labels = value.constraints.content;
+                                }
+                                for (var i in value.constraints.content) {
+                                    value.constraints._list.push({
+                                        value: value.constraints.content[i],
+                                        label: value.constraints.labels[i]
+                                    })
+                                }
                             } else if (value.constraints !== undefined && value.constraints['default'] !== undefined) {
                                 v = value.constraints['default']
                             } else if (value.type === 'phylogeneticTree') {
@@ -144,8 +162,6 @@
                         var toolViewConfig = ToolsService.getViewConfig($scope.toolName)
                         if (toolViewConfig && toolViewConfig.view) {
                             toolViewConfig.view.forEach(function (v) {
-                                $scope.downloadImmediately = inputData.downloadImmediately === undefined &&
-                                    $scope.download !== undefined && !$scope.download;
                                 $scope.stepView[order] = {name: v.name, inputArr: v.inputs};
                                 order++;
                             })
@@ -170,7 +186,7 @@
                         $scope.step = $scope.stepsActual;
                     }
 
-                    if ($scope.stage === 'output') {
+                    if ($scope.stage === 'output' || $scope.stage === 'execute') {
                         $scope.step = $scope.stepsActual + 1;
                     } else {
                         if ($scope.isDisabled()) {
@@ -186,8 +202,10 @@
                     }
 
                     switch ($scope.stage) {
+                        case 'execute':
                         case 'input':
-                            if ($scope.step !== undefined && $scope.step === $scope.stepsActual) {
+                            if ($scope.stage === 'execute' ||
+                                ($scope.step !== undefined && $scope.step === $scope.stepsActual)) {
                                 var response = $scope.execute();
                                 if (response && response.then) {
                                     response.then(function (data) {

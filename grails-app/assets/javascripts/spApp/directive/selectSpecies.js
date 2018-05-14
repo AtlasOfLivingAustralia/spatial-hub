@@ -79,7 +79,7 @@
                                 LayoutService.openModal('sandBox', {
                                     setQ: scope.setSandboxQ,
                                     display: {size: 'full'}
-                                }, true)
+                                }, true, true)
                             }, 0)
                         };
 
