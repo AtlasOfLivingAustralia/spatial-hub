@@ -284,6 +284,7 @@
                             if (scope.selected.layer !== undefined) {
                                 BiocacheService.newLayerAddFq(scope.selected.layer, decodeURIComponent(scope.selected.layer.sel),
                                     scope.selected.layer.name + " : " + $i18n("from selected")).then(function (data) {
+                                    data.species_list = scope.selected.layer.species_list;
                                     MapService.add(data)
                                 })
                             }
@@ -293,6 +294,7 @@
                             if (scope.selected.layer !== undefined) {
                                 BiocacheService.newLayerAddFq(scope.selected.layer, decodeURIComponent('-(' + scope.selected.layer.sel + ')'),
                                     scope.selected.layer.name + " : " + $i18n("from unselected")).then(function (data) {
+                                    data.species_list = scope.selected.layer.species_list;
                                     MapService.add(data)
                                 })
                             }
@@ -407,7 +409,7 @@
                                 };
 
                                 //populate count
-                                scope.getFacetItemCount(item, scope.selected.layer, item.fq);
+                                scope.getFacetItemCount(listItem, scope.selected.layer, item.fq);
 
                                 list.push(listItem);
 
@@ -417,7 +419,7 @@
                                 i = i + 1;
                             }
 
-                            return $q.all(promises).then(function (results) {
+                            $q.all(promises).then(function (results) {
                                 $timeout(function () {
                                 }, 0);
                             });
