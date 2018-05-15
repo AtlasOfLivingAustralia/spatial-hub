@@ -73,7 +73,15 @@
                                     <span ng-show="sortType == 'name' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                                 </div></th>
                             <th style="width:10px"></th>
-                            <th style="width:10px"></th>
+                            <th style="width:70px">
+                                <div href="#" ng-click="sortType = 'dist'; sortReverse = !sortReverse">
+                                    <span i18n="289">Dist</span>
+                                    <span ng-show="sortType == 'dist' && !sortReverse"
+                                          class="glyphicon glyphicon-chevron-down"></span>
+                                    <span ng-show="sortType == 'dist' && sortReverse"
+                                          class="glyphicon glyphicon-chevron-up"></span>
+                                </div>
+                            </th>
                         </tr>
                         </thead>
                         <tbody style="height:300px;overflow:scroll">
