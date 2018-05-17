@@ -1,4 +1,20 @@
 {
+  "AooEoo": {
+    "view": [
+      {
+        "name": "Apply to an area",
+        "inputs": [
+          "area"
+        ]
+      },
+      {
+        "name": "Select species",
+        "inputs": [
+          "species"
+        ]
+      }
+    ]
+  },
   "ScatterplotCreate": {
     "download": false,
     "view": [
