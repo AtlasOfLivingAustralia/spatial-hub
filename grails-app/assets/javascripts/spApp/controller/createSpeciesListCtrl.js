@@ -139,7 +139,7 @@
                                         } else {
                                             closeLater = true;
                                             var newquery =  BiocacheService.newQuery($scope.selectedQ.q, $scope.selectedQ.name, undefined);
-                                            BiocacheService.newLayer(newquery, undefined, q.name).then(function (data) {
+                                            BiocacheService.newLayer(newquery, undefined, newquery.name).then(function (data) {
                                                 data.species_list = druid;
                                                 MapService.add(data);
                                                 $scope.$close();
