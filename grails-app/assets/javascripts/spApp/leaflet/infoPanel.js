@@ -27,31 +27,33 @@ L.Control.InfoPanel = L.Control.extend({
             if ($SH.hoverLayers.length > 0) {
                 var layer = $SH.hoverLayers.join(",");
                 // latitude/longitude
-                var url = $SH.layersServiceUrl + "/intersect/" + layer + "/" + scope.lastLat + "/" + scope.lastLng;
-                scope._container.innerHTML = $i18n('searching...') + '<br/>' + scope.lastPos;
-                $.ajax({
-                    container: scope._container,
-                    hoverSet: scope.hoverSet,
-                    pos: scope.lastPos,
-                    url: url,
-                    dataType: "json",
-                    success: function (data) {
-                        var d = '';
-                        for (var k in data) {
-                            if (data.hasOwnProperty(k)) {
-                                if (d.length > 0) d += '<br/>';
-                                d += data[k].layername + ': ' + data[k].value;
-                                if (data[k].units !== undefined) {
-                                    d += ' ' + data[k].units
+                if (layer.length > 0) {
+                    var url = $SH.layersServiceUrl + "/intersect/" + layer + "/" + scope.lastLat + "/" + scope.lastLng;
+                    scope._container.innerHTML = $i18n('searching...') + '<br/>' + scope.lastPos;
+                    $.ajax({
+                        container: scope._container,
+                        hoverSet: scope.hoverSet,
+                        pos: scope.lastPos,
+                        url: url,
+                        dataType: "json",
+                        success: function (data) {
+                            var d = '';
+                            for (var k in data) {
+                                if (data.hasOwnProperty(k)) {
+                                    if (d.length > 0) d += '<br/>';
+                                    d += data[k].layername + ': ' + data[k].value;
+                                    if (data[k].units !== undefined) {
+                                        d += ' ' + data[k].units
+                                    }
                                 }
                             }
-                        }
-                        this.container.innerHTML = d + '<br/>' + this.pos;
+                            this.container.innerHTML = d + '<br/>' + this.pos;
 
-                        this.hoverSet()
-                    },
-                    async: true
-                });
+                            this.hoverSet()
+                        },
+                        async: true
+                    });
+                }
             }
         }
     },

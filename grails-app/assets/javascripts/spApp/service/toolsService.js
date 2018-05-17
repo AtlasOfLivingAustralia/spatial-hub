@@ -11,34 +11,12 @@
     angular.module('tools-service', [])
         .factory('ToolsService', ['$injector', '$q', '$http', '$timeout', 'MapService', 'LayersService', 'LoggerService',
             function ($injector, $q, $http, $timeout, MapService, LayersService, LoggerService) {
-                var cap = {};
-                var viewConfig = {};
+                var cap = $SH.layersServiceCapabilities;
+                var viewConfig = $SH.viewConfig;
+                var localToolServices = {};
+                var promises = [];
 
-                var url = LayersService.url() + '/capabilities';
-                var setup = $http.get($SH.baseUrl + '/portal/config/view').then(function (data) {
-                    viewConfig = data.data;
-                    //return $http.get($SH.proxyUrl + "?url=" + encodeURIComponent(url)).then(function (data) {
-                    return $http.get(url).then(function (data) {
-                        var k, merged;
-                        for (k in data.data) {
-                            if (data.data.hasOwnProperty(k)) {
-                                merged = data.data[k];
-
-                                // merge spec input values from with view-config.json
-                                if (viewConfig[k]) {
-                                    angular.merge(merged, viewConfig[k]);
-                                    angular.merge(merged.input, viewConfig[k].input)
-                                }
-
-                                cap[data.data[k].name] = merged
-                            }
-                        }
-
-                        initLocalTools();
-
-                        return $q.when(cap)
-                    });
-                });
+                initLocalTools();
 
                 /*
                 uiScope is ToolCtrl
@@ -107,7 +85,7 @@
                     for (k in uiScope.finishedData.output) {
                         if (uiScope.finishedData.output.hasOwnProperty(k)) {
                             var d = uiScope.finishedData.output[k];
-                            if (d.file.endsWith('.zip')) {
+                            if (d.file && d.file.match(/\.zip$/g)) {
                                 uiScope.downloadUrl = LayersService.url() + '/tasks/output/' + uiScope.finishedData.id + '/' + d.file;
 
                                 if (uiScope.downloadImmediately) {
@@ -123,19 +101,17 @@
                         }
                     }
 
-                    var promises = [];
-
                     for (k in uiScope.finishedData.output) {
                         if (uiScope.finishedData.output.hasOwnProperty(k)) {
                             var d = uiScope.finishedData.output[k];
                             if (d.openUrl) {
-                                uiScope.metadataUrl = openUrl
-                            } else if (d.file.endsWith('.zip')) {
+                                uiScope.metadataUrl = d.openUrl
+                            } else if (d.file && d.file.match(/\.zip$/g)) {
                                 //processed earlier
-                            } else if (d.file.endsWith('.html')) {
+                            } else if (d.file && d.file.match(/\.html$/g)) {
                                 uiScope.metadataUrl = LayersService.url() + '/tasks/output/' + uiScope.finishedData.id + '/' + d.file
 
-                            } else if (d.file.endsWith('.tif')) {
+                            } else if (d.file && d.file.match(/\.tif$/g)) {
                                 var name = d.file.replace('/layer/', '').replace('.tif', '');
                                 var layer = {
                                     id: name,
@@ -182,11 +158,11 @@
                         LoggerService.log('Tools', uiScope.toolName, '{ "taskId": "' + uiScope.finishedData.id + '"}')
                     }
 
-                    // if (uiScope.metadataUrl !== null) uiScope.openUrl(uiScope.metadataUrl);
+                    if (uiScope.metadataUrl !== null) uiScope.openUrl(uiScope.metadataUrl);
 
                     return $q.all(promises).then(function() {
                         uiScope.finished = true;
-
+                        uiScope.$close();
                     })
                 }
 
@@ -202,6 +178,8 @@
 
                     if (result && result.then) {
                         result.then(function (response) {
+                            uiScope.finishedData = response;
+                            _executeResult(uiScope);
                             uiScope.$close();
                         })
                     } else {
@@ -218,7 +196,7 @@
                     //inject all Tools into ToolsService
                     $.each(spApp.requires, function (x) {
                         var v = spApp.requires[x];
-                        if (v.endsWith('-service') && v.startsWith('tool-')) {
+                        if (v.match(/-service$/g) && v.match(/^tool-/g)) {
                             var name = v.replace(/-.|^./g, function(match) {return match.toUpperCase().replace('-','')});
                             var tool = $injector.get(name);
 
@@ -238,12 +216,10 @@
                      * @return {Promise}
                      */
                     init: function (toolName) {
-                        return setup.then(function(data) {
-                            if (localToolServices[toolName] && localToolServices[toolName].init) {
-                                localToolServices[toolName].init();
-                            }
-                            return $q.when(data);
-                        });
+                        if (localToolServices[toolName] && localToolServices[toolName].init) {
+                            localToolServices[toolName].init();
+                        }
+                        return $q.when($SH.layersServiceCapabilities);
                     },
                     /**
                      * Test if a tool name is a client side tool

@@ -25,7 +25,7 @@
                                 Mandatory.
                                 </div>
                             </div>
-                            <div class="panel-body">
+                            <div class="panel-body" ng-style="v.constraints.disable && {'display':'none'}">
                                 <div ng-if="v.type == 'area' && !(v.constraints.max>1)">
                                     <div select-area selected-area="values[i]" unique-id="i"
                                          include-default-areas="v.constraints.defaultAreas"
@@ -72,7 +72,6 @@
                                     <label style="margin-bottom:0px">{{v.description}}</label>
                                 </div>
                                 <div ng-if="v.type == 'int'">
-                                    A{{sv.name}}A
                                     <label ng-if="sv.name !== undefined && sv.name !== v.description" >{{v.description}}</label>
                                     <input style="width:300px" type="number" max="{{v.constraints.max}}"
                                            min="{{v.constraints.min}}"
@@ -81,19 +80,15 @@
                                 <div ng-if="v.type == 'list' && v.constraints.selection == 'single'">
                                     <label ng-if="sv.name !== undefined && sv.name !== v.description" >{{v.description}}</label>
                                     <br ng-if="sv.name !== undefined && sv.name !== v.description" />
-                                    <select ng-model="values[i]">
-                                        <option ng-repeat="x in v.constraints.content" ng-value="x">
-                                            {{v.constraints.labels[$index] || x}}
-                                        </option>
+                                    <select ng-model="values[i]" ng-init="values[i] = values[i]"
+                                            ng-options="item.value as item.label for item in v.constraints._list">
                                     </select>
                                 </div>
                                 <div ng-if="v.type == 'list' && v.constraints.selection != 'single'">
                                     <label ng-if="sv.name !== undefined && sv.name !== v.description" >{{v.description}}</label>
                                     <br ng-if="sv.name !== undefined && sv.name !== v.description" />
-                                    <select ng-model="values[i]" multiple>
-                                        <option ng-repeat="x in v.constraints.content" ng-value="x">
-                                            {{v.constraints.labels[$index] || x}}
-                                        </option>
+                                    <select ng-model="values[i]" multiple ng-init="values[i] = values[i]"
+                                            ng-options="item.value as item.label for item in v.constraints._list">
                                     </select>
                                 </div>
                                 <div ng-if="v.type == 'phylogeneticTree'">

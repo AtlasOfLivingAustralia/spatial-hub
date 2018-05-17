@@ -15,6 +15,7 @@
                 spec: {
                     "input": [
                         {
+                            "name": "area",
                             "description": "Select area.",
                             "type": "area",
                             "constraints": {
@@ -25,6 +26,7 @@
                             }
                         },
                         {
+                            "name": "species",
                             "description": "Select species.",
                             "type": "species",
                             "constraints": {
@@ -36,6 +38,7 @@
                             }
                         },
                         {
+                            "name": "layers",
                             "description": "Select layers.",
                             "type": "layer",
                             "constraints": {
@@ -65,7 +68,7 @@
                             sampleUrl = sampleUrl + '&layers=' + layers;
                         }
 
-                        return $q.when({ output: { openUrl: sampleUrl } });
+                        return $q.when({output: {0: {openUrl: sampleUrl}}});
                     });
                 }
             };

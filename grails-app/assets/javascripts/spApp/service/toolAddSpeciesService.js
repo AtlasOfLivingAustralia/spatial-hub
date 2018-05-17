@@ -16,6 +16,7 @@
                     spec: {
                         "input": [
                             {
+                                "name": "species",
                                 "description": "Select species.",
                                 "type": "species",
                                 "constraints": {
@@ -28,6 +29,7 @@
                                 }
                             },
                             {
+                                "name": "speciesOptions",
                                 "description": "Include related areas.",
                                 "type": "speciesOptions",
                                 "constraints": {
@@ -38,6 +40,7 @@
                                 }
                             },
                             {
+                                "name": "area",
                                 "description": "Restrict to an area.",
                                 "type": "area",
                                 "constraints": {
@@ -70,7 +73,7 @@
                         if (q !== undefined) {
                             enableArea = (q.length === 0);
                             for (var i = 0; i < q.length; i++) {
-                                if (q[i].indexOf("lsid:") > -1) {
+                                if (q[i].indexOf("lsid:") === 0) {
                                     enableArea = true;
                                     break;
                                 }
@@ -105,6 +108,9 @@
                                 data.includeAnimalMovement = inputs[1].includeAnimalMovement;
                                 data.includeChecklists = inputs[1].includeChecklists;
                                 data.includeExpertDistributions = inputs[1].includeExpertDistributions;
+                            }
+                            if (inputs[0].species_list) {
+                                data.species_list = inputs[0].species_list;
                             }
                             return MapService.add(data).then(function() {
                                 return true;

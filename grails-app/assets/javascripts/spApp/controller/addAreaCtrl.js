@@ -69,9 +69,10 @@
                         } else if ($scope.area === 'addressRadius') {
                         } else if ($scope.area === 'pointRadius') {
                         } else if ($scope.area === 'gazetteer') {
-                        } else if ($scope.area.startsWith('preset_')) {
+                        } else if ($scope.area.match(/^preset_/g)) {
                             for (var i = 0; i < $scope.defaultAreas.length; i++) {
-                                if ($scope.area.endsWith($scope.defaultAreas[i].name.replace(' ', '_'))) {
+                                var v = $scope.defaultAreas[i].name.replace(' ', '_');
+                                if ($scope.area.indexOf(v) == $scope.area.length - v.length) {
                                     $scope.selectedArea.name = $scope.defaultAreas[i].name;
                                     $scope.selectedArea.wkt = $scope.defaultAreas[i].wkt;
                                     break;
@@ -99,7 +100,7 @@
                         } else if ($scope.area === 'pointRadius') {
                             $scope.createCircle()
                         } else if ($scope.area === 'gazetteer') {
-                        } else if ($scope.area.startsWith('preset_')) {
+                        } else if ($scope.area.match(/^preset_/g)) {
                             //n/a
                         } else if ($scope.area === 'importShapefile') {
                             var featureIdxs = $scope.areaList.filter(function (area) {
@@ -279,7 +280,7 @@
                         return $scope.circle.longitude.length === 0 || $scope.circle.latitude.length === 0
                     } else if ($scope.area === 'gazetteer') {
                         return $scope.selectedArea.pid === undefined
-                    } else if ($scope.area.startsWith('preset_')) {
+                    } else if ($scope.area.match(/^preset_/g)) {
                     } else if ($scope.area === 'importShapefile' || $scope.area === 'importKML') {
                         if ($scope.areaList) {
                             return $scope.areaList.filter(function (area) {

@@ -12,7 +12,7 @@
 
             var cache = $cacheFactory('listServiceCache');
 
-            return {
+            var scope = {
 
                 list: function (q, max, offset, sort, order, user) {
                     var params = '';
@@ -55,39 +55,48 @@
                         return response.data
                     })
                 },
+                getItemsQCached: function (listId) {
+                    return cache.get(listId);
+                },
                 getItemsQ: function (listId) {
                     // TODO: use 'species_list:' after biocache-service is redeployed
                     //return $q.when('species_list:' + listId);
 
-                    return this.items(listId, {includeKVP: true}).then(function (data) {
+                    return scope.items(listId, {includeKVP: true}).then(function (data) {
                         cache.put(listId, data);
-                        var terms = [];
-                        for (var i in data) {
-                            var d = data[i];
-                            var s;
-                            if (d.lsid !== undefined && d.lsid !== null) {
-                                s = "lsid:\"" + d.lsid + "\"";
-                            } else {
-                                s = "taxon_name:\"" + d.name + "\"";
-                            }
-                            if (terms.length % 200 == 0) {
-                                if (terms.length > 0) {
-                                    terms[terms.length - 1] += ")";
-                                }
-                                terms.push("(" + s);
-                            } else {
-                                terms.push(s);
-                            }
-                        }
-                        if (terms.length > 0) {
-                            terms[terms.length - 1] += ")";
-                        }
-                        return $q.when(terms.join(" OR "));
+
+                        return $q.when(scope.listToFq(data));
                     });
                 },
                 url: function () {
                     return $SH.listsUrl
+                },
+                listToFq: function (data) {
+                    var terms = [];
+                    for (var i in data) {
+                        var d = data[i];
+                        var s;
+                        if (d.lsid !== undefined && d.lsid !== null) {
+                            s = "lsid:\"" + d.lsid + "\"";
+                        } else {
+                            s = "taxon_name:\"" + d.name + "\"";
+                        }
+                        if (terms.length % 200 == 0) {
+                            if (terms.length > 0) {
+                                terms[terms.length - 1] += ")";
+                            }
+                            terms.push("(" + s);
+                        } else {
+                            terms.push(s);
+                        }
+                    }
+                    if (terms.length > 0) {
+                        terms[terms.length - 1] += ")";
+                    }
+                    return terms.join(" OR ");
                 }
             };
+
+            return scope;
         }])
 }(angular));

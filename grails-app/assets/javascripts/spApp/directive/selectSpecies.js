@@ -32,7 +32,13 @@
                         if (scope._includeLayers === undefined) scope._includeLayers = true;
                         if (scope._areaIncludes === undefined) scope._areaIncludes = false;
                         if (scope._spatialValidity === undefined) scope._spatialValidity = false;
-                        if (scope._speciesOption === undefined) scope._speciesOption = 'searchSpecies';
+                        if (scope._speciesOption === undefined) {
+                            scope._speciesOptionMandatory = false;
+                            scope._speciesOption = 'searchSpecies';
+                        } else {
+                            //when speciesOption is defined do not replace selection
+                            scope._speciesOptionMandatory = true;
+                        }
                         if (scope._absentOption === undefined) scope._absentOption = true;
 
                         scope.spatiallyValid = true;
@@ -62,7 +68,8 @@
                         LayoutService.addToSave(scope);
 
                         scope.speciesLayers = scope._includeLayers ? MapService.speciesLayers() : [];
-                        if ((scope._inputData === undefined || scope._inputData.speciesOption === undefined) &&
+                        if (!scope._speciesOptionMandatory &&
+                            (scope._inputData === undefined || scope._inputData.speciesOption === undefined) &&
                             scope.speciesOption === 'searchSpecies' && scope.speciesLayers.length > 0) {
                             scope.speciesOption = scope.speciesLayers[0].uid;
                         }
@@ -72,7 +79,7 @@
                                 LayoutService.openModal('sandBox', {
                                     setQ: scope.setSandboxQ,
                                     display: {size: 'full'}
-                                }, true)
+                                }, true, true)
                             }, 0)
                         };
 
@@ -152,6 +159,10 @@
                                     absent = []
                                 }
 
+                                if (query.species_list) {
+                                    scope._selectedQ.species_list = query.species_list
+                                }
+
                                 scope._selectedQ.includeAnimalMovement = scope.includeAnimalMovement;
                                 scope._selectedQ.includeExpertDistributions = scope.includeExpertDistributions;
                                 scope._selectedQ.q = query.q.concat(gs).concat(absent);
@@ -218,7 +229,8 @@
                                 scope.changeOption(scope._selectedQ.selectOption)
                             } else if (scope._min === 0) {
                                 scope.speciesOption = 'none'
-                            } else if ((scope._inputData === undefined || scope._inputData.speciesOption === undefined) &&
+                            } else if (!scope._speciesOptionMandatory &&
+                                (scope._inputData === undefined || scope._inputData.speciesOption === undefined) &&
                                 scope.speciesLayers.length > 0) {
                                 scope.changeOption(scope.speciesLayers[0].uid)
                             } else if (scope._min > 0) {

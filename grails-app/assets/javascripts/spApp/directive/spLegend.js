@@ -8,8 +8,8 @@
      *    Panel displaying selected map layer information and controls
      */
     angular.module('sp-legend-directive', ['map-service', 'biocache-service', 'layers-service'])
-        .directive('spLegend', ['$timeout', 'MapService', 'BiocacheService', 'LayersService', '$http', 'LayoutService',
-            function ($timeout, MapService, BiocacheService, LayersService, $http, LayoutService) {
+        .directive('spLegend', ['$timeout', '$q', 'MapService', 'BiocacheService', 'LayersService', 'ColourService', '$http', 'LayoutService',
+            function ($timeout, $q, MapService, BiocacheService, LayersService, ColourService, $http, LayoutService) {
                 return {
                     scope: {},
                     templateUrl: '/spApp/legendContent.htm',
@@ -165,7 +165,7 @@
                                     var bTemp = undefined;
                                     if (i > 0) bTemp = bbox;
                                     bbox = objects[i].bbox;
-                                    if ((objects[i].bbox + '').startsWith('POLYGON')) {
+                                    if ((objects[i].bbox + '').match(/^POLYGON/g)) {
                                         //convert POLYGON box to bounds
                                         var split = objects[i].bbox.split(',');
                                         var p1 = split[1].split(' ');
@@ -262,7 +262,7 @@
                             L.control.window(map, {
                                 modal: false,
                                 title: scope.selected.displayname,
-                                content: '<img src="' + scope.selected.layer.leaflet.legendurl + '"/>'
+                                content: '<img src="' + scope.selected.layer.leaflet.layerOptions.layers[0].legendurl + '"/>'
                             }).show()
                         };
 
@@ -284,6 +284,7 @@
                             if (scope.selected.layer !== undefined) {
                                 BiocacheService.newLayerAddFq(scope.selected.layer, decodeURIComponent(scope.selected.layer.sel),
                                     scope.selected.layer.name + " : " + $i18n("from selected")).then(function (data) {
+                                    data.species_list = scope.selected.layer.species_list;
                                     MapService.add(data)
                                 })
                             }
@@ -293,6 +294,7 @@
                             if (scope.selected.layer !== undefined) {
                                 BiocacheService.newLayerAddFq(scope.selected.layer, decodeURIComponent('-(' + scope.selected.layer.sel + ')'),
                                     scope.selected.layer.name + " : " + $i18n("from unselected")).then(function (data) {
+                                    data.species_list = scope.selected.layer.species_list;
                                     MapService.add(data)
                                 })
                             }
@@ -334,7 +336,7 @@
                                 for (var i = 0; i < scope.selected.layer.facetList[scope.selected.layer.facet].length; i++) {
                                     if (scope.selected.layer.facetList[scope.selected.layer.facet][i].selected) {
                                         var fq = scope.selected.layer.facetList[scope.selected.layer.facet][i].fq;
-                                        if (fq.startsWith('-') && (fq.endsWith(':*') || fq.endsWith('[* TO *]'))) {
+                                        if (fq.match(/^-/g) && (fq.match(/:\*$/g) || fq.match(/\[\* TO \*\]$/g))) {
                                             invert = true
                                         }
                                         count++;
@@ -350,7 +352,7 @@
 
                                         if (invert) {
                                             if (sel.length > 0) sel += " AND ";
-                                            if (fq.startsWith('-') && (fq.endsWith(':*') || fq.endsWith('[* TO *]'))) {
+                                            if (fq.match(/^-/g) && (fq.match(/:\*$/g) || fq.match(/\[\* TO \*\]$/g))) {
                                                 sel += fq.substring(1)
                                             } else {
                                                 sel += '-' + fq
@@ -385,14 +387,79 @@
                             return r + g + b
                         };
 
+                        scope.getFacetItemCount = function (item, layer, fq) {
+                            var it = item;
+                            BiocacheService.count(layer, fq).then(function (count) {
+                                it.count = count;
+                            });
+                        };
+
+                        scope.speciesListToFacetList = function (data) {
+                            var list = [];
+
+                            var promises = [];
+                            var i = 0;
+                            for (var key in data) {
+                                var item = data[key];
+                                item.count = 0; // TODO: check if this needs to be an object
+                                var c = ColourService.getColour(i);
+                                var listItem = {
+                                    name: key, displayname: key, count: item.count,
+                                    fq: item.fq, red: c.red, green: c.green, blue: c.blue
+                                };
+
+                                //populate count
+                                scope.getFacetItemCount(listItem, scope.selected.layer, item.fq);
+
+                                list.push(listItem);
+
+                                // create sub layer
+                                promises.push(scope.createSubLayer(c, scope.selected.layer, item.fq));
+
+                                i = i + 1;
+                            }
+
+                            $q.all(promises).then(function (results) {
+                                $timeout(function () {
+                                }, 0);
+                            });
+
+                            return list;
+                        };
+
+                        scope.createSubLayer = function (colour, layer, fq) {
+                            return BiocacheService.newLayerAddFq(layer, fq, layer.name).then(function (subLayer) {
+                                subLayer.red = colour.red;
+                                subLayer.green = colour.green;
+                                subLayer.blue = colour.blue;
+                                MapService.add(subLayer, layer.leaflet);
+                            });
+                        };
+
+                        scope.isSpeciesListFacet = function (facet) {
+                            return facet.indexOf('species_list') === 0;
+                        };
+
                         scope.updateFacet = function () {
                             if (scope.selected.layer !== undefined && scope.selected.layer !== null && scope.selected.layer.facet !== '-1' &&
                                 scope.selected.layer.facetList[scope.selected.layer.facet] === undefined) {
-                                BiocacheService.facet(scope.selected.layer.facet, scope.selected.layer).then(function (data) {
-                                    scope.selected.layer.facetList[scope.selected.layer.facet] = data;
-                                    scope.facetClearSelection();
-                                    scope.updateWMS();
-                                })
+                                if (scope.selected.layer.facet && scope.isSpeciesListFacet(scope.selected.layer.facet)) {
+                                    // find facet in list
+                                    for (var i in scope.selected.layer.list) {
+                                        var f = scope.selected.layer.list[i];
+                                        if (f.facet === scope.selected.layer.facet) {
+                                            scope.selected.layer.facetList[scope.selected.layer.facet] = scope.speciesListToFacetList(f.species_list_facet);
+                                            scope.facetClearSelection();
+                                            scope.updateWMS();
+                                        }
+                                    }
+                                } else {
+                                    BiocacheService.facet(scope.selected.layer.facet, scope.selected.layer).then(function (data) {
+                                        scope.selected.layer.facetList[scope.selected.layer.facet] = data;
+                                        scope.facetClearSelection();
+                                        scope.updateWMS();
+                                    })
+                                }
                             } else {
                                 scope.updateWMS();
                             }
@@ -417,7 +484,7 @@
                         scope.setVisible = function (show) {
                             if (scope.selected.layer !== undefined) {
                                 scope.selected.layer.visible = show;
-                                scope.selected.layer.leaflet.visible = show;
+                                scope.selected.layer.leaflet.layerOptions.layers[0].visible = show;
                                 MapService.leafletScope.showLayer(MapService.getLayer(scope.selected.layer.uid), scope.selected.layer.visible);
                                 if (show) MapService.leafletScope.moveLayer(MapService.getLayer(scope.selected.layer.uid), scope.selected.layer.index)
                             }
@@ -454,7 +521,7 @@
                         scope.setOpacity = function (opacity) {
                             if (scope.selected.layer !== undefined) {
                                 scope.selected.layer.opacity = opacity;
-                                scope.selected.layer.leaflet.opacity = opacity;
+                                scope.selected.layer.leaflet.layerOptions.layers[0].opacity = opacity;
                                 MapService.leafletScope.changeOpacity(MapService.getLayer(scope.selected.layer.uid), scope.selected.layer.opacity / 100)
                             }
                         };
@@ -480,28 +547,30 @@
                                     + scope.selected.layer.uncertainty + ', ' + scope.selected.layer.size;
 
                                 if (scope.selected.layer.leaflet) {
+                                    var firstLayer = scope.selected.layer.leaflet.layerOptions.layers[0];
                                     if (scope.selected.layer.colorType === 'grid') {
-                                        scope.selected.layer.leaflet.layerParams.ENV = 'colormode%3Agrid%3Bname%3Acircle%3Bsize%3A' +
+                                        firstLayer.layerParams.ENV = 'colormode%3Agrid%3Bname%3Acircle%3Bsize%3A' +
                                             scope.selected.layer.size + '%3Bopacity%3A1'
                                     } else if (scope.selected.layer.colorType === '-1') {
-                                        if (scope.selected.layer.facet === '-1') {
-                                            scope.selected.layer.leaflet.layerParams.ENV = 'color%3A' + scope.selected.layer.color + '%3Bname%3Acircle%3Bsize%3A' +
+                                        // do not use layer.facet as colour mode if it is a species_list
+                                        if (scope.selected.layer.facet === '-1' || scope.selected.layer.facet.indexOf('species_list') == 0) {
+                                            firstLayer.layerParams.ENV = 'color%3A' + scope.selected.layer.color + '%3Bname%3Acircle%3Bsize%3A' +
                                                 scope.selected.layer.size + '%3Bopacity%3A1' +
                                                 (scope.selected.layer.uncertainty ? "%3Buncertainty%3A1" : "")
                                         } else {
-                                            scope.selected.layer.leaflet.layerParams.ENV = 'colormode%3A' + scope.selected.layer.facet + '%3Bname%3Acircle%3Bsize%3A' +
+                                            firstLayer.layerParams.ENV = 'colormode%3A' + scope.selected.layer.facet + '%3Bname%3Acircle%3Bsize%3A' +
                                                 scope.selected.layer.size + '%3Bopacity%3A1' +
                                                 (scope.selected.layer.uncertainty ? "%3Buncertainty%3A1" : "")
                                         }
                                         if (scope.selected.layer.sel !== undefined && scope.selected.layer.sel.length > 0) {
-                                            scope.selected.layer.leaflet.layerParams.ENV += '%3Bsel%3A' + scope.selected.layer.sel
+                                            firstLayer.layerParams.ENV += '%3Bsel%3A' + scope.selected.layer.sel
                                         }
                                     }
 
                                     if (scope.fq.length) {
-                                        scope.selected.layer.leaflet.layerParams.fq = scope.fq
+                                        firstLayer.layerParams.fq = scope.fq
                                     } else {
-                                        scope.selected.layer.leaflet.layerParams.fq = undefined
+                                        firstLayer.layerParams.fq = undefined
                                     }
 
                                     MapService.reMap(scope.selected);

@@ -51,10 +51,10 @@
                     var top = layoutStack[layoutStack.length - 1];
 
                     for (var k1 in top[1]) {
-                        if (!k1.startsWith('$') && !k1.startsWith('_') && top[1].hasOwnProperty(k1)) {
+                        if (!k1[0] === '$' && !k1[0] === '_' && top[1].hasOwnProperty(k1)) {
                             var s = top[1][k1];
                             for (var k2 in s) {
-                                if (!k2.startsWith('$') && !k2.startsWith('_') && s.hasOwnProperty(k2)) {
+                                if (!k2[0] === '$' && !k2[0] === '_' && s.hasOwnProperty(k2)) {
                                     if (!(s[k2] instanceof Function)) {
                                         if (top[2][s.componentName] === undefined)
                                             top[2][s.componentName] = {};
@@ -73,7 +73,7 @@
                         //apply saved values, if any
                         if (top[1][scopeToSave.componentName]) {
                             for (var k in top[1][scopeToSave.componentName]) {
-                                if (!k.startsWith('$') && !k.startsWith('_') && top[1][scopeToSave.componentName].hasOwnProperty(k)) {
+                                if (!k[0] === '$' && !k[0] === '_' && top[1][scopeToSave.componentName].hasOwnProperty(k)) {
                                     var v = top[1][scopeToSave.componentName][k];
                                     if (scopeToSave[k] !== undefined && !(v instanceof Function) &&
                                         (v instanceof Array || v instanceof Object || v instanceof String ||
