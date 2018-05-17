@@ -134,7 +134,8 @@
                                             inputData.setQ($scope.selectedQ)
                                         } else {
                                             closeLater = true;
-                                            BiocacheService.newLayer(q, undefined, q.name).then(function (data) {
+                                            var newquery =  BiocacheService.newQuery($scope.selectedQ.q, $scope.selectedQ.name, undefined);
+                                            BiocacheService.newLayer(newquery, undefined, $scope.selectedQ.name).then(function (data) {
                                                 MapService.add(data);
                                                 $scope.$close();
                                             });
