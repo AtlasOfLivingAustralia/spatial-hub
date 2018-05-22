@@ -83,7 +83,7 @@ spApp.config(['$httpProvider', function($httpProvider )
                 // window.informUser('Error '+rejection.status +': ' +rejection.config.url);
                 if (rejection.status == -1){
                     // urls not accessible are ignored.
-                    // alert('Request to '+rejection.config.url + ' is not accessible')
+                    console.error('Request to '+rejection.config.url + ' is not accessible')
                 } else if (rejection.status === 0) {
                     if (window.isInWrapper) {
                         //Logout if in an app;

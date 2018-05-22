@@ -160,7 +160,7 @@
                             <input style="width:250px" gaz-auto-complete id="gazAutoComplete" on-custom="setPid"
                                    userobjects="false">
                             <br/>
-                            <div ng-show="selectedArea !== undefined && selectedArea.wkt !== undefined && selectedArea.wkt.match(/^POINT/)">
+                            <div ng-show="selectedArea !== undefined && selectedArea.wkt !== undefined && selectedArea.wkt.match('/^POINT/')">
                                 <label i18n="28" style="width: 100px" for="locationRadius">Radius (km)</label>
                                 <input style="width:80px" type="number" id="locationRadius"
                                        ng-model="locationRadius" value="10">

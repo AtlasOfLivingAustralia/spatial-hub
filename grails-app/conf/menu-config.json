@@ -106,7 +106,7 @@
       },
       {
         "name": "Species List",
-        "open": "addSpecies",
+        "open": "createSpeciesList",
         "params": {
           "speciesOption": "speciesList",
           "importList": true

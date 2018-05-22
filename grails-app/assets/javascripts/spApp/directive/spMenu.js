@@ -38,7 +38,7 @@
                                 scope.open("tool", {"processName": cmd.open})
                             } else {
                                 // is controller
-                                scope.open(cmd.open)
+                                scope.open(cmd.open,cmd.params)
                             }
                         };
 

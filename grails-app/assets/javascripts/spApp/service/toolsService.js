@@ -166,6 +166,8 @@
                     })
                 }
 
+                var localToolServices = {};
+
                 function registerService(toolName, service) {
                     localToolServices[toolName] = service;
                     cap[toolName] = service.spec
