@@ -235,9 +235,10 @@
                         {
                             name: $i18n('JournalMap articles'),
                             list: $scope.journalMap,
-                            link: $i18n('https://www.journalmap.org'),
+                            link: $SH.journalMapUrl,
                             linkName: $i18n('JournalMap'),
-                            value: ''
+                            value: '',
+                            ignore: $SH.journalMapUrl === ''
                         },
                         {
                             name: $i18n('Gazetteer Points'),
@@ -257,7 +258,8 @@
                                 wkt: areaQ.wkt,
                                 qid: areaQ.qid
                             },
-                            extraQ: [$SH.invasiveQ]
+                            extraQ: [$SH.invasiveQ],
+                            ignore: $SH.listsUrl === '' || $SH.invasiveQ === ''
                         },
                         {
                             name: $i18n('Threatened Species'),
@@ -267,23 +269,28 @@
                                 ws: areaQ.ws,
                                 wkt: areaQ.wkt
                             },
-                            extraQ: [$SH.threatenedQ]
+                            extraQ: [$SH.threatenedQ],
+                            ignore: $SH.listsUrl === '' || $SH.threatenedQ === ''
                         },
                         {
                             name: $i18n('Migratory species - EPBC'),
                             query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
-                            link: ListsService.url() + '/speciesListItem/list/dr1005',
+                            link: ListsService.url() + '/speciesListItem/list/' + $SH.migratoryDR,
                             linkName: $i18n('Full list'),
-                            extraQ: ["species_list_uid:dr1005"]
+                            extraQ: ["species_list_uid:" + $SH.migratoryDR],
+                            ignore: $SH.listsUrl === '' || $SH.migratoryDR === ''
                         },
                         {
                             name: $i18n('Australian iconic species'),
                             query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
-                            link: ListsService.url() + '/speciesListItem/list/dr781',
+                            link: ListsService.url() + '/speciesListItem/list/' + $SH.iconicSpeciesDR,
                             linkName: $i18n('Full list'),
-                            extraQ: ["species_list_uid:dr781"]
+                            extraQ: ["species_list_uid:" + $SH.iconicSpeciesDR],
+                            ignore: $SH.listsUrl === '' || $SH.iconicSpeciesDR === ''
                         }], function (i, v) {
-                        $scope.items.push(v)
+                        if (v.ignore === undefined || !v.ignore) {
+                            $scope.items.push(v)
+                        }
                     });
 
                     $.each(['Algae', 'Amphibians', 'Angiosperms', 'Animals', 'Arthropods', 'Bacteria', 'Birds',
