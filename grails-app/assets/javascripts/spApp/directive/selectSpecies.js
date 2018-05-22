@@ -122,6 +122,10 @@
                             }
                         };
 
+                        scope.sandboxEnabled = function () {
+                            return $SH.sandboxUrl !== '';
+                        };
+
                         scope.addSpecies = function () {
                             LayoutService.openModal('tool', {processName: 'ToolAddSpeciesService'})
                         };
