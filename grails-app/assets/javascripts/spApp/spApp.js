@@ -311,6 +311,9 @@ initLayoutContainer = function () {
                 }, 100);
             }, 100)
         }
+
+        $('#left-panel')[0].style.maxHeight = $('#map').height() + "px";
+
     }).trigger("resize");
 };
 
