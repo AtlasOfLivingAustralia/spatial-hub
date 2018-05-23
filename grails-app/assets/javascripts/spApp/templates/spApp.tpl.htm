@@ -6,11 +6,13 @@
         </div>
     </div>
 </div>
-<div style="width:410px;padding-left:25px;overflow-y:hidden;overflow-x:scroll" class="pull-left"
+<div style="width:410px;padding-left:25px;overflow-y:scroll"
+     ng-style="(panelMode[0] == 'default' && {'overflow-y':'visible'}) || {'overflow-y':'scroll'}"
+     class="pull-left"
      ng-controller="LayoutCtrl" id="left-panel">
 
     <div ng-show="panelMode[0] == 'default'">
-        <div id="spMenu" sp-menu></div>
+        <div id="spMenu" sp-menu style="overflow-y:visible;overflow-x:visible"></div>
         <div class="ui-layout-container" id="defaultPanel" style="height:500px;width:400px;margin-left:-15px;">
             <div class="ui-layout-center ui-layout-pane ui-layout-pane-center">
                 <div class="row" sp-map style="margin-left:15px;margin-right: 0px;height:100%;"></div>
