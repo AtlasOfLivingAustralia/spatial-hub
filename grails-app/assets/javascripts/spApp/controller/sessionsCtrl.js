@@ -11,6 +11,9 @@
         .controller('SessionsCtrl', ['$scope', '$timeout', 'SessionsService', 'MapService', '$uibModalInstance',
             function ($scope, $timeout, SessionsService, MapService, $uibModalInstance) {
 
+                $scope.sortType = 'time';
+                $scope.sortReverse = 'true';
+
                 $scope['sessions'] = [];
 
                 $scope['import'] = function (sessionId) {

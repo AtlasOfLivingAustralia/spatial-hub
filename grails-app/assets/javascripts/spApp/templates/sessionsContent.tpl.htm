@@ -5,7 +5,7 @@
 <div class="modal-body">
     <div>
         <div style="height:300px;overflow:scroll">
-            <table class="table table-striped fixed-head" style="table-layout:fixed;width:100%">
+            <table class="table table-striped fixed-head" style="width:100%">
                 <caption>
                     <div class="row">
                         <div i18n="256" class="col-sm-6 margin-top-8">
@@ -22,43 +22,42 @@
                 </caption>
                 <thead style="display: block">
                 <tr>
-                    <th></th>
-                    <th>
+                    <th style="width:20px"></th>
+                    <th style="width:200px">
                         <a href="#" ng-click="sortType = 'time'; sortReverse = !sortReverse">
-                            <span i18n="107">Date</span>
+                            <span i18n="107">Created</span>
                             <span ng-show="sortType == 'time' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
                             <span ng-show="sortType == 'time' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                         </a>
                     </th>
-                    <th>
+                    <th style="width:300px">
                         <a href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
                             <span i18n="151">Name</span>
                             <span ng-show="sortType == 'name' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
                             <span ng-show="sortType == 'name' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                         </a>
                     </th>
-                    <th><a href="#" ng-click="sortType = 'url'; sortReverse = !sortReverse">
+                    <th style="width:400px"><a href="#" ng-click="sortType = 'url'; sortReverse = !sortReverse">
                         <span i18n="257">URL</span>
                         <span ng-show="sortType == 'url' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
                         <span ng-show="sortType == 'url' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
                     </a></th>
                 </tr>
                 </thead>
-                <tbody style="height:200px;overflow:scroll;display:block">
+                <tbody>
                 <tr ng-repeat="x in sessions | orderBy:sortType:sortReverse | filter:searchLists">
-                    <td>
+                    <td style="width:20px">
                         <div class="btn-group">
-                            <button i18n="258" class="btn btn-xs btn-default" ng-click="import(x.id)">open</button>
-                            <button i18n="259" class="btn btn-xs btn-default" ng-click="delete(x.id)">delete</button>
+                            <span i18n="259" class="glyphicon glyphicon-trash" ng-click="delete(x.id)"></span>
                         </div>
                     </td>
-                    <td>
-                        {{x.time | date:'yyyy-MM-dd HH:mm:ss Z'}}
+                    <td style="width:200px">
+                        {{x.time | date:'yyyy-MM-dd HH:mm:ss'}}
                     </td>
-                    <td style="min-width:80px">
+                    <td style="width:300px">
                         {{x.name}}
                     </td>
-                    <td>
+                    <td style="width:400px">
                         <a target="_blank" href="{{x.url}}">{{x.url}}</a>
                     </td>
                 </tr>
