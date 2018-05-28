@@ -73,16 +73,20 @@
                         return list
                     },
 
+                    zoomToExtents: function (extents) {
+                        this.leafletScope.zoom(extents);
+                    },
+
                     zoom: function (uid) {
                         for (var i = 0; i < layers.length; i++) {
                             if (layers[i].uid === uid) {
                                 if (layers[i].bbox !== undefined  && layers[i].area_km != 0) {
-                                    this.leafletScope.zoom(layers[i].bbox);
+                                    this.zoomToExtents(layers[i].bbox);
                                     return
                                 }
                             }
                         }
-                        this.leafletScope.zoom([[-90, -180], [90, 180]])
+                        this.zoomToExtents([[-90, -180], [90, 180]]);
                     },
 
                     setVisible: function (uid, show) {

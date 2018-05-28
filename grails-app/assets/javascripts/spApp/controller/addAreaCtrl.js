@@ -131,13 +131,18 @@
 
                 $scope.addToMapAndClose = function () {
                     var closingLater = false;
-                    if ($scope.selectedArea.obj !== undefined) {
+                    if ($scope.selectedArea.obj !== undefined && !$scope.isPoint()) {
                         $scope.selectedArea.obj.layertype = 'area';
-                        $scope.selectedArea.obj.source =
-                            MapService.add($scope.selectedArea.obj)
+                        MapService.zoomToExtents($scope.selectedArea.obj.bbox);
+                        MapService.add($scope.selectedArea.obj);
                     } else {
+                        if ($scope.isPoint()) {
+                            //create circle
+                            var coord = $scope.selectedArea.wkt.match(/\((.*)\)/)[1].split(" ");
+                            $scope.selectedArea.wkt = Util.createCircle(parseFloat(coord[0]), parseFloat(coord[1]), $scope.circle.radius * 1000)
+                        }
                         if ($scope.selectedArea.wkt !== undefined && $scope.selectedArea.wkt.length > 0) {
-                            if ($scope.selectedArea.area !== undefined && $scope.selectedArea.q !== undefined) {
+                            if ($scope.selectedArea.area !== undefined && $scope.selectedArea.q !== undefined && $scope.selectedArea.q.length > 0) {
                                 $scope.selectedArea.layertype = 'area';
                                 MapService.add($scope.selectedArea);
                             } else {
@@ -146,6 +151,7 @@
                                     LayersService.getObject(data.data.id).then(function (data) {
                                         data.data.layertype = 'area';
                                         data.data.wkt = $scope.selectedArea.wkt;
+                                        MapService.zoomToExtents(data.data.bbox);
                                         MapService.add(data.data);
                                         $scope.$close()
                                     })
@@ -294,6 +300,10 @@
                         return $scope.selectedArea.wkt === undefined || $scope.selectedArea.wkt.length === 0
                     }
                     return false
+                };
+
+                $scope.isPoint = function () {
+                    return $scope.selectedArea !== undefined && $scope.selectedArea.obj !== undefined && $scope.selectedArea.obj.area_km === 0
                 };
 
                 $scope.isLoggedIn = $scope.isLoggedIn = $SH.userId !== undefined && $SH.userId !== null && $SH.userId.length > 0;
