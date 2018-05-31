@@ -78,10 +78,6 @@
         "open": "Classification"
       },
       {
-        "name": "Predict",
-        "open": "Maxent"
-      },
-      {
         "name": "Restore Prior Analysis",
         "open": "analysis"
       }
