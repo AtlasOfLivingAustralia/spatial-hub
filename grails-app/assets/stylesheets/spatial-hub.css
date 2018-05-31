@@ -2135,3 +2135,9 @@ body > footer > div > div.col-md-12.acknowledgement-callout.acknowledgement-call
     top: 0px;
     z-index: 1000000;;
 }
+
+#login-again-message, #reconnect-message, #browser-supported-message, #warning-message {
+    margin-left: 50px;
+    margin-right: 50px;
+    position: relative;
+}
