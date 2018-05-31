@@ -211,7 +211,7 @@ flickr:
     filter: '&text=landscape'
     # flickr always returns 250 per page regardless the value of per_page passed in,
     # so we config total number of photos to display at one time ourselves
-    nbrOfPhotosToDisplay: 200
+    nbrOfPhotosToDisplay: 15
 
 viewConfig:
     json: 'view-config.json'

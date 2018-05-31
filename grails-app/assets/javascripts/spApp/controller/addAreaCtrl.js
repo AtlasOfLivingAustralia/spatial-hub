@@ -255,6 +255,8 @@
                 };
 
                 $scope.setPid = function (pid, mapNow) {
+                    // TODO: disable UI while fetching object, field and wkt info
+
                     LayersService.getObject(pid).then(function (obj) {
                         obj = obj.data;
                         $scope.selectedArea.obj = obj;

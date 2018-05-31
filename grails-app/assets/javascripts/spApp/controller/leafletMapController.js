@@ -221,7 +221,7 @@
                         $scope.addPanoramioToMap();
                     }
                     else {
-                        $scope.deleteDrawing();
+                        $scope.deleteImages();
                     }
                 };
 
@@ -286,7 +286,7 @@
 
                     leafletData.getMap().then(function () {
                         leafletData.getLayers().then(function (baselayers) {
-                            var drawnItems = baselayers.overlays.draw;
+                            var drawnItems = baselayers.overlays.images;
 
                             // remove markers that are not in the new feed
                             Object.keys(oldMarkers).forEach(function(key) {
@@ -458,6 +458,19 @@
                     })
                 };
 
+                $scope.deleteImages = function (layerToIgnore) {
+                    leafletData.getMap().then(function () {
+                        leafletData.getLayers().then(function (baselayers) {
+                            var drawnItems = baselayers.overlays.images;
+                            var layers = drawnItems.getLayers();
+                            for (var i = layers.length - 1; i >= 0; i--) {
+                                if (layers[i] !== layerToIgnore)
+                                    drawnItems.removeLayer(layers[i])
+                            }
+                        })
+                    })
+                };
+
                 $scope.getLicenses = function (){
                     FlickrService.getLicenses().then(function (data) {
                         $scope.licenses = data
@@ -524,8 +537,16 @@
                             });
 
                             map.on('moveend', function (e) {
-                                $scope.togglePanoramio(e.target)
-                            })
+                                if (e.target.panoramioControl._panoramio_state) {
+                                    $scope.addPanoramioToMap();
+                                }
+                            });
+
+                            map.on('zoomend', function (e) {
+                                if (e.target.panoramioControl._panoramio_state) {
+                                    $scope.addPanoramioToMap();
+                                }
+                            });
 
                             //all setup finished
                             if ($spMapLoaded !== undefined) {

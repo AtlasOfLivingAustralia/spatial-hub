@@ -215,10 +215,17 @@
                             MapService.leafletScope.zoom(item.bbox)
                         };
 
-                        scope.contextualHighlight = function (name) {
+                        scope.contextualHighlight = function (name, pid) {
                             if (scope.selected.layer !== undefined) {
-                                scope.selected.layer.contextualHighlight = name
-                                //TODO: create highlight layer
+                                scope.selected.layer.contextualHighlight = name;
+                                LayersService.getObject(pid).then(function (data) {
+                                    MapService.removeHighlight();
+
+                                    data.data.layertype = 'area';
+                                    data.data.color = 'ff0000';
+                                    data.data.opacity = 100.0;
+                                    MapService.addHighlight(data.data);
+                                });
                             }
                         };
 
