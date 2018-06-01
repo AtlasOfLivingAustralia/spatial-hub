@@ -244,6 +244,13 @@
                     MapService.leafletScope.addWktToMap([$scope.selectedArea.wkt])
                 };
 
+                $scope.showLocationRadius = function () {
+                    if ($scope.selectedArea !== undefined && $scope.selectedArea.wkt !== undefined && $scope.selectedArea.wkt.match('/^POINT/'))
+                        return true;
+                    else
+                        return false;
+                };
+
                 $scope.setWkt = function (wkt) {
                     $scope.selectedArea.wkt = wkt
                 };
