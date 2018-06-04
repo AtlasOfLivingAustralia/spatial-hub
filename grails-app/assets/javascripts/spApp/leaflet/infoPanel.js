@@ -12,12 +12,15 @@ L.Control.InfoPanel = L.Control.extend({
     lastLng: 0,
     intersect: '',
 
+    // method no longer used
     hoverSet: function () {
         if (this.timer !== -1) {
             clearTimeout(this.timer)
         }
         this.timer = setTimeout(this.hover, 2000, this)
     },
+
+    // method no longer used
     hover: function (scope) {
         if (scope.pos !== scope.lastPos) {
             scope.lastPos = scope.pos;
@@ -81,17 +84,7 @@ L.Control.InfoPanel = L.Control.extend({
         this.lat = lat;
         this.lng = lng;
         this.intersect = '';
-        if ($SH.hoverLayers.length > 0) {
-            if ($i18n === undefined) {
-                this._container.innerHTML = "<br/>" + this.pos
-            } else {
-                this._container.innerHTML = $i18n("hover to view layers") + "<br/>" + this.pos
-            }
-        } else {
-            this._container.innerHTML = this.pos
-        }
-
-        this.hoverSet()
+        this._container.innerHTML = this.pos;
     }
 
 });
