@@ -350,7 +350,7 @@
                                     for (j in $scope.values[k].area) {
                                         if ($scope.values[k].area.hasOwnProperty(j)) {
                                             var a = $scope.values[k].area[j];
-                                            if (a.pid) {
+                                            if (a.pid && !ToolsService.isLocalTask($scope.toolName)) {
                                                 inputs[k].push({
                                                     pid: a.pid,
                                                     q: a.q
@@ -361,6 +361,7 @@
                                                     name: a.name,
                                                     bbox: a.bbox,
                                                     area_km: a.area_km,
+                                                    pid: a.pid,
                                                     wkt: a.wkt
                                                 })
                                             }

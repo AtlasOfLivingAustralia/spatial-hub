@@ -95,7 +95,7 @@ spApp.config(['$httpProvider', function($httpProvider )
                     //Ignore invalid urls
                     //HTTP interceptor can decorate the promise rejection with a property handled to indicate whether it's handled the error.
                     rejection.handled = true;
-                    alert('Aw, Snap! Error in request url: ' + rejection.config.url +" (Status: "+ rejection.status +" " + rejection.statusText +" )" )
+                    //alert('Aw, Snap! Error in request url: ' + rejection.config.url +" (Status: "+ rejection.status +" " + rejection.statusText +" )" )
                 }
                 return $q.reject(rejection);
             }
@@ -108,6 +108,16 @@ spApp.config(['$httpProvider', function($httpProvider )
 spApp.config(['cfpLoadingBarProvider', function (cfpLoadingBarProvider) {
     cfpLoadingBarProvider.includeSpinner = false;
 }]);
+
+function isBrowserSupported() {
+    try {
+        Function("() => {};");
+        return true;
+    }
+    catch (exception) {
+        return false;
+    }
+}
 
 /**
  * Get all data required to run the application.
@@ -246,6 +256,10 @@ $spPageLoadingHide = function () {
     if ($spMapLoadedState && $spBootstrapState) {
         //$(".page-loading").fadeOut(0)
         $(".page-loading").detach()
+
+        if (!isBrowserSupported()) {
+            $('#browser-supported-message').removeClass('hide');
+        }
     }
 };
 
@@ -311,6 +325,9 @@ initLayoutContainer = function () {
                 }, 100);
             }, 100)
         }
+
+        $('#left-panel')[0].style.maxHeight = $('#map').height() + "px";
+
     }).trigger("resize");
 };
 

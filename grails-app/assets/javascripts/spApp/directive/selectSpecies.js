@@ -122,6 +122,14 @@
                             }
                         };
 
+                        scope.sandboxEnabled = function () {
+                            return $SH.sandboxUrl !== '';
+                        };
+
+                        scope.listsEnabled = function () {
+                            return $SH.listsUrl !== '';
+                        };
+
                         scope.addSpecies = function () {
                             LayoutService.openModal('tool', {processName: 'ToolAddSpeciesService'})
                         };

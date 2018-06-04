@@ -16,6 +16,7 @@
                         + '&geo_context=' + encodeURIComponent($SH.flickrGeoContext)
                         + '&content_type='+ encodeURIComponent($SH.flickrContentType)
                         + $SH.flickrFilter
+                        + '&per_page=' + $SH.flickrNbrOfPhotosToDisplay
                         + '&format=json&nojsoncallback=1&bbox='; //??? 50 perpage ???
 
                     return $http.get(url + bbox).then(function (response) {

@@ -258,7 +258,7 @@
                                             var style = params[key + ".s"];
                                             promises.push(BiocacheService.newLayer(multiQuery, undefined, layerName).then(function (newLayerResp) {
                                                 newLayerResp.color = style;
-                                                MapService.add(newLayerResp, params.bs)
+                                                MapService.add(newLayerResp)
                                             }));
                                         })()
                                     }
@@ -275,7 +275,7 @@
                             var name = layersCSV[i];
 
                             promises.push(LayersService.getLayersUrlLoad(name).then(function (resp) {
-                                MapService.add(resp, params.bs)
+                                MapService.add(resp)
                             }));
                         }
                         return promises;

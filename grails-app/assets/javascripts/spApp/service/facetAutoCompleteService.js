@@ -85,7 +85,7 @@
                         }
                     }
 
-                    if (species_list) {
+                    if (species_list && $SH.listsFacets) {
                         var data = ListsService.getItemsQCached(species_list);
                         if (data.length > 0 && data[0].kvpValues && data[0].kvpValues.length > 0) {
                             expanded.push({

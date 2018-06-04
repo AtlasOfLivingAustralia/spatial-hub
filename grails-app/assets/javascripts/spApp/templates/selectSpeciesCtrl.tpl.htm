@@ -75,13 +75,13 @@
         <div>
             <label>
         <input style="width:400px" id="speciesAutoComplete" species-auto-complete on-custom="setQ" >
-                <br/><span i18n="247">For example: "Macropus rufus" or "Red Kangaroo"</span>
+                <br/><span i18n="247">For example: "Heleioporus australiacus" or "Giant Burrowing Frog"</span>
         </label>
         </div>
         <hr>
     </div>
 
-    <div class="radio"><label>
+    <div ng-show="listsEnabled()" class="radio"><label>
         <input i18n="248" type="radio" ng-model="speciesOption" value="importList" ng-show="!_inputData.importPoints"
                ng-change="changeOption('importList')" ng-disabled="isNotLoggedIn">Create new species list</label>
         <div ng-show="speciesOption == 'importList'" style="margin-left:15px">
@@ -93,7 +93,7 @@
         </div>
     </div>
 
-    <div class="radio"><label>
+    <div ng-show="listsEnabled()" class="radio"><label>
         <input type="radio" ng-model="speciesOption" value="speciesList" ng-change="changeOption('speciesList')"
                ng-show="!_inputData.importPoints"><span i18n="251">Use species list</span></label>
 
@@ -103,20 +103,20 @@
         </div>
     </div>
 
-    <div ng-show="!_inputData.importList" class="radio"><label>
+    <div ng-show="!_inputData.importList && sandboxEnabled()" class="radio"><label>
         <input type="radio" ng-model="speciesOption" value="importPoints"
                ng-change="changeOption('importPoints')"
                ng-disabled="isNotLoggedIn"><span i18n="252">Import points</span></label>
 
         <div ng-show="speciesOption == 'importPoints'" style="margin-left:25px;margin-top:10px">
             <span i18n="253">Dataset: </span><span class="strong">{{sandboxName}}</span>
-            <button i18n="194" style="margin-left:30px" class="btn btn-default" ng-click="openSandbox()">
+            <button i18n="252" style="margin-left:30px" class="btn btn-default" ng-click="openSandbox()">
                 Import points
             </button>
         </div>
     </div>
 
-    <div ng-show="!_inputData.importList" class="radio"><label>
+    <div ng-show="!_inputData.importList && sandboxEnabled()" class="radio"><label>
         <input type="radio" ng-model="speciesOption" value="sandboxPoints"
                ng-change="changeOption('sandboxPoints')" ng-disabled="isNotLoggedIn"><span i18n="254">Use imported points</span>
     </label>

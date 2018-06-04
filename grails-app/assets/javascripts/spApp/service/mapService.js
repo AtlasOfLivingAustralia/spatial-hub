@@ -12,9 +12,29 @@
             function (LayoutService, $q, $timeout, LayersService, FacetAutoCompleteService, BiocacheService, ColourService, LoggerService) {
                 var bounds = {};
                 var layers = [];
+                var highlightTemplate = {
+                    uid: 'highlight',
+                    name: 'highlight',
+                    type: 'group',
+                    visible: true,
+                    layerParams: {
+                        showOnSelector: false
+                    },
+                    layerOptions: {
+                        layers: []
+                    }
+                };
                 var leafletLayers = {
                     draw: {
                         name: 'draw',
+                        type: 'group',
+                        visible: true,
+                        layerParams: {
+                            showOnSelector: false
+                        }
+                    },
+                    images: {
+                        name: 'images',
                         type: 'group',
                         visible: true,
                         layerParams: {
@@ -73,16 +93,20 @@
                         return list
                     },
 
+                    zoomToExtents: function (extents) {
+                        this.leafletScope.zoom(extents);
+                    },
+
                     zoom: function (uid) {
                         for (var i = 0; i < layers.length; i++) {
                             if (layers[i].uid === uid) {
                                 if (layers[i].bbox !== undefined  && layers[i].area_km != 0) {
-                                    this.leafletScope.zoom(layers[i].bbox);
+                                    this.zoomToExtents(layers[i].bbox);
                                     return
                                 }
                             }
                         }
-                        this.leafletScope.zoom([[-90, -180], [90, 180]])
+                        this.zoomToExtents([[-90, -180], [90, 180]]);
                     },
 
                     setVisible: function (uid, show) {
@@ -235,9 +259,33 @@
                         })
                     },
 
+                    addHighlight: function (id) {
+                        // wrap in timeout in case we need to wait for a prior removeHighlight()
+                        $timeout(function () {
+                            var template = highlightTemplate;
+                            template.layerOptions.layers = [];
+
+                            MapService.add(id, template);
+                            leafletLayers["highlight" + uid] = template;
+                            uid = uid + 1;
+                        }, 0);
+                    },
+
+                    removeHighlight: function () {
+                        for (var name in leafletLayers) {
+                            if (name.match(/highlight.*/)) {
+                                delete leafletLayers[name];
+                            }
+                        }
+                    },
+
                     add: function (id, parentLeafletGroup) {
-                        id.uid = uid;
-                        uid = uid + 1;
+                        if (parentLeafletGroup === undefined) {
+                            id.uid = uid;
+                            uid = uid + 1;
+                        } else {
+                            id.uid = parentLeafletGroup.uid
+                        }
 
                         var promises = [];
 

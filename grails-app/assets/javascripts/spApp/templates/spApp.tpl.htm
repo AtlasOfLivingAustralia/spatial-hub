@@ -6,11 +6,14 @@
         </div>
     </div>
 </div>
-<div style="width:410px;padding-left:25px;overflow-y:visible;overflow-x:visible" class="pull-left"
+
+<div style="width:410px;padding-left:25px;overflow-y:scroll"
+     ng-style="(panelMode[0] == 'default' && {'overflow-y':'visible'}) || {'overflow-y':'scroll'}"
+     class="pull-left"
      ng-controller="LayoutCtrl" id="left-panel">
 
     <div ng-show="panelMode[0] == 'default'">
-        <div id="spMenu" sp-menu></div>
+        <div id="spMenu" sp-menu style="overflow-y:visible;overflow-x:visible"></div>
         <div class="ui-layout-container" id="defaultPanel" style="height:500px;width:400px;margin-left:-15px;">
             <div class="ui-layout-center ui-layout-pane ui-layout-pane-center">
                 <div class="row" sp-map style="margin-left:15px;margin-right: 0px;height:100%;"></div>
@@ -50,16 +53,60 @@
         <leaflet id="map" lf-center="australia" layers="layers" controls="controls"
                  bounds="bounds" defaults="defaults" width="100%" height="480px">
             <div class='alert alert-ala-danger alert-dismissable hide' id='login-again-message' role='alert'>
-                <p><strong>Warning!</strong>
-                    You lost authentication, <a href="#" class="alert-link" click="reconnect()" name="saveAndLogin">Click</a>
-                    to save and login again.
-                </p>
+                <div class="container">
+                    <div class="row-fluid">
+                        <div class="">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close" title="Close">
+                                <span i18n="1" aria-hidden="true">×</span></button>
+                            <p><strong>Warning!</strong>
+                                You lost authentication, <a href="#" class="alert-link" click="reconnect()"
+                                                            name="saveAndLogin">Click</a>
+                                to save and login again.
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class='alert alert-ala-danger alert-dismissable hide' id='reconnect-message' role='alert'>
-                <p><strong>Warning!</strong> You lost connection to the server, reconnecting.....</p>
+                <div class="container">
+                    <div class="row-fluid">
+                        <div class="">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close" title="Close">
+                                <span i18n="1" aria-hidden="true">×</span></button>
+                            <p><strong>Warning!</strong> You lost connection to the server, reconnecting...</p>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-            <div class='alert alert-ala-danger alert-dismissable ' id='warning-message' role='alert'>
-                <p><strong>Warning!</strong>Your web browser is not fully supported! </p>
+            <div class="alert alert-ala-danger alert-dismissable hide" id="browser-supported-message" role='alert'>
+                <div class="container">
+                    <div class="row-fluid">
+                        <div class="">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close" title="Close">
+                                <span i18n="1" aria-hidden="true">×</span></button>
+                            <p><strong>Warning!</strong>
+                                Your web browser is not fully supported!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class='alert alert-ala-info alert-dismissable' id='warning-message' role='alert'>
+                <div class="container">
+                    <div class="row-fluid">
+                        <div class="">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close" title="Close">
+                                <span i18n="1" aria-hidden="true">×</span></button>
+                            <p i18n="290">Welcome to ALA Spatial BETA.</p>
+                            <p i18n="291">This site is a work in progress. Some functions are missing or may not work
+                                correctly.</p>
+                            <p i18n="292">Please send feedback to <a
+                                    href="mailto:support@ala.org.au">support@ala.org.au</a></p>
+                        </div>
+                    </div>
+                </div>
             </div>
             <leaflet-quick-links></leaflet-quick-links>
         </leaflet>
