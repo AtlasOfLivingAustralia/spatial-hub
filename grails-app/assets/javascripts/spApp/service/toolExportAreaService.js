@@ -64,7 +64,13 @@
                 },
 
                 execute: function (inputs) {
-                    var url = LayersService.getAreaDownloadUrl(inputs[0].pid, inputs[1], inputs[0].name);
+                    //We only allow to download this first area at the current stage
+                    Console.log('Warning: We only download the first selected area at this momonet!')
+                    var areas = inputs[0];
+                    var downloadingArea = areas[0]
+                    var pid = downloadingArea.pid;
+                    var name = downloadingArea.name;
+                    var url = LayersService.getAreaDownloadUrl(pid, inputs[1], name);
                     Util.download(url);
                 }
             };
