@@ -65,7 +65,7 @@
 
                 execute: function (inputs) {
                     //We only allow to download this first area at the current stage
-                    Console.log('Warning: We only download the first selected area at this momonet!')
+                    console.log('Warning: We only download the first selected area at this momonet!')
                     var areas = inputs[0];
                     var downloadingArea = areas[0]
                     var pid = downloadingArea.pid;
