@@ -110,7 +110,7 @@
             <tr ng-repeat="layer in intersects">
                 <td class="col-sm-8">{{layer.layername}}</td>
                 <td class="col-sm-4">{{layer.value}} <span
-                        ng-show="layer.units != 'dimensionless' && layer.units != ''">({{layer.units}})</span></td>
+                        ng-hide="layer.units == 'dimensionless' || layer.units == '' || layer.units == null ">({{layer.units}})</span></td>
             </tr>
             </tbody>
         </table>
