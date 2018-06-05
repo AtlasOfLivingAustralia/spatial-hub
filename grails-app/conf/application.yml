@@ -191,6 +191,8 @@ biocache:
 
 biocacheService:
     url: 'https://biocache.ala.org.au/ws'
+    #Facets to ignore in the biocache grouped/facets service
+    default_facets_ignored: 'data_resource_uid,data_provider_uid,species,collection_uid,institution_code_name,institution_uid,uncertainty'
 
 sampling:
     url: 'http://ala-dylan.it.csiro.au/sampling-service'
