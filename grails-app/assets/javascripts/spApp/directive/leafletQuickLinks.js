@@ -112,7 +112,7 @@
                                         }
                                         break;
                                     case 'areareport':
-                                        $scope.open("ToolAreaReportService", data);
+                                        $scope.open("ToolAreaReportService", data, inputs.includeSpecies, inputs.includeArea);
                                         break;
                                     case 'classification':
                                         $scope.open("Classification", {opening: true});
