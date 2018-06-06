@@ -73,15 +73,17 @@
                         };
                         expanded.push(o);
                         for (var j = 0; j < list[i].facets.length; j++) {
-                            var name = Messages.get('facet.' + list[i].facets[j].field, list[i].facets[j].field);
-                            if (name === list[i].facets[j].field && list[i].facets[j].description) {
-                                name = list[i].facets[j].description;
+                            if ($SH.default_facets_ignored.indexOf(list[i].facets[j].field) == -1) {
+                                var name = Messages.get('facet.' + list[i].facets[j].field, list[i].facets[j].field);
+                                if (name === list[i].facets[j].field && list[i].facets[j].description) {
+                                    name = list[i].facets[j].description;
+                                }
+                                expanded.push({
+                                    name: name,
+                                    separator: false,
+                                    facet: list[i].facets[j].field
+                                })
                             }
-                            expanded.push({
-                                name: name,
-                                separator: false,
-                                facet: list[i].facets[j].field
-                            })
                         }
                     }
 

@@ -23,6 +23,7 @@
         baseUrl: '${config.grails.serverURL}',
         biocacheUrl: '${config.biocache.url}',
         biocacheServiceUrl: '${config.biocacheService.url}',
+        default_facets_ignored: '${config.biocacheService.default_facets_ignored}',
         bieUrl: '${config.bie.baseURL}',
         bieServiceUrl: '${config.bieService.baseURL}',
         layersServiceUrl: '${config.layersService.url}',
