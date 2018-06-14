@@ -350,17 +350,28 @@
                                     for (j in $scope.values[k].area) {
                                         if ($scope.values[k].area.hasOwnProperty(j)) {
                                             var a = $scope.values[k].area[j];
-                                            if (a.pid ) {
+
+                                            var b = a.bbox;
+                                            if ((a.bbox + '').match(/^POLYGON/g)) {
+                                                //convert POLYGON box to bounds
+                                                var split = a.bbox.split(',');
+                                                var p1 = split[1].split(' ');
+                                                var p2 = split[3].split(' ');
+
+                                                b = [Math.min(p1[0], p2[0]), Math.min(p1[1], p2[1]), Math.max(p1[0], p2[0]), Math.max(p1[1], p2[1])];
+                                            }
+                                            if (a.pid){
                                                 if(!ToolsService.isLocalTask($scope.toolName)){
                                                     inputs[k].push({
                                                         pid: a.pid,
-                                                        q: a.q
+                                                        q: a.q,
+                                                        bbox: b
                                                     })
-                                                }else{
+                                                } else {
                                                     inputs[k].push({
                                                         q: a.q,
                                                         name: a.name,
-                                                        bbox: a.bbox,
+                                                        bbox: b,
                                                         area_km: a.area_km,
                                                         pid: a.pid,
                                                         wkt: a.wkt
@@ -370,7 +381,7 @@
                                                 inputs[k].push({
                                                     q: a.q,
                                                     name: a.name,
-                                                    bbox: a.bbox,
+                                                    bbox: b,
                                                     area_km: a.area_km,
                                                     wkt: a.wkt
                                                 })
