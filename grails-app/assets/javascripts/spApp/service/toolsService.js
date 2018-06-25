@@ -73,10 +73,12 @@
                             uiScope.finished = true
                         } else if (response.data.status === 4) {
                             uiScope.status = 'successful';
-
                             uiScope.finishedData = response.data;
-
                             return _executeResult(uiScope)
+                        } else if (response.data.status === 5) {
+                            uiScope.status = 'successful';
+                            uiScope.finished = true;
+                            uiScope.downloadUrl = null;
                         }
                     })
                 }
