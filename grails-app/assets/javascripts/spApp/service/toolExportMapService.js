@@ -62,12 +62,23 @@
                                     var i = group[j];
                                     var url = i.url;
                                     if (url.indexOf('?') < 0) url += '?';
-                                    url += "&opacity=" + (i.opacity);
+                                    //Adding a quick fix for the issue that exporting map without areas
+                                    //Todo Mapservice may be a better place to put this fix
+                                    url += "&bbox="+bbox.join();
+                                    url +="&width="+windowSize[0]+"&height="+windowSize[1]
+                                    url += "&service=WMS&request=GetMap"
+                                    //end fix
+
                                     for (var j in i.layerParams) {
                                         if (i.layerParams.hasOwnProperty(j)) {
                                             url += '&' + j + '=' + encodeURIComponent(i.layerParams[j])
                                         }
                                     }
+                                    //Check if opacity has been defined
+                                    if (url.indexOf("opacity") == -1)
+                                        url += "&opacity=" + (i.opacity);
+
+                                    console.log(url);
                                     mapLayers.push(url)
                                 }
                             }
