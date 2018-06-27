@@ -364,12 +364,12 @@
                                                 if(!ToolsService.isLocalTask($scope.toolName)){
                                                     inputs[k].push({
                                                         pid: a.pid,
-                                                        q: a.q,
+                                                        q: a.q?a.q:"",
                                                         bbox: b
                                                     })
                                                 } else {
                                                     inputs[k].push({
-                                                        q: a.q,
+                                                        q: a.q?a.q:"",
                                                         name: a.name,
                                                         bbox: b,
                                                         area_km: a.area_km,
@@ -379,7 +379,7 @@
                                                 }
                                             } else {
                                                 inputs[k].push({
-                                                    q: a.q,
+                                                    q: a.q?a.q:"",
                                                     name: a.name,
                                                     bbox: b,
                                                     area_km: a.area_km,
