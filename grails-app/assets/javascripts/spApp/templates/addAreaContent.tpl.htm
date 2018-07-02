@@ -188,6 +188,8 @@
                                        value="My Area">
                             </div>
 
+                            <p i18n="288">Only areas can be imported. Points and lines cannot be imported.</p>
+
                             <div ng-show="step == 'importShapefile' && fileName.length > 0" style="margin-top:30px;">
                                 <div class="container-fluid">
                                     <div class="row">
@@ -230,7 +232,6 @@
                             </div>
 
                             <div style="margin-top:30px">
-                                <p i18n="288" >The shapefile uploaded must contain areas.</p>
                                 <div class="btn-group btn-group-sm">
                                     <button i18n="37" ng-show="!uploadingFile && uploadProgress == 0"
                                             class="btn btn-default"

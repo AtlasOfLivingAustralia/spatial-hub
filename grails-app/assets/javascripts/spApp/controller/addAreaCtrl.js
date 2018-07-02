@@ -104,7 +104,7 @@
                             //n/a
                         } else if ($scope.area === 'importShapefile') {
                             var featureIdxs = $scope.areaList.filter(function (area) {
-                                return area.selected
+                                return area.selected || false
                             }).map(function (area) {
                                 return area.id
                             }).join();
@@ -187,7 +187,7 @@
                 $scope.selectShpArea = function () {
                     var selected = "";
                     var userSelectedArea = $scope.areaList.filter(function (area) {
-                        return area.selected
+                        return area.selected || false
                     });
                     if (userSelectedArea.length === $scope.areaList.length) {
                         selected = "all";
@@ -223,11 +223,15 @@
                         if ($scope.area === 'importShapefile') {
                             $scope.shapeId = response.data.shapeId;
                             $scope.areaHeader = [];
+                            $scope.areaList = response.data.area;
+
                             if (response.data.area.length > 0) {
                                 $scope.areaHeader = Object.keys(response.data.area[0].values);
                                 $scope.shpImg = LayersService.getShpImageUrl($scope.shapeId, "all");
+                                if (response.data.area.length == 1) {
+                                    $scope.areaList[0].selected = true
+                                }
                             }
-                            $scope.areaList = response.data.area;
                         } else if ($scope.area === 'importKML') {
                             if (response.data.shapeId) {
                                 $scope.setPid(response.data.shapeId, true);
@@ -299,8 +303,8 @@
                     } else if ($scope.area === 'importShapefile' || $scope.area === 'importKML') {
                         if ($scope.areaList) {
                             return $scope.areaList.filter(function (area) {
-                                return area.selected
-                            }) === 0
+                                return area.selected || false
+                            }).length === 0
                         } else {
                             return true
                         }
