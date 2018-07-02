@@ -26,6 +26,8 @@ L.Control.Panoramio = L.Control.extend({
             .addListener(this.link, 'click', L.DomEvent.preventDefault)
             .addListener(this.link, 'click', this._toggle, map); //map->this?
 
+        $(".icon-panoramio").addClass("icon-exit-panoramio");
+
         return container;
     },
 
@@ -35,10 +37,10 @@ L.Control.Panoramio = L.Control.extend({
 
         if (this.panoramioControl._panoramio_state){
             this.panoramioControl.link.title = this.panoramioControl.options.titleCancel;
-            $(".icon-panoramio").addClass("icon-exit-panoramio")
+            $(".icon-panoramio").removeClass("icon-exit-panoramio")
         } else {
             this.panoramioControl.link.title = this.panoramioControl.options.title;
-            $(".icon-panoramio").removeClass("icon-exit-panoramio")
+            $(".icon-panoramio").addClass("icon-exit-panoramio")
         }
     }
 

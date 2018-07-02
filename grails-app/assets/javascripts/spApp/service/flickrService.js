@@ -35,8 +35,6 @@
                         + '&format=json&nojsoncallback=1';
 
                     return $http.get(url).then(function (response) {
-                        console.debug(response);
-
                         if (response.data.licenses){
                             var result = {};
                             angular.forEach (response.data.licenses.license, function (lic) {
@@ -61,7 +59,6 @@
                             }
 
                         });
-                        console.log("licenseName: " + licenseName);
                         return licenseName;
                     });
                 }

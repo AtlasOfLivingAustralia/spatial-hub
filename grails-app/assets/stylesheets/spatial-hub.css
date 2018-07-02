@@ -620,6 +620,15 @@ form.banner {
 .icon-panoramio { background-image: url(images_on.png); background-size: 18px 18px; }
 .icon-exit-panoramio { background-image: url(images_off.png); background-size: 18px 18px; }
 
+.icon-spin-panoramio {
+    background: url(../images/spinner.gif);
+    background-repeat: no-repeat;
+    background-position-x: 100%;
+    display: inline-block;
+    background-size: contain;
+    background-size: 18px 18px;
+}
+
 #legend {
     margin-right:0px;
 }

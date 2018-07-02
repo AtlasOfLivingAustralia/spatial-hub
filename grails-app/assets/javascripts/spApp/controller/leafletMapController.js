@@ -241,6 +241,7 @@
                         // so we config total number of photos to display at one time ourselves
                         var nbrOfPhotosToDisplay = Math.round($SH.flickrNbrOfPhotosToDisplay/multipBounds.length);
                         for (var i = 0; i < multipBounds.length; i++) {
+                            $(".icon-panoramio").addClass("icon-spin-panoramio");
                             promises.push(FlickrService.getPhotos(multipBounds[i]).then(function (data) {
                                 if (data.photos){
                                     for (var i = 0; i < nbrOfPhotosToDisplay; i++) {
@@ -248,6 +249,7 @@
                                         newMarkers[photoContent.id] = photoContent;
                                     }
                                 }
+                                $(".icon-panoramio").removeClass("icon-spin-panoramio");
                             }));
                         }
 
