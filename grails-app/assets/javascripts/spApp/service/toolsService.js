@@ -9,8 +9,8 @@
      * tools from spatial-service/capabilities.
      */
     angular.module('tools-service', [])
-        .factory('ToolsService', ['$injector', '$q', '$http', '$timeout', 'MapService', 'LayersService', 'LoggerService',
-            function ($injector, $q, $http, $timeout, MapService, LayersService, LoggerService) {
+        .factory('ToolsService', ['$injector', '$q', '$http', '$timeout', 'MapService', 'LayersService', 'LoggerService', 'LayoutService',
+            function ($injector, $q, $http, $timeout, MapService, LayersService, LoggerService, LayoutService) {
                 var cap = $SH.layersServiceCapabilities;
                 var viewConfig = $SH.viewConfig;
                 var localToolServices = {};
@@ -105,6 +105,7 @@
 
                     for (k in uiScope.finishedData.output) {
                         if (uiScope.finishedData.output.hasOwnProperty(k)) {
+                            var csvFile = '';
                             var d = uiScope.finishedData.output[k];
                             if (d.openUrl) {
                                 uiScope.metadataUrl = d.openUrl
@@ -112,7 +113,19 @@
                                 //processed earlier
                             } else if (d.file && d.file.match(/\.html$/g)) {
                                 uiScope.metadataUrl = LayersService.url() + '/tasks/output/' + uiScope.finishedData.id + '/' + d.file
-
+                            } else if (d.file && d.file.match(/\.csv/g)) {
+                                //can only display one csv file
+                                var url = LayersService.url() + '/tasks/output/' + uiScope.finishedData.id + '/' + d.file;
+                                csvFile = d.file;
+                                $http.get(url).then(function (data) {
+                                    LayoutService.openModal('csv', {
+                                        title: uiScope.toolName + " (" + csvFile + ")",
+                                        csv: data.data,
+                                        info: '',
+                                        filename: csvFile,
+                                        display: {size: 'full'}
+                                    }, false)
+                                });
                             } else if (d.file && d.file.match(/\.tif$/g)) {
                                 var name = d.file.replace('/layer/', '').replace('.tif', '');
                                 var layer = {

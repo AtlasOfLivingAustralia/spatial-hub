@@ -14,7 +14,10 @@
                 $scope.data = data;
                 $scope.truncated = data.csv.length > 100000;
                 $scope.summary = $.csv.toArrays(data.csv.substring(0, 100000));
-                $scope.summary = $scope.summary.splice(0, $scope.summary.length - 2);
+                if ($scope.truncated) {
+                    // cleanup last row that was truncated
+                    $scope.summary = $scope.summary.splice(0, $scope.summary.length - 2);
+                }
 
                 $scope.step = 1;
                 $scope.exportUrl = null;
