@@ -99,6 +99,15 @@
                                 //if (value.constraints['speciesOption'] === undefined) value.constraints['speciesOption'] = 'searchSpecies';
 
                                 if (value.constraints['default'] !== undefined) v = value.constraints['default'];
+                                else if (value.constraints['speciesOption'] === 'allSpecies') {
+                                    //specify allSpecies default
+                                    v = {
+                                        q: ["*:*", "geospatial_kosher:true", "-occurrence_status_s:absent"],
+                                        name: 'All species',
+                                        bs: $SH.biocacheServiceUrl,
+                                        ws: $SH.biocacheUrl
+                                    }
+                                }
                                 else v = {q: [], name: '', bs: '', ws: ''}
                             } else if (value.type === 'layer') {
                                 if (value.constraints['default'] !== undefined) v = value.constraints['default'];
