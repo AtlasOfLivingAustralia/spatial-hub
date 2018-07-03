@@ -315,11 +315,11 @@
                         id.facetList = {};
 
                         if (id.size === undefined) {
-                            id.size = 3
+                            id.size = $SH.defaultSpeciesDotSize
                         }
 
                         if (id.opacity === undefined) {
-                            id.opacity = 60
+                            id.opacity = $SH.defaultSpeciesDotOpacity
                         }
 
                         id.uncertainty = false;

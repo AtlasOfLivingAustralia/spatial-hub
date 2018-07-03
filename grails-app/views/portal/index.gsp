@@ -73,6 +73,8 @@
         flickrNbrOfPhotosToDisplay: '${config.flickr.nbrOfPhotosToDisplay}',
         menu: '${config.grails.serverURL}/portal/config/menu',
         defaultAreas: ${(config.defaultareas as grails.converters.JSON).toString().encodeAsRaw()},
+        defaultSpeciesDotSize: ${config.speciesDotSize},
+        defaultSpeciesDotOpacity: ${config.speciesDotOpacity},
         validUrls: [
             'self',
             'http://*.ala.org.au/**',
