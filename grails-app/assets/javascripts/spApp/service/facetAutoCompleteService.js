@@ -85,6 +85,43 @@
                                 })
                             }
                         }
+
+                        // insert custom facets
+                        var custom = $SH.custom_facets[list[i].title];
+                        if (custom) {
+                            for (j = 0; j < custom.length; j++) {
+                                var nameField = custom[j].split(';');
+                                if (nameField.length == 1) nameField.push(nameField[0]);
+                                var name = Messages.get('facet.' + nameField[1], nameField[0]);
+                                expanded.push({
+                                    name: name,
+                                    separator: false,
+                                    facet: nameField[1]
+                                })
+                            }
+                        }
+                        $SH.custom_facets[list[i].title] = undefined;
+                    }
+
+                    // add remaining custom facets
+                    for (var key in $SH.custom_facets) {
+                        var custom = $SH.custom_facets[key];
+                        if (custom) {
+                            expanded.push({
+                                name: '--- ' + key + ' ---',
+                                separator: true
+                            });
+                            for (j = 0; j < custom.length; j++) {
+                                var nameField = custom[j].split(';');
+                                if (nameField.length == 1) nameField.push(nameField[0]);
+                                var name = Messages.get('facet.' + nameField[1], nameField[0]);
+                                expanded.push({
+                                    name: name,
+                                    separator: false,
+                                    facet: nameField[1]
+                                })
+                            }
+                        }
                     }
 
                     if (species_list && $SH.listsFacets) {

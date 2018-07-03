@@ -1,3 +1,4 @@
+<%@ page import="grails.converters.JSON" %>
 <!doctype html>
 <html lang="en">
 
@@ -24,6 +25,7 @@
         biocacheUrl: '${config.biocache.url}',
         biocacheServiceUrl: '${config.biocacheService.url}',
         default_facets_ignored: '${config.biocacheService.default_facets_ignored}',
+        custom_facets: ${(config.biocacheService.custom_facets as grails.converters.JSON).toString().encodeAsRaw()},
         bieUrl: '${config.bie.baseURL}',
         bieServiceUrl: '${config.bieService.baseURL}',
         layersServiceUrl: '${config.layersService.url}',
