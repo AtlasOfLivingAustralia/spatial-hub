@@ -395,44 +395,65 @@
                         };
 
                         scope.getFacetItemCount = function (item, layer, fq) {
-                            var it = item;
-                            BiocacheService.count(layer, fq).then(function (count) {
-                                it.count = count;
+                            //var it = item;
+                            return BiocacheService.count(layer, fq).then(function (count) {
+                                item.count = count;
+                                return item;
                             });
                         };
 
-                        scope.speciesListToFacetList = function (data) {
+                        scope.speciesListToFacetList = function(data){
+                            var def = $q.defer();
+
                             var list = [];
 
                             var promises = [];
-                            var i = 0;
+                            var ci = 0;
                             for (var key in data) {
                                 var item = data[key];
                                 item.count = 0; // TODO: check if this needs to be an object
-                                var c = ColourService.getColour(i);
+                                var c = ColourService.getColour(ci);
                                 var listItem = {
                                     name: key, displayname: key, count: item.count,
                                     fq: item.fq, red: c.red, green: c.green, blue: c.blue
                                 };
-
                                 //populate count
-                                scope.getFacetItemCount(listItem, scope.selected.layer, item.fq);
-
-                                list.push(listItem);
-
-                                // create sub layer
-                                promises.push(scope.createSubLayer(c, scope.selected.layer, item.fq));
-
-                                i = i + 1;
+                                promises.push(scope.getFacetItemCount(listItem, scope.selected.layer, item.fq));
+                                ci = ci + 1;
                             }
+                            $q.all(promises).then(function ( result) {
+                                def.resolve(result);
+                                result.sort(function(a,b){return b.count -a.count})
+                                //sort and aggregate the rest of layers > 5
+                                var thres = 5
+                                if (result.length < thres){
+                                    for (var i in result) {
+                                        var c = { red:result[i].red,green:result[i].green,blue:result[i].blue}
+                                        scope.createSubLayer(c, scope.selected.layer, result[i].fq)
+                                    }
+                                }else{
+                                    for (var i =0; i< thres; i++) {
+                                        var c = { red:result[i].red,green:result[i].green,blue:result[i].blue}
+                                        scope.createSubLayer(c, scope.selected.layer, result[i].fq)
+                                    }
+                                    //agregate the rest of them
+                                    var aggreatedfq = []
+                                    for (var i = thres; i<result.length; i++){
+                                        //get content between brackets
+                                        var lfq = result[i].fq.match(/\(([^)]+)\)/)[1]
+                                        aggreatedfq.push(lfq);
+                                    }
+                                    var c = ColourService.getColour(0);
+                                    scope.createSubLayer(c, scope.selected.layer, "("+aggreatedfq.join(' OR ')+")")
+                                }
 
-                            $q.all(promises).then(function (results) {
-                                $timeout(function () {
-                                }, 0);
-                            });
+                                // $timeout(function () {
+                                // }, 0);
 
-                            return list;
+                            })
+                            return def.promise;
                         };
+
 
                         scope.createSubLayer = function (colour, layer, fq) {
                             return BiocacheService.newLayerAddFq(layer, fq, layer.name).then(function (subLayer) {
@@ -455,9 +476,16 @@
                                     for (var i in scope.selected.layer.list) {
                                         var f = scope.selected.layer.list[i];
                                         if (f.facet === scope.selected.layer.facet) {
-                                            scope.selected.layer.facetList[scope.selected.layer.facet] = scope.speciesListToFacetList(f.species_list_facet);
-                                            scope.facetClearSelection();
-                                            scope.updateWMS();
+                                            // scope.selected.layer.facetList[scope.selected.layer.facet] = scope.speciesListToFacetList(f.species_list_facet);
+                                            // scope.facetClearSelection();
+                                            // scope.updateWMS();
+
+                                            scope.speciesListToFacetList(f.species_list_facet).then(function(result){
+                                                scope.selected.layer.facetList[scope.selected.layer.facet] = result;
+                                                scope.facetClearSelection();
+                                                scope.updateWMS();
+
+                                            })
                                         }
                                     }
                                 } else {

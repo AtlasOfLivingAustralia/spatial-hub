@@ -98,11 +98,11 @@
             <uib-progressbar ng-show="selected.layer.facetList[selected.layer.facet] === undefined || selected.layer.facetList[selected.layer.facet] == null || selected.layer.facetList[selected.layer.facet] == 0" class="progress-striped" ng-class="{ active: true }" value="100"
                              type='info' title="Updating">loading...</uib-progressbar>
             <table class="table table-striped" style="width:370px;max-height:200px;overflow:scroll;display:block">
-                <tr ng-repeat="x in selected.layer.facetList[selected.layer.facet] | filter:facetFilter">
+                <tr ng-repeat="x in selected.layer.facetList[selected.layer.facet] | orderBy:'-count' |filter:facetFilter">
                     <td style="width:20px"><input type="checkbox" ng-model="x.selected"
                                                   ng-change="updateSelection()"></td>
                     <td style="width:230px">{{x.displayname}}</td>
-                    <td style="width:100px">{{x.count}}</td>
+                    <td style="width:100px" >{{x.count}}</td>
                     <td i18n="130" style="background-color:#{{formatColor(x)}};width:20px">&nbsp</td>
                 </tr>
             </table>
