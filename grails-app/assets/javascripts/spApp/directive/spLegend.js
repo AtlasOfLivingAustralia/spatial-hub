@@ -422,9 +422,9 @@
                                 ci = ci + 1;
                             }
                             $q.all(promises).then(function ( result) {
-                                def.resolve(result);
                                 result.sort(function(a,b){return b.count -a.count})
-                                //sort and aggregate the rest of layers > 5
+                                def.resolve(result);
+                                //sort and aggregate the rest of layers after the top 5
                                 var thres = 5
                                 if (result.length < thres){
                                     for (var i in result) {
@@ -440,10 +440,11 @@
                                     var aggreatedfq = []
                                     for (var i = thres; i<result.length; i++){
                                         //get content between brackets
-                                        var lfq = result[i].fq.match(/\(([^)]+)\)/)[1]
-                                        aggreatedfq.push(lfq);
+                                        //  var lfq = result[i].fq.match(/\(([^)]+)\)/)[1]
+                                        //  aggreatedfq.push(lfq);
+                                        aggreatedfq.push(result[i].fq);
                                     }
-                                    var c = ColourService.getColour(0);
+                                    var c = ColourService.getColour(6);
                                     scope.createSubLayer(c, scope.selected.layer, "("+aggreatedfq.join(' OR ')+")")
                                 }
 
