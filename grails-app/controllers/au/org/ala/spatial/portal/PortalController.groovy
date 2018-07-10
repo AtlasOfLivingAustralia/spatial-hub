@@ -436,7 +436,7 @@ class PortalController {
                 }
 
                 // if wkt is a number, it's a pid
-                if (json?.wkt.isNumber()) {
+                if (json?.wkt?.isNumber()) {
                     json.wkt = getWkt(json?.wkt)
                 }
 
