@@ -270,6 +270,21 @@ class PortalController {
         }
     }
 
+    String getWkt(objectId) {
+        String wkt = null
+
+        try {
+            if (objectId != null) {
+                String url = "${grailsApplication.config.layersService.url}/shapes/wkt/" + objectId
+                wkt = hubWebService.getUrl(url, null, false)
+            }
+        } catch (err) {
+            log.error "failed to lookup object wkt: ${objectId}", err
+        }
+
+        wkt
+    }
+
     def postAreaFile(String id) {
         def userId = getValidUserId(params)
 
@@ -411,12 +426,18 @@ class PortalController {
                         json.fq[0] = json.q
                         json.q = tmp
                     } else if (json?.wkt || json?.qc) {
+                        log.error (getWkt(json?.wkt ))
                         json.fq = [json.q]
                         json.q = '*:*'
                     } else {
                         value = [qid: json.q.replaceFirst("qid:", "")] as JSON
                         render value
                     }
+                }
+
+                // if wkt is a number, it's a pid
+                if (json?.wkt.isNumber()) {
+                    json.wkt = getWkt(json?.wkt)
                 }
 
                 def r = hubWebService.postUrl("${json.bs}/webportal/params", json)
