@@ -25,7 +25,7 @@
 
                         scope.mappedLayers = [];
 
-                        scope.areaName = MapService.nextLayerName('My Area');
+                        scope.areaName = MapService.nextLayerName("My Area");
 
                         scope.layerSelected = {name: 'search'};
 
@@ -48,6 +48,8 @@
                                 scope.typeName = 'circle';
                                 scope.addCircle()
                             }
+                            scope.areaName = MapService.nextLayerName("My " + ((!scope.typeName || 0 === scope.typeName.length)? "Area" : (scope.typeName.charAt(0).toUpperCase()+scope.typeName.slice(1))) );
+                            //scope.areaName = MapService.nextLayerName("My " + scope.typeName.charAt(0).toUpperCase() + scope.typeName.slice(1) );
                         };
 
                         $timeout(function () {
