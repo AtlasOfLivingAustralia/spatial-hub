@@ -87,6 +87,9 @@
                         //append area to the species layer name
                         if (inputs[2][0].name !== undefined)
                             newName += ' (' + inputs[2][0].name + ')';
+
+                        newName = MapService.nextLayerName(newName);
+
                         //Check if areas is compatible
                         inputs[1].enabled = this.checkAreaCompatible(inputs[0].q);
 

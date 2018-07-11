@@ -53,17 +53,21 @@
                     var newName = $i18n("Facet");
                     //if (area.name !== undefined) newName += ' (' + area.name + ')';
                     //Guess name from factet Genuse:"Cractus" OR Genuse:"xxxxxx"
-                    var classes = facet.split("OR");
-                    var classesname = []
-                    for (var i in classes){
-                        classesname.push(classes[0].split(":")[1].replace(/['"]+/g, ''))
+                    try {
+                        var classes = facet.split("OR");
+                        var classesname = []
+                        for (var i in classes) {
+                            classesname.push(classes[0].split(":")[1].replace(/['"]+/g, ''))
+                        }
+                        newName += ' (' + classesname.join('/') + ')'
+                        // if (classes.length>1){
+                        //     newName = facet;
+                        // }else{
+                        //     newName += ' ('+classes[0].split(":")[1].replace(/['"]+/g, '')+')'
+                        // }
+                    }catch(e){
+                        if (area.name !== undefined) newName += ' (' + area.name + ')'; //in case
                     }
-                    newName += ' ('+classesname.join('/')+')'
-                    // if (classes.length>1){
-                    //     newName = facet;
-                    // }else{
-                    //     newName += ' ('+classes[0].split(":")[1].replace(/['"]+/g, '')+')'
-                    // }
 
                     return BiocacheService.newLayer({
                         q: q,
