@@ -521,9 +521,11 @@
                                     $scope.$emit('setWkt', ['point', geoJSON.geometry.coordinates[0], geoJSON.geometry.coordinates[1]]);
                                 } else {
                                     wkt = 'POLYGON ((';
-                                    for (var i = 0; i < geoJSON.geometry.coordinates[0].length; i++) {
-                                        if (i > 0) wkt += ', ';
-                                        wkt += geoJSON.geometry.coordinates[0][i][0] + ' ' + geoJSON.geometry.coordinates[0][i][1]
+                                    var firstTime = true;
+                                    for (var i = geoJSON.geometry.coordinates[0].length - 1; i >= 0; i--) {
+                                        if (!firstTime) wkt += ', ';
+                                        else firstTime = false;
+                                        wkt += geoJSON.geometry.coordinates[0][i][0] + ' ' + geoJSON.geometry.coordinates[0][i][1];
                                     }
                                     wkt += '))';
                                     $scope.$emit('setWkt', [wkt]);
