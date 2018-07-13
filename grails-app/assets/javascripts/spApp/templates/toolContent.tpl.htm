@@ -80,8 +80,8 @@
                                 <div ng-if="v.type == 'list' && v.constraints.selection == 'single'">
                                     <label ng-if="sv.name !== undefined && sv.name !== v.description" >{{v.description}}</label>
                                     <br ng-if="sv.name !== undefined && sv.name !== v.description" />
-                                    <select ng-model="values[i]" ng-init="values[i] = values[i]"
-                                            ng-options="item.value as item.label for item in v.constraints._list">
+                                    <select ng-model="values[i]" ng-init="values[i] = v.constraints._list[0].value"
+                                            ng-options="item.value as item.label for item in v.constraints._list" >
                                     </select>
                                 </div>
                                 <div ng-if="v.type == 'list' && v.constraints.selection != 'single'">
