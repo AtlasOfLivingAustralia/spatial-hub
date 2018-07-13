@@ -520,15 +520,28 @@
                                 } else if (type === "marker") {
                                     $scope.$emit('setWkt', ['point', geoJSON.geometry.coordinates[0], geoJSON.geometry.coordinates[1]]);
                                 } else {
-                                    wkt = 'POLYGON ((';
-                                    for (var i = 0; i < geoJSON.geometry.coordinates[0].length; i++) {
-                                        if (i > 0) wkt += ', ';
-                                        wkt += geoJSON.geometry.coordinates[0][i][0] + ' ' + geoJSON.geometry.coordinates[0][i][1]
+                                    var processedWkt = Util.wrap(geoJSON.geometry.coordinates[0]);
+
+                                    wkt = 'POLYGON (';
+                                    if (processedWkt.length > 1) {
+                                        wkt = 'MULTIPOLYGON ((';
                                     }
-                                    wkt += '))';
+
+                                    for (var i = 0; i < processedWkt.length; i++) {
+                                        if (i > 0) {
+                                            wkt += ', ';
+                                        }
+                                        wkt += '(';
+                                        wkt += buildWkt(processedWkt[i]);
+                                        wkt += ')';
+                                    }
+                                    wkt += ')';
+
+                                    if (processedWkt.length > 1) {
+                                        wkt += ')';
+                                    }
                                     $scope.$emit('setWkt', [wkt]);
                                 }
-
                             });
 
                             map.on('click', function (e) {
@@ -557,6 +570,20 @@
                         })
                     });
                 };
+
+                function buildWkt(polygon) {
+                    var wkt = '';
+                    var firstTime = true;
+                    for (var i = polygon.length - 1; i >= 0; i--) {
+                        if (!firstTime) {
+                            wkt += ', ';
+                        }
+                        else firstTime = false;
+                        wkt += polygon[i][0] + ' ' + polygon[i][1];
+                    }
+
+                    return wkt;
+                }
 
                 $timeout(function () {
                     $(window).trigger('resize');
