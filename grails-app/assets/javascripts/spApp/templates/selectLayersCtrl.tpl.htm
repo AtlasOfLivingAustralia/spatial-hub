@@ -55,7 +55,7 @@
                     <label style="padding-left:20px;" ng-show="searchLayer.length > 0">{{(layers |
                         filter:searchLayer).length}} <span i18n="228">matching layers</span></label>
 
-                    <table class="table table-striped fixed-head layers-table" >
+                    <table class="table table-striped fixed-head layers-table" id="layersList">
                         <thead>
                         <tr>
                             <th style="width:20px"></th>
@@ -85,7 +85,7 @@
                         </tr>
                         </thead>
                         <tbody style="height:300px;overflow:scroll">
-                        <tr ng-repeat="layer in layers | orderBy:sortType:sortReverse | filter:searchLayer">
+                        <tr ng-repeat="layer in layers | orderBy:sortType:sortReverse | filter:searchLayer" name={{layer.id}}>
                             <td style="width:20px"><input type="checkbox" ng-model="layer.selected" ng-click="toggle(layer)">
                             </td>
                             <td style="width:20px"><img

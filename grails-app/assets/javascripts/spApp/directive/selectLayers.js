@@ -9,7 +9,7 @@
      */
     angular.module('select-layers-directive', ['lists-service', 'layer-distances-service', 'map-service',
         'predefined-layer-lists-service'])
-        .directive('selectLayers', ['$http', '$timeout', 'LayersService', 'LayerDistancesService', 'MapService',
+        .directive('selectLayers', ['$http', '$timeout' , 'LayersService', 'LayerDistancesService', 'MapService',
             'LayoutService', 'PredefinedLayerListsService',
             function ($http, $timeout, LayersService, LayerDistancesService, MapService,
                       LayoutService, PredefinedLayerListsService) {
@@ -167,9 +167,23 @@
                             if (layer && layer.id && !scope.isSelected(layer.id)) {
                                 scope._selection.layers.push(layer);
                                 scope.updateDist();
-
                                 scope.updateExportSet()
                             }
+
+                            var w = $(window);
+
+                            var row = $('table#layersList tr[name='+layer.id+']').position();
+                            if (row) {
+                                $('table#layersList tbody').animate({
+                                    scrollTop: $('table tbody').scrollTop() + row.top - (w.height() / 4)
+                                }, 500);
+                            }
+
+                            // w.scrollTop(row.top)
+                            // // var row = $('table#layersList').find('tr[name]').eq(layerItem.id );
+                            // if (row.length) {
+                            //     w.scrollTop(row.offset().top - (w.height() / 2));
+                            // }
                         };
 
                         scope.info = function (item) {
