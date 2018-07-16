@@ -520,20 +520,7 @@
                                 } else if (type === "marker") {
                                     $scope.$emit('setWkt', ['point', geoJSON.geometry.coordinates[0], geoJSON.geometry.coordinates[1]]);
                                 } else {
-                                    var processedWkt = Util.wrap(geoJSON.geometry.coordinates[0]);
-
-                                    wkt = 'MULTIPOLYGON (';
-
-                                    for (var i = 0; i < processedWkt.length; i++) {
-                                        if (i > 0) {
-                                            wkt += ', ';
-                                        }
-                                        wkt += '((';
-                                        wkt += buildWkt(processedWkt[i]);
-                                        wkt += '))';
-                                    }
-
-                                    wkt += ')';
+                                    var wkt = Util.wrappedToWkt(Util.wrap(geoJSON.geometry.coordinates[0]));
 
                                     $scope.$emit('setWkt', [wkt]);
                                 }
@@ -565,20 +552,6 @@
                         })
                     });
                 };
-
-                function buildWkt(polygon) {
-                    var wkt = '';
-                    var firstTime = true;
-                    for (var i = polygon.length - 1; i >= 0; i--) {
-                        if (!firstTime) {
-                            wkt += ', ';
-                        }
-                        else firstTime = false;
-                        wkt += polygon[i][0] + ' ' + polygon[i][1];
-                    }
-
-                    return wkt;
-                }
 
                 $timeout(function () {
                     $(window).trigger('resize');

@@ -16,15 +16,12 @@ var Util = {
         //longitude translation
         var dist = ((belowMinus180) ? 360 : 0) + lng;
 
-        var wkt = "POLYGON ((";
         for (i = 0; i < maxPoints; i++) {
-            wkt += points[i][0] + dist + ' ' + points[i][1] + ', '
+            points[i][0] = points[i][0] + dist
         }
-        // append the first point to close the circle
-        wkt += points[0][0] + dist + ' ' + points[0][1];
-        wkt += '))';
+        points.push(points[0]);
 
-        return wkt
+        return Util.wrappedToWkt(Util.wrap(points))
     },
 
     computeOffset: function (lat, lng, radius, angle) {
@@ -129,8 +126,47 @@ var Util = {
         return multipolygon;
     },
 
+    buildWkt: function (polygon) {
+        var wkt = '';
+        var firstTime = true;
+        for (var i = polygon.length - 1; i >= 0; i--) {
+            if (!firstTime) {
+                wkt += ', ';
+            }
+            else firstTime = false;
+            wkt += polygon[i][0] + ' ' + polygon[i][1];
+        }
+
+        return wkt;
+    },
+
+    /**
+     * Produce WKT from the output of Util.wrap
+     *
+     * @param obj
+     */
+    wrappedToWkt: function (processedCoordinates) {
+        wkt = 'MULTIPOLYGON (';
+
+        for (var i = 0; i < processedCoordinates.length; i++) {
+            if (i > 0) {
+                wkt += ', ';
+            }
+            wkt += '((';
+            wkt += Util.buildWkt(processedCoordinates[i]);
+            wkt += '))';
+        }
+
+        wkt += ')';
+
+        return wkt;
+    },
+
     /**
      * Split polygons that cross longitude -180 or +180 into multipolygons.
+     *
+     * Input is array of coordinates.
+     * A coordinate is an array containing longitude and latitude, e.g. [longitude, latitude]
      *
      * @param obj
      */
