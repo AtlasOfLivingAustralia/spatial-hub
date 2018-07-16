@@ -522,24 +522,19 @@
                                 } else {
                                     var processedWkt = Util.wrap(geoJSON.geometry.coordinates[0]);
 
-                                    wkt = 'POLYGON (';
-                                    if (processedWkt.length > 1) {
-                                        wkt = 'MULTIPOLYGON ((';
-                                    }
+                                    wkt = 'MULTIPOLYGON (';
 
                                     for (var i = 0; i < processedWkt.length; i++) {
                                         if (i > 0) {
                                             wkt += ', ';
                                         }
-                                        wkt += '(';
+                                        wkt += '((';
                                         wkt += buildWkt(processedWkt[i]);
-                                        wkt += ')';
+                                        wkt += '))';
                                     }
+
                                     wkt += ')';
 
-                                    if (processedWkt.length > 1) {
-                                        wkt += ')';
-                                    }
                                     $scope.$emit('setWkt', [wkt]);
                                 }
                             });
