@@ -80,6 +80,8 @@
                 }
 
                 function _executeResult(uiScope) {
+                    var layers = [];
+
                     for (k in uiScope.finishedData.output) {
                         if (uiScope.finishedData.output.hasOwnProperty(k)) {
                             var d = uiScope.finishedData.output[k];
@@ -124,7 +126,7 @@
                                 });
                             } else if (d.file && d.file.match(/\.tif$/g)) {
                                 var name = d.file.replace('/layer/', '').replace('.tif', '');
-                                var layer = {
+                                layers.push({
                                     id: name,
                                     displaypath: $SH.geoserverUrl + '/wms?layers=ALA:' + name,
                                     type: 'e',
@@ -137,7 +139,7 @@
                                         name: name,
                                         displayname: name
                                     }
-                                };
+                                });
                             } else if (d.name === 'area') {
                                 //might be an area pid
                                 promises.push(LayersService.getObject(d.file).then(function (data) {
@@ -157,9 +159,11 @@
                         }
                     }
 
-                    if (layer !== null && layer !== undefined) {
-                        if (uiScope.metadataUrl !== null) layer.metadataUrl = uiScope.metadataUrl;
-                        promises.push(MapService.add(layer))
+                    if (layers.length > 0) {
+                        $.each(layers, function (layer) {
+                            if (uiScope.metadataUrl !== null) layer.metadataUrl = uiScope.metadataUrl;
+                            promises.push(MapService.add(layer));
+                        })
                     }
 
                     if (uiScope.metadataUrl !== null) {
