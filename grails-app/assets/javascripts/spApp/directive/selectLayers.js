@@ -165,6 +165,7 @@
                             var layer = scope.getLayer(!layerItem.id ? layerItem : layerItem.id);
 
                             if (layer && layer.id && !scope.isSelected(layer.id)) {
+                                layer.selected = true;
                                 scope._selection.layers.push(layer);
                                 scope.updateDist();
                                 scope.updateExportSet()
