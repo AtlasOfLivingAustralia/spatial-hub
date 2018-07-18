@@ -55,15 +55,21 @@
                 $scope.matchedItems = [];
 
                 $scope.parseList = function () {
-                    var names = $scope.newItems.split(/[\s,;\t\n]+/);
+                    var names = $scope.newItems.split(/[,;\t\n]+/);
                     names = names.filter(function (name) {
                         return name != undefined && name.trim().length > 0
                     })
                     BieService.nameLookup(names).then(function (list) {
                         for (var i in list) {
                             if (list.hasOwnProperty(i)) {
-                                $scope.getCount(list[i]);
-                                $scope.matchedItems.push(list[i])
+                                if ($scope.matchedItems.some(function(e){return e.identifier === list[i].identifier}))
+                                {
+                                    console.log(list[i].identifier +' exists')
+                                }else{
+                                    $scope.getCount(list[i]);
+                                    $scope.matchedItems.push(list[i])
+                                }
+
                             }
                         }
                     })
