@@ -160,7 +160,8 @@
                     }
 
                     if (layers.length > 0) {
-                        $.each(layers, function (layer) {
+                        $.each(layers, function () {
+                            var layer = this;
                             if (uiScope.metadataUrl !== null) layer.metadataUrl = uiScope.metadataUrl;
                             promises.push(MapService.add(layer));
                         })
