@@ -20,7 +20,8 @@
                             "constraints": {
                                 "min": 1,
                                 "max": 1,
-                                "optional": false
+                                "optional": false,
+                                "defaultToWorld": true
                             }
                         },
                         {
@@ -51,20 +52,15 @@
                     else if (speciesOptions.spatiallyValid) q.push('geospatial_kosher:true');
                     else if (speciesOptions.spatiallySuspect) q.push('geospatial_kosher:false');
                     var newName = $i18n("Facet");
-                    //if (area.name !== undefined) newName += ' (' + area.name + ')';
+
                     //Guess name from factet Genuse:"Cractus" OR Genuse:"xxxxxx"
                     try {
                         var classes = facet.split("OR");
-                        var classesname = []
+                        var classesname = [];
                         for (var i in classes) {
                             classesname.push(classes[0].split(":")[1].replace(/['"]+/g, ''))
                         }
                         newName += ' (' + classesname.join('/') + ')'
-                        // if (classes.length>1){
-                        //     newName = facet;
-                        // }else{
-                        //     newName += ' ('+classes[0].split(":")[1].replace(/['"]+/g, '')+')'
-                        // }
                     }catch(e){
                         if (area.name !== undefined) newName += ' (' + area.name + ')'; //in case
                     }
