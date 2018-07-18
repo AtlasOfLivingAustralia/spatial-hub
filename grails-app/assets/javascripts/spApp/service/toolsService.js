@@ -163,6 +163,7 @@
                         $.each(layers, function () {
                             var layer = this;
                             if (uiScope.metadataUrl !== null) layer.metadataUrl = uiScope.metadataUrl;
+                            layer.name = uiScope.toolName + " (" + layer.name + ")";
                             promises.push(MapService.add(layer));
                         })
                     }
