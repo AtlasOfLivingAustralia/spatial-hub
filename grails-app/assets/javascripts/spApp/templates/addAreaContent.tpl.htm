@@ -160,16 +160,17 @@
                             <input style="width:250px" gaz-auto-complete id="gazAutoComplete" on-custom="setPid"
                                    userobjects="false">
                             <br/>
-                            <div ng-show="showLocationRadius()">
-                                <label i18n="28" style="width: 100px" for="locationRadius">Radius (km)</label>
-                                <input style="width:80px" type="number" id="locationRadius"
+                            <br/>
+                            <div ng-show="step == 'gazetteer' && showLocationRadius()">
+                                <label i18n="28" style="width: 100px" for="locationRadiusGaz">Radius (km)</label>
+                                <input style="width:80px" type="number" id="locationRadiusGaz"
                                        ng-model="locationRadius" value="10">
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div ng-show="showLocationRadius()">
+                <div ng-show="step != 'gazetteer' && showLocationRadius()">
                     <label i18n="28" style="width: 100px" for="locationRadius">Radius (km)</label>
                     <input style="width:80px" type="number" id="locationRadius"
                            ng-model="locationRadius" value="10">

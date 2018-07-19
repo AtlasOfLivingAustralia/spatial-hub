@@ -13,7 +13,7 @@
             replace: true,
             scope: {
                 _location: '=location',
-                _name: '=name'
+                _area: '=area'
             },
             template: '<input style="width:300px" id="google_places_ac" name="google_places_ac" type="text" class="input-block-level"/>',
             link: function ($scope, elm, attrs) {
@@ -21,7 +21,7 @@
                 google.maps.event.addListener(autocomplete, 'place_changed', function () {
                     var place = autocomplete.getPlace();
                     $scope._location = place.geometry.location.lat() + ',' + place.geometry.location.lng();
-                    $scope._name = place.formatted_address;
+                    $scope._area = place.formatted_address;
                     $scope.$apply();
                 });
             }

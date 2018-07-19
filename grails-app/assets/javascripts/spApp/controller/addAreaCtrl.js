@@ -139,6 +139,7 @@
                         if ($scope.isPoint()) {
                             //create circle
                             var coord = $scope.selectedArea.wkt.match(/\((.*)\)/)[1].split(" ");
+                            $scope.selectedArea.name += ' (' + $scope.locationRadius + 'km radius)';
                             $scope.selectedArea.wkt = Util.createCircle(parseFloat(coord[0]), parseFloat(coord[1]), $scope.circle.radius * 1000)
                         }
                         if ($scope.selectedArea.wkt !== undefined && $scope.selectedArea.wkt.length > 0) {
@@ -180,7 +181,7 @@
 
                 $scope.useAddress = function () {
                     var coords = $scope.location.split(',');
-                    $scope.selectedArea.name = $scope.areaname;
+                    $scope.selectedArea.name += ' (' + $scope.locationRadius + 'km radius)';
                     $scope.setWkt(Util.createCircle(coords[1] * 1, coords[0] * 1, $scope.locationRadius * 1000))
                 };
 
@@ -255,7 +256,7 @@
                 };
 
                 $scope.showLocationRadius = function () {
-                    if ($scope.selectedArea !== undefined && $scope.selectedArea.wkt !== undefined && $scope.selectedArea.wkt.match('/^POINT/'))
+                    if ($scope.selectedArea !== undefined && $scope.selectedArea.wkt !== undefined && $scope.selectedArea.wkt.match(/^POINT/))
                         return true;
                     else
                         return false;
