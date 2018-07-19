@@ -206,8 +206,11 @@ var Util = {
         }
     },
 
-    download: function (url) {
+    download: function (url, filename) {
         var link = document.createElement("a");
+        if (filename !== undefined) {
+            link.download = filename
+        }
         //link.target = '_blank';
         link.href = url;
         link.click();

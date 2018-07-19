@@ -28,6 +28,7 @@
 
                     var url = $SH.baseUrl + '/portal/postTask?sessionId=' + $SH.sessionId;
                     $http.post(url, m).then(function (response) {
+                        uiScope.externalTaskId = response.data.id;
                         uiScope.statusUrl = LayersService.url() + '/tasks/status/' + response.data.id;
                         $timeout(function () {
                             _checkStatus(uiScope);
@@ -89,13 +90,13 @@
                                 uiScope.downloadUrl = LayersService.url() + '/tasks/output/' + uiScope.finishedData.id + '/' + d.file;
 
                                 if (uiScope.downloadImmediately) {
-                                    Util.download(uiScope.downloadUrl);
+                                    Util.download(uiScope.downloadUrl, uiScope.toolName + " (" + uiScope.externalTaskId + ") ");
                                 }
                             } else if (d.downloadUrl) {
                                 uiScope.downloadUrl = d.downloadUrl;
 
                                 if (uiScope.downloadImmediately) {
-                                    Util.download(uiScope.downloadUrl);
+                                    Util.download(uiScope.downloadUrl, uiScope.toolName + " (" + uiScope.externalTaskId + ") ");
                                 }
                             }
                         }
