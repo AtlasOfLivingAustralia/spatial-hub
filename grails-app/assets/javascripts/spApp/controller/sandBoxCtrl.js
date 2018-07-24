@@ -62,7 +62,7 @@
                                         } else {
                                             closeLater = true;
                                             BiocacheService.newLayer(q, undefined, q.name).then(function (data) {
-                                                MapService.add(data, $SH.sandboxServiceUrl);
+                                                MapService.add(data);
                                                 $scope.$close();
                                             });
                                         }
