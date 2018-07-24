@@ -89,13 +89,13 @@
                             if (d.file && d.file.match(/\.zip$/g)) {
                                 uiScope.downloadUrl = LayersService.url() + '/tasks/output/' + uiScope.finishedData.id + '/' + d.file;
 
-                                if (uiScope.downloadImmediately) {
+                                if (uiScope.downloadImmediately && uiScope.spec.download !== false) {
                                     Util.download(uiScope.downloadUrl, uiScope.toolName + " (" + uiScope.externalTaskId + ") ");
                                 }
                             } else if (d.downloadUrl) {
                                 uiScope.downloadUrl = d.downloadUrl;
 
-                                if (uiScope.downloadImmediately) {
+                                if (uiScope.downloadImmediately && uiScope.spec.download !== false) {
                                     Util.download(uiScope.downloadUrl, uiScope.toolName + " (" + uiScope.externalTaskId + ") ");
                                 }
                             }
