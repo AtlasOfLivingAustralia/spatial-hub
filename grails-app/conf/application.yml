@@ -325,6 +325,7 @@ defaultareas:
       areaSqKm: 510000000
       bbox: [-180, -90, 180, 90]
 
+
 ---
 environments:
     development:

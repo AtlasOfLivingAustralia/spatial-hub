@@ -124,8 +124,21 @@ class PortalService {
     }
 
     def canProxy(url) {
-        url.toString().startsWith(Holders.config.layersService.url) ||
+        def predefined = url.toString().startsWith(Holders.config.layersService.url) ||
                 url.toString().startsWith(Holders.config.phylolink.url) ||
                 url.toString().startsWith(Holders.config.sampling.url)
+        //REGEXP: ^(https:|http:)\/\/data.auscover.org.au\/*
+        def proxies = Holders.config.allowProxy? Holders.config.allowProxy.split(';'):[];
+        def patterns = []
+        def mode = '(^(https:|http:)\\/\\/SERVER\\/*)'
+        for( proxy in proxies){
+            patterns.add(mode.replace('SERVER',proxy))
+        }
+        def pattern =  patterns.join('|');
+        print("Proxy regex pattern: " + pattern)
+
+        (url =~/${pattern}/).find() | predefined
     }
+
+
 }

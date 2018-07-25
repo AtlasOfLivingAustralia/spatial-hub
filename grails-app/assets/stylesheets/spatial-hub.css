@@ -629,6 +629,16 @@ form.banner {
     background-size: 18px 18px;
 }
 
+.floating-spinner {
+    background: url(../images/spinner.gif);
+    background-repeat: no-repeat;
+    background-size: 50px 50px;
+    z-index:9999;
+    margin: 0 auto;
+    position: absolute;
+    left: 50%;
+}
+
 #legend {
     margin-right:0px;
 }

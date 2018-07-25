@@ -50,4 +50,6 @@
 //= require jquery-csv/jquery.csv.js
 //= require spAppModules.js
 //= require_tree spApp
+//= require x2js/xml2json.min.js
+
 

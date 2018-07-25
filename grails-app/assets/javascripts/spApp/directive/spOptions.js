@@ -60,7 +60,7 @@
                         };
 
                         scope.addWMS = function () {
-
+                            LayoutService.openModal('addWMS')
                         };
 
                         scope.select = function (key) {

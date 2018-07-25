@@ -315,7 +315,7 @@
         </div>
 
         <div class="form-group row"
-             ng-show="selected.layer.layertype == 'grid' || selected.layer.layertype == 'contextual'">
+             ng-show="selected.layer.layertype == 'grid' || selected.layer.layertype == 'contextual' || selected.layer.layertype=='wms'">
             <button i18n="138" class="btn btn-xs btn-default" ng-click="showLegend()">show legend</button>
             <button i18n="139" class="btn btn-xs btn-default" ng-click="hideLegend()">hide legend</button>
             <button i18n="140" class="btn btn-xs btn-default" ng-click="popupLegend()">popup legend</button>
@@ -375,6 +375,10 @@
             </div>
 
             <img ng-src="{{selected.layer.leaflet.legendurl}}">
+        </div>
+
+        <div class="form-group row" ng-show="selected.layer.layertype == 'wms'">
+            <img ng-src="{{selected.layer.legendurl}}">
         </div>
 
         <div class="form-group row"

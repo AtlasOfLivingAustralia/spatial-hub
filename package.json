@@ -35,14 +35,15 @@
     "angular-aria": "1.5.8",
     "angular-leaflet-directive": "0.9.5",
     "angular-route": "1.5.8",
-    "angular-ui-bootstrap": "2.5.0",
     "angular-touch": "1.5.8",
+    "angular-ui-bootstrap": "2.5.0",
+    "bootstrap": "3.3.4",
+    "htmlparser2": "3.9.2",
     "leaflet": "0.7.7",
     "leaflet-draw": "0.2.4",
-    "bootstrap": "3.3.4",
-    "ngbootbox": "0.1.2",
     "ng-file-upload": "12.2.13",
-    "htmlparser2": "3.9.2"
+    "ngbootbox": "0.1.2",
+    "x2js": "^3.2.1"
   },
   "scripts": {
     "jsdoc": "node_modules/jsdoc/jsdoc.js --configure node_modules/angular-jsdoc/common/conf.json --template node_modules/angular-jsdoc/angular-template/ --destination build/resources/main/public/docs --readme README.md --recurse grails-app/assets/javascripts/spApp"

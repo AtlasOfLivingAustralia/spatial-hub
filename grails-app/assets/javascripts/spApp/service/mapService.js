@@ -340,7 +340,24 @@
 
                         var newLayer = {};
 
-                        if (id.q && id.layertype !== 'area') {
+                        if (id.layertype.toUpperCase() == "WMS"){
+                            //External WMS layer
+
+                            newLayer = {
+                                name: uid + ': ' + id.name,
+                                type: 'wms',
+                                visible: true,
+                                url: id.url,
+                                layertype: 'wms',
+                                legendurl: id.legendurl,
+                                layerParams: {
+                                    layers: id.name,
+                                    format: 'image/png',
+                                    transparent: true
+                                }
+                            };
+
+                        }else if (id.q && id.layertype !== 'area') {
                             LoggerService.log('AddToMap', 'Species', {qid: id.qid});
 
                             id.layertype = 'species';

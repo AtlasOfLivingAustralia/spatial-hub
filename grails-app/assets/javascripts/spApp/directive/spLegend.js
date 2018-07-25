@@ -257,7 +257,7 @@
 
                         scope.wmsLegendVisible = function () {
                             return scope.selected.layer !== undefined && scope.selected.layer !== null &&
-                                (scope.selected.layer.layertype === 'grid' || scope.selected.layer.layertype === 'contextual') &&
+                                (scope.selected.layer.layertype === 'grid' || scope.selected.layer.layertype === 'contextual' ) &&
                                 (scope.selected.hidelegend === undefined || !scope.selected.hidelegend)
                         };
 
