@@ -22,16 +22,16 @@
                 $scope.selectedServer = "";
 
 
-                $scope.presetServers = [
-                    {name:"AusCover", url:"http://data.auscover.org.au/geoserver/wms?request=getCapabilities"},
-                    {name:"Geoserver IMOS",url:"http://geoserver.imos.org.au/geoserver/wms?REQUEST=GetCapabilities"},
-                    {name:"GA",url:"http://www.ga.gov.au/gis/services/earth_science/GA_Surface_Geology_of_Australia/MapServer/WMSServer?request=GetCapabilities"},
-                    {name:"Geofabric BOM",url:"http://geofabric.bom.gov.au/simplefeatures/ows?request=getcapabilities"}
-                ]
+                // $scope.presetServers = [
+                //     {name:"AusCover", url:"http://data.auscover.org.au/geoserver/wms?request=getCapabilities"},
+                //     {name:"Geoserver IMOS",url:"http://geoserver.imos.org.au/geoserver/wms?REQUEST=GetCapabilities"},
+                //     {name:"GA",url:"http://www.ga.gov.au/gis/services/earth_science/GA_Surface_Geology_of_Australia/MapServer/WMSServer?request=GetCapabilities"},
+                //     {name:"Geofabric BOM",url:"http://geofabric.bom.gov.au/simplefeatures/ows?request=getcapabilities"}
+                // ]
 
-                $scope.getMapExamples = [
-                    {"name":"Fractional Cover CLW - Non-PS Veg - 2012.297", url:"http://data.auscover.org.au/geoserver/ows?SERVICE=WMS&REQUEST=GetMap&LAYERS=clw:FractCover.V2_2.NPV&FORMAT=image/png&SRS=epsg:3857&TRANSPARENT=true&VERSION=1.3.0&CRS=EPSG:3857&EXCEPTIONS=INIMAGE&STYLES="}
-                ]
+                $scope.presetServers = $SH.presetWMSServers
+
+                $scope.getMapExamples = $SH.getMapExamples
 
                 $scope.ok = function () {
 
@@ -89,30 +89,6 @@
                 };
 
 
-                // $scope.getCapabilities = function(){
-                //     var url = $scope.selectedServer + ($scope.version?"&version=" + $scope.version : "");
-                //     console.log("Get capabilites:" + url);
-                //     $scope.warning='';
-                //     $scope.loading = true;
-                //     $http.get($SH.baseUrl + "/WMS/getCapabilities?url=" +url)
-                //         .success(function (resp) {
-                //             if (resp.status == 'OK'){
-                //                 $scope.availableLayers = resp.data;
-                //             }else{
-                //                 //Todo: handle error return from wms
-                //                 console.error(resp.data)
-                //             }
-                //         })
-                //         .error(function(resp){
-                //             console.error(resp)
-                //             $scope.warning = resp;
-                //         })
-                //         .finally(function () {
-                //             $scope.loading = false;
-                //         });
-                //
-                // };
-
                 $scope.addLayer = function(){
                     var serverUrl = $scope.selectedServer.substr(0,$scope.selectedServer.lastIndexOf('/')+1)+'wms';
                     var layer = Object.assign({url:serverUrl, layertype:"wms"}, $scope.selectedLayer)
@@ -156,6 +132,14 @@
                         }
                     });
                     console.log(result)
+                    if (!result.LAYERS || /^\s*$/.test(result.LAYERS)){
+                        $scope.warning = "Layer is not given";
+                        return;
+                    }
+                    if (result.REQUEST.toUpperCase()!= "GETMAP" ){
+                        $scope.warning = "Request should be GetMap";
+                        return;
+                    }
 
                     var layer ={url:result.URL, type:'wms',layertype:result.SERVICE, version: result.VERSION, name: result.LAYERS}
 
@@ -165,8 +149,6 @@
                       .error(function(data){
                         console.error(data)
                     });
-
-
                 }
 
                 var validateURL = function(str) {

@@ -75,7 +75,10 @@
         defaultAreas: ${(config.defaultareas as grails.converters.JSON).toString().encodeAsRaw()},
         defaultSpeciesDotSize: ${config.speciesDotSize},
         defaultSpeciesDotOpacity: ${config.speciesDotOpacity},
-        validUrls: [
+        presetWMSServers: ${(config.presetWMSServers as grails.converters.JSON).toString().encodeAsRaw()},
+        getMapExamples: ${(config.getMapExamples as grails.converters.JSON).toString().encodeAsRaw()},
+
+    validUrls: [
             'self',
             'http://*.ala.org.au/**',
             'https://*.ala.org.au/**',

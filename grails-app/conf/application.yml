@@ -325,6 +325,19 @@ defaultareas:
       areaSqKm: 510000000
       bbox: [-180, -90, 180, 90]
 
+presetWMSServers:
+    - name: "AusCover"
+      url: "http://data.auscover.org.au/geoserver/wms?request=getCapabilities"
+    - name: "Geoserver IMOS"
+      url: "http://geoserver.imos.org.au/geoserver/wms?REQUEST=GetCapabilities"
+    - name: "GA"
+      url: "http://www.ga.gov.au/gis/services/earth_science/GA_Surface_Geology_of_Australia/MapServer/WMSServer?request=GetCapabilities"
+    - name: "Geofabric BOM"
+      url: "http://geofabric.bom.gov.au/simplefeatures/ows?request=getcapabilities"
+
+getMapExamples:
+    - name: "Fractional Cover CLW - Non-PS Veg - 2012.297"
+      url: "http://data.auscover.org.au/geoserver/ows?SERVICE=WMS&REQUEST=GetMap&LAYERS=clw:FractCover.V2_2.NPV&FORMAT=image/png&SRS=epsg:3857&TRANSPARENT=true&VERSION=1.3.0&CRS=EPSG:3857&EXCEPTIONS=INIMAGE&STYLES="
 
 ---
 environments:
