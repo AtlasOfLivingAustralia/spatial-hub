@@ -95,7 +95,10 @@
                     $scope.selectedLayerLabel ? layer.name = $scope.selectedLayerLabel: null;
 
                     MapService.add(layer).then(function(data){
-                        console.log(data)
+                        alert('You layer has been added!');
+
+                    }).catch(function(err){
+                        $scope.warning = err;
                     })
                 };
 
@@ -143,12 +146,12 @@
 
                     var layer ={url:result.URL, type:'wms',layertype:result.SERVICE, version: result.VERSION, name: result.LAYERS}
 
-                    MapService.add(layer).success(function(data){
+                    MapService.add(layer).then(function(data){
                         console.log(data)
+                        $scope.$close();
+                    }).catch(function(err){
+                        $scope.warning = err;
                     })
-                      .error(function(data){
-                        console.error(data)
-                    });
                 }
 
                 var validateURL = function(str) {
