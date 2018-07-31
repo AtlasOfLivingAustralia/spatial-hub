@@ -335,6 +335,9 @@ presetWMSServers:
     - name: "Geofabric BOM"
       url: "http://geofabric.bom.gov.au/simplefeatures/ows?request=getcapabilities"
 
+allowProxy:
+    server: 'data.auscover.org.au,data.auscover.org.au:80,geoserver.imos.org.au,www.ga.gov.au/gis,geofabric.bom.gov.au'
+
 getMapExamples:
     - name: "Fractional Cover CLW - Non-PS Veg - 2012.297"
       url: "http://data.auscover.org.au/geoserver/ows?SERVICE=WMS&REQUEST=GetMap&LAYERS=clw:FractCover.V2_2.NPV&FORMAT=image/png&SRS=epsg:3857&TRANSPARENT=true&VERSION=1.3.0&CRS=EPSG:3857&EXCEPTIONS=INIMAGE&STYLES="

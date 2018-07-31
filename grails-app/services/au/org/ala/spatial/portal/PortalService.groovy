@@ -128,9 +128,10 @@ class PortalService {
                 url.toString().startsWith(Holders.config.phylolink.url) ||
                 url.toString().startsWith(Holders.config.sampling.url)
         //REGEXP: ^(https:|http:)\/\/data.auscover.org.au\/*
-        def proxies = Holders.config.allowProxy? Holders.config.allowProxy.split(';'):[];
+        def proxies = Holders.config.allowProxy.server? Holders.config.allowProxy.server.split(";|,"):[];
+        //def proxies = (Holders.config.allowProxy as grails.converters.JSON).toString().encodeAsRaw()
         def patterns = []
-        def mode = '(^(https:|http:)\\/\\/SERVER\\/*)'
+        def mode = '((^(https:|http:)\\/\\/)?SERVER\\/*)'
         for( proxy in proxies){
             patterns.add(mode.replace('SERVER',proxy))
         }

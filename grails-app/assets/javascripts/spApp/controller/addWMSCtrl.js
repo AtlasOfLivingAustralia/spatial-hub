@@ -79,7 +79,7 @@
                                 $scope.warning =  resp.error;
                                 $scope.warning += '['+url+' may not in proxy list!]'
                             }else
-                                $scope.warning = resp.error;
+                                $scope.warning = resp;
 
                         })
                         .finally(function () {
