@@ -51,7 +51,10 @@
                 },
                 items: function (listId, params) {
                     params = params || {};
-                    return $http.get(this.url() + "/ws/speciesListItems/" + listId, {params: params, withCredentials: true}).then(function (response) {
+                    return $http.get(this.url() + "/ws/speciesListItems/" + listId, {
+                        params: params,
+                        withCredentials: true
+                    }).then(function (response) {
                         return response.data
                     })
                 },

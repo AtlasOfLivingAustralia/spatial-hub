@@ -10,22 +10,22 @@
         <div class="panel-body" style="width: 390px;overflow:scroll">
             <table class="table table-striped" ng-show="points.length > 0">
                 <thead>
-                    <tr>
-                        <th class="td-vertical-align text-center">Id</th>
-                        <th class="td-vertical-align text-center">Longitude</th>
-                        <th class="td-vertical-align text-center">Latitude</th>
-                        <th></th>
-                    </tr>
+                <tr>
+                    <th class="td-vertical-align text-center">Id</th>
+                    <th class="td-vertical-align text-center">Longitude</th>
+                    <th class="td-vertical-align text-center">Latitude</th>
+                    <th></th>
+                </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="x in points">
-                        <td class="td-vertical-align text-right">{{ $index }}</td>
-                        <td class="td-vertical-align text-right"><input ng-model="x[1]" ng-change="update()"/></td>
-                        <td class="td-vertical-align text-right"><input ng-model="x[2]" ng-change="update()"/></td>
-                        <td class="td-vertical-align">
-                            <i style="float:right" class="glyphicon glyphicon-trash" ng-click="remove($index)"></i>
-                        </td>
-                    </tr>
+                <tr ng-repeat="x in points">
+                    <td class="td-vertical-align text-right">{{ $index }}</td>
+                    <td class="td-vertical-align text-right"><input ng-model="x[1]" ng-change="update()"/></td>
+                    <td class="td-vertical-align text-right"><input ng-model="x[2]" ng-change="update()"/></td>
+                    <td class="td-vertical-align">
+                        <i style="float:right" class="glyphicon glyphicon-trash" ng-click="remove($index)"></i>
+                    </td>
+                </tr>
                 </tbody>
             </table>
 
@@ -51,13 +51,13 @@
                 </div>
             </div>
 
-            <div ng-show="searching"  >
+            <div ng-show="searching">
                 <hr/>
                 <uib-progressbar class="progress-striped active"
                                  value="100" type='info' title="Updating"><span i18n="47">Loading...</span>
                 </uib-progressbar>
             </div>
-            <div ng-show="comparison.length > 0 && !searching" >
+            <div ng-show="comparison.length > 0 && !searching">
                 <hr/>
                 <h4 i18n="181">Comparison Result</h4>
                 <div>
@@ -69,14 +69,16 @@
                 <div style="max-width: 360px; overflow: scroll">
                     <table class="table table-striped">
                         <thead>
-                            <tr>
-                                <th class="td-vertical-align text-right" ng-repeat="value in header">{{value}}</th>
-                            </tr>
+                        <tr>
+                            <th class="td-vertical-align text-right" ng-repeat="value in header">{{value}}</th>
+                        </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="row in comparison | filter:searchText.name">
-                                <td class="td-vertical-align text-right" ng-repeat="value in row track by $index">{{ value }}</td>
-                            </tr>
+                        <tr ng-repeat="row in comparison | filter:searchText.name">
+                            <td class="td-vertical-align text-right" ng-repeat="value in row track by $index">{{ value
+                                }}
+                            </td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
@@ -84,7 +86,8 @@
         </div>
     </div>
     <div class="modal-footer">
-        <a download="nearestLocalities_{{point.longitude}}_{{point.latitude}}.csv" ng-show="comparison.length > 0 && !searching"
+        <a download="nearestLocalities_{{point.longitude}}_{{point.latitude}}.csv"
+           ng-show="comparison.length > 0 && !searching"
            ng-href="{{exportUrl}}" ng-disabled="exportUrl == null" style="margin-right:30px">
             <i class="glyphicon glyphicon-download-alt"></i><span i18n="51">Download</span>
         </a>

@@ -55,7 +55,7 @@
                     LayoutService.openIframe(url, false)
                 };
 
-                $scope.getInputChecks = function() {
+                $scope.getInputChecks = function () {
                     return $scope.taskId == undefined || $scope.taskId == null || $scope.taskId.length == 0
                 }
 

@@ -48,8 +48,7 @@
                                 scope.typeName = 'circle';
                                 scope.addCircle()
                             }
-                            scope.areaName = MapService.nextLayerName("My " + ((!scope.typeName || 0 === scope.typeName.length)? "Area" : (scope.typeName.charAt(0).toUpperCase()+scope.typeName.slice(1))) );
-                            //scope.areaName = MapService.nextLayerName("My " + scope.typeName.charAt(0).toUpperCase() + scope.typeName.slice(1) );
+                            scope.areaName = MapService.nextLayerName("My " + ((!scope.typeName || 0 === scope.typeName.length) ? "Area" : (scope.typeName.charAt(0).toUpperCase() + scope.typeName.slice(1))));
                         };
 
                         $timeout(function () {
@@ -111,7 +110,7 @@
                                 LayersService.getObject(scope.intersect.data.pid).then(function (data) {
                                     data.data.layertype = 'area';
                                     data.data.q = scope.q;
-                                    MapService.add(data.data)
+                                    MapService.add(data.data);
 
                                     scope.deleteDrawing();
                                     LayoutService.closePanel()
@@ -124,7 +123,7 @@
                                         LayersService.getObject(data.data.id).then(function (data) {
                                             data.data.layertype = 'area';
                                             data.data.wkt = scope.wkt;
-                                            MapService.add(data.data)
+                                            MapService.add(data.data);
 
                                             scope.deleteDrawing();
                                             LayoutService.closePanel()

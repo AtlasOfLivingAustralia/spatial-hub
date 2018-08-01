@@ -17,7 +17,7 @@
                 $scope.panelData = LayoutService.panelData;
                 $scope.optionsVisible = true;
 
-                $scope.toggleOptions = function(show) {
+                $scope.toggleOptions = function (show) {
                     if (show) {
                         $scope.optionsVisible = true;
                         $SH.defaultPaneResizer.show('south');

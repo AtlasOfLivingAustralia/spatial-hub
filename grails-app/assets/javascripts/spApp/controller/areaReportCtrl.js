@@ -14,8 +14,6 @@
                       ListsService, LayersService) {
                 LayoutService.addToSave($scope);
 
-                //$scope._autoClose = false;
-
                 $scope.area = data;
                 $scope.endemic = data.endemic;
 

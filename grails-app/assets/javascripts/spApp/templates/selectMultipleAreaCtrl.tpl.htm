@@ -13,7 +13,8 @@
 
 <div ng-if="pickInOutLayer" class="well-lg">
     <div class="alert alert-ala-success" ng-show="pickInOutLayerName.length > 0">
-        <div ng-show="pickInOutLayerName.length > 0" class="btn-group btn-group-sm" style="float: right; margin-top: -3px;">
+        <div ng-show="pickInOutLayerName.length > 0" class="btn-group btn-group-sm"
+             style="float: right; margin-top: -3px;">
             <button i18n="231" class="btn btn-default"
                     ng-click='editPickInOutLayerVisible()'>Edit selection
             </button>
@@ -21,7 +22,8 @@
         <p>{{pickInOutLayerName}}</p>
     </div>
     <div ng-if="pickInOutLayerVisible" select-layers selected-layers="selectedInOutLayer"
-         min-count="1" max-count="1" mandatory="false" environmental="false" contextual="true" analysis="false" unique-id="inout"></div>
+         min-count="1" max-count="1" mandatory="false" environmental="false" contextual="true" analysis="false"
+         unique-id="inout"></div>
 </div>
 
 <div class="checkbox"><label>
@@ -29,7 +31,8 @@
     layer</span></label></div>
 <div ng-show="pickContextualLayer" class="well-lg">
     <div class="alert alert-ala-success" ng-show="pickContextualLayerName.length > 0">
-        <div ng-show="pickContextualLayerName.length > 0" class="btn-group btn-group-sm" style="float: right; margin-top: -3px;">
+        <div ng-show="pickContextualLayerName.length > 0" class="btn-group btn-group-sm"
+             style="float: right; margin-top: -3px;">
             <button i18n="231" class="btn btn-default"
                     ng-click='editPickContextualLayerVisible()'>Edit selection
             </button>

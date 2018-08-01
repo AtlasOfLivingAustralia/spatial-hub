@@ -20,7 +20,7 @@
                         };
 
                         scope.baselayers = [];
-                        $.map($SH.baseLayers, function(v, k) {
+                        $.map($SH.baseLayers, function (v, k) {
                             scope.baselayers.push({
                                 key: k,
                                 name: v.name,

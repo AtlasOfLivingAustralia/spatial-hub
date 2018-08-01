@@ -10,22 +10,23 @@
         <div ng-if="selected.layer.layertype == 'species' && selected.layer.scatterplotUrl !== undefined">
 
             <!--<div ng-if="selected.layer.scatterplotSelectionCount !== 0">-->
-                <div class="form-group row">
-                    <label><span i18n="116">Records selected:&nbsp;</span>{{ selected.layer.scatterplotSelectionCount }}<span
+            <div class="form-group row">
+                <label><span i18n="116">Records selected:&nbsp;</span>{{ selected.layer.scatterplotSelectionCount
+                    }}<span
                             i18n="117">&nbsp;record/s</span></label>
-                    <button i18n="118" class="btn btn-xs btn-default" ng-click="scatterplotCreateInOut()">add in/out
-                        layers to
-                        map
-                    </button>
-                </div>
+                <button i18n="118" class="btn btn-xs btn-default" ng-click="scatterplotCreateInOut()">add in/out
+                    layers to
+                    map
+                </button>
+            </div>
 
-                <div class="form-group row">
-                    <label>{{ selected.layer.scatterplotLabel1 }}</label>
-                </div>
+            <div class="form-group row">
+                <label>{{ selected.layer.scatterplotLabel1 }}</label>
+            </div>
 
-                <div class="form-group row">
-                    <label>{{ selected.layer.scatterplotLabel2 }}</label>
-                </div>
+            <div class="form-group row">
+                <label>{{ selected.layer.scatterplotLabel2 }}</label>
+            </div>
             <!--</div>-->
 
             <div ng-if="areaLayers.length > 0" class="form-group row">
@@ -95,20 +96,23 @@
             <button i18n="129" ng-click="facetFilter=''" class="btn btn-xs btn-default"
                     ng-disabled="facetFilter == ''">clear filter
             </button>
-            <uib-progressbar ng-show="selected.layer.facetList[selected.layer.facet] === undefined || selected.layer.facetList[selected.layer.facet] == null || selected.layer.facetList[selected.layer.facet] == 0" class="progress-striped" ng-class="{ active: true }" value="100"
-                             type='info' title="Updating">loading...</uib-progressbar>
+            <uib-progressbar
+                    ng-show="selected.layer.facetList[selected.layer.facet] === undefined || selected.layer.facetList[selected.layer.facet] == null || selected.layer.facetList[selected.layer.facet] == 0"
+                    class="progress-striped" ng-class="{ active: true }" value="100"
+                    type='info' title="Updating">loading...
+            </uib-progressbar>
             <table class="table table-striped" style="width:370px;max-height:200px;overflow:scroll;display:block">
                 <tr ng-repeat="x in selected.layer.facetList[selected.layer.facet] | orderBy:'-count' |filter:facetFilter">
                     <td style="width:20px"><input type="checkbox" ng-model="x.selected"
                                                   ng-change="updateSelection()"></td>
                     <td style="width:230px">{{x.displayname}}</td>
-                    <td style="width:100px" >{{x.count}}</td>
+                    <td style="width:100px">{{x.count}}</td>
                     <td i18n="130" style="background-color:#{{formatColor(x)}};width:20px">&nbsp</td>
                 </tr>
             </table>
 
             <div style="width:100%;padding-right:30px" class="btn-group">
-                <label style="float:left;" >{{selected.layer.facetSelectionCount}} selected</label>
+                <label style="float:left;">{{selected.layer.facetSelectionCount}} selected</label>
                 <button i18n="120" style="float:right;" class="btn btn-xs btn-default" ng-click="facetClearSelection()"
                         ng-disabled="!facetsSelected()">Clear selection
                 </button>
@@ -328,8 +332,11 @@
                 </button>
                 <button i18n="129" ng-click="clearContextualFilter()" class="btn btn-xs btn-default">clear filter
                 </button>
-                <uib-progressbar ng-show="selected.layer.contextualList === undefined || selected.layer.contextualList == null || selected.layer.contextualList.length == 0" class="progress-striped" ng-class="{ active: true }" value="100"
-                                  type='info' title="Updating">loading...</uib-progressbar>
+                <uib-progressbar
+                        ng-show="selected.layer.contextualList === undefined || selected.layer.contextualList == null || selected.layer.contextualList.length == 0"
+                        class="progress-striped" ng-class="{ active: true }" value="100"
+                        type='info' title="Updating">loading...
+                </uib-progressbar>
                 <table class="table table-striped" style="width:370px;overflow:scroll;display:block">
                     <tr ng-repeat="x in selected.layer.contextualList | filter:selected.layer.contextualFilter"
                         ng-click="contextualHighlight(x.name, x.pid)">
@@ -369,7 +376,8 @@
                     <button i18n="120" class="btn btn-xs btn-default"
                             ng-click="contextualClearSelection()">Clear selection
                     </button>
-                    <button i18n="145" class="btn btn-xs btn-default" ng-click="contextualCreateArea()" ng-disabled="isCreateAreaDisabled()">Create area
+                    <button i18n="145" class="btn btn-xs btn-default" ng-click="contextualCreateArea()"
+                            ng-disabled="isCreateAreaDisabled()">Create area
                     </button>
                 </div>
             </div>

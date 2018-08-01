@@ -9,7 +9,7 @@
      */
     angular.module('select-layers-directive', ['lists-service', 'layer-distances-service', 'map-service',
         'predefined-layer-lists-service'])
-        .directive('selectLayers', ['$http', '$timeout' , 'LayersService', 'LayerDistancesService', 'MapService',
+        .directive('selectLayers', ['$http', '$timeout', 'LayersService', 'LayerDistancesService', 'MapService',
             'LayoutService', 'PredefinedLayerListsService',
             function ($http, $timeout, LayersService, LayerDistancesService, MapService,
                       LayoutService, PredefinedLayerListsService) {
@@ -173,7 +173,7 @@
 
                             var w = $(window);
 
-                            var row = $('table#layersList tr[name='+layer.id+']').position();
+                            var row = $('table#layersList tr[name=' + layer.id + ']').position();
                             if (row) {
                                 $('table#layersList tbody').animate({
                                     scrollTop: $('table tbody').scrollTop() + row.top - (w.height() / 4)
@@ -217,7 +217,7 @@
                             } else if (scope._selection.layers.length < scope._maxCount) {
                                 scope.add(layer)
                             } else {
-                                $timeout( function () {
+                                $timeout(function () {
                                     layer.selected = false;
                                 }, 0)
                             }

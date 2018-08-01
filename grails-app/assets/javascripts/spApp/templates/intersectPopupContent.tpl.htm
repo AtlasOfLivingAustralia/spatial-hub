@@ -1,6 +1,6 @@
 <!--<ul class="nav nav-tabs">-->
-    <!--<li role="presentation" class="active"><a href="#">Occurrence record ({{olist.index + 1}} of {{olist.total}})</a></li>-->
-    <!--<li role="presentation"><a href="#">Layers</a></li>-->
+<!--<li role="presentation" class="active"><a href="#">Occurrence record ({{olist.index + 1}} of {{olist.total}})</a></li>-->
+<!--<li role="presentation"><a href="#">Layers</a></li>-->
 <!--</ul>-->
 <div>
     <div ng-show="olist.occurrences.length">
@@ -110,7 +110,8 @@
             <tr ng-repeat="layer in intersects">
                 <td class="col-sm-8">{{layer.layername}}</td>
                 <td class="col-sm-4">{{layer.value}} <span
-                        ng-hide="layer.units == 'dimensionless' || layer.units == '' || layer.units == null ">({{layer.units}})</span></td>
+                        ng-hide="layer.units == 'dimensionless' || layer.units == '' || layer.units == null ">({{layer.units}})</span>
+                </td>
             </tr>
             </tbody>
         </table>

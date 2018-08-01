@@ -16,7 +16,7 @@
                     link: function (scope, element, attrs) {
                         scope.menuConfig = [];
 
-                        MenuService.getMenuConfig().then( function (config) {
+                        MenuService.getMenuConfig().then(function (config) {
                             for (var c in config) {
                                 scope.menuConfig.push(config[c]);
                             }
@@ -38,7 +38,7 @@
                                 scope.open("tool", {"processName": cmd.open})
                             } else {
                                 // is controller
-                                scope.open(cmd.open,cmd.params)
+                                scope.open(cmd.open, cmd.params)
                             }
                         };
 
@@ -78,7 +78,10 @@
                         };
 
                         scope.exportMap = function () {
-                            scope.open('tool', {processName: 'ToolExportMapService', overrideValues: { ToolExportMapService: { input: { caption: { constraints: {default: (new Date() ) } } } } } })
+                            scope.open('tool', {
+                                processName: 'ToolExportMapService',
+                                overrideValues: {ToolExportMapService: {input: {caption: {constraints: {default: (new Date())}}}}}
+                            })
                         };
 
                         scope.isLoggedIn = $SH.userId !== undefined && $SH.userId !== null && $SH.userId.length > 0;

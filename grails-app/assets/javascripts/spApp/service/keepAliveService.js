@@ -40,7 +40,7 @@
                     //Server is not accessible
                     if (response.status == -1) {
                         reconnectMessage();
-                    }else{
+                    } else {
                         //The load function of iframe will not be fired on Firefox, if it src url is not accessible
                         var html = $('<iframe style="display:none" src="' + $SH.loginUrl +
                             encodeURIComponent(document.URL + "?silent=true") + '"></iframe>').load(function () {
@@ -68,7 +68,7 @@
                     }
                 },
 
-                reconnect: function(){
+                reconnect: function () {
                     reconnect();
                 }
             };

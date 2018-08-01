@@ -33,7 +33,7 @@
                 $scope.toolName = inputData !== undefined ? inputData.processName : '';
 
                 $scope.init = function () {
-                    ToolsService.init($scope.toolName).then(function(specList) {
+                    ToolsService.init($scope.toolName).then(function (specList) {
                         // overrideValues is set from Quick links or elsewhere
                         var k = $scope.toolName;
 
@@ -42,7 +42,7 @@
                                 // tool*Service .input is an array not a map.
                                 var input = inputData.overrideValues[k].input;
                                 delete inputData.overrideValues[k].input;
-                                $scope.spec = angular.merge({}, specList[k], inputData.overrideValues[k])
+                                $scope.spec = angular.merge({}, specList[k], inputData.overrideValues[k]);
 
                                 // merge input
                                 if (input) {
@@ -93,10 +93,6 @@
                             } else if (value.type === 'species') {
                                 if (value.constraints['areaIncludes'] === undefined) value.constraints['areaIncludes'] = false;
                                 if (value.constraints['spatialValidity'] === undefined) value.constraints['spatialValidity'] = true;
-
-                                //speciesOption can be overridden by inputData
-                                //this is the default and does not need to be specified
-                                //if (value.constraints['speciesOption'] === undefined) value.constraints['speciesOption'] = 'searchSpecies';
 
                                 if (value.constraints['default'] !== undefined) v = value.constraints['default'];
                                 else if (value.constraints['speciesOption'] === 'allSpecies') {
@@ -369,16 +365,16 @@
 
                                                 b = [Math.min(p1[0], p2[0]), Math.min(p1[1], p2[1]), Math.max(p1[0], p2[0]), Math.max(p1[1], p2[1])];
                                             }
-                                            if (a.pid){
-                                                if(!ToolsService.isLocalTask($scope.toolName)){
+                                            if (a.pid) {
+                                                if (!ToolsService.isLocalTask($scope.toolName)) {
                                                     inputs[k].push({
                                                         pid: a.pid,
-                                                        q: a.q?a.q:"",
+                                                        q: a.q ? a.q : "",
                                                         bbox: b
                                                     })
                                                 } else {
                                                     inputs[k].push({
-                                                        q: a.q?a.q:"",
+                                                        q: a.q ? a.q : "",
                                                         name: a.name,
                                                         bbox: b,
                                                         area_km: a.area_km,
@@ -388,7 +384,7 @@
                                                 }
                                             } else {
                                                 inputs[k].push({
-                                                    q: a.q?a.q:"",
+                                                    q: a.q ? a.q : "",
                                                     name: a.name,
                                                     bbox: b,
                                                     area_km: a.area_km,
@@ -426,17 +422,17 @@
                     return inputs
                 };
 
-                $scope.openUrl = function(url) {
+                $scope.openUrl = function (url) {
                     LayoutService.openIframe(url, false);
                 };
 
                 $scope.init();
 
-                $scope.getConstraintValue = function(item, constraint, deflt) {
+                $scope.getConstraintValue = function (item, constraint, deflt) {
                     return $spNc(item.constraints, [constraint], deflt)
                 };
 
-                $scope.isLocalTask = function() {
+                $scope.isLocalTask = function () {
                     return ToolsService.isLocalTask($scope.toolName)
                 }
 

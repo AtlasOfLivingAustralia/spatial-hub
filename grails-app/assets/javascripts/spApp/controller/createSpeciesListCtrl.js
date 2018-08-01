@@ -58,14 +58,16 @@
                     var names = $scope.newItems.split(/[,;\t\n]+/);
                     names = names.filter(function (name) {
                         return name != undefined && name.trim().length > 0
-                    })
+                    });
+
                     BieService.nameLookup(names).then(function (list) {
                         for (var i in list) {
                             if (list.hasOwnProperty(i)) {
-                                if ($scope.matchedItems.some(function(e){return e.identifier === list[i].identifier}))
-                                {
-                                    console.log(list[i].identifier +' exists')
-                                }else{
+                                if ($scope.matchedItems.some(function (e) {
+                                    return e.identifier === list[i].identifier
+                                })) {
+                                    // already matches something in the list
+                                } else {
                                     $scope.getCount(list[i]);
                                     $scope.matchedItems.push(list[i])
                                 }
@@ -127,7 +129,7 @@
                         if (resp.status === 200) {
                             var json = JSON.parse(resp.data.text);
                             var druid = json.druid;
-                            ListsService.items(druid, {max: 1}).then(function(data) {
+                            ListsService.items(druid, {max: 1}).then(function (data) {
                                 if (data.length === 0) {
                                     bootbox.alert($i18n("No matching species found."))
                                 } else {
@@ -144,7 +146,7 @@
                                             inputData.setQ($scope.selectedQ)
                                         } else {
                                             closeLater = true;
-                                            var newquery =  BiocacheService.newQuery($scope.selectedQ.q, $scope.selectedQ.name, undefined);
+                                            var newquery = BiocacheService.newQuery($scope.selectedQ.q, $scope.selectedQ.name, undefined);
                                             BiocacheService.newLayer(newquery, undefined, newquery.name).then(function (data) {
                                                 data.species_list = druid;
                                                 MapService.add(data);
@@ -180,8 +182,6 @@
                     var f = document.getElementById('file').files[0];
                     if (f !== undefined) {
                         return f.name;
-                    } else {
-                        console.log('Nothing')
                     }
                 };
 

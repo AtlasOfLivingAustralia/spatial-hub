@@ -476,7 +476,7 @@
                         });
                     })
                 },
-                facetDownload: function(facet){
+                facetDownload: function (facet) {
                     return $SH.biocacheServiceUrl + '/occurrences/facets/download?facets=' + facet + '&count=true&lookup=true';
                 },
                 /**

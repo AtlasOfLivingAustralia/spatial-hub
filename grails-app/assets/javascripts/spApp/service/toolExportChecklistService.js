@@ -65,6 +65,8 @@
                         var query = BiocacheService.newQuery(q, '', wkt);
 
                         var future;
+
+                        // TODO: enable species list preview
                         // if (showPreview) {
                         //     this.downloading = true;
                         //     this.cancelDownload = $q.defer();

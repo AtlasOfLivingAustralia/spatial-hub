@@ -20,7 +20,7 @@
                         scope.comparison = [];
 
                         scope.header = [];
-                        scope.searchText = { name: '' };
+                        scope.searchText = {name: ''};
 
                         scope.exportUrl = null;
                         scope.csv = null;

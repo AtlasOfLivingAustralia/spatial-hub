@@ -61,7 +61,7 @@
                             classesname.push(classes[0].split(":")[1].replace(/['"]+/g, ''))
                         }
                         newName += ' (' + classesname.join('/') + ')'
-                    }catch(e){
+                    } catch (e) {
                         if (area.name !== undefined) newName += ' (' + area.name + ')'; //in case
                     }
 

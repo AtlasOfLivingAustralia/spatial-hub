@@ -51,22 +51,22 @@
 
     <div ng-repeat="layer in speciesLayers" class="radio">
         <label>
-        <input type="radio" ng-model="$parent.speciesOption" ng-value="layer.uid" value="{{layer.uid}}"
-               ng-change="changeOption(layer.uid)">{{layer.name}}</label>
+            <input type="radio" ng-model="$parent.speciesOption" ng-value="layer.uid" value="{{layer.uid}}"
+                   ng-change="changeOption(layer.uid)">{{layer.name}}</label>
         <br/>
     </div>
 
     <div ng-show="!_inputData.importList && !_inputData.importPoints" class="radio">
         <label>
-        <input type="radio" ng-model="speciesOption" value="allSpecies" ng-change="changeOption('allSpecies')"
-               name=""><span i18n="244">All species</span></label>
+            <input type="radio" ng-model="speciesOption" value="allSpecies" ng-change="changeOption('allSpecies')"
+                   name=""><span i18n="244">All species</span></label>
         <br/>
     </div>
 
     <div ng-show="!_inputData.importList && !_inputData.importPoints" class="radio">
         <label>
-        <input type="radio" ng-model="speciesOption" value="searchSpecies"
-               ng-change="changeOption('searchSpecies')"><span i18n="245">Search for a species by scientific or common
+            <input type="radio" ng-model="speciesOption" value="searchSpecies"
+                   ng-change="changeOption('searchSpecies')"><span i18n="245">Search for a species by scientific or common
         name</span></label>
         <br/>
     </div>
@@ -74,9 +74,9 @@
     <div ng-show="speciesOption == 'searchSpecies'" style="margin-left:15px">
         <div>
             <label>
-        <input style="width:400px" id="speciesAutoComplete" species-auto-complete on-custom="setQ" >
+                <input style="width:400px" id="speciesAutoComplete" species-auto-complete on-custom="setQ">
                 <br/><span i18n="247">For example: "Heleioporus australiacus" or "Giant Burrowing Frog"</span>
-        </label>
+            </label>
         </div>
         <hr>
     </div>

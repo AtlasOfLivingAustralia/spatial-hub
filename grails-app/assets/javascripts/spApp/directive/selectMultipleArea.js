@@ -25,12 +25,12 @@
                     },
                     link: function (scope, element, attrs) {
 
-                        scope.selectedLayer = {layers:[]}; //watch for change
+                        scope.selectedLayer = {layers: []}; //watch for change
                         scope.pickContextualLayer = undefined;
                         scope.pickContextualLayerName = "";
                         scope.pickContextualLayerVisible = true;
 
-                        scope.selectedInOutLayer = {layers:[]}; //watch for change
+                        scope.selectedInOutLayer = {layers: []}; //watch for change
                         scope.pickInOutLayer = undefined;
                         scope.pickInOutLayerName = "";
                         scope.pickInOutLayerVisible = true;
@@ -84,11 +84,11 @@
 
                         LayoutService.addToSave(scope);
 
-                        scope.editPickContextualLayerVisible = function() {
+                        scope.editPickContextualLayerVisible = function () {
                             scope.pickContextualLayerVisible = true;
                             scope.pickContextualLayerName = ""
                         };
-                        scope.editPickInOutLayerVisible = function() {
+                        scope.editPickInOutLayerVisible = function () {
                             scope.pickInOutLayerVisible = true;
                             scope.pickInOutLayerName = ""
                         };
@@ -104,7 +104,7 @@
                             }
                         };
 
-                        scope.$watch('selectedInOutLayer.layers.length', function(newValue, oldValue) {
+                        scope.$watch('selectedInOutLayer.layers.length', function (newValue, oldValue) {
                             //remove all inOutLayers
                             scope.removeInOutLayer();
 
@@ -153,10 +153,8 @@
                                     var len = a.length;
                                     var i;
 
-                                    console.log(area)
                                     for (i = len - 1; i >= 0; i--) {
                                         if (a[i] == area) {
-                                            console.log(a[i])
                                             a.splice(i, 1);
                                         }
                                     }
@@ -175,7 +173,7 @@
                             }
                         };
 
-                        scope.$watch('selectedLayer.layers.length', function(newValue, oldValue) {
+                        scope.$watch('selectedLayer.layers.length', function (newValue, oldValue) {
                             //remove all inOutLayers
                             scope.removeContextualLayer();
 
@@ -202,7 +200,7 @@
                         });
 
                         // apply existing selection
-                        scope.applyLayersSelections = function() {
+                        scope.applyLayersSelections = function () {
                             var allLayerObjAdded = false;
                             var InOutLayerObjAdded = false;
                             for (var i = scope._selectedArea.area.length; i >= 0; i--) {

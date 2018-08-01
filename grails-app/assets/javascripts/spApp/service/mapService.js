@@ -100,7 +100,7 @@
                     zoom: function (uid) {
                         for (var i = 0; i < layers.length; i++) {
                             if (layers[i].uid === uid) {
-                                if (layers[i].bbox !== undefined  && layers[i].area_km != 0) {
+                                if (layers[i].bbox !== undefined && layers[i].area_km != 0) {
                                     this.zoomToExtents(layers[i].bbox);
                                     return
                                 }
@@ -205,10 +205,10 @@
                             return $q.when()
                         }
                         //intersect query (lsid) and area (wkt)
-                        return BiocacheService.facetGeneral("species_guid", query, 1, 0).then(function(response) {
+                        return BiocacheService.facetGeneral("species_guid", query, 1, 0).then(function (response) {
                             if (response && response.length > 0 && response[0].fieldResult &&
                                 response[0].fieldResult.length > 0 && response[0].fieldResult[0].label !== "") {
-                                return LayersService.findOtherArea(type, response[0].fieldResult[0].label, area).then(function(response) {
+                                return LayersService.findOtherArea(type, response[0].fieldResult[0].label, area).then(function (response) {
                                     if (response && response.data && response.data.length > 0) {
                                         var data = response.data;
                                         for (var i in data) {
@@ -239,7 +239,7 @@
                                                 name = item.scientific + " (" + name + ")"
                                             }
 
-                                            MapService.add( {
+                                            MapService.add({
                                                 query: query,
                                                 geom_idx: item.geom_idx,
                                                 layertype: "area",
@@ -250,7 +250,7 @@
                                         }
                                     }
                                     return $q.when()
-                                }, function(data) {
+                                }, function (data) {
                                     return $q.when()
                                 })
                             } else {
@@ -340,7 +340,7 @@
 
                         var newLayer = {};
 
-                        if (id.layertype.toUpperCase() == "WMS"){
+                        if (id.layertype !== undefined && id.layertype.toUpperCase() === "WMS") {
                             //External WMS layer
 
                             newLayer = {
@@ -357,7 +357,7 @@
                                 }
                             };
 
-                        }else if (id.q && id.layertype !== 'area') {
+                        } else if (id.q && id.layertype !== 'area') {
                             LoggerService.log('AddToMap', 'Species', {qid: id.qid});
 
                             id.layertype = 'species';
@@ -433,7 +433,7 @@
                                 } else {
                                     layerParams = {
                                         opacity: id.area_km == 0 ? 0 : id.opacity / 100.0,
-                                        layers: id.area_km == 0 ? 'ALA:Points':'ALA:Objects',
+                                        layers: id.area_km == 0 ? 'ALA:Points' : 'ALA:Objects',
                                         format: 'image/png',
                                         transparent: true,
                                         viewparams: 's:' + id.pid
@@ -587,7 +587,7 @@
                             $SH.defaultPaneResizer.show('south');
                     },
                     objectSld: function (item) {
-                        var sldBody =''
+                        var sldBody = ''
                         if (item.area_km == 0)
                             sldBody = '<?xml version="1.0" encoding="UTF-8"?><StyledLayerDescriptor version="1.0.0" xmlns="http://www.opengis.net/sld" xmlns:xlink="http://www.w3.org/1999/xlink"><NamedLayer><Name>ALA:Points</Name><UserStyle><FeatureTypeStyle>\n' +
                                 '     <Rule>\n' +
@@ -607,7 +607,7 @@
                                 '     </Rule>\n' +
                                 '   </FeatureTypeStyle></UserStyle></NamedLayer></StyledLayerDescriptor>';
                         else
-                             sldBody = '<?xml version="1.0" encoding="UTF-8"?><StyledLayerDescriptor version="1.0.0" xmlns="http://www.opengis.net/sld"><NamedLayer><Name>ALA:Objects</Name><UserStyle><FeatureTypeStyle><Rule><Title>Polygon</Title><PolygonSymbolizer><Fill><CssParameter name="fill">#.colour</CssParameter></Fill></PolygonSymbolizer></Rule></FeatureTypeStyle></UserStyle></NamedLayer></StyledLayerDescriptor>';
+                            sldBody = '<?xml version="1.0" encoding="UTF-8"?><StyledLayerDescriptor version="1.0.0" xmlns="http://www.opengis.net/sld"><NamedLayer><Name>ALA:Objects</Name><UserStyle><FeatureTypeStyle><Rule><Title>Polygon</Title><PolygonSymbolizer><Fill><CssParameter name="fill">#.colour</CssParameter></Fill></PolygonSymbolizer></Rule></FeatureTypeStyle></UserStyle></NamedLayer></StyledLayerDescriptor>';
                         sldBody = sldBody.replace('.colour', item.color);
                         return sldBody
                     },

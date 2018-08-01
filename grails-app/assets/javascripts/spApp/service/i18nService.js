@@ -27,7 +27,7 @@
                  * Output:
                  *  "one"
                  */
-                v: function(k) {
+                v: function (k) {
                     var key = ("" + k).replace(" ", "_");
                     if (map[key] !== undefined) {
                         return map[key]

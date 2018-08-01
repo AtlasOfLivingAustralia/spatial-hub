@@ -1,4 +1,3 @@
-
 <select ng-model='mode' ng-change='changeSelectedItem(mode)'>
     <option i18n="223" value="">Search layers</option>
     <option i18n="224" value="pasteLayers">Paste a layer set</option>
@@ -63,15 +62,21 @@
                             <th style="width:300px">
                                 <div href="#" ng-click="sortType = 'classification'; sortReverse = !sortReverse">
                                     <span i18n="229">Classification</span>
-                                    <span ng-show="sortType == 'classification' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
-                                    <span ng-show="sortType == 'classification' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
-                                </div></th>
+                                    <span ng-show="sortType == 'classification' && !sortReverse"
+                                          class="glyphicon glyphicon-chevron-down"></span>
+                                    <span ng-show="sortType == 'classification' && sortReverse"
+                                          class="glyphicon glyphicon-chevron-up"></span>
+                                </div>
+                            </th>
                             <th style="width:300px">
                                 <div href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
                                     <span i18n="151">Name</span>
-                                    <span ng-show="sortType == 'name' && !sortReverse" class="glyphicon glyphicon-chevron-down"></span>
-                                    <span ng-show="sortType == 'name' && sortReverse" class="glyphicon glyphicon-chevron-up"></span>
-                                </div></th>
+                                    <span ng-show="sortType == 'name' && !sortReverse"
+                                          class="glyphicon glyphicon-chevron-down"></span>
+                                    <span ng-show="sortType == 'name' && sortReverse"
+                                          class="glyphicon glyphicon-chevron-up"></span>
+                                </div>
+                            </th>
                             <th style="width:10px"></th>
                             <th style="width:70px">
                                 <div href="#" ng-click="sortType = 'dist'; sortReverse = !sortReverse">
@@ -85,8 +90,10 @@
                         </tr>
                         </thead>
                         <tbody style="height:300px;overflow:scroll">
-                        <tr ng-repeat="layer in layers | orderBy:sortType:sortReverse | filter:searchLayer" name={{layer.id}}>
-                            <td style="width:20px"><input type="checkbox" ng-model="layer.selected" ng-click="toggle(layer)">
+                        <tr ng-repeat="layer in layers | orderBy:sortType:sortReverse | filter:searchLayer"
+                            name={{layer.id}}>
+                            <td style="width:20px"><input type="checkbox" ng-model="layer.selected"
+                                                          ng-click="toggle(layer)">
                             </td>
                             <td style="width:20px"><img
                                     ng-src="assets/icon_{{layer.type == 'e' ? 'grid':'contextual'}}-layer.png"></td>
@@ -109,11 +116,13 @@
                             <button i18n="120" class="btn btn-default" ng-click="clearSelection()">Clear selection
                             </button>
                         </div>
-                        <a style="padding-left:20px;" download="layerList.txt" ng-href="{{exportUrl}}" ng-disabled="{{exportUrl == null}}">
+                        <a style="padding-left:20px;" download="layerList.txt" ng-href="{{exportUrl}}"
+                           ng-disabled="{{exportUrl == null}}">
                             <i class="glyphicon glyphicon-download-alt"></i>Export
                         </a>
                         <label style="padding-left:20px;"
-                               class="{{validLayerSelection ? '' : 'red-text' }}">{{_selection.layers.length}} of {{layers.length}} layers
+                               class="{{validLayerSelection ? '' : 'red-text' }}">{{_selection.layers.length}} of
+                            {{layers.length}} layers
                             selected</label>
                     </div>
                 </div>

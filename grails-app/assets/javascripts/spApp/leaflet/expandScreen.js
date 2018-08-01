@@ -40,7 +40,7 @@ L.Control.Expand = L.Control.extend({
         return container;
     },
 
-    _toggleUp: function() {
+    _toggleUp: function () {
         if (this.expandControl._up_state) {
             this.expandControl.up.title = this.expandControl.options.titleUp;
             $(".icon-expand-up").removeClass("icon-expand-down")
@@ -52,7 +52,7 @@ L.Control.Expand = L.Control.extend({
         this.expandControl._up_state = !this.expandControl._up_state
     },
 
-    _toggleLeft: function() {
+    _toggleLeft: function () {
         if (this.expandControl._left_state) {
             this.expandControl.left.title = this.expandControl.options.titleLeft;
             $(".icon-expand-left").removeClass("icon-expand-right")
