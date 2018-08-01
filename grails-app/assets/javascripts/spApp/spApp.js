@@ -290,7 +290,6 @@ initLayoutContainer = function () {
 
                 setTimeout(function () {
                     $SH.defaultPaneResizer.resizeAll();
-                    $SH.defaultPaneResizer.hide('south');
                 }, 100);
             }, 100)
         }

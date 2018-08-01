@@ -6,6 +6,10 @@
             function ($scope, LayoutService, $http, leafletData, leafletBoundsHelpers, MapService, $timeout, leafletHelpers, popupService, FlickrService, ToolsService, $q) {
                 //ToolsService included so it is initiated
 
+                //the default base layer must be defined first
+                var defaultBaseLayer = {};
+                defaultBaseLayer[$SH.defaultBaseLayer] = $SH.baseLayers[$SH.defaultBaseLayer];
+
                 angular.extend($scope, {
                     layercontrol: {
                         icons: {
@@ -19,7 +23,7 @@
                         zoom: $SH.defaultZoom
                     },
                     layers: {
-                        baselayers: $SH.baseLayers,
+                        baselayers: defaultBaseLayer,
                         overlays: MapService.leafletLayers
                     },
                     controls: {
@@ -553,6 +557,15 @@
 
                 $timeout(function () {
                     $(window).trigger('resize');
+
+                    // return non-default base layers
+                    var otherBaseLayers = {};
+                    for (var name in $SH.baseLayers) {
+                        if (name !== $SH.defaultBaseLayer) {
+                            $scope.layers.baselayers[name] = $SH.baseLayers[name]
+                        }
+                    }
+
                     $scope.invalidate();
                     $timeout(function () {
                         $scope.setupTriggers();
