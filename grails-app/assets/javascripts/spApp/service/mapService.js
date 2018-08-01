@@ -344,12 +344,13 @@
                             //External WMS layer
 
                             newLayer = {
-                                name: uid + ': ' + id.name,
+                                name: uid + ': ' + id.displayname,
                                 type: 'wms',
                                 visible: true,
                                 url: id.url,
                                 layertype: 'wms',
                                 legendurl: id.legendurl,
+                                opacity: 1.0,
                                 layerParams: {
                                     layers: id.name,
                                     format: 'image/png',

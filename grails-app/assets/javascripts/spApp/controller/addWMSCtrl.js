@@ -47,6 +47,7 @@
                                         legendurl = styles.LegendURL.OnlineResource['xlink:href'];
 
                                     $scope.availableLayers.push({
+                                        displayname: layers[i].Name,
                                         name: layers[i].Name,
                                         title: layers[i].Title,
                                         version: version,
@@ -74,11 +75,9 @@
                 $scope.addLayer = function () {
                     var serverUrl = $scope.selectedServer.substr(0, $scope.selectedServer.lastIndexOf('/') + 1) + 'wms';
                     var layer = Object.assign({url: serverUrl, layertype: "wms"}, $scope.selectedLayer);
-                    $scope.selectedLayerLabel ? layer.name = $scope.selectedLayerLabel : null;
 
                     MapService.add(layer).then(function (data) {
-                        alert('You layer has been added!');
-
+                        //layer added successfully
                     }).catch(function (err) {
                         $scope.warning = err;
                     })
@@ -128,9 +127,11 @@
                     var layer = {
                         url: result.URL,
                         type: 'wms',
-                        layertype: result.SERVICE,
+                        layertype: 'wms',
                         version: result.VERSION,
-                        name: result.LAYERS
+                        name: result.LAYERS,
+                        // legend url here is not valid for all
+                        legendurl: $scope.selectedGetMapExample.replace("GetMap", "GetLegendGraphic").replace("LAYERS=", "LAYER=")
                     };
 
                     MapService.add(layer).then(function (data) {
@@ -142,10 +143,19 @@
 
                 var validateURL = function (str) {
                     var pattern = new RegExp('((([A-Za-z]{3,9}:(?:\\/\\/)?)(?:[-;:&=\\+\\$,\\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\\+\\$,\\w]+@)[A-Za-z0-9.-]+)((?:\\/[\\+~%\\/.\\w-_]*)?\\??(?:[-\\+=&;%@.\\w_]*)#?(?:[\\w]*))?)'); // fragment locater
-                    if (!pattern.test(str)) {
-                        return false;
+                    return pattern.test(str)
+                };
+
+                $scope.addToMapEnabled = function () {
+                    return !(($scope.selectedLayer !== undefined && $scope.selectedServer !== '' && $scope.isAutomatic) ||
+                        ($scope.selectedGetMapExample !== undefined && !$scope.isAutomatic))
+                };
+
+                $scope.addToMap = function () {
+                    if ($scope.isAutomatic) {
+                        $scope.addLayer()
                     } else {
-                        return true;
+                        $scope.addLayerFromGetMapRequest()
                     }
                 }
             }])

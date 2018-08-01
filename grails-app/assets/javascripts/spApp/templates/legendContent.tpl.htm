@@ -385,7 +385,7 @@
             <img ng-src="{{selected.layer.leaflet.legendurl}}">
         </div>
 
-        <div class="form-group row" ng-show="selected.layer.layertype == 'wms'">
+        <div class="form-group row" ng-show="externalWmsLegendVisible()">
             <img ng-src="{{selected.layer.legendurl}}">
         </div>
 

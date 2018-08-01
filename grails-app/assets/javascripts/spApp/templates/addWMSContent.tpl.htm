@@ -16,7 +16,7 @@
     <div class="row">
         <div class="col-md-12">
             <div id="warning" class="alert alert-danger" ng-show="warning">
-                <p i18n="317" class="alert-heading">Warning!</p>
+                <p i18n="321"  class="alert-heading">Warning!</p>
                 <hr>
                 {{ warning | limitTo: 200 }} {{warning.length < 200 ? '' : '...'}}
             </div>
@@ -45,7 +45,7 @@
                 <div>
                     <label i18n="310">Server examples:</label>
                     <select ng-model="selectedServer">
-                        <option i18n="313" value="">-- select server --</option>
+                        <option i18n="322"  value="">-- select server --</option>
                         <option
                                 ng-repeat="server in presetServers"
                                 value="{{server.url}}">
@@ -65,10 +65,10 @@
                     </select>
                 </div>
 
-                <div i18n="315" class="floating-spinner" ng-show="loading"></div>
+                <div class="floating-spinner" ng-show="loading"></div>
 
                 <div>
-                    <button i18n="316" class="btn-small" ng-click="getCapabilities()" ng-if="selectedServer!='' ">
+                    <button i18n="323"  class="btn-small" ng-click="getCapabilities()" ng-if="selectedServer!='' ">
                         Retrieve Layers
                     </button>
                 </div>
@@ -76,12 +76,12 @@
 
                 <div name="availableLayers" ng-show="availableLayers.length > 0">
                     <hr>
-                    <label i18n="318">Select a layer: </label>
+                    <label i18n="324" >Select a layer: </label>
                     <select ng-model="selectedLayer" ng-options="layer.title for layer in availableLayers">
-                        <option i18n="314" value=""> -- select layer --</option>
+                        <option i18n="325" value=""> -- select layer --</option>
                     </select>
                     <p></p>
-                    <label i18n="319">Layer name: </label> <input type="text" ng-model="selectedLayer.name"/>
+                    <label i18n="326">Layer name: </label> <input type="text" ng-model="selectedLayer.displayname"/>
                 </div>
 
             </div>
@@ -95,7 +95,7 @@
                     </div>
                     <label i18n="312">Using one of examples:</label>
                     <select ng-model="selectedGetMapExample" style="width:80%">
-                        <option i18n="314" value=""> -- select example --</option>
+                        <option i18n="327"  value=""> -- select example --</option>
                         <option
                                 ng-repeat="example in getMapExamples"
                                 value="{{example.url}}" label="{{example.name}}">
@@ -110,11 +110,8 @@
 </div>
 
 <div class="modal-footer">
-    <button i18n="319" class="btn btn-primary " ng-click="addLayer()"
-            ng-if="selectedLayer != undefined && selectedServer != '' " && isAutomatic>Add To Map
+    <button i18n="38" class="btn btn-default" type="button" ng-click="$close()">Close</button>
+    <button i18n="328"  class="btn btn-primary " ng-click="addToMap()"
+            ng-disabled="addToMapEnabled()">Add To Map
     </button>
-    <button i18n="319" class="btn btn-primary " ng-click="addLayerFromGetMapRequest()"
-            ng-if="selectedGetMapExample != undefined && !isAutomatic">Add To Map
-    </button>
-    <button i18n="38" class="btn btn-primary" type="button" ng-click="$close()">Close</button>
 </div>
