@@ -77,7 +77,7 @@ dependencies {
     compile "org.grails.plugins:ala-auth:3.0.2"
     compile "org.grails.plugins:ala-bootstrap3:3.0.1"
 
-    runtime 'org.grails.plugins:sandbox-hub:1.0-SNAPSHOT'
+    runtime 'org.grails.plugins:sandbox-hub:1.0'
 
     compile 'org.grails.plugins:cache'
 //    compile 'org.grails.plugins:cache-ehcache:3.0.0.M1' // check https://github.com/AtlasOfLivingAustralia/userdetails/blob/9d5d76fda0954a92dd379eb6f3a9061d576d95fd/build.gradle

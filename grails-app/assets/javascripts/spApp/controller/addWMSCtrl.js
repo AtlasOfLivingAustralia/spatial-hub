@@ -20,6 +20,7 @@
                 $scope.version="";
                 $scope.availableLayers = [];
                 $scope.selectedServer = "";
+                $scope.moreInfo = false;
 
 
                 // $scope.presetServers = [
@@ -35,8 +36,11 @@
 
                 $scope.ok = function () {
 
-
                 };
+
+                $scope.showInfo = function(){
+                    $scope.moreInfo = ! $scope.moreInfo;
+                }
 
                 $scope.getCapabilities = function(){
                     var url = $scope.selectedServer + ($scope.version?"&version=" + $scope.version : "");
