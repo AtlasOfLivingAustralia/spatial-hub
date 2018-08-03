@@ -16,20 +16,20 @@
  *
  * This function is because of a bug in leaflet. all params to wms are capitalised. However, biocache does not like fq to be capitalised.
  */
-if(L.Util.getParamString){
+if (L.Util.getParamString) {
     L.Util.getParamString = function (obj, existingUrl, uppercase) {
         var params = [];
         for (var i in obj) {
-            if(typeof obj[i] === 'array'){
-                for(var j = 0; j < obj[i].length; j++){
-                    if(i !== 'fq'){
+            if (typeof obj[i] === 'array') {
+                for (var j = 0; j < obj[i].length; j++) {
+                    if (i !== 'fq') {
                         params.push(encodeURIComponent(uppercase ? i.toUpperCase() : i) + '=' + encodeURIComponent(obj[i][j]));
                     } else {
                         params.push(encodeURIComponent(i) + '=' + encodeURIComponent(obj[i][j]));
                     }
                 }
             } else {
-                if(i !== 'fq'){
+                if (i !== 'fq') {
                     params.push(encodeURIComponent(uppercase ? i.toUpperCase() : i) + '=' + encodeURIComponent(obj[i]));
                 } else {
                     params.push(encodeURIComponent(i) + '=' + encodeURIComponent(obj[i]));

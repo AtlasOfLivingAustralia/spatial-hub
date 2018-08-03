@@ -3,7 +3,7 @@
 </div>
 
 <div class="modal-body">
-    <div class="container" >
+    <div class="container">
         <uib-progressbar ng-show="loading" class="progress-striped" ng-class="{ active: true }" ng-show="updating"
                          value="100"
                          type='info' title="Updating"><span i18n="270">Loading..</span>.
@@ -14,12 +14,12 @@
             <br/>
             <br/>
             <span i18n="272" style="width:100px;display:inline-block">Layer 1</span>
-            <select ng-model="layer1" style="font-size: 12px; width: 400px" >
+            <select ng-model="layer1" style="font-size: 12px; width: 400px">
                 <option ng-repeat="x in tlayers | orderBy:'name'" ng-value="x.id">{{x.name}}</option>
             </select>
             <br/><br/>
             <span i18n="273" style="width:100px;display:inline-block">Layer 2</span>
-            <select ng-model="layer2" style="font-size: 12px; width: 400px" >
+            <select ng-model="layer2" style="font-size: 12px; width: 400px">
                 <option ng-repeat="x in tlayers | orderBy:'name'" ng-value="x.id">{{x.name}}</option>
             </select>
             <br/><br/>

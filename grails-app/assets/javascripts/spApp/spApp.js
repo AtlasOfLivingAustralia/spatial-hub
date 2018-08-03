@@ -26,27 +26,9 @@ var spApp = angular.module('spApp', ['leaflet-directive', 'ngAnimate', 'ui.boots
     'ngRoute', 'ngAnimate', 'chieffancypants.loadingBar', 'ngFileUpload', 'ngTouch', 'ala.sandbox.components',
     'ngAria'
 ].concat($spAppModules))
-
     .factory('ConfigService', [function () {
         return {}
     }]);
-
-/*
-spApp.run(function($rootScope) {
-    try
-    {
-        Function("() => {};");
-        $('#warning-message').show()
-        return true;
-    }
-    catch(exception)
-    {
-        $('#warning-message').show()
-        return alert('Your web browser is not fully supported!');
-    }
-});
-
-*/
 
 spApp.value('sandboxConfig', SANDBOX_CONFIG);
 spApp.value('existing', 1);
@@ -66,24 +48,13 @@ spApp.config(['$locationProvider', function ($locationProvider) {
 
 }]);
 
-// spApp.config(function ($provide) {
-//     $provide.decorator('$exceptionHandler', function ($delegate) {
-//         return function (exception, cause) {
-//             //$delegate(exception, cause);
-//             alert('Aw, snap! An error occurred! Error: '+exception);
-//         };
-//     });
-// });
-
-spApp.config(['$httpProvider', function($httpProvider )
-{
-    $httpProvider.interceptors.push(function($q) {
+spApp.config(['$httpProvider', function ($httpProvider) {
+    $httpProvider.interceptors.push(function ($q) {
         return {
             'responseError': function (rejection, a, c) {
-                // window.informUser('Error '+rejection.status +': ' +rejection.config.url);
-                if (rejection.status == -1){
+                if (rejection.status == -1) {
                     // urls not accessible are ignored.
-                    console.error('Request to '+rejection.config.url + ' is not accessible')
+                    console.error('Request to ' + rejection.config.url + ' is not accessible')
                 } else if (rejection.status === 0) {
                     if (window.isInWrapper) {
                         //Logout if in an app;
@@ -95,7 +66,6 @@ spApp.config(['$httpProvider', function($httpProvider )
                     //Ignore invalid urls
                     //HTTP interceptor can decorate the promise rejection with a property handled to indicate whether it's handled the error.
                     rejection.handled = true;
-                    //alert('Aw, Snap! Error in request url: ' + rejection.config.url +" (Status: "+ rejection.status +" " + rejection.statusText +" )" )
                 }
                 return $q.reject(rejection);
             }
@@ -138,7 +108,7 @@ function fetchData() {
     spApp.constant("gMessages", gMessages);
 
     var distancesUrl = $SH.layersServiceUrl + "/layerDistances/layerdistancesJSON";
-    //$http.get($SH.proxyUrl + "?url=" + encodeURIComponent(distancesUrl)).then(function (response) {
+
     $http.get(distancesUrl).then(function (response) {
         $.map(response.data, function (v, k) {
             gLayerDistances[k] = v
@@ -245,11 +215,11 @@ $spBootstrapState = false;
 $spMapLoadedState = false;
 $spMapLoaded = function () {
     $spMapLoadedState = true;
-    setTimeout( $spPageLoadingHide, 0 );
+    setTimeout($spPageLoadingHide, 0);
 };
 $spBootstrapReady = function () {
     $spBootstrapState = true;
-    setTimeout( $spPageLoadingHide, 0 );
+    setTimeout($spPageLoadingHide, 0);
     setTimeout(initLayoutContainer, 2000);
 };
 $spPageLoadingHide = function () {
@@ -281,7 +251,7 @@ spApp.config(['$compileProvider',
         $compileProvider.aHrefSanitizationWhitelist(/^\s*(|blob|http|https):/);
     }]);
 
-resizeSouth = function(a,b,c) {
+resizeSouth = function (a, b, c) {
     $('.ui-layout-resizer')[0].style.marginBottom = '-40px';
     $('.ui-layout-resizer')[0].style.minHeight = '40px';
     $('.ui-layout-resizer')[0].style.background = 'transparent';
@@ -316,12 +286,10 @@ initLayoutContainer = function () {
             });
 
             setTimeout(function () {
-                //$('#left-panel')[0].style.overflowY = "scroll";
                 $('#left-panel')[0].style.maxHeight = $('#map').height() + "px";
 
                 setTimeout(function () {
                     $SH.defaultPaneResizer.resizeAll();
-                    $SH.defaultPaneResizer.hide('south');
                 }, 100);
             }, 100)
         }

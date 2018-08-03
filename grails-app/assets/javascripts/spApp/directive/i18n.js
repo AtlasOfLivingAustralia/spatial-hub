@@ -14,7 +14,7 @@
                 scope: {
                     _i18n: '=i18n'
                 },
-                link: function(scope, element, attrs, ctrl, transclude) {
+                link: function (scope, element, attrs, ctrl, transclude) {
                     scope.trusted_html_variable = '';
 
                     scope.save = function (ref) {
@@ -59,7 +59,7 @@
                         return i18nService.v(scope._i18n)
                     };
 
-                    transclude(scope, function(clone) {
+                    transclude(scope, function (clone) {
 
                         var copy = $(clone.context);
 

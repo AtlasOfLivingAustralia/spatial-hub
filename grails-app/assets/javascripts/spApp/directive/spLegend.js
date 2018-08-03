@@ -255,9 +255,15 @@
                             }
                         };
 
+                        scope.externalWmsLegendVisible = function () {
+                            return scope.selected.layer !== undefined && scope.selected.layer !== null &&
+                                scope.selected.layer.layertype === 'wms' &&
+                                (scope.selected.hidelegend === undefined || !scope.selected.hidelegend)
+                        };
+
                         scope.wmsLegendVisible = function () {
                             return scope.selected.layer !== undefined && scope.selected.layer !== null &&
-                                (scope.selected.layer.layertype === 'grid' || scope.selected.layer.layertype === 'contextual' ) &&
+                                (scope.selected.layer.layertype === 'grid' || scope.selected.layer.layertype === 'contextual') &&
                                 (scope.selected.hidelegend === undefined || !scope.selected.hidelegend)
                         };
 
@@ -395,14 +401,13 @@
                         };
 
                         scope.getFacetItemCount = function (item, layer, fq) {
-                            //var it = item;
                             return BiocacheService.count(layer, fq).then(function (count) {
                                 item.count = count;
                                 return item;
                             });
                         };
 
-                        scope.speciesListToFacetList = function(data){
+                        scope.speciesListToFacetList = function (data) {
                             var def = $q.defer();
 
                             var list = [];
@@ -421,35 +426,31 @@
                                 promises.push(scope.getFacetItemCount(listItem, scope.selected.layer, item.fq));
                                 ci = ci + 1;
                             }
-                            $q.all(promises).then(function ( result) {
-                                result.sort(function(a,b){return b.count -a.count})
+                            $q.all(promises).then(function (result) {
+                                result.sort(function (a, b) {
+                                    return b.count - a.count
+                                })
                                 def.resolve(result);
                                 //sort and aggregate the rest of layers after the top 5
                                 var thres = 5
-                                if (result.length < thres){
+                                if (result.length < thres) {
                                     for (var i in result) {
-                                        var c = { red:result[i].red,green:result[i].green,blue:result[i].blue}
+                                        var c = {red: result[i].red, green: result[i].green, blue: result[i].blue}
                                         scope.createSubLayer(c, scope.selected.layer, result[i].fq)
                                     }
-                                }else{
-                                    for (var i =0; i< thres; i++) {
-                                        var c = { red:result[i].red,green:result[i].green,blue:result[i].blue}
+                                } else {
+                                    for (var i = 0; i < thres; i++) {
+                                        var c = {red: result[i].red, green: result[i].green, blue: result[i].blue}
                                         scope.createSubLayer(c, scope.selected.layer, result[i].fq)
                                     }
                                     //agregate the rest of them
                                     var aggreatedfq = []
-                                    for (var i = thres; i<result.length; i++){
-                                        //get content between brackets
-                                        //  var lfq = result[i].fq.match(/\(([^)]+)\)/)[1]
-                                        //  aggreatedfq.push(lfq);
+                                    for (var i = thres; i < result.length; i++) {
                                         aggreatedfq.push(result[i].fq);
                                     }
                                     var c = ColourService.getColour(6);
-                                    scope.createSubLayer(c, scope.selected.layer, "("+aggreatedfq.join(' OR ')+")")
+                                    scope.createSubLayer(c, scope.selected.layer, "(" + aggreatedfq.join(' OR ') + ")")
                                 }
-
-                                // $timeout(function () {
-                                // }, 0);
 
                             })
                             return def.promise;
@@ -477,11 +478,7 @@
                                     for (var i in scope.selected.layer.list) {
                                         var f = scope.selected.layer.list[i];
                                         if (f.facet === scope.selected.layer.facet) {
-                                            // scope.selected.layer.facetList[scope.selected.layer.facet] = scope.speciesListToFacetList(f.species_list_facet);
-                                            // scope.facetClearSelection();
-                                            // scope.updateWMS();
-
-                                            scope.speciesListToFacetList(f.species_list_facet).then(function(result){
+                                            scope.speciesListToFacetList(f.species_list_facet).then(function (result) {
                                                 scope.selected.layer.facetList[scope.selected.layer.facet] = result;
                                                 scope.facetClearSelection();
                                                 scope.updateWMS();

@@ -31,11 +31,11 @@ L.Control.Panoramio = L.Control.extend({
         return container;
     },
 
-    _toggle: function() {
+    _toggle: function () {
         this.panoramioControl._panoramio_state = !this.panoramioControl._panoramio_state;
         this.panoramioControl.options.togglePanoramio(this);
 
-        if (this.panoramioControl._panoramio_state){
+        if (this.panoramioControl._panoramio_state) {
             this.panoramioControl.link.title = this.panoramioControl.options.titleCancel;
             $(".icon-panoramio").removeClass("icon-exit-panoramio")
         } else {

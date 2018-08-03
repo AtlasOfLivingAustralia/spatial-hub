@@ -21,7 +21,7 @@
                 /*
                 uiScope is ToolCtrl
                  */
-                function executeRemote (uiScope, inputs) {
+                function executeRemote(uiScope, inputs) {
                     var m = {};
                     m['input'] = inputs;
                     m['name'] = uiScope.toolName;
@@ -41,7 +41,7 @@
                 /*
                 uiScope is ToolCtrl
                  */
-                function _checkStatus (uiScope) {
+                function _checkStatus(uiScope) {
                     if (uiScope.cancelled) {
                         return;
                     }
@@ -178,7 +178,7 @@
 
                     if (uiScope.metadataUrl !== null) uiScope.openUrl(uiScope.metadataUrl);
 
-                    return $q.all(promises).then(function() {
+                    return $q.all(promises).then(function () {
                         uiScope.finished = true;
                         uiScope.$close();
                     })
@@ -213,7 +213,9 @@
                     $.each(spApp.requires, function (x) {
                         var v = spApp.requires[x];
                         if (v.match(/-service$/g) && v.match(/^tool-/g)) {
-                            var name = v.replace(/-.|^./g, function(match) {return match.toUpperCase().replace('-','')});
+                            var name = v.replace(/-.|^./g, function (match) {
+                                return match.toUpperCase().replace('-', '')
+                            });
                             var tool = $injector.get(name);
 
                             //is this a valid tool service?
@@ -314,7 +316,7 @@
                      * @memberof ToolsService
                      * @param {Scope} interface scope
                      */
-                    checkStatus: function(uiScope) {
+                    checkStatus: function (uiScope) {
                         _checkStatus(uiScope)
                     },
                     /**
@@ -324,7 +326,7 @@
                      * @memberof ToolsService
                      * @param {Scope} interface scope
                      */
-                    executeResult: function(uiScope) {
+                    executeResult: function (uiScope) {
                         _executeResult(uiScope)
                     }
                 }

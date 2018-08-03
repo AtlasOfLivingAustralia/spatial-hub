@@ -54,21 +54,12 @@
 
 
                     refresh: function (inputs, specs) {
-
-                        //change inputs
-                        // if  inputs[0].q array  lsid: /*or species_list*/ :   enable 'next'
-                        // else
-                        //     disable
                         if (specs) {
                             specs.input[1].constraints.disable = !this.checkAreaCompatible(inputs[0].q);
                         }
                     },
 
                     checkAreaCompatible: function (q) {
-                        //change inputs
-                        // if  inputs[0].q array  lsid: /*or species_list*/ :   enable 'next'
-                        // else
-                        //     disable
                         var enableArea = false;
                         if (q !== undefined) {
                             enableArea = (q.length === 0);
@@ -93,19 +84,6 @@
                         //Check if areas is compatible
                         inputs[1].enabled = this.checkAreaCompatible(inputs[0].q);
 
-                        //geospatial_kosher if part of inputs[1] instead of inputs[0]
-                        // var includeTrue = inputs[1].spatiallyValid;
-                        // var includeFalse = inputs[1].spatiallySuspect;
-                        // var gs = ["-*:*"];
-                        // if (includeTrue && !includeFalse) {
-                        //     gs = ["geospatial_kosher:true"]
-                        // } else if (!includeTrue && includeFalse) {
-                        //     gs = ["geospatial_kosher:false"]
-                        // } else if (includeTrue && includeFalse) {
-                        //     gs = ["geospatial_kosher:*"]
-                        // }
-                        // inputs[0].q = inputs[0].q.concat(gs);
-
                         return BiocacheService.newLayer(inputs[0], inputs[2], newName).then(function (data) {
                             if (inputs[1].enabled) {
                                 data.includeAnimalMovement = inputs[1].includeAnimalMovement;
@@ -115,7 +93,7 @@
                             if (inputs[0].species_list) {
                                 data.species_list = inputs[0].species_list;
                             }
-                            return MapService.add(data).then(function() {
+                            return MapService.add(data).then(function () {
                                 return true;
                             })
                         });

@@ -40,24 +40,14 @@
                 function addPopupToMap(latlng, map, templatePromise, intersects, occurrences) {
                     var leafletmap = $('.angular-leaflet-map');
                     var layerCount = layers.length + speciesLayers.length + areaLayers.length;
-                    // if (layerCount > 0 && processedLayers[0] < layerCount) {
-                    //     leafletmap[0].style.cursor = 'wait'
-                    // }
 
                     if (addPopupFlag) {
                         templatePromise.then(function (content) {
                             var popupScope = $rootScope.$new();
 
                             popupScope.processedLayers = processedLayers;
-                            // leafletmap[0].style.cursor = '';
 
                             // TODO: build a better progress indicator
-                            // popupScope.$watch('processedLayers', function (newVal, oldVal) {
-                            //     var layerCount = layers.length + speciesLayers.length + areaLayers.length;
-                            //     if (newVal && layerCount > 0 && newVal[0] === layerCount) {
-                            //         leafletmap[0].style.cursor = ''
-                            //     }
-                            // });
 
                             popupScope.intersects = intersects;
                             popupScope.olist = occurrences;
@@ -231,10 +221,6 @@
                         $('.leaflet-popup-close-button')[0].click()
                     };
 
-                    // if (speciesLayers.length > 0) {
-                    //     $('.angular-leaflet-map')[0].style.cursor = 'wait'
-                    // }
-
                     speciesLayers.forEach(function (layer) {
                         var q = self.getQueryParams(layer);
                         biocacheService.count(q.query, q.fqs).then(function (count) {
@@ -245,10 +231,6 @@
                                 self.getFirstOccurrence(layer)
                             }
                             processedLayers[0] += 1;
-
-                            // if (processedLayers[0] === speciesLayers.length && layers.length + areaLayers.length === 0) {
-                            //     $('.angular-leaflet-map')[0].style.cursor = ''
-                            // }
 
                             self.listRecords();
                             self.viewRecord();

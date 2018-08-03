@@ -33,11 +33,13 @@
                                 needs to meet a minimum set of standards. Data needs to include, at a minimum: <code>scientificName</code>
                                 /
                                 <code>vernacularName</code> to identify the organism and <code>eventDate</code>,
-                                <code>decimalLatitude</code> and <code>decimalLongitude</code> to indicate where and when
+                                <code>decimalLatitude</code> and <code>decimalLongitude</code> to indicate where and
+                                when
                                 the occurrence
                                 happened. The data needs to have a unique identifier column - either
                                 <code>catalogNumber</code> or
-                                <code>occurrenceID</code> with a unique value for each record. The number of columns must
+                                <code>occurrenceID</code> with a unique value for each record. The number of columns
+                                must
                                 match the number
                                 of column headers (problems with this often indicate commas and/or line breaks in the
                                 fields).</p>
@@ -51,8 +53,9 @@
 
                                 <p i18n="201">To paste your data, click the rectangle below, and type
                                     <kbd><kbd>ctrl</kbd> +
-                                    <kbd>V</kbd></kbd> (Windows)
-                                    or <kbd><kbd>&#8984;</kbd> + <kbd>V</kbd></kbd> (OS X). For a large amount of data, this
+                                        <kbd>V</kbd></kbd> (Windows)
+                                    or <kbd><kbd>&#8984;</kbd> + <kbd>V</kbd></kbd> (OS X). For a large amount of data,
+                                    this
                                     may take a while to parse.
                                 </p>
 
@@ -77,13 +80,15 @@
                             </uib-tab>
                             <uib-tab heading="Load File" disable="preview.text">
                                 <p i18n="202">
-                                    This is a sandbox environment for data uploads, to allow users to view their data with
+                                    This is a sandbox environment for data uploads, to allow users to view their data
+                                    with
                                     ALA tools.
                                     This is currently an <strong>experimental</strong> feature of the Atlas.<br/>
                                     Uploaded data will be <strong>periodically cleared</strong> from the system.
                                     <br/>
                                     This tool accepts Excel spreadsheets and
-                                    <a target="_blank" href="https://en.wikipedia.org/wiki/Comma-separated_values">CSV</a>
+                                    <a target="_blank"
+                                       href="https://en.wikipedia.org/wiki/Comma-separated_values">CSV</a>
                                     files.
                                     For large files, its recommended that the files are
                                     <a target="_blank" href="https://en.wikipedia.org/wiki/Zip_(file_format)">zipped</a>
@@ -146,7 +151,8 @@
                                         <tr>
                                             <th ng-repeat="header in preview.preview.headers">
                                                 <input class="columnHeaderInput" type="text" autocomplete="off" name="q"
-                                                       ng-model="header.header" ng-change="preview.headerChanged(header)"
+                                                       ng-model="header.header"
+                                                       ng-change="preview.headerChanged(header)"
                                                        ng-class="{unrecognizedField: !header.known}"
                                                        uib-typeahead="dwc for dwc in preview.autocompleteColumnHeaders($viewValue)"
                                                        typeahead-on-select="preview.headerValueSelected(header)"
@@ -173,7 +179,8 @@
                             </div>
                             <button type="button" class="btn btn-default"
                                     ng-disabled="preview.processingData || preview.uploading"
-                                    ng-click="preview.getProcessedData()" ng-bind="preview.reprocessDataLabel()"></button>
+                                    ng-click="preview.getProcessedData()"
+                                    ng-bind="preview.reprocessDataLabel()"></button>
                         </div>
                     </div><!-- panel-body -->
                 </div><!-- recognisedDataDiv -->
@@ -195,14 +202,16 @@
                                 value</strong>
                                 displays the results of name matching, sensitive data lookup and reverse geocoding where
                                 coordinates have been supplied.<br/>
-                                If you are happy with the initial processing, please give your dataset a name, and upload
+                                If you are happy with the initial processing, please give your dataset a name, and
+                                upload
                                 into the sandbox.
                                 This will process all the records and allow you to visualise your data on a map.
                             </p>
 
                             <div class="well">
                                 <form class="form-inline">
-                                    <uib-alert ng-if="preview.isMissingUsefulColumns">Your dataset is missing the following
+                                    <uib-alert ng-if="preview.isMissingUsefulColumns">Your dataset is missing the
+                                        following
                                         useful fields: <code ng-bind="preview.missingUsefulColumnsMessage"></code>
                                     </uib-alert>
                                     <uib-alert ng-if="!(preview.processedData.validationMessages.length == 0)">There are
@@ -217,7 +226,8 @@
                                                ng-model="preview.datasetName" ng-disabled="preview.uploading"/>
                                     </div>
                                     <button i18n="211" type="button" id="uploadButton" class="btn btn-primary"
-                                            ng-click="preview.uploadToSandbox()" ng-bind="preview.uploadToSandboxLabel()"
+                                            ng-click="preview.uploadToSandbox()"
+                                            ng-bind="preview.uploadToSandboxLabel()"
                                             ng-disabled="(preview.uploading || !(preview.processedData.validationMessages.length == 0))">
                                         Upload your data
                                     </button>
@@ -238,7 +248,8 @@
                                             href="mailto:"></a> with the details of your dataset.</span>
                                 </div>
 
-                                <uib-progressbar class="progress-striped" ng-class="{ active: preview.uploadPercent < 100 }"
+                                <uib-progressbar class="progress-striped"
+                                                 ng-class="{ active: preview.uploadPercent < 100 }"
                                                  ng-show="preview.uploading" value="preview.uploadPercent"
                                                  type="{{ preview.uploadPercent < 100 ? 'info': 'success'}}"
                                                  title="Upload progress">

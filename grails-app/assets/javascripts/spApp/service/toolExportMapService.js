@@ -10,98 +10,97 @@
     angular.module('tool-export-map-service', [])
         .factory("ToolExportMapService", ["$http", "$q", "MapService", "LayersService", "LayoutService",
             function ($http, $q, MapService, LayersService, LayoutService) {
-            return {
+                return {
 
-                // Override text with view-config.json
-                spec: {
-                    "input": [
-                        {
-                            "name": "caption",
-                            "description": "Enter a map caption.",
-                            "type": "text",
-                            "constraints": {
-                                "optional": true
-                            }
-                        },
-                        {
-                            "name": "format",
-                            "description": "Select an image format.",
-                            "type": "list",
-                            "constraints": {
-                                "default": "png",
-                                "selection": "single",
-                                "content": [
-                                    "png",
-                                    "jpg",
-                                    "pdf"
-                                ],
-                                "optional": false
-                            }
+                    // Override text with view-config.json
+                    spec: {
+                        "input": [
+                            {
+                                "name": "caption",
+                                "description": "Enter a map caption.",
+                                "type": "text",
+                                "constraints": {
+                                    "optional": true
+                                }
+                            },
+                            {
+                                "name": "format",
+                                "description": "Select an image format.",
+                                "type": "list",
+                                "constraints": {
+                                    "default": "png",
+                                    "selection": "single",
+                                    "content": [
+                                        "png",
+                                        "jpg",
+                                        "pdf"
+                                    ],
+                                    "optional": false
+                                }
 
-                        }],
-                    "description": "Export areas."
-                },
+                            }],
+                        "description": "Export areas."
+                    },
 
-                execute: function (inputs) {
-                    var leafletmap = $('.angular-leaflet-map');
+                    execute: function (inputs) {
+                        var leafletmap = $('.angular-leaflet-map');
 
-                    var outputType = inputs[1];
-                    var resolution = "0.01";
-                    var bbox = MapService.getExtents();
-                    var windowSize = [leafletmap.width(), leafletmap.height()];
-                    var comment = inputs[0];
-                    var baseMap = $SH.baseLayers[MapService.leafletScope.baseMap].exportType;
-                    var mapLayers = [];
+                        var outputType = inputs[1];
+                        var resolution = "0.01";
+                        var bbox = MapService.getExtents();
+                        var windowSize = [leafletmap.width(), leafletmap.height()];
+                        var comment = inputs[0];
+                        var baseMap = $SH.baseLayers[MapService.leafletScope.baseMap].exportType;
+                        var mapLayers = [];
 
 
-                    for (var k in MapService.leafletLayers) {
-                        if (MapService.leafletLayers.hasOwnProperty(k)) {
-                            if (k !== 'draw' && !k.match(/highlight.*/) && k !== 'images') {
-                                var group = MapService.leafletLayers[k].layerOptions.layers;
-                                for (var j in group) {
-                                    var i = group[j];
-                                    var url = i.url;
-                                    if (url.indexOf('?') < 0) url += '?';
-                                    //Adding a quick fix for the issue that exporting map without areas
-                                    //Todo Mapservice may be a better place to put this fix
-                                    url += "&bbox="+bbox.join();
-                                    url +="&width="+windowSize[0]+"&height="+windowSize[1]
-                                    url += "&service=WMS&request=GetMap"
-                                    //end fix
+                        for (var k in MapService.leafletLayers) {
+                            if (MapService.leafletLayers.hasOwnProperty(k)) {
+                                if (k !== 'draw' && !k.match(/highlight.*/) && k !== 'images') {
+                                    var group = MapService.leafletLayers[k].layerOptions.layers;
+                                    for (var j in group) {
+                                        var i = group[j];
+                                        var url = i.url;
+                                        if (url.indexOf('?') < 0) url += '?';
+                                        //Adding a quick fix for the issue that exporting map without areas
+                                        //Todo Mapservice may be a better place to put this fix
+                                        url += "&bbox=" + bbox.join();
+                                        url += "&width=" + windowSize[0] + "&height=" + windowSize[1]
+                                        url += "&service=WMS&request=GetMap"
+                                        //end fix
 
-                                    for (var j in i.layerParams) {
-                                        if (i.layerParams.hasOwnProperty(j)) {
-                                            url += '&' + j + '=' + encodeURIComponent(i.layerParams[j])
+                                        for (var j in i.layerParams) {
+                                            if (i.layerParams.hasOwnProperty(j)) {
+                                                url += '&' + j + '=' + encodeURIComponent(i.layerParams[j])
+                                            }
                                         }
-                                    }
-                                    //Check if opacity has been defined
-                                    if (url.indexOf("opacity") == -1)
-                                        url += "&opacity=" + (i.opacity);
+                                        //Check if opacity has been defined
+                                        if (url.indexOf("opacity") == -1)
+                                            url += "&opacity=" + (i.opacity);
 
-                                    console.log(url);
-                                    mapLayers.push(url)
+                                        mapLayers.push(url)
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    var data = {processName: 'MapImage'};
-                    data.overrideValues = {
-                        MapImage: {
-                            input: {
-                                outputType: {constraints: {'default': outputType}},
-                                resolution: {constraints: {'default': resolution}},
-                                bbox: {constraints: {'default': bbox}},
-                                windowSize: {constraints: {'default': windowSize}},
-                                comment: {constraints: {'default': comment}},
-                                baseMap: {constraints: {'default': baseMap}},
-                                mapLayers: {constraints: {'default': mapLayers}}
-                            }
-                        },
-                        'stage': 'execute'
-                    };
-                    LayoutService.openModal('tool', data, false);
-                }
-            };
-        }])
+                        var data = {processName: 'MapImage'};
+                        data.overrideValues = {
+                            MapImage: {
+                                input: {
+                                    outputType: {constraints: {'default': outputType}},
+                                    resolution: {constraints: {'default': resolution}},
+                                    bbox: {constraints: {'default': bbox}},
+                                    windowSize: {constraints: {'default': windowSize}},
+                                    comment: {constraints: {'default': comment}},
+                                    baseMap: {constraints: {'default': baseMap}},
+                                    mapLayers: {constraints: {'default': mapLayers}}
+                                }
+                            },
+                            'stage': 'execute'
+                        };
+                        LayoutService.openModal('tool', data, false);
+                    }
+                };
+            }])
 }(angular));

@@ -100,7 +100,7 @@
                                     scope.searching = false;
 
                                     var rows = "";
-                                    for (var i=0; i<scope.points.length; i++) {
+                                    for (var i = 0; i < scope.points.length; i++) {
                                         var p = scope.points[i];
                                         rows += "\n\"" + p.name.replace("\"", "\\\"") + "\"," + p.geometry + "," + p.distance + "," + p.degrees
                                     }
@@ -110,7 +110,7 @@
                                         "Feature,Location,Distance (km),Heading (deg)";
                                     var blob = new Blob([header + rows], {type: 'text/plain'});
                                     scope.exportUrl = (window.URL || window.webkitURL).createObjectURL(blob);
-                                }, function(response) {
+                                }, function (response) {
                                     scope.searching = false;
                                     scope.pointLabel = $i18n("Error")
                                 });

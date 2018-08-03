@@ -162,7 +162,7 @@
 
                             $scope.controlVisibility = function (linkOfType) {
                                 if (linkOfType === 'speciesarea') {
-                                    return !!( $scope.species && $scope.area)
+                                    return !!($scope.species && $scope.area)
                                 } else if (linkOfType === 'species') {
                                     return !!$scope.species && !$scope.area
                                 } else if (linkOfType === 'area') {
@@ -211,10 +211,10 @@
                                 LayoutService.openModal(type, data)
                             };
                             $scope.openTool = function (type) {
-                                $scope.openModal('tool', { processName: type })
+                                $scope.openModal('tool', {processName: type})
                             };
 
-                            $timeout(function() {
+                            $timeout(function () {
                                 $templateRequest('/spApp/quickLinksContent.htm').then(function (content) {
                                     var html = $compile(content)($scope);
                                     leafletData.getMap().then(function (map) {

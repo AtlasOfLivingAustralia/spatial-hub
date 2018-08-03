@@ -62,7 +62,7 @@
 
                 //save session and open BCCVL login page
                 SessionsService.saveAndLogin(SessionsService.current(), $SH.bccvlLoginUrl + '$url' + bccvlExportTool, true, true)
-            }
+            };
 
             if ($scope.step === 1) {
                 $scope.bccvlLogin()

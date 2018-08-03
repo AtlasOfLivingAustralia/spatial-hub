@@ -12,7 +12,6 @@
             var layers = [];
 
             var url = $SH.layersServiceUrl + "/fields/search?q=";
-            //$http.get($SH.proxyUrl + "?url=" + encodeURIComponent(url)).then(function (data) {
             $http.get(url).then(function (data) {
                 layers = data.data;
             });
@@ -76,7 +75,6 @@
                  */
                 getLayers: function () {
                     var url = this.url() + "/fields/search?q=";
-                    //return $http.get($SH.proxyUrl + "?url=" + encodeURIComponent(url))
                     return $http.get(url)
                 },
                 /**
@@ -152,7 +150,6 @@
                  */
                 searchLayers: function (q) {
                     var url = this.url() + '/fields/search?q=' + q;
-                    //return $http.get($SH.proxyUrl + "?url=" + encodeURIComponent(url))
                     return $http.get(url)
                 },
                 /**
@@ -354,7 +351,7 @@
                  * @param {string} LSID
                  * @returns {Promise}
                  */
-                findOtherArea: function(type, lsid, area) {
+                findOtherArea: function (type, lsid, area) {
                     return $http.get(this.url() + '/' + type + '/lsid/' + lsid + '?nowkt=true')
                 },
                 /**

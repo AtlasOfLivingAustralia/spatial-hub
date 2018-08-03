@@ -6,6 +6,10 @@
             function ($scope, LayoutService, $http, leafletData, leafletBoundsHelpers, MapService, $timeout, leafletHelpers, popupService, FlickrService, ToolsService, $q) {
                 //ToolsService included so it is initiated
 
+                //the default base layer must be defined first
+                var defaultBaseLayer = {};
+                defaultBaseLayer[$SH.defaultBaseLayer] = $SH.baseLayers[$SH.defaultBaseLayer];
+
                 angular.extend($scope, {
                     layercontrol: {
                         icons: {
@@ -19,7 +23,7 @@
                         zoom: $SH.defaultZoom
                     },
                     layers: {
-                        baselayers: $SH.baseLayers,
+                        baselayers: defaultBaseLayer,
                         overlays: MapService.leafletLayers
                     },
                     controls: {
@@ -194,7 +198,8 @@
                     } else {
                         $("#left-panel")[0].style.marginLeft = "-420px";
                         $("#right-panel")[0].style.marginLeft = "0px";
-                    };
+                    }
+                    ;
                     $(window).trigger('resize');
                     context.invalidateSize()
                 };
@@ -216,8 +221,8 @@
                     context.invalidateSize()
                 };
 
-                $scope.togglePanoramio = function (context){
-                    if (context.panoramioControl._panoramio_state){
+                $scope.togglePanoramio = function (context) {
+                    if (context.panoramioControl._panoramio_state) {
                         $scope.addPanoramioToMap();
                     }
                     else {
@@ -239,11 +244,11 @@
 
                         //flickr always returns 250 per page regardless the value of per_page passed in,
                         // so we config total number of photos to display at one time ourselves
-                        var nbrOfPhotosToDisplay = Math.round($SH.flickrNbrOfPhotosToDisplay/multipBounds.length);
+                        var nbrOfPhotosToDisplay = Math.round($SH.flickrNbrOfPhotosToDisplay / multipBounds.length);
                         for (var i = 0; i < multipBounds.length; i++) {
                             $(".icon-panoramio").addClass("icon-spin-panoramio");
                             promises.push(FlickrService.getPhotos(multipBounds[i]).then(function (data) {
-                                if (data.photos){
+                                if (data.photos) {
                                     for (var i = 0; i < nbrOfPhotosToDisplay; i++) {
                                         var photoContent = data.photos.photo[i];
                                         newMarkers[photoContent.id] = photoContent;
@@ -260,8 +265,8 @@
                 };
 
                 $scope.addPhotosToMap = function (newMarkers, oldMarkers) {
-                    var popupHTML = function(photo, licenseName){
-                        var result = "<div><h3 class='popover-title'>" + photo.title  + "</h3>";
+                    var popupHTML = function (photo, licenseName) {
+                        var result = "<div><h3 class='popover-title'>" + photo.title + "</h3>";
                         result += "<div class='panel-body'> ";
                         result += "<div class='row'> <div class='col-sm-12'>";
                         result += "<a href='" + photo.url_m + "' target='_blank'>";
@@ -291,8 +296,7 @@
                             var drawnItems = baselayers.overlays.images;
 
                             // remove markers that are not in the new feed
-                            Object.keys(oldMarkers).forEach(function(key) {
-                                // console.log("already drawn: " + oldMarkers.hasOwnProperty(key));
+                            Object.keys(oldMarkers).forEach(function (key) {
                                 if (!newMarkers.hasOwnProperty(key)) {
                                     var photoContent = oldMarkers[key];
                                     var marker = L.marker([photoContent.latitude, photoContent.longitude]);
@@ -301,8 +305,7 @@
                             });
 
                             // draw new markers
-                            Object.keys(newMarkers).forEach(function(key) {
-                                // console.log("already drawn: " + oldMarkers.hasOwnProperty(key));
+                            Object.keys(newMarkers).forEach(function (key) {
                                 // don't redraw
                                 if (!oldMarkers.hasOwnProperty(key)) {
                                     var photoContent = newMarkers[key];
@@ -314,7 +317,6 @@
                                     );
                                     var marker = L.marker([photoContent.latitude, photoContent.longitude], {icon: photoIcon});
                                     var license = $scope.licenses[photoContent.license];
-                                    // console.debug('license id, name: ' + photoContent.license + "  " + license);
                                     marker.bindPopup(popupHTML(photoContent, license), {minWidth: 280});
                                     promises.push(drawnItems.addLayer(marker));
                                 }
@@ -473,7 +475,7 @@
                     })
                 };
 
-                $scope.getLicenses = function (){
+                $scope.getLicenses = function () {
                     FlickrService.getLicenses().then(function (data) {
                         $scope.licenses = data
                     });
@@ -501,7 +503,7 @@
                             }).addTo(map);
 
                             new L.Control.Panoramio({
-                                togglePanoramio : $scope.togglePanoramio
+                                togglePanoramio: $scope.togglePanoramio
                             }).addTo(map);
 
                             map.on('draw:created', function (e) {
@@ -555,6 +557,15 @@
 
                 $timeout(function () {
                     $(window).trigger('resize');
+
+                    // return non-default base layers
+                    var otherBaseLayers = {};
+                    for (var name in $SH.baseLayers) {
+                        if (name !== $SH.defaultBaseLayer) {
+                            $scope.layers.baselayers[name] = $SH.baseLayers[name]
+                        }
+                    }
+
                     $scope.invalidate();
                     $timeout(function () {
                         $scope.setupTriggers();

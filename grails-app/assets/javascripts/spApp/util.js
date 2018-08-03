@@ -1,6 +1,6 @@
 var Util = {
-    wrapMinusLngLat : [-180, -90],
-    wrapPlusLngLat : [180, 90],
+    wrapMinusLngLat: [-180, -90],
+    wrapPlusLngLat: [180, 90],
 
     createCircle: function (lng, lat, radiusM) {
         var belowMinus180 = false;
@@ -70,7 +70,7 @@ var Util = {
     },
 
     addSplitPoint: function (rings, edge, lastPt, pt, lastRegion, region, slope, y) {
-        if (edge[0] <= Math.max(lastPt[0], pt[0]) && edge[0]>= Math.min(lastPt[0], pt[0])) {
+        if (edge[0] <= Math.max(lastPt[0], pt[0]) && edge[0] >= Math.min(lastPt[0], pt[0])) {
             var ym = slope * edge[0] + y;
             var latlng = [ym, edge[0]];
 
@@ -78,7 +78,7 @@ var Util = {
             lastRing.push([latlng[1], latlng[0]]);
 
             // add new ring when the current ring is finished.
-            if (lastRing[0][0]== latlng[1]) {
+            if (lastRing[0][0] == latlng[1]) {
                 rings[lastRegion + 1].push([])
             }
 
@@ -211,7 +211,6 @@ var Util = {
         if (filename !== undefined) {
             link.download = filename
         }
-        //link.target = '_blank';
         link.href = url;
         link.click();
     },

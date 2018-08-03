@@ -83,7 +83,7 @@
                         var url;
                         if (response.data) {
                             url = response.data.url.replace("?", "/?");
-                        }else if (response.url){
+                        } else if (response.url) {
                             url = response.url.replace("?", "/?");
                         }
 
@@ -99,7 +99,7 @@
                                 window.location.href = $SH.loginUrl + encodeURIComponent(url)
                         }
 
-                    }).error(function(err) {          //second function "error"
+                    }).error(function (err) {          //second function "error"
                         return false;
                     })
                 },

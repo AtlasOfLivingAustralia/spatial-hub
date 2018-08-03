@@ -1,9 +1,10 @@
 <div class="container">
     <p i18n="164">Select the base map type.</p>
 
-    <div class="radio" ng-model="selection.name" ng-repeat="x in baselayers" >
+    <div class="radio" ng-model="selection.name" ng-repeat="x in baselayers">
         <label>
-            <input type="radio" style="position:inherit" ng-model="selection.name" value="{{x.key}}" ng-change="select(x.key)">
+            <input type="radio" style="position:inherit" ng-model="selection.name" value="{{x.key}}"
+                   ng-change="select(x.key)">
             {{x.name}}
             <a style="color:black;" ng-show="x.link != null" class="glyphicon glyphicon-info-sign" href="{{x.link}}"
                target="_blank"></a>

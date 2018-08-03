@@ -58,8 +58,6 @@
 
                         scope.init = function () {
                             PhyloService.getExpertTrees().then(function (data) {
-                                console.log("phylo");
-                                console.log(data);
                                 for (var k in data.data) {
                                     if (data.data.hasOwnProperty(k)) {
                                         scope.trees.push({
@@ -71,8 +69,7 @@
                                         })
                                     }
                                 }
-                                //scope.loading = false;
-                            }).finally(function(){
+                            }).finally(function () {
                                 scope.loading = false;
                             });
 

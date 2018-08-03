@@ -99,7 +99,7 @@
                         MapService.select(layer)
                     }
 
-                    scope.reconnect = function() {
+                    scope.reconnect = function () {
                         KeepAliveService.reconnect();
                     }
                 }

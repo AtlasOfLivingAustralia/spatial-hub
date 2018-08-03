@@ -30,7 +30,7 @@
                      * @memberof MenuService
                      * @returns {Promise(Map)} menu configuration
                      */
-                    getMenuConfig: function() {
+                    getMenuConfig: function () {
                         if (menuConfig.size > 0) {
                             return $q.when(menuConfig)
                         } else {

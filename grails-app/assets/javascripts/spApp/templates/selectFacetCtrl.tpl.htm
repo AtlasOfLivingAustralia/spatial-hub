@@ -28,7 +28,8 @@
         <span style="float:right" i18n="51">Download</span><i class=" pull-right glyphicon glyphicon-download-alt"></i>
     </a>
 
-    <table ng-hide="updatingPage" class="table layers-table table-striped" style="margin-top:10px;width:100%;height:250px;overflow:scroll;display:block">
+    <table ng-hide="updatingPage" class="table layers-table table-striped"
+           style="margin-top:10px;width:100%;height:250px;overflow:scroll;display:block">
         <tr ng-repeat="x in facetList">
             <td style="width:20px"><input type="checkbox" ng-model="x.selected"
                                           ng-change="applySelection()"></td>
@@ -41,7 +42,8 @@
     <div style="height:320px;overflow: hidden;" ng-show="updatingPage">
         <uib-progressbar class="progress-striped" ng-class="{ active: true }"
                          value="100"
-                         type='info' title="Updating">loading...</uib-progressbar>
+                         type='info' title="Updating">loading...
+        </uib-progressbar>
     </div>
 
     <div class="btn-group btn-group-xs">
@@ -56,7 +58,7 @@
 
     <div style="float:right">
         <span style="color:red">{{selection.length}} facets selected</span>
-        <div class="btn-group btn-group-xs" >
+        <div class="btn-group btn-group-xs">
             <button i18n="120" ng-click="clearSelection()" class="btn btn-default">Clear selection</button>
         </div>
     </div>

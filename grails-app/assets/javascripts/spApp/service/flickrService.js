@@ -14,7 +14,7 @@
                         + '&api_key=' + $SH.flickrApiKey + '&extras=' + encodeURIComponent($SH.flickrExtra)
                         + '&tags=' + encodeURIComponent($SH.flickrTags)
                         + '&geo_context=' + encodeURIComponent($SH.flickrGeoContext)
-                        + '&content_type='+ encodeURIComponent($SH.flickrContentType)
+                        + '&content_type=' + encodeURIComponent($SH.flickrContentType)
                         + $SH.flickrFilter
                         + '&per_page=' + $SH.flickrNbrOfPhotosToDisplay
                         + '&format=json&nojsoncallback=1&bbox='; //??? 50 perpage ???
@@ -35,9 +35,9 @@
                         + '&format=json&nojsoncallback=1';
 
                     return $http.get(url).then(function (response) {
-                        if (response.data.licenses){
+                        if (response.data.licenses) {
                             var result = {};
-                            angular.forEach (response.data.licenses.license, function (lic) {
+                            angular.forEach(response.data.licenses.license, function (lic) {
                                 result[lic.id] = lic.name;
                             });
 
