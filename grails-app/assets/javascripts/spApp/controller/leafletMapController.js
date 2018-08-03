@@ -128,9 +128,14 @@
                                 // all layers are groups
                                 // when more than one layer in the group, the first is always visible=false
                                 var pos = 0;
-                                for (var i in ly._layers) {
+                                var len = 0;
+                                var i;
+                                for (i in ly._layers) {
+                                    len = len + 1;
+                                }
+                                for (i in ly._layers) {
                                     var layer = ly._layers[i];
-                                    if (pos === 0 && ly._layers.length > 1) {
+                                    if (pos === 0 && len > 1) {
                                         layer.visible = false
                                     } else {
                                         layer.visible = show

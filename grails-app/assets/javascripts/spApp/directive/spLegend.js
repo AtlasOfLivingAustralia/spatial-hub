@@ -340,6 +340,15 @@
                             }
                         };
 
+                        scope.facetSelectAll = function () {
+                            if (scope.selected.layer !== undefined) {
+                                for (var i = 0; i < scope.selected.layer.facetList[scope.selected.layer.facet].length; i++) {
+                                    scope.selected.layer.facetList[scope.selected.layer.facet][i].selected = true
+                                }
+                                scope.updateSelection()
+                            }
+                        };
+
                         scope.updateSelection = function () {
                             if (scope.selected.layer !== undefined) {
                                 var sel = '';
@@ -407,12 +416,32 @@
                             });
                         };
 
+                        scope.asyncFacetCounts = function (queue, results) {
+                            scope.facetProgress = (results.length + 1) + " of " + (queue.length + results.length);
+                            var facetCount = queue.pop();
+                            console.log(queue.length);
+                            console.log(facetCount);
+                            return scope.getFacetItemCount(facetCount[0], scope.selected.layer, facetCount[1]).then(
+                                function (data) {
+                                    results.push(data);
+                                    if (queue.length > 0) {
+                                        return scope.asyncFacetCounts(queue, results);
+                                    } else {
+                                        return $q.when();
+                                    }
+                                }
+                            );
+                        };
+
                         scope.speciesListToFacetList = function (data) {
                             var def = $q.defer();
 
                             var list = [];
 
                             var promises = [];
+
+                            var queue = [];
+
                             var ci = 0;
                             for (var key in data) {
                                 var item = data[key];
@@ -423,36 +452,53 @@
                                     fq: item.fq, red: c.red, green: c.green, blue: c.blue
                                 };
                                 //populate count
-                                promises.push(scope.getFacetItemCount(listItem, scope.selected.layer, item.fq));
+                                queue.push([listItem, item.fq]);
                                 ci = ci + 1;
                             }
+
+                            // async for queue
+                            var results = [];
+                            scope.facetProgress = results.length + " of " + queue.length;
+                            promises.push(scope.asyncFacetCounts(queue, results));
+
                             $q.all(promises).then(function (result) {
+                                result = results
                                 result.sort(function (a, b) {
                                     return b.count - a.count
-                                })
+                                });
                                 def.resolve(result);
                                 //sort and aggregate the rest of layers after the top 5
-                                var thres = 5
-                                if (result.length < thres) {
+                                var maxMappedFacets = 5;
+                                if (result.length < maxMappedFacets) {
                                     for (var i in result) {
-                                        var c = {red: result[i].red, green: result[i].green, blue: result[i].blue}
+                                        var c = ColourService.getColour(i);
                                         scope.createSubLayer(c, scope.selected.layer, result[i].fq)
+                                        result[i].red = c.red;
+                                        result[i].green = c.green;
+                                        result[i].blue = c.blue;
                                     }
                                 } else {
-                                    for (var i = 0; i < thres; i++) {
-                                        var c = {red: result[i].red, green: result[i].green, blue: result[i].blue}
+                                    for (var i = 0; i < maxMappedFacets; i++) {
+                                        var c = ColourService.getColour(i);
                                         scope.createSubLayer(c, scope.selected.layer, result[i].fq)
+                                        result[i].red = c.red;
+                                        result[i].green = c.green;
+                                        result[i].blue = c.blue;
                                     }
-                                    //agregate the rest of them
-                                    var aggreatedfq = []
-                                    for (var i = thres; i < result.length; i++) {
+                                    //agregate the rest
+                                    var aggreatedfq = [];
+                                    var c = ColourService.getColour(maxMappedFacets);
+                                    for (var i = maxMappedFacets; i < result.length; i++) {
                                         aggreatedfq.push(result[i].fq);
+                                        result[i].red = c.red;
+                                        result[i].green = c.green;
+                                        result[i].blue = c.blue;
                                     }
-                                    var c = ColourService.getColour(6);
                                     scope.createSubLayer(c, scope.selected.layer, "(" + aggreatedfq.join(' OR ') + ")")
                                 }
+                                scope.facetProgress = undefined;
 
-                            })
+                            });
                             return def.promise;
                         };
 
@@ -462,7 +508,7 @@
                                 subLayer.red = colour.red;
                                 subLayer.green = colour.green;
                                 subLayer.blue = colour.blue;
-                                MapService.add(subLayer, layer.leaflet);
+                                MapService.add(subLayer, layer);
                             });
                         };
 
@@ -482,7 +528,6 @@
                                                 scope.selected.layer.facetList[scope.selected.layer.facet] = result;
                                                 scope.facetClearSelection();
                                                 scope.updateWMS();
-
                                             })
                                         }
                                     }

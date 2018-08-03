@@ -265,7 +265,7 @@
                             var template = highlightTemplate;
                             template.layerOptions.layers = [];
 
-                            MapService.add(id, template);
+                            MapService.add(id, {leaflet: template});
                             leafletLayers["highlight" + uid] = template;
                             uid = uid + 1;
                         }, 0);
@@ -279,12 +279,16 @@
                         }
                     },
 
-                    add: function (id, parentLeafletGroup) {
+                    add: function (id, parentLayer) {
+                        var parentLeafletGroup;
+                        if (parentLayer !== undefined) {
+                            parentLeafletGroup = parentLayer.leaflet
+                        }
                         if (parentLeafletGroup === undefined) {
                             id.uid = uid;
                             uid = uid + 1;
                         } else {
-                            id.uid = parentLeafletGroup.uid
+                            id.uid = parentLayer.uid
                         }
 
                         var promises = [];
@@ -519,12 +523,6 @@
                                 if (!newLayer.legendurl.indexOf("GetLegendGraphic") >= 0) {
                                     newLayer.legendurl += "&service=WMS&version=1.1.0&request=GetLegendGraphic&format=image/png"
                                 }
-
-
-                                // sublayers do not get added
-                                if (!parentLeafletGroup) {
-                                    $SH.hoverLayers.push(id)
-                                }
                             }
                         }
 
@@ -540,12 +538,16 @@
 
                         layerGroup.layerOptions.layers.push(newLayer);
 
-                        id.leaflet = layerGroup;
-
-                        leafletLayers[id.uid] = id.leaflet;
-
                         if (!parentLeafletGroup) {
+                            id.leaflet = layerGroup;
+                            leafletLayers[id.uid] = layerGroup;
                             $timeout(function () {
+                            }, 0);
+                        } else {
+                            leafletLayers[id.uid] = id.leaflet;
+                            delete leafletLayers[id.uid];
+                            $timeout(function () {
+                                leafletLayers[parentLayer.uid] = parentLayer.leaflet;
                             }, 0);
                         }
 
