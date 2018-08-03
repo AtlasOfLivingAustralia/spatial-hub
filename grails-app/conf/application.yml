@@ -238,7 +238,7 @@ skin:
     layout: 'mainbs3'
 
 speciesDotSize: 5
-speciesDotOpacity: 100
+speciesDotOpacity: 60
 
 logger:
     baseUrl: 'http://logger.ala.org.au/service'
