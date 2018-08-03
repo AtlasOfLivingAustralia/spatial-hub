@@ -211,6 +211,7 @@ var Util = {
         if (filename !== undefined) {
             link.download = filename
         }
+        link.target = '_blank';
         link.href = url;
         link.click();
     },

@@ -371,7 +371,10 @@
                         dist: 2,
                         selected: isSelected,
                         layerId: fieldData.layer.id,
-                        bbox: [[fieldData.layer.minlatitude, fieldData.layer.minlongitude], [fieldData.layer.maxlatitude, fieldData.layer.maxlongitude]]
+                        bbox: [[fieldData.layer.minlatitude, fieldData.layer.minlongitude], [fieldData.layer.maxlatitude, fieldData.layer.maxlongitude]],
+                        shortName: fieldData.layer.name,
+                        layerType: fieldData.layer.type,
+                        analysis: fieldData.analysis
                     }
                 },
                 /**

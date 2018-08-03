@@ -21,11 +21,17 @@
                         _minCount: "=minCount",
                         _maxCount: "=maxCount",
                         _mandatory: "=mandatory",
-                        _uniqueId: '=uniqueId'
+                        _uniqueId: '=uniqueId',
+                        _environmental: '=environmental', //include environmental
+                        _contextual: '=contextual', //include contextual
+                        _analysis: '=analysis' //analysis layers only
                     },
                     link: function (scope, element, attrs) {
                         if (scope._maxCount === undefined) scope._maxCount = 10000;
                         if (scope._minCount === undefined) scope._minCount = 0;
+                        if (scope._environmental === undefined) scope._environmental = true;
+                        if (scope._contextual === undefined) scope._contextual = true;
+                        if (scope._analysis === undefined) scope._analysis = false;
 
                         scope.sortType = 'classification'; // set the default sort type
                         scope.sortReverse = false;  // set the default sort order
@@ -76,11 +82,17 @@
                             while (scope._selection.layers.length) {
                                 scope._selection.layers.pop()
                             }
+                            scope.updateDist();
                         };
 
                         scope.setLayers = function (data) {
                             for (var i = 0; i < data.length; i++) {
-                                scope.layers.push(LayersService.convertFieldDataToMapLayer(data[i], scope.isSelected(data[i].id)))
+                                if (((scope._environmental && data[i].layer.type === 'Environmental') ||
+                                    (scope._contextual && data[i].layer.type === 'Contextual'))
+                                    && (!scope._analysis || data[i].analysis)) {
+                                    scope.layers.push(
+                                        LayersService.convertFieldDataToMapLayer(data[i], scope.isSelected(data[i].id)))
+                                }
                             }
                         };
 
@@ -113,7 +125,8 @@
 
                         scope.getLayer = function (layer) {
                             for (var i = 0; i < scope.layers.length; i++) {
-                                if (scope.layers[i].id === layer) {
+                                if (scope.layers[i].id === layer || scope.layers[i].shortName === layer
+                                    || scope.layers[i].layerId === layer) {
                                     return scope.layers[i];
                                 }
                             }
@@ -171,20 +184,13 @@
                                 scope.updateExportSet()
                             }
 
-                            var w = $(window);
-
                             var row = $('table#layersList tr[name=' + layer.id + ']').position();
-                            if (row) {
-                                $('table#layersList tbody').animate({
-                                    scrollTop: $('table tbody').scrollTop() + row.top - (w.height() / 4)
+                            var table = $('table#layersList tbody');
+                            if (row && table.height() + table.position().top < row.top || row.top < 0) {
+                                table.animate({
+                                    scrollTop: table.scrollTop() + row.top - table.position().top
                                 }, 500);
                             }
-
-                            // w.scrollTop(row.top)
-                            // // var row = $('table#layersList').find('tr[name]').eq(layerItem.id );
-                            // if (row.length) {
-                            //     w.scrollTop(row.offset().top - (w.height() / 2));
-                            // }
                         };
 
                         scope.info = function (item) {
@@ -201,6 +207,7 @@
 
                         scope.remove = function (layerItem) {
                             var layer = scope.getLayer(!layerItem.id ? layerItem : layerItem.id);
+                            layerItem.selected = false
 
                             for (var i = 0; i < scope._selection.layers.length; i++) {
                                 if (scope._selection.layers[i].id === layer.id) {
