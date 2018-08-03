@@ -2159,4 +2159,5 @@ body > footer > div > div.col-md-12.acknowledgement-callout.acknowledgement-call
     margin-left: 50px;
     margin-right: 50px;
     position: relative;
+    z-index: 99999;
 }
