@@ -154,7 +154,7 @@
                 };
 
                 var areaQ = jQuery.extend({}, $scope.area);
-                if (areaQ.q === undefined) {
+                if (areaQ.q === undefined || areaQ.q.length === 0) {
                     areaQ.q = ["*:*"]
                 } else {
                     areaQ.wkt = undefined
