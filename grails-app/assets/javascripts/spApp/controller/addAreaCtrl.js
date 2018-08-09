@@ -111,7 +111,7 @@
 
                             LayersService.createArea($scope.myAreaName, $scope.fileName, $scope.shapeId, featureIdxs).then(function (response) {
                                 if (response.data.error) {
-                                    alert("No areas selected. Points cannot be imported from a shapefile. (Error: " + response.data.error + ")");
+                                    bootbox.alert("No areas selected. Points cannot be imported from a shapefile. (Error: " + response.data.error + ")");
                                 } else
                                     $scope.setPid(response.data.id, true)
                             });
@@ -274,6 +274,7 @@
                         $scope.selectedArea.obj = obj;
                         $scope.selectedArea.name = obj.name.length > 0 ? obj.name : $i18n('area');
                         LayersService.getField(obj.fid, 0, 0, '').then(function (data) {
+                            // only fetch wkt if it is not indexed in biocache
                             if (data.data === undefined || data.data.id === undefined || !data.data.indb) {
                                 LayersService.getWkt(pid).then(function (wkt) {
                                     $scope.selectedArea.wkt = wkt.data

@@ -73,7 +73,7 @@
                         //apply saved values, if any
                         if (top[1][scopeToSave.componentName]) {
                             for (var k in top[1][scopeToSave.componentName]) {
-                                if (!k[0] === '$' && !k[0] === '_' && top[1][scopeToSave.componentName].hasOwnProperty(k)) {
+                                if (k[0] !== '$' && k[0] !== '_' && top[1][scopeToSave.componentName].hasOwnProperty(k)) {
                                     var v = top[1][scopeToSave.componentName][k];
                                     if (scopeToSave[k] !== undefined && !(v instanceof Function) &&
                                         (v instanceof Array || v instanceof Object || v instanceof String ||

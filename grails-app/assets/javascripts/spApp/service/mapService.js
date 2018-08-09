@@ -201,61 +201,55 @@
                     },
 
                     addOtherArea: function (type, query, area, include) {
-                        if (include !== true) {
+                        if (include !== true || query.q.indexOf("lsid:") !== 0) {
                             return $q.when()
                         }
-                        //intersect query (lsid) and area (wkt)
-                        return BiocacheService.facetGeneral("species_guid", query, 1, 0).then(function (response) {
-                            if (response && response.length > 0 && response[0].fieldResult &&
-                                response[0].fieldResult.length > 0 && response[0].fieldResult[0].label !== "") {
-                                return LayersService.findOtherArea(type, response[0].fieldResult[0].label, area).then(function (response) {
-                                    if (response && response.data && response.data.length > 0) {
-                                        var data = response.data;
-                                        for (var i in data) {
-                                            var item = data[i];
+                        // for consistency with the species autocomplete, only the first lsid is used in the search
+                        var lsid = query.q.substring(5);
+                        return LayersService.findOtherArea(type, lsid, area).then(function (response) {
+                            if (response && response.data && response.data.length > 0) {
+                                var data = response.data;
+                                for (var i in data) {
+                                    var item = data[i];
 
-                                            //map with geom_idx
-                                            var parts = item.wmsurl.split("&");
-                                            parts[0] = parts[0].split("?")[1];
-                                            var parameters = {};
-                                            for (var j in parts) {
-                                                var kv = parts[j].split("=");
-                                                if (kv.length == 2) {
-                                                    parameters[kv[0]] = kv[1]
-                                                }
-                                            }
-
-                                            var name = item.area_name;
-                                            if (name === undefined) {
-                                                name = item.scientific
-                                            }
-                                            var metadataUrl = item.metadata_u;
-
-                                            if (type == 'track' && item.group_name) {
-                                                // override track metadata url with biocache-hub occurrence url
-                                                metadataUrl = $SH.biocacheUrl + '/occurrence/' + item.group_name
-
-                                                // area_name is the external track id, add name as prefix
-                                                name = item.scientific + " (" + name + ")"
-                                            }
-
-                                            MapService.add({
-                                                query: query,
-                                                geom_idx: item.geom_idx,
-                                                layertype: "area",
-                                                name: name,
-                                                layerParams: parameters,
-                                                metadataUrl: metadataUrl
-                                            })
+                                    //map with geom_idx
+                                    var parts = item.wmsurl.split("&");
+                                    parts[0] = parts[0].split("?")[1];
+                                    var parameters = {};
+                                    for (var j in parts) {
+                                        var kv = parts[j].split("=");
+                                        if (kv.length === 2) {
+                                            parameters[kv[0]] = kv[1]
                                         }
                                     }
-                                    return $q.when()
-                                }, function (data) {
-                                    return $q.when()
-                                })
-                            } else {
-                                return $q.when()
+
+                                    var name = item.area_name;
+                                    if (name === undefined) {
+                                        name = item.scientific
+                                    }
+                                    var metadataUrl = item.metadata_u;
+
+                                    if (type === 'track' && item.group_name) {
+                                        // override track metadata url with biocache-hub occurrence url
+                                        metadataUrl = $SH.biocacheUrl + '/occurrence/' + item.group_name;
+
+                                        // area_name is the external track id, add name as prefix
+                                        name = item.scientific + " (" + name + ")"
+                                    }
+
+                                    MapService.add({
+                                        query: query,
+                                        geom_idx: item.geom_idx,
+                                        layertype: "area",
+                                        name: name,
+                                        layerParams: parameters,
+                                        metadataUrl: metadataUrl
+                                    })
+                                }
                             }
+                            return $q.when()
+                        }, function (data) {
+                            return $q.when()
                         })
                     },
 
@@ -590,8 +584,8 @@
                             $SH.defaultPaneResizer.show('south');
                     },
                     objectSld: function (item) {
-                        var sldBody = ''
-                        if (item.area_km == 0)
+                        var sldBody = '';
+                        if (item.area_km === 0) {
                             sldBody = '<?xml version="1.0" encoding="UTF-8"?><StyledLayerDescriptor version="1.0.0" xmlns="http://www.opengis.net/sld" xmlns:xlink="http://www.w3.org/1999/xlink"><NamedLayer><Name>ALA:Points</Name><UserStyle><FeatureTypeStyle>\n' +
                                 '     <Rule>\n' +
                                 '       <PointSymbolizer>\n' +
@@ -609,8 +603,13 @@
                                 '       </TextSymbolizer>' +
                                 '     </Rule>\n' +
                                 '   </FeatureTypeStyle></UserStyle></NamedLayer></StyledLayerDescriptor>';
-                        else
-                            sldBody = '<?xml version="1.0" encoding="UTF-8"?><StyledLayerDescriptor version="1.0.0" xmlns="http://www.opengis.net/sld"><NamedLayer><Name>ALA:Objects</Name><UserStyle><FeatureTypeStyle><Rule><Title>Polygon</Title><PolygonSymbolizer><Fill><CssParameter name="fill">#.colour</CssParameter></Fill></PolygonSymbolizer></Rule></FeatureTypeStyle></UserStyle></NamedLayer></StyledLayerDescriptor>';
+                        } else {
+                            var layername = 'ALA:Objects';
+                            if (item.layerParams !== undefined) {
+                                layername = item.layerParams.layers;
+                            }
+                            sldBody = '<?xml version="1.0" encoding="UTF-8"?><StyledLayerDescriptor version="1.0.0" xmlns="http://www.opengis.net/sld"><NamedLayer><Name>' + layername + '</Name><UserStyle><FeatureTypeStyle><Rule><Title>Polygon</Title><PolygonSymbolizer><Fill><CssParameter name="fill">#.colour</CssParameter></Fill></PolygonSymbolizer></Rule></FeatureTypeStyle></UserStyle></NamedLayer></StyledLayerDescriptor>';
+                        }
                         sldBody = sldBody.replace('.colour', item.color);
                         return sldBody
                     },

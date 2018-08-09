@@ -157,6 +157,11 @@
                     }
                 };
 
+                $scope.finish = function () {
+                    $scope.stage = 'execute';
+                    $scope.ok();
+                };
+
                 $scope.ok = function () {
                     if ($scope.step === 0 || $scope.stepsActual === undefined) {
                         //build stepView
@@ -187,23 +192,6 @@
 
                         $scope.stepsActual = Object.keys($scope.stepView).length;
 
-                    } else {
-                        $scope.step = $scope.stepsActual;
-                    }
-
-                    if ($scope.stage === 'output' || $scope.stage === 'execute') {
-                        $scope.step = $scope.stepsActual + 1;
-                    } else {
-                        if ($scope.isDisabled()) {
-                            //TODO: message to user
-                            return
-                        }
-
-                        if ($scope.finished) {
-                            alert($i18n('process finished running. should not be here'));
-
-                            return
-                        }
                     }
 
                     switch ($scope.stage) {
@@ -219,9 +207,6 @@
                                     })
                                 }
                             }
-
-                            if ($scope.stepsActual >= $scope.step)
-                                $scope.step = $scope.step + 1;
 
                             break;
                         case 'output':
@@ -241,12 +226,6 @@
                 $scope.logText = '';
                 $scope.last = 0;
                 $scope.checkStatusTimeout = null;
-
-                $scope.back = function () {
-                    if ($scope.step > 1) {
-                        $scope.step = $scope.step - 1
-                    }
-                };
 
                 $scope.getInputChecks = function (i) {
                     var value = ToolsService.getCap($scope.toolName).input[i];

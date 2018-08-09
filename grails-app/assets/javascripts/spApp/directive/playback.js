@@ -216,10 +216,13 @@
 
                     scope.updateWMS = function () {
                         var s = scope._selected.layer.playback;
-                        if (s.fq.length) {
-                            scope._selected.layer.leaflet.layerParams.fq = s.fq
-                        } else {
-                            scope._selected.layer.leaflet.layerParams.fq = undefined
+                        for (var i in scope._selected.layer.leaflet.layerOptions.layers) {
+                            var ly = scope._selected.layer.leaflet.layerOptions.layers[i];
+                            if (s.fq.length) {
+                                ly[0].layerParams.fq = s.fq
+                            } else {
+                                ly[0].layerParams.fq = undefined
+                            }
                         }
 
                         MapService.reMap(scope._selected);

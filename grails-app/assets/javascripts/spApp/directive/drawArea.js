@@ -29,6 +29,8 @@
 
                         scope.layerSelected = {name: 'search'};
 
+                        scope.loading = false;
+
                         scope.enableDrawing = function () {
                             if (scope.deleteDrawing)
                                 scope.deleteDrawing();
@@ -94,6 +96,8 @@
                         };
 
                         scope.ok = function () {
+                            scope.loading = true;
+
                             if (scope.intersect.value.length > 0 || scope.selectedArea.wkt.length > 0) {
                                 // used by click info popup to check if click came while drawing polygon
                                 LayoutService.areaCtrlAreaValue = undefined;

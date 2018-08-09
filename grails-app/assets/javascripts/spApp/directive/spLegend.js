@@ -21,6 +21,9 @@
 
                         scope.selected = MapService.selected;
 
+                        scope.sortType = 'count';
+                        scope.sortReverse = true;
+
                         scope.$watch('selected', function (oldValue, newValue) {
                             scope.setAreaLayers();
                         });
