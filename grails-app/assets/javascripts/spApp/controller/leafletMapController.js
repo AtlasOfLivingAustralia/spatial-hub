@@ -95,7 +95,7 @@
                         b = [[bounds[1], bounds[0]], [bounds[3], bounds[2]]]
                     }
                     leafletData.getMap().then(function (map) {
-                        map.fitBounds(b);
+                        map.fitBounds(b, {padding: new L.Point(20, 20)});
                     });
                 };
 
