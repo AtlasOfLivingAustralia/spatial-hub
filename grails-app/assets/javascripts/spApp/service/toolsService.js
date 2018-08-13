@@ -87,16 +87,17 @@
                         if (uiScope.finishedData.output.hasOwnProperty(k)) {
                             var d = uiScope.finishedData.output[k];
                             if (d.file && d.file.match(/\.zip$/g)) {
-                                uiScope.downloadUrl = LayersService.url() + '/tasks/output/' + uiScope.finishedData.id + '/' + d.file;
+                                var filename = uiScope.toolName + " (" + uiScope.externalTaskId + ").zip";
+                                uiScope.downloadUrl = LayersService.url() + '/tasks/output/' + uiScope.finishedData.id + '/' + encodeURI(filename) + '?filename=' + d.file;
 
                                 if (uiScope.downloadImmediately && uiScope.spec.download !== false) {
-                                    Util.download(uiScope.downloadUrl, uiScope.toolName + " (" + uiScope.externalTaskId + ") ");
+                                    Util.download(uiScope.downloadUrl);
                                 }
                             } else if (d.downloadUrl) {
                                 uiScope.downloadUrl = d.downloadUrl;
 
                                 if (uiScope.downloadImmediately && uiScope.spec.download !== false) {
-                                    Util.download(uiScope.downloadUrl, uiScope.toolName + " (" + uiScope.externalTaskId + ") ");
+                                    Util.download(uiScope.downloadUrl);
                                 }
                             }
                         }

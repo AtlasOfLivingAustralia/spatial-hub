@@ -8,7 +8,7 @@
         <div class="col-md-12">
             <form class="form-horizontal" ng-init="stepCount = []">
 
-                <div ng-show="stepView && step <= stepsActual">
+                <div ng-show="stepView && stage == 'input'">
                     <div id="tool-items" ng-repeat="(key, sv) in stepView" ng-init="idx = $index"
                          class="panel panel-default">
                         <div ng-repeat="i in sv.inputArr"
@@ -126,7 +126,7 @@
                     </div>
                 </div>
 
-                <div class="panel-body" ng-if="step > stepsActual">
+                <div class="panel-body" ng-if="stage == 'execute'">
                     <div class="panel-body" ng-hide="isLocalTask()">
                         <uib-progressbar ng-show="statusRunning" class="progress-striped active"
                                          value="100" type='info' title="Updating">{{status}}
@@ -149,7 +149,7 @@
 <div class="modal-footer">
     <button i18n="45" class="btn btn-default" type="button" ng-click="close()">Cancel</button>
     <button i18n="39" class="btn btn-primary" type="button" ng-click="finish()" ng-hide="finished"
-            ng-disabled="isDisabled() || step > stepsActual">Next &gt;
+            ng-disabled="isDisabled() || stage != 'input'">Next &gt;
     </button>
 
     <a download ng-href="{{downloadUrl}}" style="float:left" ng-show="finished && downloadUrl">

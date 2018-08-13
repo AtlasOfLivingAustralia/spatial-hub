@@ -15,8 +15,6 @@
 
                 $scope.stepNames = [$i18n('select process')];
 
-                $scope.step = 0;
-
                 $scope.values = [];
                 LayoutService.addToSave($scope);
 
@@ -66,8 +64,40 @@
                         }
 
                         $scope.initValues();
-                        $scope.ok();
+                        $scope.buildViews();
+
+                        if ($scope.stage === 'execute') {
+                            $scope.finish();
+                        }
                     });
+                };
+
+                $scope.buildViews = function () {
+                    //build stepView
+                    $scope.stepView = {};
+                    var order = 1;
+                    // if View-config.json is configured for the selected capability, use that, otherwise, use spec
+                    // TODO: can this be separated from downloadImmediately and overrideValues, and moved to ToolsService?
+                    var toolViewConfig = ToolsService.getViewConfig($scope.toolName)
+                    if (toolViewConfig && toolViewConfig.view) {
+                        toolViewConfig.view.forEach(function (v) {
+                            $scope.stepView[order] = {name: v.name, inputArr: v.inputs};
+                            order++;
+                        })
+                    } else {
+                        for (var i in $scope.spec.input) {
+                            if ($scope.spec.input.hasOwnProperty(i)) {
+                                if ($scope.spec.input[i].type !== "auto") {
+                                    var view = [i];
+                                    $scope.stepView[order] = {
+                                        name: $scope.spec.input[i].description,
+                                        inputArr: view
+                                    };
+                                    order++;
+                                }
+                            }
+                        }
+                    }
                 };
 
                 $scope.initValues = function () {
@@ -159,63 +189,7 @@
 
                 $scope.finish = function () {
                     $scope.stage = 'execute';
-                    $scope.ok();
-                };
-
-                $scope.ok = function () {
-                    if ($scope.step === 0 || $scope.stepsActual === undefined) {
-                        //build stepView
-                        $scope.stepView = {};
-                        var order = 1;
-                        // if View-config.json is configured for the selected capability, use that, otherwise, use spec
-                        // TODO: can this be separated from downloadImmediately and overrideValues, and moved to ToolsService?
-                        var toolViewConfig = ToolsService.getViewConfig($scope.toolName)
-                        if (toolViewConfig && toolViewConfig.view) {
-                            toolViewConfig.view.forEach(function (v) {
-                                $scope.stepView[order] = {name: v.name, inputArr: v.inputs};
-                                order++;
-                            })
-                        } else {
-                            for (var i in $scope.spec.input) {
-                                if ($scope.spec.input.hasOwnProperty(i)) {
-                                    if ($scope.spec.input[i].type !== "auto") {
-                                        var view = [i];
-                                        $scope.stepView[order] = {
-                                            name: $scope.spec.input[i].description,
-                                            inputArr: view
-                                        };
-                                        order++;
-                                    }
-                                }
-                            }
-                        }
-
-                        $scope.stepsActual = Object.keys($scope.stepView).length;
-
-                    }
-
-                    switch ($scope.stage) {
-                        case 'execute':
-                        case 'input':
-                            if ($scope.stage === 'execute' ||
-                                ($scope.step !== undefined && $scope.step === $scope.stepsActual)) {
-                                var response = $scope.execute();
-                                if (response && response.then) {
-                                    response.then(function (data) {
-                                        $scope.finishedData = data;
-                                        ToolsService.executeResult($scope);
-                                    })
-                                }
-                            }
-
-                            break;
-                        case 'output':
-                            if ($scope.taskId) {
-                                $scope.statusUrl = LayersService.url() + '/tasks/status/' + $scope.taskId;
-                                ToolsService.checkStatus($scope)
-                            }
-                            break;
-                    }
+                    var response = $scope.execute();
                 };
 
                 $scope.finished = false;
@@ -266,9 +240,9 @@
                     var inputs = $scope.getInputs();
                     ToolsService.refresh($scope, $scope.toolName, inputs);
 
-                    if ($scope.step === 0) {
+                    if ($scope.stage === '') {
                         return $scope.toolName.length === 0
-                    } else if ($scope.step > $scope.stepsActual) {
+                    } else if ($scope.stage === 'execute') {
                         return !$scope.finished
                     } else {
                         //defaults
@@ -277,7 +251,6 @@
                             for (var sv in $scope.stepView) {
 
                                 //Get the input list from step view
-                                // var iList = $scope.stepView[$scope.step].inputArr;
                                 var iList = $scope.stepView[sv].inputArr;
 
                                 for (var i in iList) {
@@ -318,7 +291,7 @@
                     //format inputs
                     var inputs = $scope.getInputs();
 
-                    ToolsService.execute($scope, $scope.toolName, inputs);
+                    return ToolsService.execute($scope, $scope.toolName, inputs);
                 };
 
                 $scope.getInputs = function () {
