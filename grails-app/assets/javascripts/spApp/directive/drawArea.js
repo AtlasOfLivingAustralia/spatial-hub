@@ -117,7 +117,9 @@
                                     MapService.add(data.data);
 
                                     scope.deleteDrawing();
-                                    LayoutService.closePanel()
+                                    LayoutService.closePanel();
+
+                                    MapService.zoomToExtents(data.data.bbox);
                                 })
                             } else {
                                 scope.wkt = scope.selectedArea.wkt;
@@ -130,7 +132,8 @@
                                             MapService.add(data.data);
 
                                             scope.deleteDrawing();
-                                            LayoutService.closePanel()
+                                            LayoutService.closePanel();
+                                            MapService.zoomToExtents(data.data.bbox);
                                         })
                                     })
                                 }
