@@ -9,7 +9,6 @@
 
         <div ng-if="selected.layer.layertype == 'species' && selected.layer.scatterplotUrl !== undefined">
 
-            <!--<div ng-if="selected.layer.scatterplotSelectionCount !== 0">-->
             <div class="form-group row">
                 <label><span i18n="116">Records selected:&nbsp;</span>{{ selected.layer.scatterplotSelectionCount
                     }}<span
@@ -27,7 +26,6 @@
             <div class="form-group row">
                 <label>{{ selected.layer.scatterplotLabel2 }}</label>
             </div>
-            <!--</div>-->
 
             <div ng-if="areaLayers.length > 0" class="form-group row">
                 <label i18n="119">Highlight area</label>

@@ -31,10 +31,10 @@
                  * Ouput:
                  *  10
                  */
-                speciesCount: function (query, fqs) {
+                speciesCount: function (query, fqs, httpconfig) {
                     var fqList = (fqs === undefined ? '' : '&fq=' + this.joinAndEncode(fqs));
                     return this.registerQuery(query).then(function (response) {
-                        return $http.get(query.bs + "/occurrence/facets?facets=names_and_lsid&flimit=0&q=" + response.qid + fqList).then(function (response) {
+                        return $http.get(query.bs + "/occurrence/facets?facets=names_and_lsid&flimit=0&q=" + response.qid + fqList, httpconfig).then(function (response) {
                             if (response.data !== undefined && response.data.length > 0 && response.data[0].count !== undefined) {
                                 return response.data[0].count;
                             } else {

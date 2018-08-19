@@ -136,7 +136,7 @@ def build(String baseDir) {
 
         start = 0
         while (start < input.length() && start != -1) {
-            def next = input.indexOf('<', start)
+            def next = input.indexOf('</', start)
 
             if (next > start) {
                 output.append(input.substring(start, next))

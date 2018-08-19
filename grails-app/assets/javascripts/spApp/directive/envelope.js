@@ -9,8 +9,8 @@
      */
     angular.module('envelope-directive', ['biocache-service', 'map-service', 'layers-service', 'facet-auto-complete-service'])
         .directive('envelope', ['LayoutService', 'MapService', '$timeout', 'LayersService', 'BiocacheService', 'PredefinedAreasService',
-            'FacetAutoCompleteService',
-            function (LayoutService, MapService, $timeout, LayersService, BiocacheService, PredefinedAreasService, FacetAutoCompleteService) {
+            'FacetAutoCompleteService', '$q',
+            function (LayoutService, MapService, $timeout, LayersService, BiocacheService, PredefinedAreasService, FacetAutoCompleteService, $q) {
 
                 return {
                     scope: {
@@ -23,6 +23,8 @@
                         scope.layers = [];
 
                         scope.selection = {};
+
+                        scope.countRequests = [];
 
                         scope.list = PredefinedAreasService.getList();
 
@@ -71,7 +73,9 @@
 
                                 layer.sldBody = scope.getSldBody(layer.layer.name, layer.min, layer.max);
 
-                                layer.uid = MapService.add(layer)
+                                MapService.add(layer).then(function (uid) {
+                                    layer.uid = uid;
+                                })
                             }
                         };
 
@@ -90,7 +94,8 @@
 
                             var mappedLayer = MapService.getLayer(layer.uid);
 
-                            mappedLayer.layerParams.sld_body = scope.getSldBody(layer.layer.layer.name, layer.min, layer.max);
+                            var ly = mappedLayer.layerOptions.layers[0];
+                            ly.layerParams.sld_body = scope.getSldBody(layer.layer.name, layer.min, layer.max);
 
                             layer.layer.uid = layer.uid;
                             layer.layer.leaflet = {layerParams: mappedLayer.layerParams};
@@ -115,20 +120,44 @@
                             return fq
                         };
 
+
+                        scope.cancelCountRequests = function () {
+                            var size = scope.countRequests.length;
+                            for (var i = size - 1; i >= 0; i--) {
+                                scope.countRequests[i].resolve();
+                                scope.countRequests.splice(i);
+                            }
+                        };
+
                         scope.update = function () {
+                            scope.cancelCountRequests();
+
                             var fq = scope.getFq();
+
+                            var layer = scope.layers[scope.layers.length - 1];
+                            layer.envelopeSpeciesCount = -1;
+
+                            var timeout = $q.defer();
+                            scope.countRequests.push(timeout);
 
                             BiocacheService.speciesCount({
                                 q: fq,
                                 bs: $SH.biocacheServiceUrl
-                            }).then(function (data) {
-                                var layer = scope.layers[scope.layers.length - 1];
-                                layer.count = data
-                            })
+                            }, undefined, {timeout: timeout.promise}).then(function (data) {
+                                layer.envelopeSpeciesCount = data;
+                                $timeout(function () {
+                                })
+                            });
+
                         };
 
                         scope.addToMap = function () {
                             MapService.add(scope.area)
+                        };
+
+                        scope.refreshAll = function () {
+                            scope.update();
+                            scope.updateDisplay()
                         }
                     }
                 };

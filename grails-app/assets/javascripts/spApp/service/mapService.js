@@ -614,7 +614,11 @@
                         return sldBody
                     },
                     _firstLayer: function (layer) {
-                        return layer.layer.leaflet.layerOptions.layers[0];
+                        if (layer.layer.leaflet !== undefined && layer.layer.leaflet.layerOptions !== undefined && layer.layer.leaflet.layerOptions.layers !== undefined) {
+                            return layer.layer.leaflet.layerOptions.layers[0];
+                        } else {
+                            return layer.leaflet.layerOptions.layers[0];
+                        }
                     },
                     reMap: function (layer) {
                         if (layer.layer.layertype === 'area') {

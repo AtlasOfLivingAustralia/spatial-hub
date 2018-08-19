@@ -1,49 +1,81 @@
-<div class="row" name="envelope" style="padding-left:10px">
-    <h3 i18n="78" class="modal-title">Environmental Envelope</h3>
-    <br/>
-
-    <div style="padding-left:20px">
-        <div class="form-group row">
-            <label i18n="79">Search for a layer to add</label>
-            <input style="width:230px" layer-auto-complete environmental="true" contextual="true" on-custom="addLayer">
+<div class="row" name="envelope" style="padding-left:10px;width:400px">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title" style="margin-bottom: 0px">
+                <button i18n="1" type="button" class="close" ng-click="cancel()">×</button>
+                <div i18n="78">Environmental Envelope</div>
+            </h3>
         </div>
+        <div class="panel-body">
+            <div class="alert alert-ala-success" role="alert">
+                <ol>
+                    <li>
+                        <span i18n="330">Search to add environmental layers.</span>
+                    </li>
+                    <li ng-if="layers.length > 0">
+                        <span i18n="331">Change the envelope by entering new min and max values.</span>
+                    </li>
+                </ol>
+            </div>
 
-        <br/>
-        <br/>
+            <div class="form-group row">
+                <div class="input-sm">
+                    <label i18n="226">Search</label>
+                    <input style="width:230px" layer-auto-complete environmental="true" contextual="false"
+                           on-custom="addLayer">
+                </div>
+            </div>
 
-        <table class="table table-striped" style="width: 380px" ng-show="layers.length > 0">
-            <tr style="font-weight: bold">
-                <td i18n="72">Layer</td>
-                <td i18n="80">Range</td>
-                <td i18n="81">Count</td>
-            </tr>
-            <tr ng-repeat="x in layers">
-                <td class="td-vertical-align table-text-ellipsis">{{ x.name }}</td>
-                <td class="td-vertical-align table-text-ellipsis">{{ x.min }} <span i18n="82">to</span> {{ x.max }}</td>
-                <td class="td-vertical-align text-right">{{ x.count }}</td>
-            </tr>
-        </table>
-
-        <br/>
-
-        <div class="form-group row" ng-show="layers.length > 0">
-            <label i18n="83" style="width:30px">Min</label>
-            <input style="width:80px" ng-model="selection.min">
-            <label i18n="84" style="margin-left:20px;width:30px">Max</label>
-            <input style="width:80px" ng-model="selection.max">
+            <table class="table table-striped" style="width: 350px" ng-show="layers.length > 0">
+                <thead>
+                <tr style="font-weight: bold">
+                    <th i18n="72">Layer</th>
+                    <th i18n="80">Range</th>
+                    <th i18n="81">Count</th>
+                    <th>&nbsp;</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="x in layers">
+                    <td class="td-vertical-align table-text-ellipsis">{{ x.name }}</td>
+                    <td class="td-vertical-align table-text-ellipsis">{{ x.min }} <span i18n="82">to</span> {{ x.max }}
+                    </td>
+                    <td class="td-vertical-align text-right">
+                        <i ng-show="x.envelopeSpeciesCount === -1" style="width:16px;height:16px"
+                           class="species-spinner"></i>
+                        <span ng-show="x.envelopeSpeciesCount !== -1">{{x.envelopeSpeciesCount}}</span>
+                    </td>
+                    <td><i style="float:right" class="glyphicon glyphicon-trash" ng-click="removeLayer()"
+                           ng-show="$index == layers.length - 1"></i></td>
+                </tr>
+                </tbody>
+            </table>
+            <div ng-show="layers.length > 0">
+                <div>
+                    <input style="width:150px" ng-model="selection.min" ng-change="refreshAll()">
+                    <label i18n="83">Min</label>
+                    <span style="display:inline-block;width:150px;vertical-align: text-top;">
+                        &nbsp;(>=&nbsp;{{selection.layer.environmentalvaluemin + " " + selection.layer.environmentalvalueunits}})
+                    </span>
+                </div>
+                <div ng-show="layers.length > 0">
+                    <input style="width:150px" ng-model="selection.max" ng-change="refreshAll()">
+                    <label i18n="84">Max</label>
+                    <span style="display:inline-block;width:150px;vertical-align: text-top;">
+                        &nbsp;(<=&nbsp;{{selection.layer.environmentalvaluemax + " " + selection.layer.environmentalvalueunits}})
+                    </span>
+                </div>
+            </div>
         </div>
-        <br/>
-        <div class="btn-group" ng-show="layers.length > 0">
-            <button i18n="85" class="btn btn-default btn-xs" ng-click="update()">Update count</button>
-            <button i18n="86" class="btn btn-default btn-xs" ng-click="updateDisplay()">Update display</button>
-            <button i18n="87" class="btn btn-default btn-xs" ng-click="removeLayer()">Remove layer</button>
-        </div>
-        <br/>
-        <br/>
-        <div class="btn-group" style="float:right;padding-right:30px">
-            <button i18n="45" class="btn" ng-click="cancel()">Cancel</button>
-            <button i18n="39" class="btn btn-primary" ng-click="save()" ng-disabled="getFq().length == 0">Next &gt;
-            </button>
-        </div>
+    </div>
+    <div class="modal-footer">
+        <button i18n="45" class="btn btn-default" ng-click="cancel()">Cancel</button>
+        <button i18n="39" class="btn btn-primary" ng-click="save()" ng-disabled="getFq().length == 0">Next &gt;
+        </button>
+
+        <uib-progressbar ng-show="loading" class="progress-striped"
+                         ng-class="{ active: true }" value="100" type='info' title="Updating"><span
+                i18n="47">Loading...</span>
+        </uib-progressbar>
     </div>
 </div>
