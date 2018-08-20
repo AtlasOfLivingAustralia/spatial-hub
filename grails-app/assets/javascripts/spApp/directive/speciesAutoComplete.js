@@ -25,6 +25,12 @@
                                     var distributions = item.distributionsCount > 0 ? '+' + item.distributionsCount + ' ' + $i18n('expert distribution(s)') : '';
                                     var checklists = item.checklistsCount > 0 ? '+' + item.checklistsCount + ' ' + $i18n('checklist(s)') : '';
                                     var tracks = item.tracksCount > 0 ? '+' + item.tracksCount + ' ' + $i18n('track(s)') : '';
+
+                                    // TODO: temporary until beta is prod
+                                    if (item.guid === "urn:lsid:biodiversity.org.au:afd.taxon:989a7126-df02-4f1f-a21f-feca59662947") {
+                                        tracks = "+ 5 track(s)"
+                                    }
+
                                     return {
                                         label: item.name,
                                         info: item.rank + (item.commonNameSingle ? ' ' + item.commonNameSingle : ' ') +

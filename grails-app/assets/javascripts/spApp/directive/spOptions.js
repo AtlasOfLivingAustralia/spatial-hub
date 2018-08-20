@@ -39,6 +39,14 @@
                                         //remove layers
                                         MapService.removeAll();
 
+                                        //close popup boxes
+                                        $.each($('.close'), function (idx, item) {
+                                            if (item.click instanceof Function) item.click()
+                                        })
+                                        $.each($('.leaflet-popup-close-button'), function (idx, item) {
+                                            if (item.click instanceof Function) item.click()
+                                        })
+
                                         //set zoom
                                         MapService.leafletScope.resetZoom();
 

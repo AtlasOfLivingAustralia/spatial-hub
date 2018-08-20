@@ -222,6 +222,7 @@
                                             parameters[kv[0]] = kv[1]
                                         }
                                     }
+                                    parameters['transparent'] = true;
 
                                     var name = item.area_name;
                                     if (name === undefined) {

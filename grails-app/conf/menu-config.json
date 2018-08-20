@@ -62,6 +62,10 @@
         "open": "CompareAreas"
       },
       {
+        "name": "Merge Areas",
+        "open": "MergeAreas"
+      },
+      {
         "name": "Points to Grid",
         "open": "PointsToGrid"
       },

@@ -68,6 +68,9 @@
 
                         if ($scope.stage === 'execute') {
                             $scope.finish();
+                        } else if ($scope.stage === 'output') {
+                            $scope.statusUrl = $SH.layersServiceUrl + '/tasks/status/' + $scope.taskId;
+                            ToolsService.checkStatus($scope)
                         }
                     });
                 };
@@ -317,32 +320,14 @@
 
                                                 b = [Math.min(p1[0], p2[0]), Math.min(p1[1], p2[1]), Math.max(p1[0], p2[0]), Math.max(p1[1], p2[1])];
                                             }
-                                            if (a.pid) {
-                                                if (!ToolsService.isLocalTask($scope.toolName)) {
-                                                    inputs[k].push({
-                                                        pid: a.pid,
-                                                        q: a.q ? a.q : "",
-                                                        bbox: b
-                                                    })
-                                                } else {
-                                                    inputs[k].push({
-                                                        q: a.q ? a.q : "",
-                                                        name: a.name,
-                                                        bbox: b,
-                                                        area_km: a.area_km,
-                                                        pid: a.pid,
-                                                        wkt: a.wkt
-                                                    })
-                                                }
-                                            } else {
-                                                inputs[k].push({
-                                                    q: a.q ? a.q : "",
-                                                    name: a.name,
-                                                    bbox: b,
-                                                    area_km: a.area_km,
-                                                    wkt: a.wkt
-                                                })
-                                            }
+                                            inputs[k].push({
+                                                q: a.q ? a.q : "",
+                                                name: a.name,
+                                                bbox: b,
+                                                area_km: a.area_km,
+                                                pid: a.pid,
+                                                wkt: a.wkt
+                                            })
                                         }
                                     }
                                 } else if ($scope.values[k].q !== undefined) {

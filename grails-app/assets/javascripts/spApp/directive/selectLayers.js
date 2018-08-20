@@ -48,7 +48,7 @@
                         scope.predefinedLists = PredefinedLayerListsService.getList();
 
                         scope.upload = function () {
-                            var f = element.children()[0].files[0], r = new FileReader();
+                            var f = file.files[0], r = new FileReader();
                             r.onloadend = function (e) {
                                 scope.data = e.target.result;
 
