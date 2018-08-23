@@ -8,8 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <meta http-equiv="Content-type" content="text/html; charset=utf-8">
-    <meta name="layout" content="portal"/>
-    <title>Atlas of Living Australia | Spatial Portal</title>
+    <meta name="layout" content="${grailsApplication.config.skin.layout}"/>
+    <title>${grailsApplication.config.skin.orgNameLong} | Spatial Portal</title>
 </head>
 
 <body>
@@ -127,9 +127,9 @@
     };
 
 </script>
-
+<!--
 <ala:systemMessage/>
-
+-->
 <sp-app></sp-app>
 
 </body>
