@@ -165,7 +165,7 @@ lists:
     url: 'https://lists.ala.org.au'
     threatenedSpeciesUrl: '/ws/speciesList/?isThreatened=eq:true&isAuthoritative=eq:true'
     invasiveSpeciesUrl: '/ws/speciesList/?isInvasive=eq:true&isAuthoritative=eq:true'
-    facets: false
+    facets: true
     migratoryDR: 'dr1005'
     iconicSpeciesDR: 'dr781'
 
