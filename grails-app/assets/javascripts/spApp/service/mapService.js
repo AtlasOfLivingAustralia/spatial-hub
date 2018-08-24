@@ -383,7 +383,7 @@
                                 name: uid + ': ' + id.name,
                                 type: 'wms',
                                 visible: true,
-                                url: id.bs + '/webportal/wms/reflect?',
+                                url: id.bs + '/webportal/wms/reflect?OUTLINE=false&',
                                 layertype: 'species',
                                 opacity: id.opacity / 100.0,
                                 layerParams: {
