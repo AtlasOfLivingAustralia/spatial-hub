@@ -83,7 +83,9 @@
 
                         scope.selectLayer = function (layer) {
                             scope.intersect.layer = layer;
-                            scope.updateIntersect()
+                            scope.updateIntersect();
+
+                            MapService.add(layer)
                         };
 
                         scope.cancel = function () {
