@@ -101,7 +101,7 @@
 
                     openCsv: function (csv, endimic) {
                         LayoutService.openModal('csv', {
-                            title: (endemic ? 'Endemic ' : '') + 'Species List',
+                            title: (endemic ? $i18n(427, "Endemic") + ' ' : '') + $i18n(428, "Species List"),
                             csv: csv,
                             info: '',
                             filename: (endemic ? 'endemicS' : 's') + 'peciesList.csv',

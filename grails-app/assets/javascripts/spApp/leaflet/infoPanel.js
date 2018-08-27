@@ -32,7 +32,7 @@ L.Control.InfoPanel = L.Control.extend({
                 // latitude/longitude
                 if (layer.length > 0) {
                     var url = $SH.layersServiceUrl + "/intersect/" + layer + "/" + scope.lastLat + "/" + scope.lastLng;
-                    scope._container.innerHTML = $i18n('searching...') + '<br/>' + scope.lastPos;
+                    scope._container.innerHTML = $i18n(401, "searching...") + '<br/>' + scope.lastPos;
                     $.ajax({
                         container: scope._container,
                         hoverSet: scope.hoverSet,

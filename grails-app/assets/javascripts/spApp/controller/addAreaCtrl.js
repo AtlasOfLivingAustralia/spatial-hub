@@ -23,7 +23,7 @@
 
                 $scope.defaultAreas = PredefinedAreasService.getList();
                 $scope.selectedArea = {
-                    name: $i18n('new area'),
+                    name: $i18n(332, "new area"),
                     wkt: '',
                     q: [],
                     legend: '',
@@ -46,7 +46,7 @@
                     radius: '10'
                 };
 
-                $scope.myAreaName = $i18n("new area");
+                $scope.myAreaName = $i18n(332, "new area");
 
                 $scope.$watch('area', function (newValue) {
                     // used by click info popup to check if click came while drawing polygon
@@ -212,7 +212,7 @@
                 $scope.uploadFile = function (file) {
 
                     if ($scope.area === 'importShapefile' && file.type !== 'application/zip') {
-                        bootbox.alert($i18n("The uploaded file must be shape zipped file"));
+                        bootbox.alert($i18n(333, "The uploaded file must be shape zipped file"));
                         return;
                     }
 
@@ -256,10 +256,7 @@
                 };
 
                 $scope.showLocationRadius = function () {
-                    if ($scope.selectedArea !== undefined && $scope.selectedArea.wkt !== undefined && $scope.selectedArea.wkt.match(/^POINT/))
-                        return true;
-                    else
-                        return false;
+                    return $scope.selectedArea !== undefined && $scope.selectedArea.wkt !== undefined && $scope.selectedArea.wkt.match(/^POINT/);
                 };
 
                 $scope.setWkt = function (wkt) {
@@ -272,7 +269,7 @@
                     LayersService.getObject(pid).then(function (obj) {
                         obj = obj.data;
                         $scope.selectedArea.obj = obj;
-                        $scope.selectedArea.name = obj.name.length > 0 ? obj.name : $i18n('area');
+                        $scope.selectedArea.name = obj.name.length > 0 ? obj.name : $i18n(354, "area");
                         LayersService.getField(obj.fid, 0, 0, '').then(function (data) {
                             // only fetch wkt if it is not indexed in biocache
                             if (data.data === undefined || data.data.id === undefined || !data.data.indb) {

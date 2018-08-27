@@ -40,8 +40,8 @@
                     $.each($scope.selectedQs, function (i) {
                         var q = $scope.selectedQs[i];
                         promises.push(BiocacheService.registerQuery(q).then(function (response) {
-                            data.push({name: q.name, query: response.qid, url: q.bs})
-                            true
+                            data.push({name: q.name, query: response.qid, url: q.bs});
+                            return true
                         }));
                     });
                     $q.all(promises).then(function () {

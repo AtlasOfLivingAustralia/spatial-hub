@@ -46,7 +46,7 @@
                                 LayoutService.openModal('tool', processData, false)
                             }, 0)
                         }, function () {
-                            alert($i18n('Could not find task - ') + $scope.taskId)
+                            alert($i18n(355, "Could not find task") + ' - ' + $scope.taskId)
                         })
                     }
                 };

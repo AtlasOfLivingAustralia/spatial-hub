@@ -13,7 +13,7 @@
             function ($scope, MapService, $timeout, LayoutService, $uibModalInstance, BiocacheService, $http,
                       LayersService, inputData, LoggerService, ToolsService) {
 
-                $scope.stepNames = [$i18n('select process')];
+                $scope.stepNames = [$i18n(378, "select process")];
 
                 $scope.values = [];
                 LayoutService.addToSave($scope);
@@ -240,6 +240,8 @@
 
                 $scope.isDisabled = function () {
 
+                    var iList;
+                    var i;
                     var inputs = $scope.getInputs();
                     ToolsService.refresh($scope, $scope.toolName, inputs);
 
@@ -254,9 +256,9 @@
                             for (var sv in $scope.stepView) {
 
                                 //Get the input list from step view
-                                var iList = $scope.stepView[sv].inputArr;
+                                iList = $scope.stepView[sv].inputArr;
 
-                                for (var i in iList) {
+                                for (i in iList) {
                                     if (iList.hasOwnProperty(i)) {
                                         if ($scope.getInputChecks(iList[i])) {
                                             return true;
@@ -266,9 +268,9 @@
                             }
                         } else {
                             //Get the input list from step view
-                            var iList = $scope.stepView[$scope.step].inputArr;
+                            iList = $scope.stepView[$scope.step].inputArr;
 
-                            for (var i in iList) {
+                            for (i in iList) {
                                 if (iList.hasOwnProperty(i)) {
                                     if ($scope.getInputChecks(iList[i])) {
                                         return true;

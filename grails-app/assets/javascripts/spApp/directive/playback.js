@@ -33,18 +33,18 @@
                 link: function (scope, element, attrs) {
                     var self = this,
                         monthNames = [
-                            $i18n('January'),
-                            $i18n('February'),
-                            $i18n('March'),
-                            $i18n('April'),
-                            $i18n('May'),
-                            $i18n('June'),
-                            $i18n('July'),
-                            $i18n('August'),
-                            $i18n('September'),
-                            $i18n('October'),
-                            $i18n('November'),
-                            $i18n('December')
+                            $i18n(381, "January"),
+                            $i18n(382, "February"),
+                            $i18n(383, "March"),
+                            $i18n(384, "April"),
+                            $i18n(385, "May"),
+                            $i18n(386, "June"),
+                            $i18n(387, "July"),
+                            $i18n(388, "August"),
+                            $i18n(389, "September"),
+                            $i18n(390, "October"),
+                            $i18n(391, "November"),
+                            $i18n(392, "December")
                         ];
 
                     scope.onPlay = function () {

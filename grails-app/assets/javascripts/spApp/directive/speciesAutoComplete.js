@@ -22,9 +22,9 @@
                         source: function (searchTerm, response) {
                             SpeciesAutoCompleteService.search(searchTerm.term, iElement).then(function (data) {
                                 response($.map(data.searchResults.results, function (item, idx) {
-                                    var distributions = item.distributionsCount > 0 ? '+' + item.distributionsCount + ' ' + $i18n('expert distribution(s)') : '';
-                                    var checklists = item.checklistsCount > 0 ? '+' + item.checklistsCount + ' ' + $i18n('checklist(s)') : '';
-                                    var tracks = item.tracksCount > 0 ? '+' + item.tracksCount + ' ' + $i18n('track(s)') : '';
+                                    var distributions = item.distributionsCount > 0 ? ' +' + item.distributionsCount + ' ' + $i18n(393, "expert distribution(s)") : '';
+                                    var checklists = item.checklistsCount > 0 ? ' +' + item.checklistsCount + ' ' + $i18n(394, "checklist(s)") : '';
+                                    var tracks = item.tracksCount > 0 ? ' +' + item.tracksCount + ' ' + $i18n(395, "track(s)") : '';
 
                                     // TODO: temporary until beta is prod
                                     if (item.guid === "urn:lsid:biodiversity.org.au:afd.taxon:989a7126-df02-4f1f-a21f-feca59662947") {
@@ -34,7 +34,7 @@
                                     return {
                                         label: item.name,
                                         info: item.rank + (item.commonNameSingle ? ' ' + item.commonNameSingle : ' ') +
-                                        ' - ' + item.occCount + ' ' + $i18n('found') + distributions + checklists + tracks,
+                                        ' - ' + item.occCount + ' ' + $i18n(396, "found") + distributions + checklists + tracks,
                                         value: item
                                     }
                                 }))

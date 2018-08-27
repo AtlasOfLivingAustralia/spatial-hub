@@ -54,7 +54,7 @@
                         };
 
                         scope.info = function (item) {
-                            bootbox.alert($i18n('Metadata url') + ': <a href="' + item.url + '">' + item.url + '</a>')
+                            bootbox.alert($i18n(397, "Metadata url") + ': <a href="' + item.url + '">' + item.url + '</a>')
                         };
 
                         scope.contextualClearSelection = function () {
@@ -86,12 +86,12 @@
                                 var outFq = '-(' + scope.selected.layer.scatterplotFq + ')';
 
                                 BiocacheService.newLayerAddFq(scope.selected.layer, inFq,
-                                    scope.selected.layer.name + " : " + $i18n("in scatterplot selection")).then(function (data) {
+                                    scope.selected.layer.name + " : " + $i18n(338, "in scatterplot selection")).then(function (data) {
                                     MapService.add(data)
                                 });
 
                                 BiocacheService.newLayerAddFq(scope.selected.layer, outFq,
-                                    scope.selected.layer.name + " : " + $i18n("out scatterplot selection")).then(function (data) {
+                                    scope.selected.layer.name + " : " + $i18n(339, "out scatterplot selection")).then(function (data) {
                                     MapService.add(data)
                                 })
                             }
@@ -108,12 +108,12 @@
                                 var outFq = '-(id:' + ids.join(' OR id:') + ')';
 
                                 BiocacheService.newLayerAddFq(scope.selected.layer, inFq,
-                                    scope.selected.layer.name + " : " + $i18n("in adhoc")).then(function (data) {
+                                    scope.selected.layer.name + " : " + $i18n(340, "in adhoc")).then(function (data) {
                                     MapService.add(data)
                                 });
 
                                 BiocacheService.newLayerAddFq(scope.selected.layer, outFq,
-                                    scope.selected.layer.name + " : " + $i18n("out adhoc")).then(function (data) {
+                                    scope.selected.layer.name + " : " + $i18n(341, "out adhoc")).then(function (data) {
                                     MapService.add(data)
                                 })
                             }
@@ -156,7 +156,7 @@
                         scope.mapObjectsList = function (ids, fqs, objects, pos, name) {
                             if (pos === ids.length) {
                                 //merge
-                                var metadata = $i18n('Collection of areas from layer') + ': ' + name + ';';
+                                var metadata = $i18n(398, "Collection of areas from layer") + ': ' + name + ';';
                                 var mappingId = '';
                                 var areaKm = 0;
                                 var bbox;
@@ -193,7 +193,7 @@
                                 }
 
                                 var layer = {
-                                    name: pos + ' ' + $i18n('areas from') + ' ' + name,
+                                    name: pos + ' ' + $i18n(399, "areas from") + ' ' + name,
                                     description: '',
                                     wkt: '',
                                     q: [fqs.join(" OR ")],
@@ -299,7 +299,7 @@
                         scope.facetNewLayer = function () {
                             if (scope.selected.layer !== undefined) {
                                 BiocacheService.newLayerAddFq(scope.selected.layer, decodeURIComponent(scope.selected.layer.sel),
-                                    scope.selected.layer.name + " : " + $i18n("from selected")).then(function (data) {
+                                    scope.selected.layer.name + " : " + $i18n(342, "from selected")).then(function (data) {
                                     data.species_list = scope.selected.layer.species_list;
                                     MapService.add(data)
                                 })
@@ -309,7 +309,7 @@
                         scope.facetNewLayerOut = function () {
                             if (scope.selected.layer !== undefined) {
                                 BiocacheService.newLayerAddFq(scope.selected.layer, decodeURIComponent('-(' + scope.selected.layer.sel + ')'),
-                                    scope.selected.layer.name + " : " + $i18n("from unselected")).then(function (data) {
+                                    scope.selected.layer.name + " : " + $i18n(343, "from unselected")).then(function (data) {
                                     data.species_list = scope.selected.layer.species_list;
                                     MapService.add(data)
                                 })
@@ -465,7 +465,7 @@
                             promises.push(scope.asyncFacetCounts(queue, results));
 
                             $q.all(promises).then(function (result) {
-                                result = results
+                                result = results;
                                 result.sort(function (a, b) {
                                     return b.count - a.count
                                 });
@@ -759,11 +759,11 @@
 
                         scope.scatterplotDownloadData = function () {
                             Util.download(scope.selected.layer.scatterplotDataUrl);
-                        }
+                        };
 
                         scope.scatterplotDownloadImage = function () {
                             Util.download(scope.selected.layer.scatterplotUrl);
-                        }
+                        };
 
                         scope.scatterplotUpdate = function (value) {
                             scope.selected.layer.scatterplotUpdating = true;
@@ -805,7 +805,7 @@
                                         'height': 0
                                     }).hide();
 
-                                    scope.status = $i18n('successful');
+                                    scope.status = $i18n(400, "successful");
 
                                     scope.finishedData = response.data;
 
@@ -823,8 +823,8 @@
                                                     var fq = species.scatterplotLayers[0] + ":[" + species.scatterplotSelectionExtents[1] + " TO " + species.scatterplotSelectionExtents[3] + "] AND " +
                                                         species.scatterplotLayers[1] + ":[" + species.scatterplotSelectionExtents[0] + " TO " + species.scatterplotSelectionExtents[2] + "]";
                                                     var fqs = [fq];
-                                                    scope.selected.layer.scatterplotFq = fq
-                                                    if (species.scatterplotSelectionExtents.length == 0) {
+                                                    scope.selected.layer.scatterplotFq = fq;
+                                                    if (species.scatterplotSelectionExtents.length === 0) {
                                                         scope.selected.layer.sel = undefined;
                                                         fqs = [];
                                                         scope.selected.layer.scatterplotSelectionCount = 0;
@@ -836,7 +836,7 @@
 
                                                         scope.updateWMS();
                                                         updateNow = false;
-                                                        scope.selected.layer.scatterplotSelectionCount = $i18n('counting...');
+                                                        scope.selected.layer.scatterplotSelectionCount = $i18n(377, "counting...");
                                                         BiocacheService.count(scope.selected.layer, fqs).then(function (count) {
                                                             scope.selected.layer.scatterplotSelectionCount = count;
                                                             layer.scatterplotUpdating = false;

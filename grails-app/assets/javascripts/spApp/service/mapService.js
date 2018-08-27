@@ -44,6 +44,7 @@
                 };
                 var selected = {layer: null};
                 var uid = 1;
+                var pidList = [];
 
                 var MapService = {
                     mappedLayers: layers,
@@ -210,6 +211,7 @@
                             if (response && response.data && response.data.length > 0) {
                                 var data = response.data;
                                 for (var i in data) {
+
                                     var item = data[i];
 
                                     //map with geom_idx
@@ -238,20 +240,49 @@
                                         name = item.scientific + " (" + name + ")"
                                     }
 
-                                    MapService.add({
-                                        query: query,
-                                        geom_idx: item.geom_idx,
-                                        layertype: "area",
-                                        name: name,
-                                        layerParams: parameters,
-                                        metadataUrl: metadataUrl
-                                    })
+                                    if (data[i].pid) {
+                                        data[i].metadataUrl = metadataUrl;
+                                        data[i].name = name;
+                                        data[i].geom_idx = item.geom_idx;
+                                        data[i].query = query;
+
+                                        pidList.push(data[i]);
+                                    } else {
+                                        MapService.add({
+                                            query: query,
+                                            geom_idx: item.geom_idx,
+                                            layertype: "area",
+                                            name: name,
+                                            layerParams: parameters,
+                                            metadataUrl: metadataUrl
+                                        })
+                                    }
                                 }
+
+                                MapService.mapFromPidList()
                             }
                             return $q.when()
                         }, function (data) {
                             return $q.when()
                         })
+                    },
+
+                    mapFromPidList: function () {
+                        if (pidList.length > 0) {
+                            var next = pidList.pop();
+                            LayersService.getObject(next.pid).then(function (data) {
+                                data.data.layertype = 'area';
+                                if (next.query) data.data.query = next.query;
+                                if (next.metadataUrl) data.data.metadataUrl = next.metadataUrl;
+                                if (next.name) data.data.name = next.name;
+                                if (next.name) data.data.displayname = next.name;
+                                if (next.geom_idx) data.data.geom_idx = next.geom_idx;
+
+                                MapService.add(data.data);
+
+                                MapService.mapFromPidList();
+                            })
+                        }
                     },
 
                     addHighlight: function (id) {
@@ -657,7 +688,7 @@
                     },
                     getAllSpeciesQuery: function (layer) {
                         var query = {q: [], name: '', bs: '', ws: ''};
-                        query.name = $i18n('All species');
+                        query.name = $i18n("All species");
                         query.bs = $SH.biocacheServiceUrl;
                         query.ws = $SH.biocacheUrl;
                         query.q.push('*:*');
@@ -698,10 +729,10 @@
 
                             bootbox.alert("<b>Area</b><br/><br/>" +
                                 "<table class='table-striped table table-bordered'>" +
-                                "<tr><td style='width:100px'>Name</td><td>" + item.name + "</td></tr>" +
-                                "<tr><td>" + $i18n("Description") + "</td><td>" + item.description + "</td></tr>" +
-                                "<tr><td>" + $i18n("Area (sq km)") + "</td><td>" + item.area_km.toFixed(2) + "</td></tr>" +
-                                "<tr><td>" + $i18n("Extents") + "</td><td>" + b[0][0] + " " + b[0][1] + ", " +
+                                "<tr><td style='width:100px'>" + $i18n("Name") + "</td><td>" + item.name + "</td></tr>" +
+                                "<tr><td>" + $i18n(347, "Description") + "</td><td>" + item.description + "</td></tr>" +
+                                "<tr><td>" + $i18n(348, "Area (sq km)") + "</td><td>" + item.area_km.toFixed(2) + "</td></tr>" +
+                                "<tr><td>" + $i18n(349, "Extents") + "</td><td>" + b[0][0] + " " + b[0][1] + ", " +
                                 b[1][0] + " " + b[1][1] + "</td></tr></table>")
                         } else {
                             if (item.metadataUrl !== undefined) {

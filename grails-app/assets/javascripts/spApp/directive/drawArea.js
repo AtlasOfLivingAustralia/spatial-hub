@@ -202,7 +202,7 @@
                         scope.stopDrawing = function () {
                             var a = $('.leaflet-draw-actions a');
                             for (var i = 0; i < a.length; i++) {
-                                if (a[i].title === $i18n('Cancel drawing')) {
+                                if (a[i].title === $i18n(379, "Cancel drawing")) {
                                     a[i].click()
                                 }
                             }

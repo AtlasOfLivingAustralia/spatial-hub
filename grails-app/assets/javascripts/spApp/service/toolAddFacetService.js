@@ -51,7 +51,7 @@
                     if (speciesOptions.spatiallyValid && speciesOptions.spatiallySuspect) q.push('geospatial_kosher:*');
                     else if (speciesOptions.spatiallyValid) q.push('geospatial_kosher:true');
                     else if (speciesOptions.spatiallySuspect) q.push('geospatial_kosher:false');
-                    var newName = $i18n("Facet");
+                    var newName = $i18n(127, "Facet");
 
                     //Guess name from factet Genuse:"Cractus" OR Genuse:"xxxxxx"
                     try {

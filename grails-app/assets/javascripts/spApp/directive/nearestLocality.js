@@ -23,7 +23,7 @@
                             latitude: 0
                         };
 
-                        scope.defaultLabel = $i18n('Click on the map to set the point.');
+                        scope.defaultLabel = $i18n(380, "Click on the map to set the point.");
 
                         scope.pointLabel = scope.defaultLabel;
 
@@ -70,7 +70,7 @@
                         scope.stopDrawing = function () {
                             var a = $('.leaflet-draw-actions a');
                             for (var i = 0; i < a.length; i++) {
-                                if (a[i].title === $i18n('Cancel drawing')) {
+                                if (a[i].title === $i18n(379, "Cancel drawing")) {
                                     a[i].click()
                                 }
                             }
@@ -105,14 +105,14 @@
                                         rows += "\n\"" + p.name.replace("\"", "\\\"") + "\"," + p.geometry + "," + p.distance + "," + p.degrees
                                     }
 
-                                    var header = "Longitude," + scope.point.longitude + "\n" +
-                                        "Latitude," + scope.point.latitude + "\n\n" +
-                                        "Feature,Location,Distance (km),Heading (deg)";
+                                    var header = $i18n(409, "Longitude") + "," + scope.point.longitude + "\n" +
+                                        $i18n(410, "Latitude") + "," + scope.point.latitude + "\n\n" +
+                                        $i18n(160, "Feature") + "," + $i18n(161, "Location") + "," + $i18n(162, "Distance (km)") + "," + $i18n(163, "Heading (deg)");
                                     var blob = new Blob([header + rows], {type: 'text/plain'});
                                     scope.exportUrl = (window.URL || window.webkitURL).createObjectURL(blob);
                                 }, function (response) {
                                     scope.searching = false;
-                                    scope.pointLabel = $i18n("Error")
+                                    scope.pointLabel = $i18n(337, "Error")
                                 });
                             }
                         })

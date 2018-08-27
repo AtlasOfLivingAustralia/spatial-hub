@@ -194,7 +194,7 @@
                                 scope.clearQ();
                             } else if (scope.speciesOption === 'allSpecies') {
                                 scope.setQ({
-                                    q: ["*:*"], name: 'All species', bs: $SH.biocacheServiceUrl,
+                                    q: ["*:*"], name: $i18n("All species"), bs: $SH.biocacheServiceUrl,
                                     ws: $SH.biocacheUrl
                                 })
                             } else if (scope.speciesOption === 'searchSpecies') {

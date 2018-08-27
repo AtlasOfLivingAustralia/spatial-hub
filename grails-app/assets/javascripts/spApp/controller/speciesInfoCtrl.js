@@ -11,12 +11,12 @@
         .controller('SpeciesInfoCtrl', ['$scope', 'MapService', '$timeout', 'LayoutService', '$uibModalInstance', 'BiocacheService', 'BieService', 'data',
             function ($scope, MapService, $timeout, LayoutService, $uibModalInstance, BiocacheService, BieService, data) {
 
-                $scope.speciesCountKosher = $i18n('counting...');
-                $scope.speciesCountKosherAny = $i18n('counting...')
-                $scope.speciesCountAll = $i18n('counting...')
-                $scope.countKosher = $i18n('counting...')
-                $scope.countKosherAny = $i18n('counting...')
-                $scope.countAll = $i18n('counting...')
+                $scope.speciesCountKosher = $i18n(377, "counting...");
+                $scope.speciesCountKosherAny = $i18n(377, "counting...");
+                $scope.speciesCountAll = $i18n(377, "counting...");
+                $scope.countKosher = $i18n(377, "counting...");
+                $scope.countKosherAny = $i18n(377, "counting...");
+                $scope.countAll = $i18n(377, "counting...");
                 $scope.speciesList = [];
                 $scope.dataProviderList = [];
                 $scope.lsids = [];

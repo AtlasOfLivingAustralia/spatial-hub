@@ -73,7 +73,7 @@
                                 scope.loading = false;
                             });
 
-                        }
+                        };
 
                         $timeout(scope.init, 0);
                     }

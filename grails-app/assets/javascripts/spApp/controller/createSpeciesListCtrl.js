@@ -31,7 +31,7 @@
 
                 $scope.step = '1';
 
-                $scope.newListName = $i18n('My species list');
+                $scope.newListName = $i18n(375, "My species list");
                 $scope.newListDescription = '';
                 $scope.newItems = '';
                 $scope.makePrivate = true;
@@ -57,7 +57,7 @@
                 $scope.parseList = function () {
                     var names = $scope.newItems.split(/[,;\t\n]+/);
                     names = names.filter(function (name) {
-                        return name != undefined && name.trim().length > 0
+                        return name !== undefined && name.trim().length > 0
                     });
 
                     BieService.nameLookup(names).then(function (list) {
@@ -131,7 +131,7 @@
                             var druid = json.druid;
                             ListsService.items(druid, {max: 1}).then(function (data) {
                                 if (data.length === 0) {
-                                    bootbox.alert($i18n("No matching species found."))
+                                    bootbox.alert($i18n(334, "No matching species found."))
                                 } else {
                                     ListsService.getItemsQ(druid).then(function (data) {
                                         var listIds = data;
@@ -159,7 +159,7 @@
                                 }
                             })
                         } else {
-                            bootbox.alert($i18n("Error in creating new species.<br><br>Status code: ") + resp.status + "<br>" + resp.data.error);
+                            bootbox.alert($i18n(335, "Error in creating new species.<br><br>Status code: ") + resp.status + "<br>" + resp.data.error);
                             $scope.$close();
                         }
                     })

@@ -69,7 +69,7 @@
                                         if (!closeLater)
                                             $scope.$close();
                                     } else if (newValue === 'FAILED') {
-                                        alert($i18n('failed to import'));
+                                        Bootbox.alert($i18n(376, "failed to import"));
                                     }
                                 });
 

@@ -33,7 +33,7 @@
                     };
 
                     scope.deleteAll = function () {
-                        bootbox.confirm($i18n("Delete all mapped layers?"),
+                        bootbox.confirm($i18n(344, "Delete all mapped layers?"),
                             function (result) {
                                 if (result) {
                                     var uids = [], i;
@@ -97,7 +97,7 @@
                     scope.select = function (layer) {
                         LayoutService.enable('legend');
                         MapService.select(layer)
-                    }
+                    };
 
                     scope.reconnect = function () {
                         KeepAliveService.reconnect();

@@ -321,7 +321,7 @@
                                 areaLayers.forEach(function (layer) {
                                     self.getAreaIntersects(layer.pid, latlng).then(function (resp) {
                                         if (resp.data.name) {
-                                            intersects.push({layername: $i18n('Area'), value: resp.data.name});
+                                            intersects.push({layername: $i18n(402, "Area"), value: resp.data.name});
                                             addPopupToMap(loc, leafletMap, templatePromise, intersects, occurrenceList);
                                         }
                                         processedLayers[0] += 1

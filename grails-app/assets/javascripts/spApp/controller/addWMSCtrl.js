@@ -38,7 +38,7 @@
                             var version = xml.WMS_Capabilities._version;
                             var layers = xml.WMS_Capabilities.Capability.Layer.Layer;
 
-                            for (i in layers) {
+                            for (var i in layers) {
                                 if (layers[i].Style !== undefined && layers[i].Style.LegendURL !== undefined) {
                                     var styles = layers[i].Style;
                                     var legendurl = '';
@@ -88,15 +88,14 @@
                 $scope.addLayerFromGetMapRequest = function () {
                     //parsing
                     if (!validateURL($scope.selectedGetMapExample)) {
-                        $scope.warning = "Invalid URL: " + url;
+                        $scope.warning = $i18n(406, "Invalid URL") + ": " + url;
                         return;
                     }
 
                     var result = {};
                     var sepIndex = $scope.selectedGetMapExample.indexOf('?');
-                    var url = $scope.selectedGetMapExample.substr(0, sepIndex);
 
-                    result['URL'] = url;
+                    result['URL'] = $scope.selectedGetMapExample.substr(0, sepIndex);
 
                     var queryString = $scope.selectedGetMapExample.substr(sepIndex + 1, $scope.selectedGetMapExample.length - sepIndex);
                     queryString.split("&").forEach(function (part) {
@@ -118,11 +117,11 @@
                     });
 
                     if (!result.LAYERS || /^\s*$/.test(result.LAYERS)) {
-                        $scope.warning = "Layer is not given";
+                        $scope.warning = $i18n(407, "No layer selected");
                         return;
                     }
                     if (result.REQUEST.toUpperCase() !== "GETMAP") {
-                        $scope.warning = "Request should be GetMap";
+                        $scope.warning = $i18n(408, "URL must be a valid 'GetMap' request");
                         return;
                     }
 

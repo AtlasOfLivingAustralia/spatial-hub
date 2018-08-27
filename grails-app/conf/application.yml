@@ -235,7 +235,8 @@ admin_role: 'ROLE_ADMIN'
     
 skin:
     fluidLayout: true
-    layout: 'mainbs3'
+    layout: 'portal'
+    orgNameLong: 'Atlas of Living Australia'
 
 speciesDotSize: 5
 speciesDotOpacity: 60

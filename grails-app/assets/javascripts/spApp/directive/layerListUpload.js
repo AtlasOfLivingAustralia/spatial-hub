@@ -12,6 +12,7 @@
             scope: {
                 _custom: '&onCustom'
             },
+            // TODO: move template to a separate file
             template: '<input type="file" id="file" name="file"/><br/><button class="btn" ng-click="upload()">Upload</button>',
             link: function (scope, element, attrs) {
                 scope.upload = function () {

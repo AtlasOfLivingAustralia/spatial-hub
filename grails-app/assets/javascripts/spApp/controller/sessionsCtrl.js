@@ -24,7 +24,7 @@
 
                 $scope['delete'] = function (sessionId) {
                     bootbox.confirm({
-                        message: $i18n("Delete this session?"),
+                        message: $i18n(336, "Delete this session?"),
                         size: 'small',
                         callback: function (result) {
                             if (result) {

@@ -53,16 +53,16 @@
                  */
                 save: function (data) {
                     bootbox.prompt({
-                        title: $i18n("Enter a name to save this session"),
-                        value: $i18n("My session") + " " + new Date().toLocaleString(),
+                        title: $i18n(350, "Enter a name to save this session"),
+                        value: $i18n(351, "My session") + " " + new Date().toLocaleString(),
                         callback: function (name) {
                             if (name !== null) {
                                 if (name.length === 0) {
-                                    name = $i18n('My saved session')
+                                    name = $i18n(403, "My saved session")
                                 }
                                 data.name = name;
                                 return $http.post($SH.baseUrl + "/portal/session/" + $SH.sessionId, data).then(function (response) {
-                                    bootbox.alert('<h3>' + $i18n('Session Saved') + '</h3><br/><br/>' + $i18n('URL to retrived this saved session') + '<br/><br/><a target="_blank" href="' + response.data.url + '">' + response.data.url + '</a>')
+                                    bootbox.alert('<h3>' + $i18n(404, "Session Saved") + '</h3><br/><br/>' + $i18n(405, "URL to retrived this saved session") + '<br/><br/><a target="_blank" href="' + response.data.url + '">' + response.data.url + '</a>')
                                 });
                             }
                         }

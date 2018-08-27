@@ -127,9 +127,7 @@
     };
 
 </script>
-<!--
-<ala:systemMessage/>
--->
+
 <sp-app></sp-app>
 
 </body>
