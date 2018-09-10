@@ -211,7 +211,7 @@
 
                 $scope.uploadFile = function (file) {
 
-                    if ($scope.area === 'importShapefile' && file.type !== 'application/zip') {
+                    if ($scope.area === 'importShapefile' && file.type.indexOf('zip') < 0) {
                         bootbox.alert($i18n(333, "The uploaded file must be shape zipped file"));
                         return;
                     }

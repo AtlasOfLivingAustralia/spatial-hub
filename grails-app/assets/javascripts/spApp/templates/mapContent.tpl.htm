@@ -1,4 +1,4 @@
-<div name="divMappedLayers" style="height:100%;overflow:scroll;margin-left: -15px;padding-top:10px">
+<div name="divMappedLayers" style="height:100%;overflow:auto;margin-left: -15px;padding-top:10px">
     <ul ui-sortable="sortableOptions" ng-model="list" class="list-group layer-list">
         <li ng-repeat="item in list" class="list-group-item" ng-class="{ 'layer-selected' : isSelected(item)}"
             ng-click="select(item)">
