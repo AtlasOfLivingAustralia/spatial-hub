@@ -10,6 +10,22 @@
                 var defaultBaseLayer = {};
                 defaultBaseLayer[$SH.defaultBaseLayer] = $SH.baseLayers[$SH.defaultBaseLayer];
 
+                $scope.getCRS = function () {
+                    var crs;
+                    if ($SH.projections[$SH.projection].definition.params) {
+                        var bounds = $SH.projections[$SH.projection].definition.params.bounds;
+                        if (bounds) {
+                            $SH.projections[$SH.projection].definition.params.bounds = new L.Bounds(bounds[0], bounds[1])
+                        }
+                        crs = new L.Proj.CRS($SH.projections[$SH.projection].definition.code, $SH.projections[$SH.projection].definition.proj4js, $SH.projections[$SH.projection].definition.params);
+                    } else if ($SH.projections[$SH.projection].definition.code === 'EPSG:3857') {
+                        crs = L.CRS.EPSG3857
+                    } else if ($SH.projections[$SH.projection].definition.code === 'EPSG:4326') {
+                        crs = L.CRS.EPSG4326
+                    }
+                    return crs;
+                };
+
                 angular.extend($scope, {
                     layercontrol: {
                         icons: {
@@ -29,11 +45,7 @@
                     controls: {
                         draw: {}
                     },
-                    bounds: leafletBoundsHelpers.createBoundsFromArray([
-                        [51.508742458803326, -0.087890625],
-                        [51.508742458803326, -0.087890625]
-                    ])
-
+                    defaults: {crs: $scope.getCRS()}
                 });
 
                 MapService.leafletScope = $scope;
@@ -41,6 +53,33 @@
                 $scope.baseMap = $SH.defaultBaseLayer;
                 $scope.getBaseMap = function () {
                     return $scope.baseMap
+                };
+
+                $scope.updateCRS = function () {
+                    leafletData.getMap().then(function (map) {
+                        map.options.crs = $scope.getCRS();
+                        var lat, lng, zoom;
+                        if ($SH.projections[$SH.projection].origin) {
+                            lat = $SH.projections[$SH.projection].origin.latitude;
+                            lng = $SH.projections[$SH.projection].origin.longitude;
+                            zoom = $SH.projections[$SH.projection].origin.zoom;
+                        } else {
+                            lat = $SH.defaultLat;
+                            lng = $SH.defaultLng;
+                            zoom = $SH.defaultZoom;
+                        }
+                        map.setView(new L.latLng(lat, lng), zoom);
+
+                        for (var i in map._layers) {
+                            map._layers[i]._crs = map.options.crs;
+                            if (map._layers[i].wmsParams) {
+                                map._layers[i].wmsParams.srs = map.options.crs.code;
+                            }
+
+                        }
+
+                        map._resetView(map.getCenter(), zoom);
+                    });
                 };
 
                 $scope.setBaseMap = function (key) {

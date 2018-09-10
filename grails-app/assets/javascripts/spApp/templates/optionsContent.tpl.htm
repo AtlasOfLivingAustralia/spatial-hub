@@ -2,7 +2,7 @@
     <p i18n="164">Select the base map type.</p>
 
     <div class="radio" ng-model="selection.name" ng-repeat="x in baselayers">
-        <label>
+        <label ng-show="isValidBaseLayerForProjection(x)">
             <input type="radio" style="position:inherit" ng-model="selection.name" value="{{x.key}}"
                    ng-change="select(x.key)">
             {{x.name}}
@@ -10,6 +10,20 @@
                target="_blank"></a>
             <a style="color:black;" ng-show="x.url != null" class="glyphicon glyphicon-info-sign" href="{{x.url}}"
                target="_blank"></a>
+        </label>
+    </div>
+</div>
+
+<hr/>
+
+<div class="container" ng-show="showProjections()">
+    <p>Map projection</p>
+
+    <div class="radio" ng-model="projection.code" ng-repeat="x in projections">
+        <label>
+            <input type="radio" style="position:inherit" ng-model="projection.code" value="{{x.definition.code}}"
+                   ng-change="selectProjection(x.definition.code)">
+            {{x.label}}
         </label>
     </div>
 </div>

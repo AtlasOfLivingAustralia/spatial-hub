@@ -99,7 +99,9 @@
         ],
         i18n: '${config.i18n?.region?:"default"}',
         editable: ${params.edit?:'false'},
-        wmsIntersect: ${config.wms.intersect}
+        wmsIntersect: ${config.wms.intersect},
+        projections: ${(config.projections as grails.converters.JSON).toString().encodeAsRaw()},
+        projection: '${config.projection.default}'
     };
 
     BIE_VARS = {

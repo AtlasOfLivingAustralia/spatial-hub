@@ -189,9 +189,14 @@
                         var fq = [];
                         dotradius = dotradius * 1 + 3;
                         var px = leafletMap.latLngToContainerPoint(latlng);
-                        var ll = leafletMap.containerPointToLatLng(L.point(px.x + dotradius, px.y + dotradius));
-                        var lonSize = Math.abs(latlng.lng - ll.lng);
-                        var latSize = Math.abs(latlng.lat - ll.lat);
+                        var ll1 = leafletMap.containerPointToLatLng(L.point(px.x + dotradius, px.y + dotradius));
+                        var ll2 = leafletMap.containerPointToLatLng(L.point(px.x + dotradius, px.y - dotradius));
+                        var ll3 = leafletMap.containerPointToLatLng(L.point(px.x - dotradius, px.y - dotradius));
+                        var ll4 = leafletMap.containerPointToLatLng(L.point(px.x - dotradius, px.y + dotradius));
+                        var maxLng = Math.max(ll1.lng, ll2.lng, ll3.lng, ll4.lng);
+                        var maxLat = Math.max(ll1.lat, ll2.lat, ll3.lat, ll4.lat);
+                        var lonSize = Math.abs(latlng.lng - maxLng);
+                        var latSize = Math.abs(latlng.lat - maxLat);
                         fq.push("latitude:[" + (latlng.lat - latSize) + " TO " + (latlng.lat + latSize) + "]");
                         fq.push("longitude:[" + (latlng.lng - lonSize) + " TO " + (latlng.lng + lonSize) + "]");
 

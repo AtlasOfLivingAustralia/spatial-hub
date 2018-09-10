@@ -26,7 +26,8 @@ def build(String baseDir) {
                  'angular-touch/angular-touch.min.js', 'angular-ui-bootstrap/dist/ui-bootstrap-tpls.js',
                  'angular-ui-bootstrap/dist/ui-bootstrap-csp.css', 'bootbox/bootbox.min.js', 'jquery/dist/jquery.min.js',
                  'ng-file-upload/dist/ng-file-upload.js', 'ngbootbox/dist/ngBootbox.min.js',
-                 'bootstrap/dist/', 'leaflet/dist/', 'leaflet-draw/dist/']
+                 'bootstrap/dist/', 'leaflet/dist/', 'leaflet-draw/dist/', 'proj4/dist/proj4.js',
+                 'proj4leaflet/src/proj4leaflet.js']
     files.each { name ->
         def dst = new File(baseDir + '/grails-app/assets/node_modules/' + name)
         dst.getParentFile().mkdirs()

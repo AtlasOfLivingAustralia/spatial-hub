@@ -423,7 +423,8 @@
                                     format: 'image/png',
                                     q: id.qid,
                                     ENV: env,
-                                    transparent: true
+                                    transparent: true,
+                                    continuousWorld: true
                                 }
                             };
 

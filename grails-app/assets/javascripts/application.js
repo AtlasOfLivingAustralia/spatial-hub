@@ -12,6 +12,8 @@
 
 //leaflet
 //= require leaflet/dist/leaflet.js
+//= require proj4/dist/proj4.js
+//= require proj4leaflet/src/proj4leaflet.js
 //= require leaflet-draw/dist/leaflet.draw.js
 //= require L.Google/L.Google.js
 //= require leaflet-control-window/L.Control.Window.js
