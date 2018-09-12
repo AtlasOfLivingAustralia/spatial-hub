@@ -84,6 +84,8 @@
                         } else if ($scope.area === 'environmentalEnvelope') {
                             LayoutService.openPanel('envelope', $scope.area, false)
                         } else if ($scope.area === 'wkt') {
+                        } else if ($scope.area === 'mergeArea') {
+                            LayoutService.openModal('tool', {processName: 'MergeAreas'}, false);
                         }
                     } else {
                         var mapNow = true;

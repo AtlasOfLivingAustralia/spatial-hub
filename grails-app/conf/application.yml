@@ -176,11 +176,11 @@ collections:
     url: 'https://collections.ala.org.au'
 
 sandbox:
-    url: 'http://sandbox.ala.org.au/ala-hub'
-    uiUrl: 'http://sandbox.ala.org.au/datacheck'
+    url: 'https://sandbox.ala.org.au/ala-hub'
+    uiUrl: 'https://sandbox.ala.org.au/datacheck'
 
 sandboxService:
-    url: 'http://sandbox.ala.org.au/biocache-service'
+    url: 'https://sandbox.ala.org.au/biocache-service'
 
 gazField: 'cl915'
 
@@ -205,10 +205,10 @@ biocacheService:
         - Year;occurrence_year
 
 sampling:
-    url: 'http://ala-dylan.it.csiro.au/sampling-service'
+    url: 'https://sampling.ala.org.au/sampling-service'
 
 geoserver:
-    url: 'http://spatial-test.ala.org.au/geoserver'
+    url: 'https://spatial.ala.org.au/geoserver'
 
 flickr:
     url: 'https://api.flickr.com/services/rest/?method='
@@ -242,7 +242,7 @@ speciesDotSize: 5
 speciesDotOpacity: 60
 
 logger:
-    baseUrl: 'http://logger.ala.org.au/service'
+    baseUrl: 'https://logger.ala.org.au/service'
 
 webservice:
     readTimeout: 60000
@@ -254,7 +254,7 @@ cache:
         control: 'max-age=36000 public must-revalidate'
 
 phylolink:
-    url: 'http://phylolink.ala.org.au'
+    url: 'https://phylolink.ala.org.au'
 
 apiKeyCheckUrlTemplate: 'https://auth.ala.org.au/apikey/ws/check?apikey={0}'
 
