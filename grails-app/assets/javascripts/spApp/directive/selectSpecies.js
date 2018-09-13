@@ -162,7 +162,7 @@
                                     gs = ["geospatial_kosher:*"]
                                 }
 
-                                var absent = ["-occurrence_status_s:absent"];
+                                var absent = [$SH.fqExcludeAbsent];
                                 if (scope.includeAbsences) {
                                     absent = []
                                 }

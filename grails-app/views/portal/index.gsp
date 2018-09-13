@@ -101,7 +101,8 @@
         editable: ${params.edit?:'false'},
         wmsIntersect: ${config.wms.intersect},
         projections: ${(config.projections as grails.converters.JSON).toString().encodeAsRaw()},
-        projection: '${config.projection.default}'
+        projection: '${config.projection.default}',
+        fqExcludeAbsent: '${config.fq.excludeAbsent}'
     };
 
     BIE_VARS = {

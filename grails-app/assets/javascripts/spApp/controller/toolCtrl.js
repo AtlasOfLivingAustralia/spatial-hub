@@ -131,7 +131,7 @@
                                 else if (value.constraints['speciesOption'] === 'allSpecies') {
                                     //specify allSpecies default
                                     v = {
-                                        q: ["*:*", "geospatial_kosher:true", "-occurrence_status_s:absent"],
+                                        q: ["*:*", "geospatial_kosher:true", $SH.fqExcludeAbsent],
                                         name: 'All species',
                                         bs: $SH.biocacheServiceUrl,
                                         ws: $SH.biocacheUrl

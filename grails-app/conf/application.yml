@@ -363,6 +363,10 @@ getMapExamples:
 wms:
     intersect: true
 
+
+fq:
+    excludeAbsent: "-occurrence_status_s:absent"
+
 # (mandatory) projections.#.definition - usage new L.Proj.CRS(code, proj4js, params)
 # projections.#.definition.code = code
 # projections.#.definition.proj4js = proj4js definition (mandatory when not 3857 or 4326)
