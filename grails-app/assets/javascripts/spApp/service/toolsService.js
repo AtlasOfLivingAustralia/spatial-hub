@@ -143,11 +143,29 @@
                                     }
                                 });
                             } else if (d.name === 'area') {
-                                //might be an area pid
-                                promises.push(LayersService.getObject(d.file).then(function (data) {
-                                    data.data.layertype = 'area';
-                                    return MapService.add(data.data)
-                                }))
+                                if (d.file.indexOf("{") == 0) {
+                                    // parse JSON response
+                                    // ENVELOPE is the only output of this type
+                                    var json = JSON.parse(d.file);
+                                    layers.push({
+                                        id: json.id,
+                                        displaypath: json.wmsurl,
+                                        type: 'envelope',
+                                        layertype: 'area',
+                                        q: json.q,
+                                        name: json.name,
+                                        area_km: json.area_km,
+                                        bbox: json.bbox,
+                                        wkt: json.bbox,
+                                        pid: 'ENVELOPE' + json.id
+                                    });
+                                } else {
+                                    //might be an area pid
+                                    promises.push(LayersService.getObject(d.file).then(function (data) {
+                                        data.data.layertype = 'area';
+                                        return MapService.add(data.data)
+                                    }))
+                                }
                             } else if (d.name === 'species') {
                                 var q = jQuery.parseJSON(d.file);
 

@@ -55,7 +55,7 @@
                     areaLayers: function () {
                         var list = [];
                         for (var i = 0; i < layers.length; i++) {
-                            if (layers[i].pid !== undefined) {
+                            if (layers[i].layertype === 'area') {
                                 list.push(layers[i])
                             }
                         }
@@ -449,38 +449,58 @@
                             }));
                         } else {
                             if (id.layertype === 'area') {
-                                LoggerService.log('AddToMap', 'Area', {pid: id.pid, geom_idx: id.geom_idx});
-
-                                //backup sld_body
-                                var sld_body = undefined;
-                                if (id && id.leaflet && id.leaflet.layerParams && id.leaflet.layerParams.sld_body) {
-                                    sld_body = id.leaflet.layerParams.sld_body
-                                }
                                 var layerParams;
-                                if (id.layerParams) {
-                                    layerParams = id.layerParams;
-                                    if (id.transparent !== undefined) layerParams.transparent = true;
-                                    if (id.opacity !== undefined) layerParams.opacity = id.opacity / 100.0;
-                                    if (id.format !== undefined) layerParams.format = 'image/png';
+                                var sld_body = undefined;
+
+                                if (id.type === 'envelope') {
+                                    newLayer = {
+                                        name: uid + ': ' + id.name,
+                                        type: 'wms',
+                                        visible: true,
+                                        opacity: id.opacity / 100.0,
+                                        url: $SH.geoserverUrl + '/wms',
+                                        layertype: 'area',
+                                        layerParams: {
+                                            opacity: id.opacity / 100.0,
+                                            layers: 'ALA:' + id.id,
+                                            format: 'image/png',
+                                            transparent: true
+                                        }
+                                    };
                                 } else {
-                                    layerParams = {
-                                        opacity: id.area_km == 0 ? 0 : id.opacity / 100.0,
-                                        layers: id.area_km == 0 ? 'ALA:Points' : 'ALA:Objects',
-                                        format: 'image/png',
-                                        transparent: true,
-                                        viewparams: 's:' + id.pid
+                                    LoggerService.log('AddToMap', 'Area', {pid: id.pid, geom_idx: id.geom_idx});
+
+                                    //backup sld_body
+                                    if (id && id.leaflet && id.leaflet.layerParams && id.leaflet.layerParams.sld_body) {
+                                        sld_body = id.leaflet.layerParams.sld_body
                                     }
+
+                                    if (id.layerParams) {
+                                        layerParams = id.layerParams;
+                                        if (id.transparent !== undefined) layerParams.transparent = true;
+                                        if (id.opacity !== undefined) layerParams.opacity = id.opacity / 100.0;
+                                        if (id.format !== undefined) layerParams.format = 'image/png';
+                                    } else {
+                                        layerParams = {
+                                            opacity: id.area_km == 0 ? 0 : id.opacity / 100.0,
+                                            layers: id.area_km == 0 ? 'ALA:Points' : 'ALA:Objects',
+                                            format: 'image/png',
+                                            transparent: true,
+                                            viewparams: 's:' + id.pid
+                                        }
+                                    }
+
+                                    //user or layer object
+                                    newLayer = {
+                                        name: uid + ': ' + id.name,
+                                        type: 'wms',
+                                        visible: true,
+                                        opacity: id.opacity / 100.0,
+                                        url: $SH.geoserverUrl + '/wms',
+                                        layertype: 'area',
+                                        layerParams: layerParams
+                                    };
                                 }
-                                //user or layer object
-                                newLayer = {
-                                    name: uid + ': ' + id.name,
-                                    type: 'wms',
-                                    visible: true,
-                                    opacity: id.opacity / 100.0,
-                                    url: $SH.geoserverUrl + '/wms',
-                                    layertype: 'area',
-                                    layerParams: layerParams
-                                };
 
                                 //restore sld_body
                                 if (sld_body) {
@@ -618,7 +638,15 @@
                     },
                     objectSld: function (item) {
                         var sldBody = '';
-                        if (item.area_km === 0) {
+                        if (item.type === 'envelope') {
+                            sldBody = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><StyledLayerDescriptor xmlns=\"http://www.opengis.net/sld\">"
+                                + "<NamedLayer><Name>ALA:" + item.id + "</Name>"
+                                + "<UserStyle><FeatureTypeStyle><Rule><RasterSymbolizer><Geometry></Geometry>"
+                                + "<ColorMap>"
+                                + "<ColorMapEntry color=\"#ffffff\" opacity=\"0\" quantity=\"0\"/>"
+                                + "<ColorMapEntry color=\"#.colour\" opacity=\"1\" quantity=\"1\" />"
+                                + "</ColorMap></RasterSymbolizer></Rule></FeatureTypeStyle></UserStyle></NamedLayer></StyledLayerDescriptor>";
+                        } else if (item.area_km === 0) {
                             sldBody = '<?xml version="1.0" encoding="UTF-8"?><StyledLayerDescriptor version="1.0.0" xmlns="http://www.opengis.net/sld" xmlns:xlink="http://www.w3.org/1999/xlink"><NamedLayer><Name>ALA:Points</Name><UserStyle><FeatureTypeStyle>\n' +
                                 '     <Rule>\n' +
                                 '       <PointSymbolizer>\n' +
@@ -709,6 +737,7 @@
                         query.area.wms = layer.wms || '';
                         query.area.legend = layer.legend || '';
                         query.area.uid = layer.uid;
+                        query.area.type = layer.type || '';
                         return query
                     },
                     info: function (item) {

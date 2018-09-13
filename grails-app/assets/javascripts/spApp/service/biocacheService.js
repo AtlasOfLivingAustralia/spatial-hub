@@ -673,7 +673,6 @@
                     }
                     var wkt = undefined;
                     if (area !== undefined && area instanceof Array && area.length > 0 && area[0] !== undefined) {
-                        // if (area[0].q !== undefined) {
                         if (area[0].q && (area[0].q.length > 0)) {
                             fq = fq.concat(area[0].q)
                         } else if (area[0].wkt && (area[0].wkt.length) > 0) {

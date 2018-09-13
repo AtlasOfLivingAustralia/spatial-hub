@@ -315,7 +315,17 @@
                                             }
                                             break;
                                         case "area":
-                                            areaLayers.push(layer);
+                                            if (layer.type === "envelope") {
+                                                var layerid = '' + layer.id;
+                                                var f = LayersService.getLayer(layerid);
+                                                if (!$SH.wmsIntersect || (f && f.type === 'a')) {
+                                                    ssLayers.push(layerid)
+                                                } else {
+                                                    layers.push(layer)
+                                                }
+                                            } else {
+                                                areaLayers.push(layer);
+                                            }
                                             break;
                                         case "species":
                                             speciesLayers.push(layer);
@@ -436,8 +446,12 @@
                             j: point.y
                         };
 
-                        var urlBase = url.split('?')[0] + "?";
-                        var existingParams = url.split('?')[1].split('&');
+                        var split = url.split('?');
+                        var urlBase = split[0] + "?";
+                        var existingParams = '';
+                        if (split.length > 1) {
+                            existingParams = split[1].split('&');
+                        }
                         for (var i in existingParams) {
                             if (!existingParams[i].match(/^layers=.*/)) {
                                 urlBase += '&' + existingParams[i];
@@ -489,7 +503,7 @@
                         var blockString = "--------------------------------------------";
                         for (var ly in layers) {
                             var layerName = layers[ly].leaflet.layerOptions.layers[0].layerOptions.layers;
-                            var field = LayersService.getLayer(layers[ly].id);
+                            var field = LayersService.getLayer(layers[ly].id + '');
                             var sname;
                             if (field) {
                                 sname = field.sname;
