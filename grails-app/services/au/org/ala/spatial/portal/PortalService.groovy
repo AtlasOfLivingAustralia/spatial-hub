@@ -56,22 +56,26 @@ class PortalService {
 
     def updateListQueries() {
         if (grailsApplication.config.lists.url != '') {
-            def joinStr = ' OR '
-            def threatenedUrl =
-                    "${grailsApplication.config.lists.url}${grailsApplication.config.lists.threatenedSpeciesUrl}"
-            def threatened = JSON.parse(hubWebService.getUrl(threatenedUrl, null, false)) as Map
-            def threatenedJoined = threatened.lists*.dataResourceUid.join(joinStr)
-            def threatenedQ = "species_list_uid:(${threatenedJoined})"
-            if (threatenedJoined) {
-                grailsApplication.config.threatenedQ = threatenedQ
-            }
+            try {
+                def joinStr = ' OR '
+                def threatenedUrl =
+                        "${grailsApplication.config.lists.url}${grailsApplication.config.lists.threatenedSpeciesUrl}"
+                def threatened = JSON.parse(hubWebService.getUrl(threatenedUrl, null, false)) as Map
+                def threatenedJoined = threatened.lists*.dataResourceUid.join(joinStr)
+                def threatenedQ = "species_list_uid:(${threatenedJoined})"
+                if (threatenedJoined) {
+                    grailsApplication.config.threatenedQ = threatenedQ
+                }
 
-            def invasiveUrl = "${grailsApplication.config.lists.url}${grailsApplication.config.lists.invasiveSpeciesUrl}"
-            def invasive = JSON.parse(hubWebService.getUrl(invasiveUrl, null, false)) as Map
-            def invasiveJoined = invasive.lists*.dataResourceUid.join(joinStr)
-            def invasiveQ = "species_list_uid:(${invasiveJoined})"
-            if (invasiveJoined) {
-                grailsApplication.config.invasiveQ = invasiveQ
+                def invasiveUrl = "${grailsApplication.config.lists.url}${grailsApplication.config.lists.invasiveSpeciesUrl}"
+                def invasive = JSON.parse(hubWebService.getUrl(invasiveUrl, null, false)) as Map
+                def invasiveJoined = invasive.lists*.dataResourceUid.join(joinStr)
+                def invasiveQ = "species_list_uid:(${invasiveJoined})"
+                if (invasiveJoined) {
+                    grailsApplication.config.invasiveQ = invasiveQ
+                }
+            } catch (err) {
+                log.error("failed to init threatened or invasives lists", err)
             }
         }
     }
