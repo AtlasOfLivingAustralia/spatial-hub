@@ -21,6 +21,7 @@
 
                         scope.selected = MapService.selected;
 
+
                         scope.sortType = 'count';
                         scope.sortReverse = true;
 
@@ -343,6 +344,14 @@
                             }
                         };
 
+                        scope.checkAllFacets = function(){
+                            if (scope.isAllFacetsSelected){
+                                scope.facetSelectAll()
+                            }else{
+                                scope.facetClearSelection()
+                            }
+                        }
+
                         scope.facetSelectAll = function () {
                             if (scope.selected.layer !== undefined) {
                                 for (var i = 0; i < scope.selected.layer.facetList[scope.selected.layer.facet].length; i++) {
@@ -351,6 +360,20 @@
                                 scope.updateSelection()
                             }
                         };
+
+                        scope.isAllFacetsSelected = false;
+
+                        scope.ifAllFacetsSelected = function(){
+                            if (scope.selected.layer !== undefined) {
+                                for (var i = 0; i < scope.selected.layer.facetList[scope.selected.layer.facet].length; i++) {
+                                    if (!scope.selected.layer.facetList[scope.selected.layer.facet][i].selected) {
+                                       return false;
+                                    }
+                                }
+                                return true;
+                            }
+                            return false;
+                        }
 
                         scope.updateSelection = function () {
                             if (scope.selected.layer !== undefined) {
@@ -399,6 +422,7 @@
                                     }
                                 }
                                 scope.updateWMS();
+                                scope.isAllFacetsSelected = scope.ifAllFacetsSelected()
                             }
                         };
 

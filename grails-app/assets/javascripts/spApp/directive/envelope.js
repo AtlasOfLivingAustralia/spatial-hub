@@ -45,7 +45,7 @@
                                         }
                                     }
                                 },
-                                'step': 2
+                                'stage': 'execute'
                             };
                             LayoutService.openModal('tool', data, false);
 
