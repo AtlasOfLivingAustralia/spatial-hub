@@ -48,6 +48,10 @@ spApp.config(['$locationProvider', function ($locationProvider) {
 
 }]);
 
+spApp.config(['$logProvider', function ($logProvider) {
+    $logProvider.debugEnabled(false);
+}]);
+
 spApp.config(['$httpProvider', function ($httpProvider) {
     $httpProvider.interceptors.push(function ($q) {
         return {
