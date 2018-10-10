@@ -268,7 +268,11 @@
 
                     this.buildAdhocQuery = function(){
                         var layer = self.layer;
-                        var bboxes = layer.adhocBBoxes;
+                        if (layer.adhocBBoxes)
+                            var bboxes = layer.adhocBBoxes;
+                        else{
+                            var bboxes = layer.adhocBBoxes = [];
+                        }
                         var fqs = []
                         var q = {query: {}, fqs: undefined}
                         q.query.bs = layer.bs;
@@ -276,29 +280,39 @@
                         q.query.q = layer.q;
                         q.fqs = fqs;
 
-                        var qbbox = []
+                       // bbox and in adhoc should use OR
+                        var bbox_inadhoc = []
                         bboxes.forEach(function(bbox){
-                           qbbox.push("(latitude:[" + bbox[0][0] + " TO " + bbox[1][0] + "] AND longitude:[" + bbox[0][1] + " TO " + bbox[1][1] + "])");
+                            bbox_inadhoc.push("(latitude:[" + bbox[0][0] + " TO " + bbox[1][0] + "] AND longitude:[" + bbox[0][1] + " TO " + bbox[1][1] + "])");
                         })
-                        if (qbbox.length > 1)
-                            fqs.push('(' + qbbox.join(' OR ') +")");
-                        else if (qbbox.length ==1)
-                            fqs.push(qbbox[0]);
 
                         //Selected adhoc group items
                         //Caculate adhocGroup 'True' as in; 'False' as out
                         var inAdhocs = _.filter(_.keys(layer.adhocGroup), function(key){return layer.adhocGroup[key]});
-                        var outAdhocs = _.reject(_.keys(layer.adhocGroup), function(key){return layer.adhocGroup[key]});
-                        if (inAdhocs.length>0){
+                        var inFq = ''
+                        if (inAdhocs.length > 0)
                             var inFq = 'id:' + inAdhocs.join(' OR id:');
-                            fqs.push(inFq);
-                        }
+                        if (inFq !== '')
+                            bbox_inadhoc.push(inFq);
+
+                        var bboxQ = ''
+                        if (bbox_inadhoc.length > 1)
+                            bboxQ = '(' + bbox_inadhoc.join(' OR ') +")";
+                        else if (bbox_inadhoc.length ==1)
+                            bboxQ = bbox_inadhoc[0];
+                        if (bboxQ !== '')
+                            fqs.push(bboxQ);
+
+
+                        //Out adhoc should be AND
+
+                        var outAdhocs = _.reject(_.keys(layer.adhocGroup), function(key){return layer.adhocGroup[key]});
+
                         if (outAdhocs.length>0){
                             var outFq = '-(id:' + outAdhocs.join(' OR id:')+')';
                             fqs.push(outFq);
                         }
-                        console.log(inFq);
-                        console.log(outFq);
+
                         // var polygons = []
                         // bboxes.forEach(function(bbox){
                         //     var polygon = '(('
