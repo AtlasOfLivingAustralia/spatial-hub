@@ -60,9 +60,17 @@
             </div>
             <div class="row">
                 <div class="col-sm-12">
-                    <input type="checkbox" ng-model="oc.adhocGroup" ng-change="olist.toggleAdhocGroup()">&nbsp;<span
-                        i18n="108">Assign
-                    record to ad hoc group</span>
+                    <input type="checkbox" ng-model="oc.adhocGroup" ng-change="olist.toggleAdhocGroup()">&nbsp;
+                    <span ng-hide="olist.isAdhocGroup()">Assign record to ad hoc group <i class="glyphicon glyphicon-question-sign" title="This occurence has NOT been added into adhoc"></i></span>
+                    <span ng-show="olist.isAdhocGroup()" >Assigned <i class="glyphicon glyphicon-question-sign" title="This occurence has been added into adhoc"></i></span>
+                </div>
+                <div class="col-sm-12">
+                    <button type="button" class="btn btn-default btn-xs" title="Add all occurances to adhoc"
+                            ng-click="olist.toggleBBox()">
+                        <span ng-hide="olist.isBBoxToggled">Add all occurances to adhoc</span>
+                        <span ng-show="olist.isBBoxToggled">Remove all occurances to adhoc</span>
+
+                    </button>
                 </div>
             </div>
             <div class="row">

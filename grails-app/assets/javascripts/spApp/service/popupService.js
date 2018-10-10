@@ -77,6 +77,7 @@
                     this.viewRecordUrl = '';
                     this.listRecordsUrl = '';
 
+
                     this.getFirstOccurrence = function (layer) {
                         if (isFirstOccurrence) {
                             self.getOccurrence(0, layer);
@@ -95,12 +96,22 @@
                                 self.occurrences.splice(0, self.occurrences.length);
                                 self.occurrences.push.apply(self.occurrences, data.occurrences);
 
-                                data.occurrences[0].adhocGroup = self.isAdhocGroup();
+                                //data.occurrences[0].adhocGroup = self.isAdhocGroup();
+                                //check if ticked or in bbox
+                                self.tickOccurence();
 
                                 self.viewRecord()
+
+
                             }
                         })
                     };
+
+
+                    this.tickOccurence = function(){
+                        var oc = self.occurrences[0]
+                        oc.adhocGroup = this.isAdhocOrBBox();
+                    }
 
                     this.isAdhocGroup = function () {
                         var layer = self.layer;
@@ -112,18 +123,66 @@
                         return layer.adhocGroup[id] !== undefined && layer.adhocGroup[id]
                     };
 
+                    this.isInBBox = function(){
+                        var layer = self.layer;
+                        var oc = self.occurrences[0];
+                        var id = oc.uuid;
+
+                        //check if current oc is in the bboxes
+                        var lat = self.occurrences[0].decimalLatitude;
+                        var lng = self.occurrences[0].decimalLongitude;
+                        var isIn = false;
+                        for(var i in layer.adhocBBoxes){
+                            var bbox = layer.adhocBBoxes[i];
+                            if (lat >= bbox[0][0] && lat<=bbox[1][0] && lng >= bbox[0][1] && lng <= bbox[1][1]){
+                                isIn = isIn || true;
+                            }
+                        }
+                        //this var links to visualiation of the adhoc checkbox
+                        return isIn;
+                    }
+
+                    this.isAdhocOrBBox = function(){
+                        var oc = self.occurrences[0];
+                        var id = oc.uuid;
+
+                        if (self.isAdhocGroup()) // it is MANUALLY checked
+                            return  true;
+                        else if ( self.layer.adhocGroup[id] == undefined && self.isInBBox()) // not MANUALLY checked yet, but in bbox
+                            return true;
+                        else if (self.layer.adhocGroup[id] == undefined && !self.isInBBox()) // not selected yet, but out of bbox
+                            return false;
+                        else if ( self.layer.adhocGroup[id] == false) // Manually unchecked,
+                            return false;
+                        else
+                            return false;
+                    }
+
                     this.toggleAdhocGroup = function () {
                         var layer = self.layer;
+                        var oc = self.occurrences[0];
                         var id = self.occurrences[0].uuid;
                         if (layer.adhocGroup === undefined) {
                             layer.adhocGroup = {};
                             layer.adhocGroupSize = 0
                         }
-                        if (layer.adhocGroup[id] !== undefined) layer.adhocGroup[id] = !layer.adhocGroup[id];
-                        else layer.adhocGroup[id] = true;
+                        //this variable is linked with its Checkbox
+                        //it may be set by bbox which related to the function 'add all to adhoc'
+                        //Todo It will causes inaccurate layer.adhocGroupSize
 
-                        if (layer.adhocGroup[id]) layer.adhocGroupSize++;
-                        else layer.adhocGroupSize--
+                        var isChecked = oc.adhocGroup;
+                        layer.adhocGroup[id] = isChecked;
+
+                        //Caculate adhocGroupSize
+                        this.countAdhocOccurences();
+
+
+
+                        // if (layer.adhocGroup[id] !== undefined) layer.adhocGroup[id] = !layer.adhocGroup[id];
+                        // else layer.adhocGroup[id] = true;
+                        //
+                        // if (layer.adhocGroup[id]) layer.adhocGroupSize++;
+                        // else layer.adhocGroupSize--
                     };
 
                     this.getNextOccurrence = function () {
@@ -164,6 +223,103 @@
 
                         return result
                     };
+
+
+
+                    this.toggleBBox = function(){
+                        //Match the algorithm in getQueryParams and getLatLngFq
+                        var layer = self.layer;
+                        var latlng = loc;
+                        var dotradius = layer.size * 1 + 3;
+                        var px = leafletMap.latLngToContainerPoint(latlng);
+                        var ll = leafletMap.containerPointToLatLng(L.point(px.x + dotradius, px.y + dotradius));
+                        var lonSize = Math.abs(latlng.lng - ll.lng);
+                        var latSize = Math.abs(latlng.lat - ll.lat);
+                        var bbox = [[latlng.lat - latSize,latlng.lng - lonSize],[latlng.lat + latSize,latlng.lng + lonSize]]
+                        if (layer.adhocBBoxes==undefined) layer.adhocBBoxes =[];
+
+                        var idx = layer.adhocBBoxes.findIndex(function(box){
+                            return JSON.stringify(box) == JSON.stringify(bbox)
+                        })
+
+                        if (idx > -1){
+                            layer.adhocBBoxes.splice(idx,1);
+                            this.isBBoxToggled = false;
+                        }
+                        else{
+                            layer.adhocBBoxes.push(bbox);
+                            this.isBBoxToggled = true;
+                        }
+
+                        this.countAdhocOccurences();
+
+                        //check if current oc is in the bbox
+                        this.tickOccurence();
+                    }
+
+                    this.countAdhocOccurences = function(){
+                        var layer = self.layer;
+                        var q = this.buildAdhocQuery()
+                        biocacheService.count(q.query, q.fqs).then(function (count) {
+                            console.log( count + ' occurence(s) are selected.')
+                            layer.adhocGroupSize = count;
+                        });
+                    }
+
+                    this.buildAdhocQuery = function(){
+                        var layer = self.layer;
+                        var bboxes = layer.adhocBBoxes;
+                        var fqs = []
+                        var q = {query: {}, fqs: undefined}
+                        q.query.bs = layer.bs;
+                        q.query.ws = layer.ws;
+                        q.query.q = layer.q;
+                        q.fqs = fqs;
+
+                        var qbbox = []
+                        bboxes.forEach(function(bbox){
+                           qbbox.push("(latitude:[" + bbox[0][0] + " TO " + bbox[1][0] + "] AND longitude:[" + bbox[0][1] + " TO " + bbox[1][1] + "])");
+                        })
+                        if (qbbox.length > 1)
+                            fqs.push('(' + qbbox.join(' OR ') +")");
+                        else if (qbbox.length ==1)
+                            fqs.push(qbbox[0]);
+
+                        //Selected adhoc group items
+                        //Caculate adhocGroup 'True' as in; 'False' as out
+                        var inAdhocs = _.filter(_.keys(layer.adhocGroup), function(key){return layer.adhocGroup[key]});
+                        var outAdhocs = _.reject(_.keys(layer.adhocGroup), function(key){return layer.adhocGroup[key]});
+                        if (inAdhocs.length>0){
+                            var inFq = 'id:' + inAdhocs.join(' OR id:');
+                            fqs.push(inFq);
+                        }
+                        if (outAdhocs.length>0){
+                            var outFq = '-(id:' + outAdhocs.join(' OR id:')+')';
+                            fqs.push(outFq);
+                        }
+                        console.log(inFq);
+                        console.log(outFq);
+                        // var polygons = []
+                        // bboxes.forEach(function(bbox){
+                        //     var polygon = '(('
+                        //     polygon += bbox[0][1] +'+'+bbox[0][0]+','
+                        //     polygon += bbox[1][1] +'+'+bbox[0][0] +','
+                        //     polygon += bbox[0][1] +'+'+ bbox[1][0] + ','
+                        //     polygon += bbox[1][1] +'+'+ bbox[1][0] +','
+                        //     polygon += bbox[0][1] +'+'+bbox[0][0]
+                        //
+                        //     polygon  += '))'
+                        //
+                        //     polygons.push(polygon)
+                        // })
+                        //
+                        // var wkt = 'wkt=MULTIPOLYGON(' + polygons.join(',') +')'
+                        // q.wkt = wkt;
+                        return q;
+                    }
+
+
+
 
                     this.getQueryParams = function (layer) {
                         var q = {query: {}, fqs: undefined},

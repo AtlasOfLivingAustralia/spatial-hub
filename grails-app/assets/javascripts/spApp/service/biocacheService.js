@@ -245,12 +245,17 @@
                  * Output:
                  *  500
                  */
-                count: function (query, fqs) {
+                count: function (query, fqs ) {
                     var fqList = (fqs === undefined ? '' : '&fq=' + this.joinAndEncode(fqs));
+
                     return this.registerQuery(query).then(function (response) {
-                        return $http.get(query.bs + "/occurrences/search?facet=false&pageSize=0&q=" + response.qid + fqList).then(function (response) {
+                        var url= query.bs + "/occurrences/search?facet=false&pageSize=0&q=" + response.qid + fqList
+
+                        return $http.get(url).then(function (response) {
                             if (response.data !== undefined && response.data.totalRecords !== undefined) {
-                                return response.data.totalRecords;
+                                var c =  response.data.totalRecords?  response.data.totalRecords : 0
+                                console.log('Occurence count: ' + c);
+                                return c;
                             }
                         });
                     })
@@ -596,10 +601,9 @@
                  * Output:
                  * 1234
                  */
-                registerParam: function (bs, q, fq, wkt) {
+                registerParam: function (bs, q, fq) {
                     var data = {q: q, bs: bs};
                     if (fq !== undefined && fq !== null) data.fq = fq;
-                    if (wkt !== undefined && wkt !== null && wkt.length > 0) data.wkt = wkt;
                     return $http.post($SH.baseUrl + "/portal/q", data).then(function (response) {
                         return response.data
                     });
