@@ -57,15 +57,20 @@
 
                     return BiocacheService.newLayer(species, area[0], '').then(function (query) {
                         //include redirect to biocache-service/occurrences/search page
-                        var sampleUrl = species.ws + '/download/options1?searchParams=' + encodeURIComponent('q=' + query.qid) + "&targetUri=/occurrences/search";
+                        var sampleUrl = species.ws + '/download/options1?searchParams=' +
+                            encodeURIComponent('q=' + query.qid) +
+                            "&targetUri=/occurrences/search%3F&downloadType=records";
 
                         if (layers && (layers.length > 0)) {
                             var layers = '';
+                            var layerNames = '';
                             $.map(layers,
                                 function (v, k) {
-                                    layers = layers + (layers.length > 0 ? ',' : '') + v.id;
+                                    layers += (layers.length > 0 ? ',' : '') + v.id;
+                                    layerNames += (layerNames.length > 0 ? ',' : '') + v.name;
                                 });
-                            sampleUrl = sampleUrl + '&layers=' + layers;
+                            sampleUrl += '&layers=' + layers + '&customHeader' + encodeURIComponent(layerNames) +
+                                "&layersServiceUrl=" + encodeURIComponent($SH.layersServiceUrl);
                         }
 
                         return $q.when({output: {0: {openUrl: sampleUrl}}});

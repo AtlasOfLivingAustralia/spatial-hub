@@ -235,6 +235,15 @@
         }
       }
     }
+  },
+  "Envelope": {
+    "input": {
+      "resolution": {
+        "constraints": {
+          "default": 0.01
+        }
+      }
+    }
   }
 }
 

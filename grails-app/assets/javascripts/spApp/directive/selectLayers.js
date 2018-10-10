@@ -51,9 +51,10 @@
                             var f = file.files[0], r = new FileReader();
                             r.onloadend = function (e) {
                                 scope.data = e.target.result;
+                                scope.addList(scope.data);
 
                                 $timeout(function () {
-                                    scope.custom()(scope.data)
+                                    scope.mode = '';
                                 }, 0)
                             };
                             r.readAsBinaryString(f);

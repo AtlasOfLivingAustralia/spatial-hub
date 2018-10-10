@@ -78,7 +78,7 @@
         presetWMSServers: ${(config.presetWMSServers as grails.converters.JSON).toString().encodeAsRaw()},
         getMapExamples: ${(config.getMapExamples as grails.converters.JSON).toString().encodeAsRaw()},
 
-    validUrls: [
+        validUrls: [
             'self',
             'http://*.ala.org.au/**',
             'https://*.ala.org.au/**',
@@ -98,7 +98,11 @@
             '${config.phylolink.url}/**'
         ],
         i18n: '${config.i18n?.region?:"default"}',
-        editable: ${params.edit?:'false'}
+        editable: ${params.edit?:'false'},
+        wmsIntersect: ${config.wms.intersect},
+        projections: ${(config.projections as grails.converters.JSON).toString().encodeAsRaw()},
+        projection: '${config.projection.default}',
+        fqExcludeAbsent: '${config.fq.excludeAbsent}'
     };
 
     BIE_VARS = {

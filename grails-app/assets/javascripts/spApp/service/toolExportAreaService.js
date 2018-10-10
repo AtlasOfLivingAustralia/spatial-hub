@@ -67,6 +67,7 @@
                     //We only allow to download this first area at the current stage
                     var areas = inputs[0];
                     var downloadingArea = areas[0];
+
                     var pid = downloadingArea.pid;
                     var name = downloadingArea.name;
                     var url = LayersService.getAreaDownloadUrl(pid, inputs[1].toLowerCase(), name);

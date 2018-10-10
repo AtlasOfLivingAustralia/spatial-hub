@@ -15,6 +15,9 @@
                     scope: {},
                     templateUrl: '/spApp/optionsContent.htm',
                     link: function (scope, element, attrs) {
+                        scope.projections = $SH.projections;
+                        scope.projection = {code: $SH.projections[$SH.projection].definition.code};
+
                         scope.selection = {
                             name: $SH.defaultBaseLayer
                         };
@@ -24,7 +27,9 @@
                             scope.baselayers.push({
                                 key: k,
                                 name: v.name,
-                                url: v.link
+                                url: v.link,
+                                projections: v.projections,
+                                invalidProjections: v.invalidProjections
                             })
                         });
 
@@ -73,7 +78,37 @@
 
                         scope.select = function (key) {
                             MapService.setBaseMap(key)
+                        };
+
+                        scope.selectProjection = function (code) {
+                            $SH.projection = code.replace("EPSG:", "");
+
+                            // is the current base layer invalid for this projection?
+                            if (!scope.isValidBaseLayerForProjection($SH.baseLayers[scope.selection.name])) {
+                                // find a valid baselayer for this projection
+                                for (var key in $SH.baseLayers) {
+                                    if (scope.isValidBaseLayerForProjection($SH.baseLayers[key])) {
+                                        scope.select(key)
+                                    }
+                                }
+                            }
+
+                            MapService.leafletScope.updateCRS();
+                        };
+
+                        scope.isValidBaseLayerForProjection = function (baselayer) {
+                            return !((baselayer.projections && baselayer.projections.indexOf($SH.projection) < 0) ||
+                                (baselayer.invalidProjections && baselayer.invalidProjections.indexOf($SH.projection) >= 0))
+                        };
+
+                        scope.showProjections = function () {
+                            var count = 0;
+                            for (k in $SH.projections) {
+                                count++;
+                            }
+                            return count > 1;
                         }
+
                     }
                 };
 

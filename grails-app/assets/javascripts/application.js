@@ -12,14 +12,12 @@
 
 //leaflet
 //= require leaflet/dist/leaflet.js
+//= require proj4/dist/proj4.js
+//= require proj4leaflet/src/proj4leaflet.js
 //= require leaflet-draw/dist/leaflet.draw.js
 //= require L.Google/L.Google.js
 //= require leaflet-control-window/L.Control.Window.js
 //= require leaflet-fullscreen/Control.FullScreen.js
-//= require spApp/leaflet/infoPanel.js
-//= require spApp/leaflet/expandScreen.js
-//= require spApp/leaflet/leaflet.util.getParamString.js
-//= require spApp/leaflet/quickLinks.js
 //= require wellknown/wellknown.js
 //= require leaflet-label/leaflet.label.js
 //= require leaflet-geodesy/leaflet-geodesy.js

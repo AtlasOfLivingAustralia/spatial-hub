@@ -219,9 +219,9 @@
                         for (var i in scope._selected.layer.leaflet.layerOptions.layers) {
                             var ly = scope._selected.layer.leaflet.layerOptions.layers[i];
                             if (s.fq.length) {
-                                ly[0].layerParams.fq = s.fq
+                                ly.layerParams.fq = s.fq
                             } else {
-                                ly[0].layerParams.fq = undefined
+                                ly.layerParams.fq = undefined
                             }
                         }
 

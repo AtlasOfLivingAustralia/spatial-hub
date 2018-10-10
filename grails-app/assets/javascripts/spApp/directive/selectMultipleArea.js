@@ -69,6 +69,7 @@
                                     pid: x.pid,
                                     area_km: x.area_km,
                                     uid: x.uid,
+                                    type: x.type,
                                     selected: scope.isSelected(x)
                                 })
                             }

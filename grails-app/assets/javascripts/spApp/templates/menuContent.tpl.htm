@@ -2,7 +2,7 @@
     <div class="btn-group" id="menu-content">
 
         <div class="btn-group" role="group" ng-repeat="menu in menuConfig">
-            <button style="width:{{ menu.width }}px" id="menu-{{ $index }}" type="button"
+            <button ng-style='{ width:"{{ menu.width }}px" }' id="menu-{{ $index }}" type="button"
                     class="btn btn-default dropdown-toggle"
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-disabled="disabled">
                 {{ menu.name }}&nbsp;<span class="caret"></span>

@@ -47,10 +47,10 @@
                                 },
                                 'stage': 'execute'
                             };
-                            LayoutService.openModal('tool', data, false);
-
                             //delete template layers
-                            scope.close()
+                            scope.close();
+
+                            LayoutService.openModal('tool', data, false);
                         };
 
                         scope.close = function () {

@@ -84,6 +84,8 @@
                         } else if ($scope.area === 'environmentalEnvelope') {
                             LayoutService.openPanel('envelope', $scope.area, false)
                         } else if ($scope.area === 'wkt') {
+                        } else if ($scope.area === 'mergeArea') {
+                            LayoutService.openModal('tool', {processName: 'MergeAreas'}, false);
                         }
                     } else {
                         var mapNow = true;
@@ -211,7 +213,7 @@
 
                 $scope.uploadFile = function (file) {
 
-                    if ($scope.area === 'importShapefile' && file.type !== 'application/zip') {
+                    if ($scope.area === 'importShapefile' && file.type.indexOf('zip') < 0) {
                         bootbox.alert($i18n(333, "The uploaded file must be shape zipped file"));
                         return;
                     }

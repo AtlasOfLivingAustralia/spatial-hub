@@ -24,13 +24,14 @@
      *   Map popup generation
      */
     angular.module('popup-service', ['leaflet-directive', 'map-service', 'biocache-service'])
-        .factory("PopupService", ['$rootScope', '$compile', '$http', '$window', '$templateRequest', 'leafletData', 'MapService', 'BiocacheService',
-            function ($rootScope, $compile, $http, $window, $templateRequest, leafletData, mapService, biocacheService) {
+        .factory("PopupService", ['$rootScope', '$compile', '$http', '$window', '$templateRequest', 'leafletData', 'MapService', 'BiocacheService', 'LayersService',
+            function ($rootScope, $compile, $http, $window, $templateRequest, leafletData, mapService, biocacheService, LayersService) {
                 var addPopupFlag = true,
                     popup, loc, leafletMap;
                 var templatePromise = $templateRequest('/spApp/intersectPopupContent.htm');
                 var intersects = [],
                     layers = [],
+                    ssLayers = [],
                     speciesLayers = [],
                     occurrences = [],
                     areaLayers = [],
@@ -358,9 +359,14 @@
                         var fq = [];
                         dotradius = dotradius * 1 + 3;
                         var px = leafletMap.latLngToContainerPoint(latlng);
-                        var ll = leafletMap.containerPointToLatLng(L.point(px.x + dotradius, px.y + dotradius));
-                        var lonSize = Math.abs(latlng.lng - ll.lng);
-                        var latSize = Math.abs(latlng.lat - ll.lat);
+                        var ll1 = leafletMap.containerPointToLatLng(L.point(px.x + dotradius, px.y + dotradius));
+                        var ll2 = leafletMap.containerPointToLatLng(L.point(px.x + dotradius, px.y - dotradius));
+                        var ll3 = leafletMap.containerPointToLatLng(L.point(px.x - dotradius, px.y - dotradius));
+                        var ll4 = leafletMap.containerPointToLatLng(L.point(px.x - dotradius, px.y + dotradius));
+                        var maxLng = Math.max(ll1.lng, ll2.lng, ll3.lng, ll4.lng);
+                        var maxLat = Math.max(ll1.lat, ll2.lat, ll3.lat, ll4.lat);
+                        var lonSize = Math.abs(latlng.lng - maxLng);
+                        var latSize = Math.abs(latlng.lat - maxLat);
                         fq.push("latitude:[" + (latlng.lat - latSize) + " TO " + (latlng.lat + latSize) + "]");
                         fq.push("longitude:[" + (latlng.lng - lonSize) + " TO " + (latlng.lng + lonSize) + "]");
 
@@ -457,17 +463,39 @@
                         occurrences.splice(0, occurrences.length);
                         speciesLayers.splice(0, speciesLayers.length);
                         areaLayers.splice(0, areaLayers.length);
+                        ssLayers.splice(0, ssLayers.length);
                         leafletData.getMap().then(function (map) {
                             leafletMap = map;
                             mapService.mappedLayers && mapService.mappedLayers.forEach(function (layer) {
                                 if (layer.visible) {
                                     switch (layer.layertype) {
                                         case "contextual":
+                                            var f = LayersService.getLayer(layer.id);
+                                            if (!$SH.wmsIntersect || (f && f.type === 'a')) {
+                                                ssLayers.push(layer.id)
+                                            } else {
+                                                layers.push(layer)
+                                            }
+                                            break;
                                         case "grid":
-                                            layers.push(layer.id);
+                                            if ($SH.wmsIntersect) {
+                                                layers.push(layer);
+                                            } else {
+                                                ssLayers.push(layer.id);
+                                            }
                                             break;
                                         case "area":
-                                            areaLayers.push(layer);
+                                            if (layer.type === "envelope") {
+                                                var layerid = '' + layer.id;
+                                                var f = LayersService.getLayer(layerid);
+                                                if (!$SH.wmsIntersect || (f && f.type === 'a')) {
+                                                    ssLayers.push(layerid)
+                                                } else {
+                                                    layers.push(layer)
+                                                }
+                                            } else {
+                                                areaLayers.push(layer);
+                                            }
                                             break;
                                         case "species":
                                             speciesLayers.push(layer);
@@ -476,11 +504,25 @@
                                 }
                             });
 
-                            if (layers.length) {
-                                var promiseIntersect = self.getIntersects(layers, latlng);
+                            if (ssLayers.length) {
+                                var promiseIntersect = self.getIntersects(ssLayers, latlng);
                                 if (promiseIntersect) {
                                     promiseIntersect.then(function (content) {
                                         intersects.push.apply(intersects, content.data);
+                                        addPopupToMap(loc, leafletMap, templatePromise, intersects, occurrenceList);
+                                        processedLayers[0] += intersects.length;
+                                    })
+                                }
+                            }
+
+                            if (layers.length) {
+                                var promiseIntersect = self.getFeatureInfo(layers, latlng);
+                                if (promiseIntersect) {
+                                    promiseIntersect.then(function (content) {
+                                        //parse plain text content
+                                        var result = self.parseGetFeatureInfo(content.data, layers);
+
+                                        intersects.push.apply(intersects, result);
                                         addPopupToMap(loc, leafletMap, templatePromise, intersects, occurrenceList);
                                         processedLayers[0] += intersects.length;
                                     })
@@ -540,6 +582,56 @@
                         var url = $SH.layersServiceUrl + "/intersect/" + layers.join(',') + "/" + latlng.lat + "/" + latlng.lng;
                         return $http.get(url)
                     },
+                    getFeatureInfo: function (layers, latlng) {
+                        // TODO: support >1 WMS sources
+                        var url = layers[0].leaflet.layerOptions.layers[0].url;
+
+                        var layerNames = '';
+                        for (var ly in layers) {
+                            if (layerNames.length > 0) layerNames += ',';
+                            layerNames += layers[ly].leaflet.layerOptions.layers[0].layerOptions.layers
+                        }
+
+                        var point = leafletMap.latLngToContainerPoint(latlng, leafletMap.getZoom());
+                        var size = leafletMap.getSize();
+
+                        var crs = leafletMap.options.crs;
+
+                        var sw = crs.project(leafletMap.getBounds().getSouthWest());
+                        var ne = crs.project(leafletMap.getBounds().getNorthEast());
+
+                        var params = {
+                            request: 'GetFeatureInfo',
+                            srs: crs.code,
+                            bbox: sw.x + ',' + sw.y + ',' + ne.x + ',' + ne.y,
+                            height: size.y,
+                            width: size.x,
+                            layers: layerNames,
+                            query_layers: layerNames,
+                            feature_count: layers.length * 10,
+                            info_format: 'text/plain',
+                            x: point.x,
+                            i: point.x,
+                            y: point.y,
+                            j: point.y
+                        };
+
+                        var split = url.split('?');
+                        var urlBase = split[0] + "?";
+                        var existingParams = '';
+                        if (split.length > 1) {
+                            existingParams = split[1].split('&');
+                        }
+                        for (var i in existingParams) {
+                            if (!existingParams[i].match(/^layers=.*/)) {
+                                urlBase += '&' + existingParams[i];
+                            }
+                        }
+
+                        url = urlBase.replace("/gwc/service", "") + L.Util.getParamString(params, urlBase, true);
+
+                        return $http.get(url)
+                    },
                     /**
                      * Test if an area intersects with a coordinate
                      *
@@ -574,6 +666,68 @@
                     getAreaIntersects: function (pid, latlng) {
                         var url = $SH.layersServiceUrl + "/object/intersect/" + pid + "/" + latlng.lat + "/" + latlng.lng;
                         return $http.get(url)
+                    },
+
+                    parseGetFeatureInfo: function (plainText, layers) {
+                        var result = [];
+                        var blockString = "--------------------------------------------";
+                        for (var ly in layers) {
+                            var layerName = layers[ly].leaflet.layerOptions.layers[0].layerOptions.layers;
+                            var field = LayersService.getLayer(layers[ly].id + '');
+                            var sname;
+                            if (field) {
+                                sname = field.sname;
+                            }
+                            var units = undefined;
+
+                            //start of layer intersect values in response from geoserver is 'http://{{layerName}}':
+                            var start = plainText.indexOf("'http://" + layerName + "':");
+                            var value = '';
+                            if (start > 0) {
+                                var blockStart = plainText.indexOf(blockString, start);
+                                var blockEnd = plainText.indexOf(blockString, blockStart + blockString.length);
+
+                                var properties = plainText.substring(blockStart + blockString.length, blockEnd - 1).trim().split("\n")
+
+                                if (sname) {
+                                    for (var i in properties) {
+                                        if (properties[i].toUpperCase().match('^' + sname.toUpperCase() + ' = .*')) {
+                                            value = properties[i].substring(properties[i].indexOf('=') + 2, properties[i].length).trim();
+                                        }
+                                    }
+                                } else {
+                                    value = properties[0].substring(properties[0].indexOf('=') + 2, properties[0].length).trim();
+                                    if (isNaN(value)) {
+                                        // use value as-is
+                                    } else if (field) {
+                                        // filter out nodatavalues
+                                        units = field.layer.environmentalvalueunits;
+                                        if (Number(value) < Number(field.layer.environmentalvaluemin)) {
+                                            value = '';
+                                        }
+                                    } else {
+                                        // analysis layers have nodatavalue < 0
+                                        if (Number(value) < 0) {
+                                            value = ''
+                                        }
+                                    }
+                                }
+                            }
+                            // no intersect with this layer
+                            if (units) {
+                                result.push({
+                                    layername: layers[ly].name,
+                                    value: value,
+                                    units: units
+                                })
+                            } else {
+                                result.push({
+                                    layername: layers[ly].name,
+                                    value: value
+                                })
+                            }
+                        }
+                        return result;
                     }
                 }
             }])

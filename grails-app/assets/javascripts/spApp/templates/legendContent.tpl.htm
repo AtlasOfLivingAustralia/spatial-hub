@@ -100,7 +100,7 @@
                     class="progress-striped" ng-class="{ active: true }" value="100"
                     type='info' title="Updating">{{ facetProgress || 'loading...'}}
             </uib-progressbar>
-            <table class="table table-striped" style="width:370px;max-height:200px;overflow:scroll;display:block">
+            <table class="table table-striped" style="width:370px;max-height:200px;overflow:auto;display:block">
                 <thead>
                 <tr>
                     <th style="width:20px"><input type="checkbox" ng-model="isAllFacetsSelected"
@@ -363,7 +363,7 @@
                         class="progress-striped" ng-class="{ active: true }" value="100"
                         type='info' title="Updating">loading...
                 </uib-progressbar>
-                <table class="table table-striped" style="width:370px;overflow:scroll;display:block">
+                <table class="table table-striped" style="width:370px;overflow:auto;display:block">
                     <tr ng-repeat="x in selected.layer.contextualList | filter:selected.layer.contextualFilter"
                         ng-click="contextualHighlight(x.name, x.pid)">
                         <td style="width:20px">
