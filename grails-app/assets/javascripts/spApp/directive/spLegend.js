@@ -100,16 +100,6 @@
 
                         scope.adhocCreateInOut = function () {
                             if (scope.selected.layer !== undefined) {
-
-
-                                // var ids = [];
-                                // $.map(scope.selected.layer.adhocGroup, function (v, k) {
-                                //     if (v) ids.push(k)
-                                // });
-                                //
-                                // var inFq = 'id:' + ids.join(' OR id:');
-                                // var outFq = '-(id:' + ids.join(' OR id:') + ')';
-
                                 if (scope.selected.layer.inAdhocQ){
                                     var inFq = scope.selected.layer.inAdhocQ
                                     BiocacheService.newLayerAddFq(scope.selected.layer, inFq,
@@ -125,9 +115,6 @@
                                         MapService.add(data)
                                     })
                                 }
-
-
-
                             }
                         };
 

@@ -262,10 +262,13 @@
                     this.countAdhocOccurences = function(){
                         var layer = self.layer;
                         var q = this.buildAdhocQuery()
-                        biocacheService.count(q.query, q.fqs).then(function (count) {
-                            console.log( count + ' occurence(s) are selected.')
-                            layer.adhocGroupSize = count;
-                        });
+                        if (q)
+                            biocacheService.count(q.query, q.fqs).then(function (count) {
+                                console.log( count + ' occurence(s) are selected.')
+                                layer.adhocGroupSize = count;
+                            });
+                        else
+                            layer.adhocGroupSize = 0;
                     }
 
                     //Todo better be in layer class?
@@ -308,20 +311,24 @@
                             fqs.push(bboxQ);
                             //sync q to layer, which is used by spLegend or other place
                             layer.inAdhocQ = bboxQ;
-                        }
+
+                            //Out adhoc ONLY have meaning when query has some adhocs
+                            //Otherwise it return all records - out adhoc number
+                            //Out adhoc should be AND
+                            var outAdhocs = _.reject(_.keys(layer.adhocGroup), function(key){return layer.adhocGroup[key]});
+                            if (outAdhocs.length>0){
+                                var outFq = '-(id:' + outAdhocs.join(' OR id:')+')';
+                                fqs.push(outFq);
+
+                                //sync q to layer, which is used by spLegend or other place
+                                //Remove -
+                                layer.outAdhocQ = outFq.substring(1);
+                            }
+                            return q;
+                        }else
+                            return null; //No selected adhoc, then return null
 
 
-                        //Out adhoc should be AND
-
-                        var outAdhocs = _.reject(_.keys(layer.adhocGroup), function(key){return layer.adhocGroup[key]});
-
-                        if (outAdhocs.length>0){
-                            var outFq = '-(id:' + outAdhocs.join(' OR id:')+')';
-                            fqs.push(outFq);
-
-                            //sync q to layer, which is used by spLegend or other place
-                            layer.ourAdhocQ = outFq;
-                        }
 
 
                         // var polygons = []
@@ -340,7 +347,7 @@
                         //
                         // var wkt = 'wkt=MULTIPOLYGON(' + polygons.join(',') +')'
                         // q.wkt = wkt;
-                        return q;
+
                     }
 
 
