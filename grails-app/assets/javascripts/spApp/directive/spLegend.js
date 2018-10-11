@@ -7,9 +7,9 @@
      * @description
      *    Panel displaying selected map layer information and controls
      */
-    angular.module('sp-legend-directive', ['map-service', 'biocache-service', 'layers-service'])
-        .directive('spLegend', ['$timeout', '$q', 'MapService', 'BiocacheService', 'LayersService', 'ColourService', '$http', 'LayoutService',
-            function ($timeout, $q, MapService, BiocacheService, LayersService, ColourService, $http, LayoutService) {
+    angular.module('sp-legend-directive', ['map-service', 'biocache-service', 'layers-service','popup-service'])
+        .directive('spLegend', ['$timeout', '$q', 'MapService', 'BiocacheService', 'LayersService', 'ColourService', '$http', 'LayoutService','PopupService',
+            function ($timeout, $q, MapService, BiocacheService, LayersService, ColourService, $http, LayoutService, PopupService) {
                 return {
                     scope: {},
                     templateUrl: '/spApp/legendContent.htm',
@@ -100,23 +100,34 @@
 
                         scope.adhocCreateInOut = function () {
                             if (scope.selected.layer !== undefined) {
-                                var ids = [];
-                                $.map(scope.selected.layer.adhocGroup, function (v, k) {
-                                    if (v) ids.push(k)
-                                });
 
-                                var inFq = 'id:' + ids.join(' OR id:');
-                                var outFq = '-(id:' + ids.join(' OR id:') + ')';
 
-                                BiocacheService.newLayerAddFq(scope.selected.layer, inFq,
-                                    scope.selected.layer.name + " : " + $i18n(340, "in adhoc")).then(function (data) {
-                                    MapService.add(data)
-                                });
+                                // var ids = [];
+                                // $.map(scope.selected.layer.adhocGroup, function (v, k) {
+                                //     if (v) ids.push(k)
+                                // });
+                                //
+                                // var inFq = 'id:' + ids.join(' OR id:');
+                                // var outFq = '-(id:' + ids.join(' OR id:') + ')';
 
-                                BiocacheService.newLayerAddFq(scope.selected.layer, outFq,
-                                    scope.selected.layer.name + " : " + $i18n(341, "out adhoc")).then(function (data) {
-                                    MapService.add(data)
-                                })
+                                if (scope.selected.layer.inAdhocQ){
+                                    var inFq = scope.selected.layer.inAdhocQ
+                                    BiocacheService.newLayerAddFq(scope.selected.layer, inFq,
+                                        scope.selected.layer.name + " : " + $i18n(340, "in adhoc")).then(function (data) {
+                                        MapService.add(data)
+                                    });
+                                }
+
+                                if (scope.selected.layer.outAdhocQ){
+                                    var outFq = scope.selected.layer.outAdhocQ;
+                                    BiocacheService.newLayerAddFq(scope.selected.layer, outFq,
+                                        scope.selected.layer.name + " : " + $i18n(341, "out adhoc")).then(function (data) {
+                                        MapService.add(data)
+                                    })
+                                }
+
+
+
                             }
                         };
 

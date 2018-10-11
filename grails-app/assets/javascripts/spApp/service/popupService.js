@@ -63,6 +63,7 @@
                     }
                 }
 
+
                 function OccurrenceList(speciesLayers) {
                     var self = this,
                         isFirstOccurrence = true,
@@ -267,6 +268,8 @@
                         });
                     }
 
+                    //Todo better be in layer class?
+
                     this.buildAdhocQuery = function(){
                         var layer = self.layer;
                         if (layer.adhocBBoxes)
@@ -301,8 +304,11 @@
                             bboxQ = '(' + bbox_inadhoc.join(' OR ') +")";
                         else if (bbox_inadhoc.length ==1)
                             bboxQ = bbox_inadhoc[0];
-                        if (bboxQ !== '')
+                        if (bboxQ !== '') {
                             fqs.push(bboxQ);
+                            //sync q to layer, which is used by spLegend or other place
+                            layer.inAdhocQ = bboxQ;
+                        }
 
 
                         //Out adhoc should be AND
@@ -312,7 +318,11 @@
                         if (outAdhocs.length>0){
                             var outFq = '-(id:' + outAdhocs.join(' OR id:')+')';
                             fqs.push(outFq);
+
+                            //sync q to layer, which is used by spLegend or other place
+                            layer.ourAdhocQ = outFq;
                         }
+
 
                         // var polygons = []
                         // bboxes.forEach(function(bbox){
@@ -415,7 +425,8 @@
                 }
 
                 return {
-                    /**
+
+                      /**
                      * Coordinate
                      * @typedef {Object} latlng
                      * @property {number} lat - latitude
