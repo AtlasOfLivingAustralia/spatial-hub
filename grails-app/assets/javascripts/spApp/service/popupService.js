@@ -137,7 +137,7 @@
                         for(var i in layer.adhocBBoxes){
                             var bbox = layer.adhocBBoxes[i];
                             if (lat >= bbox[0][0] && lat<=bbox[1][0] && lng >= bbox[0][1] && lng <= bbox[1][1]){
-                                isIn = isIn || true;
+                                isIn = true;
                             }
                         }
                         //this var links to visualiation of the adhoc checkbox
