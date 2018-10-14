@@ -36,6 +36,7 @@
                     occurrences = [],
                     areaLayers = [],
                     occurrenceList;
+                var occurenceBBox = []; //bbox of a popup/occurence. Need to scope level, then won't change when zooming
                 var processedLayers = [0];
 
                 function addPopupToMap(latlng, map, templatePromise, intersects, occurrences) {
@@ -231,17 +232,18 @@
                     this.toggleBBox = function(){
                         //Match the algorithm in getQueryParams and getLatLngFq
                         var layer = self.layer;
-                        var latlng = loc;
-                        var dotradius = layer.size * 1 + 3;
-                        var px = leafletMap.latLngToContainerPoint(latlng);
-                        var ll = leafletMap.containerPointToLatLng(L.point(px.x + dotradius, px.y + dotradius));
-                        var lonSize = Math.abs(latlng.lng - ll.lng);
-                        var latSize = Math.abs(latlng.lat - ll.lat);
-                        var bbox = [[latlng.lat - latSize,latlng.lng - lonSize],[latlng.lat + latSize,latlng.lng + lonSize]]
+                        // var latlng = loc;
+                        // var dotradius = layer.size * 1 + 3;
+                        // var px = leafletMap.latLngToContainerPoint(latlng);
+                        // var ll = leafletMap.containerPointToLatLng(L.point(px.x + dotradius, px.y + dotradius));
+                        // var lonSize = Math.abs(latlng.lng - ll.lng);
+                        // var latSize = Math.abs(latlng.lat - ll.lat);
+                        // var bbox = [[latlng.lat - latSize,latlng.lng - lonSize],[latlng.lat + latSize,latlng.lng + lonSize]]
                         if (layer.adhocBBoxes==undefined) layer.adhocBBoxes =[];
+                        if (layer.adhocGroup== undefined) layer.adhocGroup = {};
 
-                        var idx = layer.adhocBBoxes.findIndex(function(box){
-                            return JSON.stringify(box) == JSON.stringify(bbox)
+                            var idx = layer.adhocBBoxes.findIndex(function(box){
+                            return JSON.stringify(box) == JSON.stringify(occurenceBBox)
                         })
 
                         if (idx > -1){
@@ -249,14 +251,62 @@
                             this.isBBoxToggled = false;
                         }
                         else{
-                            layer.adhocBBoxes.push(bbox);
+                            layer.adhocBBoxes.push(occurenceBBox);
                             this.isBBoxToggled = true;
                         }
 
-                        this.countAdhocOccurences();
+                        this.adjustAdhoc();
 
-                        //check if current oc is in the bbox
-                        this.tickOccurence();
+                    }
+                    // get ids in adhoc group and occurencebbox
+                    //occurenceBBox MUST EXIST
+                    this.adjustAdhoc = function(){
+                        if (occurenceBBox){
+                            var layer = self.layer;
+                            var fqs = []
+                            var q = {query: {}, fqs: undefined}
+                            q.query.bs = layer.bs;
+                            q.query.ws = layer.ws;
+                            q.query.q = layer.q;
+                            q.fqs = fqs;
+
+
+                            var ids = Object.keys(layer.adhocGroup);
+                            var oFq  = '(id:' + ids.join(' OR id:')+")";
+                            var bFq = "(latitude:[" + occurenceBBox[0][0] + " TO " + occurenceBBox[1][0] + "] AND longitude:[" + occurenceBBox[0][1] + " TO " + occurenceBBox[1][1] + "])";
+                            var fq = oFq + ' AND ' + bFq;
+
+                            q.fqs.push(fq);
+
+                            console.log(fq)
+                            //
+                            // biocacheService.count(q.query, q.fqs).then(function (count) {
+                            //     console.log( count + ' occurence(s) are selected.')
+                            //
+                            // });
+                            $http.get(q.query.bs + "/occurrences/search?facets=id&fq="+ fq ).then(function (response) {
+                                if (response.data !== undefined) {
+                                    var tc = response.data.totalRecords
+                                    console.log('Found ' + response.data.totalRecords);
+                                    if (tc > 0 ){
+                                        var ocs = response.data.occurrences;
+                                        _.each(ocs,function(oc){
+                                            delete layer.adhocGroup[oc.uuid];
+                                        })
+                                    }
+
+                                }
+
+                                self.countAdhocOccurences();
+                                //check if current oc is in the bbox
+                                self.tickOccurence();
+                            });
+
+
+
+                        }
+
+
                     }
 
                     this.countAdhocOccurences = function(){
@@ -473,6 +523,8 @@
 
                         var self = this;
                         loc = latlng;
+
+
                         // reset flag
                         addPopupFlag = true;
                         processedLayers[0] = 0;
@@ -559,8 +611,20 @@
                                 })
                             }
 
-                            occurrenceList = new OccurrenceList(speciesLayers)
-                        })
+                            occurrenceList = new OccurrenceList(speciesLayers);
+                            //Caculate bbox of the clicked occurence - scope level
+                            if (speciesLayers[0])
+                            {
+                                var layer = speciesLayers[0]
+                                var dotradius = layer.size * 1 + 3;
+                                var px = leafletMap.latLngToContainerPoint(loc);
+                                var ll = leafletMap.containerPointToLatLng(L.point(px.x + dotradius, px.y + dotradius));
+                                var lonSize = Math.abs(loc.lng - ll.lng);
+                                var latSize = Math.abs(loc.lat - ll.lat);
+                                occurenceBBox = [[loc.lat - latSize, loc.lng - lonSize], [loc.lat + latSize, loc.lng + lonSize]]
+                            }
+                        });
+
                     },
                     /**
                      * Get layer values for a coordinate.
