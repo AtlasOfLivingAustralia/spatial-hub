@@ -372,7 +372,7 @@
                     offset = offset || 0;
                     var fqList = (fqs === undefined ? '' : '&fq=' + this.joinAndEncode(fqs));
                     return this.registerQuery(query).then(function (response) {
-                        return $http.get(query.bs + "/occurrences/search?facet=" + facet + "&pageSize=" + pageSize + "&startIndex=" + offset + "&q=" + response.qid + fqList+'&sort=first_loaded_date').then(function (response) {
+                        return $http.get(query.bs + "/occurrences/search?facet=" + facet + "&pageSize=" + pageSize + "&startIndex=" + offset + "&q=" + response.qid + fqList+'&sort=_id').then(function (response) {
                             if (response.data !== undefined) {
                                 return response.data;
                             }
@@ -469,7 +469,10 @@
                  */
                 facetGeneral: function (facet, query, pageSize, offset, config) {
                     return this.registerQuery(query).then(function (response) {
-                        return $http.get(query.bs + "/occurrence/facets?facets=" + facet + "&flimit=" + pageSize + "&foffset=" + offset + "&q=" + response.qid, config).then(function (response) {
+
+                        var url = query.bs + "/occurrence/facets?facets=" + facet + "&flimit=" + pageSize + "&foffset=" + offset + "&q=" + response.qid;
+
+                        return $http.get(url, config).then(function (response) {
                             if (response.data && response.data[0] && response.data[0].fieldResult) {
                                 $.map(response.data[0].fieldResult, function (v, k) {
                                     v.displaylabel = Messages.get(facet + '.' + v.label, v.label ? v.label : "")

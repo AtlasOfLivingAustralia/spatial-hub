@@ -24,8 +24,8 @@
      *   Map popup generation
      */
     angular.module('popup-service', ['leaflet-directive', 'map-service', 'biocache-service'])
-        .factory("PopupService", ['$rootScope', '$compile', '$http', '$window', '$templateRequest', 'leafletData', 'MapService', 'BiocacheService', 'LayersService',
-            function ($rootScope, $compile, $http, $window, $templateRequest, leafletData, mapService, biocacheService, LayersService) {
+        .factory("PopupService", ['$rootScope', '$compile','$http', '$q','$window', '$templateRequest', 'leafletData', 'MapService', 'BiocacheService', 'LayersService',
+            function ($rootScope, $compile, $http, $q, $window, $templateRequest, leafletData, mapService, biocacheService, LayersService) {
                 var addPopupFlag = true,
                     popup, loc, leafletMap;
                 var templatePromise = $templateRequest('/spApp/intersectPopupContent.htm');
@@ -232,13 +232,6 @@
                     this.toggleBBox = function(){
                         //Match the algorithm in getQueryParams and getLatLngFq
                         var layer = self.layer;
-                        // var latlng = loc;
-                        // var dotradius = layer.size * 1 + 3;
-                        // var px = leafletMap.latLngToContainerPoint(latlng);
-                        // var ll = leafletMap.containerPointToLatLng(L.point(px.x + dotradius, px.y + dotradius));
-                        // var lonSize = Math.abs(latlng.lng - ll.lng);
-                        // var latSize = Math.abs(latlng.lat - ll.lat);
-                        // var bbox = [[latlng.lat - latSize,latlng.lng - lonSize],[latlng.lat + latSize,latlng.lng + lonSize]]
                         if (layer.adhocBBoxes==undefined) layer.adhocBBoxes =[];
                         if (layer.adhocGroup== undefined) layer.adhocGroup = {};
 
@@ -255,65 +248,63 @@
                             this.isBBoxToggled = true;
                         }
 
-                        this.adjustAdhoc();
+                        this.adjustAdhoc().then(function(){
+
+                            self.countAdhocOccurences();
+                            //check if current oc is in the bbox
+                            self.tickOccurence();
+                        });
 
                     }
                     // get ids in adhoc group and occurencebbox
                     //occurenceBBox MUST EXIST
                     this.adjustAdhoc = function(){
-                        if (occurenceBBox){
-                            var layer = self.layer;
+                        var layer = self.layer;
+                        var oids = Object.keys(layer.adhocGroup);
+                        if (occurenceBBox && oids.length > 0 ){
                             var fqs = []
-                            var q = {query: {}, fqs: undefined}
-                            q.query.bs = layer.bs;
-                            q.query.ws = layer.ws;
-                            q.query.q = layer.q;
-                            q.fqs = fqs;
-
-
-                            var ids = Object.keys(layer.adhocGroup);
-                            var oFq  = '(id:' + ids.join(' OR id:')+")";
+                            var oFq  = '(id:' + oids.join(' OR id:')+")";
                             var bFq = "(latitude:[" + occurenceBBox[0][0] + " TO " + occurenceBBox[1][0] + "] AND longitude:[" + occurenceBBox[0][1] + " TO " + occurenceBBox[1][1] + "])";
-                            var fq = oFq + ' AND ' + bFq;
+                            fqs.push(oFq)
+                            fqs.push(bFq);
 
-                            q.fqs.push(fq);
+                            var newq = {
+                                q: fqs,
+                                bs: layer.bs,
+                                ws: layer.ws
+                            }
 
-                            console.log(fq)
-                            //
-                            // biocacheService.count(q.query, q.fqs).then(function (count) {
-                            //     console.log( count + ' occurence(s) are selected.')
-                            //
-                            // });
-                            $http.get(q.query.bs + "/occurrences/search?facets=id&fq="+ fq ).then(function (response) {
-                                if (response.data !== undefined) {
-                                    var tc = response.data.totalRecords
-                                    console.log('Found ' + response.data.totalRecords);
-                                    if (tc > 0 ){
-                                        var ocs = response.data.occurrences;
-                                        _.each(ocs,function(oc){
-                                            delete layer.adhocGroup[oc.uuid];
-                                        })
+                            return biocacheService.facetGeneral('id',newq,-1,0).then(function(data){
+                                if (data !== undefined) {
+                                    var id_frs = _.find(data,function(d){return data.fieldName='id'})
+                                    if ( id_frs && id_frs.count > 0 ){
+                                        var frs = id_frs.fieldResult;
+                                        if (frs){
+                                            _.each(frs,function(idfacet){
+                                                delete layer.adhocGroup[idfacet.label];
+                                            })
+                                        }
                                     }
-
                                 }
 
-                                self.countAdhocOccurences();
-                                //check if current oc is in the bbox
-                                self.tickOccurence();
                             });
 
-
-
                         }
-
-
+                        //returned finished promise
+                        return $q.when('Done');
                     }
 
                     this.countAdhocOccurences = function(){
                         var layer = self.layer;
-                        var q = this.buildAdhocQuery()
-                        if (q)
-                            biocacheService.count(q.query, q.fqs).then(function (count) {
+                        var query = {};
+                        query.bs = layer.bs;
+                        query.ws = layer.ws;
+                        query.q = layer.q;
+
+
+                        var fq = this.buildAdhocQuery()
+                        if (fq.length>0)
+                            biocacheService.count(query, fq).then(function (count) {
                                 console.log( count + ' occurence(s) are selected.')
                                 layer.adhocGroupSize = count;
                             });
@@ -331,11 +322,11 @@
                             var bboxes = layer.adhocBBoxes = [];
                         }
                         var fqs = []
-                        var q = {query: {}, fqs: undefined}
-                        q.query.bs = layer.bs;
-                        q.query.ws = layer.ws;
-                        q.query.q = layer.q;
-                        q.fqs = fqs;
+                        // var q = {query: {}, fqs: undefined}
+                        // q.query.bs = layer.bs;
+                        // q.query.ws = layer.ws;
+                        // q.query.q = layer.q;
+                        // q.fqs = fqs;
 
                        // bbox and in adhoc should use OR
                         var bbox_inadhoc = []
@@ -374,29 +365,9 @@
                                 //Remove -
                                 layer.outAdhocQ = outFq.substring(1);
                             }
-                            return q;
-                        }else
-                            return null; //No selected adhoc, then return null
 
-
-
-
-                        // var polygons = []
-                        // bboxes.forEach(function(bbox){
-                        //     var polygon = '(('
-                        //     polygon += bbox[0][1] +'+'+bbox[0][0]+','
-                        //     polygon += bbox[1][1] +'+'+bbox[0][0] +','
-                        //     polygon += bbox[0][1] +'+'+ bbox[1][0] + ','
-                        //     polygon += bbox[1][1] +'+'+ bbox[1][0] +','
-                        //     polygon += bbox[0][1] +'+'+bbox[0][0]
-                        //
-                        //     polygon  += '))'
-                        //
-                        //     polygons.push(polygon)
-                        // })
-                        //
-                        // var wkt = 'wkt=MULTIPOLYGON(' + polygons.join(',') +')'
-                        // q.wkt = wkt;
+                        }
+                        return fqs;
 
                     }
 
