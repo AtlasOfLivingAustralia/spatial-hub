@@ -8,8 +8,8 @@
      *    Panel displaying selected map layer information and controls
      */
     angular.module('sp-legend-directive', ['map-service', 'biocache-service', 'layers-service','popup-service'])
-        .directive('spLegend', ['$timeout', '$q', 'MapService', 'BiocacheService', 'LayersService', 'ColourService', '$http', 'LayoutService','PopupService',
-            function ($timeout, $q, MapService, BiocacheService, LayersService, ColourService, $http, LayoutService, PopupService) {
+        .directive('spLegend', ['$timeout', '$q', 'MapService', 'BiocacheService', 'LayersService', 'ColourService', '$http', 'PopupService',
+            function ($timeout, $q, MapService, BiocacheService, LayersService, ColourService, $http, PopupService) {
                 return {
                     scope: {},
                     templateUrl: '/spApp/legendContent.htm',

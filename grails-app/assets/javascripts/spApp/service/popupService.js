@@ -53,6 +53,7 @@
 
                             popupScope.intersects = intersects;
                             popupScope.olist = occurrences;
+                            //popupScope.speciesLayers = speciesLayers;
 
                             var html = $compile(content)(popupScope);
                             popup = L.popup({maxWidth: 500, maxHeight: 600, minWidth: 410, autoPanPadding: 10})
@@ -67,10 +68,11 @@
 
                 function OccurrenceList(speciesLayers) {
                     var self = this,
-                        isFirstOccurrence = true,
-                        layersWithResults = [];
+                        isFirstOccurrence = true;
+                    //Layers which are in the occurences
+                    this.layersWithResults = [];
 
-                    this.occurrences = [];
+                    this.occurrences = []; //todo It is de facto single occurrence.
                     this.pageSize = 1;
                     this.total = 0;
                     this.index = 0;
@@ -213,19 +215,56 @@
                     this.getSearchLayerAndIndex = function () {
                         var result = {layer: undefined, index: 0},
                             total = 0;
-                        layersWithResults.forEach(function (layer) {
-                            if (layer) {
-                                if ((self.index < (total + layer.total) && (self.index >= total))) {
-                                    result.layer = layer;
-                                    result.index = self.index - total
-                                }
+                          _.filter(self.layersWithResults,function(layer){return layer.isDisplayed})
+                              .forEach(function (layer) {
+                                if (layer) {
+                                    if ((self.index < (total + layer.total) && (self.index >= total))) {
+                                        result.layer = layer;
+                                        result.index = self.index - total
+                                    }
 
-                                total += layer.total
-                            }
-                        });
+                                    total += layer.total
+                                }
+                            });
 
                         return result
                     };
+
+                    this.toggleDisplayLayer = function(targetedlayer){
+                        console.log(targetedlayer.name +" " + targetedlayer.isDisplayed)
+                        var result = {layer: undefined, index: 0}
+                        var futureLayerIdx  = 0;
+
+                        var selectedLayerIdx = _.findIndex(self.layersWithResults,function(layer){
+                            return layer.name == targetedlayer.name;
+                        })
+                        //if check in a layer
+                        if (targetedlayer.isDisplayed){
+                            futureLayerIdx =  selectedLayerIdx;
+                        }else{ //check out the layer
+                               // index jumps to the first oc of next layer. Move to first layer if the selected is the last layer
+                            var c = self.layersWithResults.length ;
+                            if (selectedLayerIdx == c-1){ // last one - then move to the first item of first layer
+                                futureLayerIdx = 0;
+                            } else{
+                                futureLayerIdx = selectedLayerIdx+1;
+                            }
+                        }
+                        result.layer = self.layersWithResults[futureLayerIdx];
+
+                        //recalculate the GLOBAL idx and total count of selected layer for display
+                        self.total = 0;
+                        var displayedLayers = _.filter(self.layersWithResults,function(layer){return layer.isDisplayed})
+
+                        for( var i=0;i<displayedLayers.length;i++ ){
+                            // find the current layer and caculate GLOBAL idx
+                            if (result.layer.name == displayedLayers[i].name)
+                                self.index = self.total + result.index;
+                            self.total += displayedLayers[i].total
+                        }
+                        this.getOccurrence(result.index, result.layer);
+
+                    }
 
 
 
@@ -241,18 +280,18 @@
 
                         if (idx > -1){
                             layer.adhocBBoxes.splice(idx,1);
-                            this.isBBoxToggled = false;
+                            layer.isBBoxToggled = false;
                         }
                         else{
                             layer.adhocBBoxes.push(occurenceBBox);
-                            this.isBBoxToggled = true;
+                            layer.isBBoxToggled = true;
                         }
 
                         this.adjustAdhoc().then(function(){
 
-                            self.countAdhocOccurences();
-                            //check if current oc is in the bbox
-                            self.tickOccurence();
+                        self.countAdhocOccurences();
+                        //check if current oc is in the bbox
+                        self.tickOccurence();
                         });
 
                     }
@@ -439,8 +478,9 @@
                         var q = self.getQueryParams(layer);
                         biocacheService.count(q.query, q.fqs).then(function (count) {
                             if (count !== undefined && count > 0) {
-                                layersWithResults.push(layer);
+                                self.layersWithResults.push(layer);
                                 layer.total = count;
+                                layer.isDisplayed = true;
                                 self.total += count;
                                 self.getFirstOccurrence(layer)
                             }
@@ -449,6 +489,15 @@
                             self.listRecords();
                             self.viewRecord();
                         })
+                        //Count occurences with facet selection
+                        if(layer.sel){
+                          //layer.sel has been encoded in spLengend.js
+                          q.fqs.push(decodeURIComponent(layer.sel));
+                            biocacheService.count(q.query, q.fqs).then(function (count) {
+                                layer.selCount = count;
+                                layer.withoutSelCount = layer.total - count;
+                            })
+                        }
                     })
                 }
 

@@ -2161,3 +2161,7 @@ body > footer > div > div.col-md-12.acknowledgement-callout.acknowledgement-call
     position: relative;
     z-index: 99999;
 }
+
+.glyphicon-hide {
+    color: transparent;
+}
