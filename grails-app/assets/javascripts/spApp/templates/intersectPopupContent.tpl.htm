@@ -4,20 +4,27 @@
             <h4 ng-show="!olist.zoomedToRecord">
                 <span i18n="99">Occurrence record&nbsp;</span>({{olist.index + 1}}<span i18n="100">&nbsp;of&nbsp;</span>{{olist.total}})
             </h4>
-            <div class="dropdown">
+
+
+
+           <div class="dropdown">
                 <button class="btn btn-xs btn-secondary dropdown-toggle" type="button" id="chooseDisplayedLayerMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <span><i class="glyphicon glyphicon-triangle-right"></i></span> {{olist.layer.name}} ({{olist.layer.total}})
+                    <span><i class="glyphicon glyphicon-triangle-right"></i></span>
+                    {{olist.layer.isSelectedFacetsOnly ? olist.layer.name + ' - selected ' + olist.layer.facet+ "("+olist.layer.selCount+")" : olist.layer.isWithoutSelectedFacetsOnly ? olist.layer.name + ' - unselected ' + olist.layer.facet+" ("+olist.layer.withoutSelCount+")" : olist.layer.name + '('+olist.layer.total+')'}}
+
                 </button>
 
                 <div class="dropdown-menu" aria-labelledby="chooseDisplayedLayerMenuButton">
-                    <div ng-repeat="layer in olist.layersWithResults">
-                        <button class="btn btn-xs" >
-                            <input type="checkbox" ng-model="layer.isDisplayed" ng-change="olist.toggleDisplayLayer(layer)"><a class="dropdown-item"  href="#">{{layer.name}} ({{layer.total}})</a>
-                        </button>
+                    <div ng-repeat="layer in olist.layersWithResults" class=" col-sm-12">
+
+                            <input type="checkbox" ng-model="layer.isDisplayed" ng-change="olist.toggleDisplayLayer(layer)">
+                            <button class="btn btn-xs" ng-click="olist.showThisLayerOnly(layer)">
+                                <a class="dropdown-item"  href="#">{{layer.name}} ({{layer.total}})</a>
+                            </button>
                         <div ng-if="layer.sel" class="col-sm-10 offset-sm-2">
-                            <button class="btn btn-xs">Layer with selection ({{layer.selCount}})</button>
+                            <button class="btn btn-xs" ng-click="olist.toggleSelFacadeOnLayer(layer)">Selected {{olist.layer.facet}} ({{layer.selCount}})</button>
                             <br/>
-                            <button class="btn btn-xs">Layer without selection ({{layer.withoutSelCount}})</button>
+                            <button class="btn btn-xs" ng-click="olist.toggleUnSelFacadeOnLayer(layer)">Not selected {{olist.layer.facet}}({{layer.withoutSelCount}})</button>
                         </div>
                     </div>
                 </div>
@@ -30,9 +37,6 @@
             <input type="checkbox" ng-model="layer.isDisplayed" ng-change="olist.toggleDisplayLayer(layer)">{{layer.name}} ({{layer.total}})
         </div>
         -->
-
-
-
 
 
         <div class="panel-body" ng-repeat="oc in olist.occurrences">
@@ -102,9 +106,11 @@
                 </div>
                 <div class="col-sm-12">
                     <button type="button" class="btn btn-default btn-xs" title="Add all occurances to adhoc"
-                            ng-click="olist.toggleBBox()">
+                            ng-click="olist.toggleBBox()"><span>Add occurances to adhoc</span>
+                        <!--
                         <span ng-hide="olist.layer.isBBoxToggled">Add all occurances to adhoc</span>
                         <span ng-show="olist.layer.isBBoxToggled">Remove all occurances to adhoc</span>
+                        -->
 
                     </button>
                 </div>

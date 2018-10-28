@@ -39,6 +39,11 @@
                 var occurenceBBox = []; //bbox of a popup/occurence. Need to scope level, then won't change when zooming
                 var processedLayers = [0];
 
+
+
+
+
+
                 function addPopupToMap(latlng, map, templatePromise, intersects, occurrences) {
                     var leafletmap = $('.angular-leaflet-map');
                     var layerCount = layers.length + speciesLayers.length + areaLayers.length;
@@ -83,6 +88,8 @@
                     this.listRecordsUrl = '';
 
 
+
+
                     this.getFirstOccurrence = function (layer) {
                         if (isFirstOccurrence) {
                             self.getOccurrence(0, layer);
@@ -91,7 +98,13 @@
                     };
 
                     this.getOccurrence = function (index, layer) {
-                        var q = this.getQueryParams(layer);
+                        var q = this.getQueryParams(layer)
+                        if (layer.isSelectedFacetsOnly){// add extra fq, e.g. search selected facade occurence in the layer
+                            q.fqs.push(decodeURIComponent(layer.sel))
+                        }else if (layer.isWithoutSelectedFacetsOnly){
+                            q.fqs.push('-('+decodeURIComponent(layer.sel)+')');
+                        }
+
                         self.layer = layer;
                         biocacheService.searchForOccurrences(q.query, q.fqs, 1, index).then(function (data) {
                             if (data.occurrences && data.occurrences.length) {
@@ -110,12 +123,15 @@
 
                             }
                         })
+
                     };
 
 
                     this.tickOccurence = function(){
                         var oc = self.occurrences[0]
-                        oc.adhocGroup = this.isAdhocOrBBox();
+                        //assign oc.adhocGroup in this due to promise
+                        //oc.adhocGroup = this.isAdhocOrBBox();
+                        this.isAdhocOrBBox()
                     }
 
                     this.isAdhocGroup = function () {
@@ -134,17 +150,50 @@
                         var id = oc.uuid;
 
                         //check if current oc is in the bboxes
-                        var lat = self.occurrences[0].decimalLatitude;
-                        var lng = self.occurrences[0].decimalLongitude;
-                        var isIn = false;
-                        for(var i in layer.adhocBBoxes){
+                        //var lat = self.occurrences[0].decimalLatitude;
+                        //var lng = self.occurrences[0].decimalLongitude;
+                       // var isIn = false;
+                       /* for(var i in layer.adhocBBoxes){
                             var bbox = layer.adhocBBoxes[i];
                             if (lat >= bbox[0][0] && lat<=bbox[1][0] && lng >= bbox[0][1] && lng <= bbox[1][1]){
                                 isIn = true;
                             }
-                        }
-                        //this var links to visualiation of the adhoc checkbox
-                        return isIn;
+                        }*/
+
+                       if (layer.adhocBBoxes && layer.adhocBBoxes.length>0){
+                           var orFqs = []
+                           var iFq  = '(id:' + id +")";
+                           for(var i in layer.adhocBBoxes) {
+                               var occurenceBBox = layer.adhocBBoxes[i];
+                               var bFq = "(latitude:[" + occurenceBBox[0][0] + " TO " + occurenceBBox[1][0] + "] AND longitude:[" + occurenceBBox[0][1] + " TO " + occurenceBBox[1][1] + "])";
+                               // Append SEL in
+                               if (occurenceBBox[2]){
+                                   bFq="("+bFq+ ' AND '+ '(' + occurenceBBox[2] +')' + ")"
+                               }
+                               orFqs.push(bFq)
+                           }
+
+                           var bbq = "(" + orFqs.join(' OR ') +")";
+
+                           var fqs =[iFq,bbq];
+
+                           var query  = {
+                               bs : layer.bs,
+                               ws : layer.ws,
+                               q : layer.q
+                           }
+
+                           return biocacheService.count(query, fqs).then(function (count) {
+                               if (count == 1){
+                                   return $q.when(true);
+                               }else{
+                                   return $q.when(false);
+                               }
+                           });
+                       }else
+                           return $q.when(false);
+
+
                     }
 
                     this.isAdhocOrBBox = function(){
@@ -152,15 +201,21 @@
                         var id = oc.uuid;
 
                         if (self.isAdhocGroup()) // it is MANUALLY checked
-                            return  true;
-                        else if ( self.layer.adhocGroup[id] == undefined && self.isInBBox()) // not MANUALLY checked yet, but in bbox
-                            return true;
-                        else if (self.layer.adhocGroup[id] == undefined && !self.isInBBox()) // not selected yet, but out of bbox
-                            return false;
+                            oc.adhocGroup =  true;
                         else if ( self.layer.adhocGroup[id] == false) // Manually unchecked,
-                            return false;
-                        else
-                            return false;
+                            oc.adhocGroup =  false;
+                        else{
+                            self.isInBBox().then(function(result){
+                                oc.adhocGroup =  result;
+                                // if ( self.layer.adhocGroup[id] == undefined && result)
+                                //     return true;
+                                // else if ( self.layer.adhocGroup[id] == undefined && !result)
+                                //     return false;
+                                // else
+                                //     return false;
+                            })
+                        }
+
                     }
 
                     this.toggleAdhocGroup = function () {
@@ -190,7 +245,7 @@
                         // else layer.adhocGroupSize--
                     };
 
-                    this.getNextOccurrence = function () {
+                this.getNextOccurrence = function () {
                         var nextIndex = self.index + 1;
                         if (nextIndex >= self.total) {
                             return
@@ -230,6 +285,47 @@
                         return result
                     };
 
+                    this.showThisLayerOnly = function(targetlayer){
+                        _.each(self.layersWithResults,function(layer){
+                            if (layer.name == targetlayer.name)
+                                layer.isDisplayed = true;
+                            else
+                                layer.isDisplayed =false;
+                        })
+
+                        //Reset to show oc over the layer, not selected facets
+                        targetlayer.isSelectedFacetsOnly = false;
+                        targetlayer.isWithoutSelectedFacetsOnly = false;
+
+                        this.toggleDisplayLayer(targetlayer)
+                    }
+
+                    this.showSelOfLayer = function(targetlayer, isSel){
+                        _.each(self.layersWithResults,function(layer){
+                            if (layer.name == targetlayer.name)
+                                layer.isDisplayed = true;
+                            else
+                                layer.isDisplayed =false;
+                        })
+
+                        if(isSel){
+                            if(targetlayer.isSelectedFacetsOnly){
+                                self.index = 0;
+                                self.total = targetlayer.selCount
+                            }else if (targetlayer.isWithoutSelectedFacetsOnly){
+                                self.index = 0;
+                                self.total = targetlayer.withoutSelCount;
+                            }
+                            this.getOccurrence(0, targetlayer);
+
+                        }else{
+                            targetlayer.isSelectedFacetsOnly = false;
+                            targetlayer.isWithoutSelectedFacetsOnly = false;
+                            this.toggleDisplayLayer(targetlayer)
+                        }
+                       // this.toggleDisplayLayer(targetlayer)
+                    }
+
                     this.toggleDisplayLayer = function(targetedlayer){
                         console.log(targetedlayer.name +" " + targetedlayer.isDisplayed)
                         var result = {layer: undefined, index: 0}
@@ -262,36 +358,57 @@
                                 self.index = self.total + result.index;
                             self.total += displayedLayers[i].total
                         }
-                        this.getOccurrence(result.index, result.layer);
 
+                        this.getOccurrence(result.index, result.layer);
                     }
 
+                    this.toggleSelFacadeOnLayer = function(targetedLayer){
+                        targetedLayer.isWithoutSelectedFacetsOnly = false;
+                        targetedLayer.isSelectedFacetsOnly = true;
+                        //this.showThisLayerOnly(targetedLayer)
+                        this.showSelOfLayer(targetedLayer,true);
+                    }
+                    this.toggleUnSelFacadeOnLayer = function(targetedLayer){
+                        targetedLayer.isWithoutSelectedFacetsOnly = true;
+                        targetedLayer.isSelectedFacetsOnly = false;
+                        //this.showThisLayerOnly(targetedLayer)
+                        this.showSelOfLayer(targetedLayer,true);
+                    }
 
 
                     this.toggleBBox = function(){
                         //Match the algorithm in getQueryParams and getLatLngFq
+                        //New feautre: bind with Sel facade
+
                         var layer = self.layer;
                         if (layer.adhocBBoxes==undefined) layer.adhocBBoxes =[];
                         if (layer.adhocGroup== undefined) layer.adhocGroup = {};
 
-                            var idx = layer.adhocBBoxes.findIndex(function(box){
-                            return JSON.stringify(box) == JSON.stringify(occurenceBBox)
+                        var currentOB = occurenceBBox.slice();
+                        if (layer.isSelectedFacetsOnly)
+                            currentOB.push(decodeURIComponent(layer.sel));
+                        else if (layer.isWithoutSelectedFacetsOnly)
+                            currentOB.push(decodeURIComponent("-("+layer.sel+")"))
+                        else
+                            currentOB.push('')
+
+                        var idx = layer.adhocBBoxes.findIndex(function(box){
+                            return JSON.stringify(box) == JSON.stringify(currentOB)
                         })
 
                         if (idx > -1){
                             layer.adhocBBoxes.splice(idx,1);
-                            layer.isBBoxToggled = false;
+                            //layer.isBBoxToggled = false;
                         }
                         else{
-                            layer.adhocBBoxes.push(occurenceBBox);
-                            layer.isBBoxToggled = true;
+                            layer.adhocBBoxes.push(currentOB);
+                            //layer.isBBoxToggled = true;
                         }
 
                         this.adjustAdhoc().then(function(){
-
-                        self.countAdhocOccurences();
-                        //check if current oc is in the bbox
-                        self.tickOccurence();
+                            self.countAdhocOccurences();
+                            //check if current oc is in the bbox
+                            self.tickOccurence();
                         });
 
                     }
@@ -306,6 +423,11 @@
                             var bFq = "(latitude:[" + occurenceBBox[0][0] + " TO " + occurenceBBox[1][0] + "] AND longitude:[" + occurenceBBox[0][1] + " TO " + occurenceBBox[1][1] + "])";
                             fqs.push(oFq)
                             fqs.push(bFq);
+
+                            if (layer.isSelectedFacetsOnly)
+                                fqs.push(decodeURIComponent(layer.sel));
+                            else if (layer.isWithoutSelectedFacetsOnly)
+                                fqs.push(decodeURIComponent("-("+layer.sel+")"))
 
                             var newq = {
                                 q: fqs,
@@ -351,12 +473,12 @@
                             layer.adhocGroupSize = 0;
                     }
 
-                    //Todo better be in layer class?
+                    //Todo can fq generation in one place?
 
                     this.buildAdhocQuery = function(){
                         var layer = self.layer;
                         if (layer.adhocBBoxes)
-                            var bboxes = layer.adhocBBoxes;
+                            var bboxes = layer.adhocBBoxes.slice();
                         else{
                             var bboxes = layer.adhocBBoxes = [];
                         }
@@ -370,7 +492,14 @@
                        // bbox and in adhoc should use OR
                         var bbox_inadhoc = []
                         bboxes.forEach(function(bbox){
-                            bbox_inadhoc.push("(latitude:[" + bbox[0][0] + " TO " + bbox[1][0] + "] AND longitude:[" + bbox[0][1] + " TO " + bbox[1][1] + "])");
+                            var bbq = "(latitude:[" + bbox[0][0] + " TO " + bbox[1][0] + "] AND longitude:[" + bbox[0][1] + " TO " + bbox[1][1] + "])";
+                            // Append SEL in
+                            if (bbox[2]){
+                                bbq="("+bbq+ ' AND ('+ bbox[2] +')' + ")"
+                            }
+
+                            bbox_inadhoc.push(bbq);
+
                         })
 
                         //Selected adhoc group items
@@ -488,17 +617,49 @@
 
                             self.listRecords();
                             self.viewRecord();
+                        }).then(function(){
+                            //Count occurences with facet selection
+                            if(layer.sel){
+                                //layer.sel has been encoded in spLengend.js
+                                q.fqs.push(decodeURIComponent(layer.sel));
+                                biocacheService.count(q.query, q.fqs).then(function (count) {
+                                    layer.selCount = count;
+                                    layer.withoutSelCount = layer.total - count;
+                                })
+                            }// sel ends
                         })
-                        //Count occurences with facet selection
-                        if(layer.sel){
-                          //layer.sel has been encoded in spLengend.js
-                          q.fqs.push(decodeURIComponent(layer.sel));
-                            biocacheService.count(q.query, q.fqs).then(function (count) {
-                                layer.selCount = count;
-                                layer.withoutSelCount = layer.total - count;
-                            })
-                        }
-                    })
+                    });
+
+                    var self = this;
+
+                    //Watch if sel on a layer is changed
+                    $rootScope.$watch(function() {
+                        var sel='';
+                        _.each(speciesLayers,function(layer){
+                            if (layer.sel)
+                                sel +=layer.sel;
+                        })
+                        return sel;
+                    }, function(newValues, oldValues) {
+
+                        speciesLayers.forEach(function (layer) {
+                            var q = self.getQueryParams(layer);
+
+                            //Count occurences with facet selection
+                            if (layer.sel) {
+                                //layer.sel has been encoded in spLengend.js
+                                q.fqs.push(decodeURIComponent(layer.sel));
+                                biocacheService.count(q.query, q.fqs).then(function (count) {
+                                    layer.selCount = count;
+                                    layer.withoutSelCount = layer.total - count;
+                                })
+                            }// sel ends
+
+                        });
+                    });
+
+
+
                 }
 
                 return {
@@ -643,6 +804,7 @@
                                 var latSize = Math.abs(loc.lat - ll.lat);
                                 occurenceBBox = [[loc.lat - latSize, loc.lng - lonSize], [loc.lat + latSize, loc.lng + lonSize]]
                             }
+
                         });
 
                     },
