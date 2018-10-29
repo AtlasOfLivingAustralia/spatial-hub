@@ -82,6 +82,7 @@
 
                 function _executeResult(uiScope) {
                     var layers = [];
+                    var nextprocess;
 
                     for (k in uiScope.finishedData.output) {
                         if (uiScope.finishedData.output.hasOwnProperty(k)) {
@@ -143,7 +144,7 @@
                                     }
                                 });
                             } else if (d.name === 'area') {
-                                if (d.file.indexOf("{") == 0) {
+                                if (d.file.indexOf("{") === 0) {
                                     // parse JSON response
                                     // ENVELOPE is the only output of this type
                                     var json = JSON.parse(d.file);
@@ -175,6 +176,15 @@
                                 q.scatterplotDataUrl = uiScope.downloadUrl;
 
                                 promises.push(MapService.add(q))
+                            } else if (d.name === 'nextprocess') {
+                                var nextinput = jQuery.parseJSON(d.file);
+
+                                // format 'nextprocess' output for LayoutService.openModal
+                                nextprocess = {
+                                    processName: nextinput.process,
+                                    overrideValues: {}
+                                };
+                                nextprocess.overrideValues[nextinput.process] = {input: nextinput.input};
                             }
                         }
                     }
@@ -200,6 +210,12 @@
                     return $q.all(promises).then(function () {
                         uiScope.finished = true;
                         uiScope.$close();
+
+                        if (nextprocess) {
+                            $timeout(function () {
+                                LayoutService.openModal('tool', nextprocess, false);
+                            }, 0)
+                        }
                     })
                 }
 

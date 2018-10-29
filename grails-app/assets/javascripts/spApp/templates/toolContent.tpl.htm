@@ -82,6 +82,7 @@
                                     <input style="width:300px" type="number" max="{{v.constraints.max}}"
                                            min="{{v.constraints.min}}"
                                            ng-model="values[i]">
+                                    <label ng-if="v.constraints.header !== undefined">{{v.constraints.header}}</label>
                                 </div>
                                 <div ng-if="v.type == 'list' && v.constraints.selection == 'single'">
                                     <label ng-if="sv.name !== undefined && sv.name !== v.description">{{v.description}}</label>
@@ -89,6 +90,7 @@
                                     <select ng-model="values[i]" ng-init="values[i] = v.constraints._list[0].value"
                                             ng-options="item.value as item.label for item in v.constraints._list">
                                     </select>
+                                    <label ng-if="v.constraints.header !== undefined">{{v.constraints.header}}</label>
                                 </div>
                                 <div ng-if="v.type == 'list' && v.constraints.selection != 'single'">
                                     <label ng-if="sv.name !== undefined && sv.name !== v.description">{{v.description}}</label>
@@ -96,6 +98,7 @@
                                     <select ng-model="values[i]" multiple ng-init="values[i] = values[i]"
                                             ng-options="item.value as item.label for item in v.constraints._list">
                                     </select>
+                                    <label ng-if="v.constraints.header !== undefined">{{v.constraints.header}}</label>
                                 </div>
                                 <div ng-if="v.type == 'phylogeneticTree'">
                                     <div style="height:300px;overflow:scroll;display:block"

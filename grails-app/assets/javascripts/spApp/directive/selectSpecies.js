@@ -109,6 +109,7 @@
                                     q.q = query.q;
                                     if (q.bs === undefined) q.bs = $SH.biocacheServiceUrl;
                                     if (q.ws === undefined) q.ws = $SH.biocacheUrl;
+                                    if (query.species_list !== undefined) q.species_list = query.species_list;
                                     scope._selectedQ.push(q);
                                 } else {
                                     for (var k in scope._selectedQ) {
@@ -217,7 +218,13 @@
                                 var layer = MapService.getFullLayer(scope.speciesOption);
                                 var q = [layer.q];
                                 if (layer.fq !== undefined && layer.fq != null && layer.fq.length > 0) q = q.concat(layer.fq);
-                                scope.setQ({q: q, bs: layer.bs, ws: layer.ws, name: layer.name})
+                                scope.setQ({
+                                    q: q,
+                                    bs: layer.bs,
+                                    ws: layer.ws,
+                                    name: layer.name,
+                                    species_list: layer.species_list
+                                })
                             }
                         };
 
@@ -226,7 +233,13 @@
                             var layer = MapService.getFullLayer(item.uid);
                             var q = [layer.q];
                             if (layer.fq !== undefined && layer.fq.length > 0) q = q.concat(layer.fq);
-                            scope.setMultiQ({q: q, bs: layer.bs, ws: layer.ws, name: layer.name}, item.checked);
+                            scope.setMultiQ({
+                                q: q,
+                                bs: layer.bs,
+                                ws: layer.ws,
+                                name: layer.name,
+                                species_list: layer.species_list
+                            }, item.checked);
                         };
 
                         scope.isLoggedIn = $SH.userId !== undefined && $SH.userId !== null && $SH.userId.length > 0;
@@ -261,7 +274,7 @@
                                                 }
                                             }
                                             if (match === q.length) {
-                                                scope.speciesOption = scope.speciesLayers[i].uid
+                                                scope.speciesOption = scope.speciesLayers[i].uid;
                                                 scope.changeOption()
                                             }
                                         }
