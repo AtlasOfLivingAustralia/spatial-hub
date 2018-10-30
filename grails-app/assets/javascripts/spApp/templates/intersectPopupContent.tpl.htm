@@ -105,21 +105,30 @@
                     <span ng-show="olist.isAdhocGroup()" >Assigned <i class="glyphicon glyphicon-question-sign" title="This occurence has been added into adhoc"></i></span>
                 </div>
                 <div class="col-sm-12">
-                    <button type="button" class="btn btn-default btn-xs" title="Add all occurances to adhoc"
-                            ng-click="olist.toggleBBox()"><span>Add occurances to adhoc</span>
-                        <!--
-                        <span ng-hide="olist.layer.isBBoxToggled">Add all occurances to adhoc</span>
-                        <span ng-show="olist.layer.isBBoxToggled">Remove all occurances to adhoc</span>
-                        -->
+                    <div class="col-sm-6">
+                        <button type="button" class="btn btn-default btn-xs" title="Add all occurances to adhoc"
+                                ng-click="olist.toggleBBox()"><span>Add occurances to adhoc</span>
+                            <!--
+                            <span ng-hide="olist.layer.isBBoxToggled">Add all occurances to adhoc</span>
+                            <span ng-show="olist.layer.isBBoxToggled">Remove all occurances to adhoc</span>
+                            -->
 
-                    </button>
+                        </button>
+
+                         <span ng-show="olist.layer.adhocBBoxes.length > 0"><i class="glyphicon glyphicon-th-list" ng-click="olist.showAdhocBBoxList()"> </i></span>
+                    </div>
+
+                    <div ng-show="olist.hideAhhocBBoxList" class="col-sm-6">
+                        <ul>
+                            <li  ng-repeat="bbox in olist.layer.adhocBBoxes"><i class="glyphicon glyphicon-map-marker" title="{{bbox[0]}} - {{bbox[1]}}"></i>{{bbox[2]}}  <i ng-click="olist.removeAdhocBBox($index)" class="glyphicon glyphicon-trash"></i></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-12">
-                    &nbsp;
-                </div>
+
             </div>
+
             <div class="row">
                 <div class="col-sm-12">
                     <div class="btn-group" role="group" aria-label="..." ng-show="!olist.zoomedToRecord">

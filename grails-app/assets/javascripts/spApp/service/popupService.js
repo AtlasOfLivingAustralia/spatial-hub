@@ -98,15 +98,22 @@
                     };
 
                     this.getOccurrence = function (index, layer) {
-                        var q = this.getQueryParams(layer)
+                        //var q = this.getQueryParams(layer)
+                        //Can not use 'getQueryParams' because bbox which decides 'layer' will be overwritten
+
+                        var fq = ["(latitude:[" + occurenceBBox[0][0] + " TO " + occurenceBBox[1][0] + "] AND longitude:[" + occurenceBBox[0][1] + " TO " + occurenceBBox[1][1] + "])"];
+
                         if (layer.isSelectedFacetsOnly){// add extra fq, e.g. search selected facade occurence in the layer
-                            q.fqs.push(decodeURIComponent(layer.sel))
+                            //q.fqs.push(decodeURIComponent(layer.sel))
+                            fq.push(decodeURIComponent(layer.sel))
                         }else if (layer.isWithoutSelectedFacetsOnly){
-                            q.fqs.push('-('+decodeURIComponent(layer.sel)+')');
+                            //q.fqs.push('-('+decodeURIComponent(layer.sel)+')');
+                             fq.push('-('+decodeURIComponent(layer.sel)+')')
+
                         }
 
                         self.layer = layer;
-                        biocacheService.searchForOccurrences(q.query, q.fqs, 1, index).then(function (data) {
+                        biocacheService.searchForOccurrences(layer, fq, 1, index).then(function (data) {
                             if (data.occurrences && data.occurrences.length) {
                                 addPopupToMap(loc, leafletMap, templatePromise, intersects, occurrenceList);
                                 // empty array
@@ -128,9 +135,6 @@
 
 
                     this.tickOccurence = function(){
-                        var oc = self.occurrences[0]
-                        //assign oc.adhocGroup in this due to promise
-                        //oc.adhocGroup = this.isAdhocOrBBox();
                         this.isAdhocOrBBox()
                     }
 
@@ -168,7 +172,7 @@
                                var bFq = "(latitude:[" + occurenceBBox[0][0] + " TO " + occurenceBBox[1][0] + "] AND longitude:[" + occurenceBBox[0][1] + " TO " + occurenceBBox[1][1] + "])";
                                // Append SEL in
                                if (occurenceBBox[2]){
-                                   bFq="("+bFq+ ' AND '+ '(' + occurenceBBox[2] +')' + ")"
+                                   bFq="("+bFq+ ' AND '+  occurenceBBox[2] + ")"
                                }
                                orFqs.push(bFq)
                            }
@@ -177,13 +181,9 @@
 
                            var fqs =[iFq,bbq];
 
-                           var query  = {
-                               bs : layer.bs,
-                               ws : layer.ws,
-                               q : layer.q
-                           }
 
-                           return biocacheService.count(query, fqs).then(function (count) {
+
+                           return biocacheService.count(layer, fqs).then(function (count) {
                                if (count == 1){
                                    return $q.when(true);
                                }else{
@@ -396,20 +396,25 @@
                             return JSON.stringify(box) == JSON.stringify(currentOB)
                         })
 
-                        if (idx > -1){
-                            layer.adhocBBoxes.splice(idx,1);
-                            //layer.isBBoxToggled = false;
-                        }
-                        else{
+                        // if (idx > -1){
+                        //     layer.adhocBBoxes.splice(idx,1);
+                        //     //layer.isBBoxToggled = false;
+                        // }
+                        // else{
+                        //     layer.adhocBBoxes.push(currentOB);
+                        //     //layer.isBBoxToggled = true;
+                        // }
+
+                        if (idx == -1){
                             layer.adhocBBoxes.push(currentOB);
-                            //layer.isBBoxToggled = true;
+                            this.adjustAdhoc().then(function(){
+                                self.countAdhocOccurences();
+                                //check if current oc is in the bbox
+                                self.tickOccurence();
+                            });
                         }
 
-                        this.adjustAdhoc().then(function(){
-                            self.countAdhocOccurences();
-                            //check if current oc is in the bbox
-                            self.tickOccurence();
-                        });
+
 
                     }
                     // get ids in adhoc group and occurencebbox
@@ -457,15 +462,9 @@
 
                     this.countAdhocOccurences = function(){
                         var layer = self.layer;
-                        var query = {};
-                        query.bs = layer.bs;
-                        query.ws = layer.ws;
-                        query.q = layer.q;
-
-
                         var fq = this.buildAdhocQuery()
                         if (fq.length>0)
-                            biocacheService.count(query, fq).then(function (count) {
+                            biocacheService.count(layer, fq).then(function (count) {
                                 console.log( count + ' occurence(s) are selected.')
                                 layer.adhocGroupSize = count;
                             });
@@ -495,7 +494,7 @@
                             var bbq = "(latitude:[" + bbox[0][0] + " TO " + bbox[1][0] + "] AND longitude:[" + bbox[0][1] + " TO " + bbox[1][1] + "])";
                             // Append SEL in
                             if (bbox[2]){
-                                bbq="("+bbq+ ' AND ('+ bbox[2] +')' + ")"
+                                bbq="("+bbq+ ' AND '+ bbox[2] + ")"
                             }
 
                             bbox_inadhoc.push(bbq);
@@ -518,8 +517,6 @@
                             bboxQ = bbox_inadhoc[0];
                         if (bboxQ !== '') {
                             fqs.push(bboxQ);
-                            //sync q to layer, which is used by spLegend or other place
-                            layer.inAdhocQ = bboxQ;
 
                             //Out adhoc ONLY have meaning when query has some adhocs
                             //Otherwise it return all records - out adhoc number
@@ -535,6 +532,10 @@
                             }
 
                         }
+
+                        // //sync q to layer, which is used by spLegend or other place
+                        layer.inAdhocQ = bboxQ;
+
                         return fqs;
 
                     }
@@ -581,8 +582,9 @@
 
                     this.listRecords = function () {
                         if (self.layer !== undefined) {
-                            var q = self.getQueryParams(self.layer);
-                            var url = biocacheService.constructSearchResultUrl(q.query, q.fqs, 10, 0, true).then(function (url) {
+                            //var q = self.getQueryParams(self.layer);
+                            var fq = self.getLatLngFq(loc, self.layer.size)
+                            var url = biocacheService.constructSearchResultUrl(self.layer,fq, 10, 0, true).then(function (url) {
                                 self.listRecordsUrl = url
                             })
                         }
@@ -603,9 +605,19 @@
                         $('.leaflet-popup-close-button')[0].click()
                     };
 
+                    this.showAdhocBBoxList = function(){
+                        this.hideAhhocBBoxList = !this.hideAhhocBBoxList
+                    }
+
+                    this.removeAdhocBBox = function(idx){
+                        this.layer.adhocBBoxes.splice(idx,1);
+                    }
+
+
                     speciesLayers.forEach(function (layer) {
-                        var q = self.getQueryParams(layer);
-                        biocacheService.count(q.query, q.fqs).then(function (count) {
+                        //var q = self.getQueryParams(layer);
+                        var fq = self.getLatLngFq(loc, layer.size).slice()
+                        biocacheService.count(layer, fq).then(function (count) {
                             if (count !== undefined && count > 0) {
                                 self.layersWithResults.push(layer);
                                 layer.total = count;
@@ -619,16 +631,26 @@
                             self.viewRecord();
                         }).then(function(){
                             //Count occurences with facet selection
-                            if(layer.sel){
+                            if(layer.sel) {
                                 //layer.sel has been encoded in spLengend.js
-                                q.fqs.push(decodeURIComponent(layer.sel));
-                                biocacheService.count(q.query, q.fqs).then(function (count) {
+                                var inFq = fq.slice();
+                                inFq.push(decodeURIComponent(layer.sel));
+                                biocacheService.count(layer, inFq).then(function (count) {
                                     layer.selCount = count;
-                                    layer.withoutSelCount = layer.total - count;
+                                    //layer.withoutSelCount = layer.total - count;
                                 })
-                            }// sel ends
+                                // sel ends
+                                var outFq = fq.slice()
+                                outFq.push('-(' + decodeURIComponent(layer.sel) + ')')
+                                biocacheService.count(layer, outFq).then(function (count) {
+                                    layer.withoutSelCount = count;
+
+                                })
+                            }
+
                         })
                     });
+
 
                     var self = this;
 
@@ -641,18 +663,27 @@
                         })
                         return sel;
                     }, function(newValues, oldValues) {
-
                         speciesLayers.forEach(function (layer) {
-                            var q = self.getQueryParams(layer);
-
+                            //var q = self.getQueryParams(layer);
                             //Count occurences with facet selection
                             if (layer.sel) {
                                 //layer.sel has been encoded in spLengend.js
-                                q.fqs.push(decodeURIComponent(layer.sel));
-                                biocacheService.count(q.query, q.fqs).then(function (count) {
+
+                                var fq = ["(latitude:[" + occurenceBBox[0][0] + " TO " + occurenceBBox[1][0] + "] AND longitude:[" + occurenceBBox[0][1] + " TO " + occurenceBBox[1][1] + "])"];
+                                //layer.sel has been encoded in spLengend.js
+                                var inFq = fq.slice();
+                                inFq.push(decodeURIComponent(layer.sel));
+                                biocacheService.count(layer, inFq).then(function (count) {
                                     layer.selCount = count;
-                                    layer.withoutSelCount = layer.total - count;
+                                    //layer.withoutSelCount = layer.total - count;
                                 })
+                                // sel ends
+                                var outFq = fq.slice()
+                                outFq.push('-(' + decodeURIComponent(layer.sel) + ')')
+                                biocacheService.count(layer, outFq).then(function (count) {
+                                    layer.withoutSelCount=count
+                                })
+
                             }// sel ends
 
                         });
@@ -791,8 +822,6 @@
                                     })
                                 })
                             }
-
-                            occurrenceList = new OccurrenceList(speciesLayers);
                             //Caculate bbox of the clicked occurence - scope level
                             if (speciesLayers[0])
                             {
@@ -804,6 +833,8 @@
                                 var latSize = Math.abs(loc.lat - ll.lat);
                                 occurenceBBox = [[loc.lat - latSize, loc.lng - lonSize], [loc.lat + latSize, loc.lng + lonSize]]
                             }
+
+                            occurrenceList = new OccurrenceList(speciesLayers);
 
                         });
 
