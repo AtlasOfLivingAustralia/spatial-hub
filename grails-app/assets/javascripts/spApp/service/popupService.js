@@ -475,11 +475,6 @@
                             var bboxes = layer.adhocBBoxes = [];
                         }
                         var fqs = []
-                        // var q = {query: {}, fqs: undefined}
-                        // q.query.bs = layer.bs;
-                        // q.query.ws = layer.ws;
-                        // q.query.q = layer.q;
-                        // q.fqs = fqs;
 
                        // bbox and in adhoc should use OR
                         var bbox_inadhoc = []
@@ -508,9 +503,12 @@
                             bboxQ = '(' + bbox_inadhoc.join(' OR ') +")";
                         else if (bbox_inadhoc.length ==1)
                             bboxQ = bbox_inadhoc[0];
+
+                        // //sync q to layer, which is used by spLegend or other place
+                        layer.inAdhocQ = bboxQ;
+                        //all bboxes with extra included id are concated into one query, which is bboxQ
                         if (bboxQ !== '') {
                             fqs.push(bboxQ);
-
                             //Out adhoc ONLY have meaning when query has some adhocs
                             //Otherwise it return all records - out adhoc number
                             //Out adhoc should be AND
@@ -518,17 +516,13 @@
                             if (outAdhocs.length>0){
                                 var outFq = '-(id:' + outAdhocs.join(' OR id:')+')';
                                 fqs.push(outFq);
-
-                                //sync q to layer, which is used by spLegend or other place
-                                //Remove -
-                                layer.outAdhocQ = outFq.substring(1);
+                                layer.inAdhocQ = bboxQ +' AND ' + outFq;
                             }
 
                         }
 
-                        // //sync q to layer, which is used by spLegend or other place
-                        layer.inAdhocQ = bboxQ;
-                        layer.outAdhocQ = '-('+bboxQ+')';
+                      
+                        layer.outAdhocQ = '-('+layer.inAdhocQ+')';
 
                         return fqs;
 
