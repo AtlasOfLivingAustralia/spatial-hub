@@ -386,7 +386,7 @@
 
                         var currentOB = occurenceBBox.slice();
                         if (layer.isSelectedFacetsOnly)
-                            currentOB.push(decodeURIComponent(layer.sel));
+                            currentOB.push('('+decodeURIComponent(layer.sel)+')');
                         else if (layer.isWithoutSelectedFacetsOnly)
                             currentOB.push(decodeURIComponent("-("+layer.sel+")"))
                         else
@@ -396,14 +396,6 @@
                             return JSON.stringify(box) == JSON.stringify(currentOB)
                         })
 
-                        // if (idx > -1){
-                        //     layer.adhocBBoxes.splice(idx,1);
-                        //     //layer.isBBoxToggled = false;
-                        // }
-                        // else{
-                        //     layer.adhocBBoxes.push(currentOB);
-                        //     //layer.isBBoxToggled = true;
-                        // }
 
                         if (idx == -1){
                             layer.adhocBBoxes.push(currentOB);
@@ -429,8 +421,9 @@
                             fqs.push(oFq)
                             fqs.push(bFq);
 
+                            //Be AWARE OF BLACKETS, MAY NOT WORK
                             if (layer.isSelectedFacetsOnly)
-                                fqs.push(decodeURIComponent(layer.sel));
+                                fqs.push("("+decodeURIComponent(layer.sel)+")");
                             else if (layer.isWithoutSelectedFacetsOnly)
                                 fqs.push(decodeURIComponent("-("+layer.sel+")"))
 
@@ -535,6 +528,7 @@
 
                         // //sync q to layer, which is used by spLegend or other place
                         layer.inAdhocQ = bboxQ;
+                        layer.outAdhocQ = '-('+bboxQ+')';
 
                         return fqs;
 
@@ -656,37 +650,32 @@
 
                     //Watch if sel on a layer is changed
                     $rootScope.$watch(function() {
-                        var sel='';
-                        _.each(speciesLayers,function(layer){
-                            if (layer.sel)
-                                sel +=layer.sel;
-                        })
-                        return sel;
+                       return self.layer.sel;
                     }, function(newValues, oldValues) {
-                        speciesLayers.forEach(function (layer) {
+                       var layer = self.layer;
                             //var q = self.getQueryParams(layer);
                             //Count occurences with facet selection
-                            if (layer.sel) {
-                                //layer.sel has been encoded in spLengend.js
+                        if (layer.sel) {
+                            //layer.sel has been encoded in spLengend.js
 
-                                var fq = ["(latitude:[" + occurenceBBox[0][0] + " TO " + occurenceBBox[1][0] + "] AND longitude:[" + occurenceBBox[0][1] + " TO " + occurenceBBox[1][1] + "])"];
-                                //layer.sel has been encoded in spLengend.js
-                                var inFq = fq.slice();
-                                inFq.push(decodeURIComponent(layer.sel));
-                                biocacheService.count(layer, inFq).then(function (count) {
-                                    layer.selCount = count;
-                                    //layer.withoutSelCount = layer.total - count;
-                                })
-                                // sel ends
-                                var outFq = fq.slice()
-                                outFq.push('-(' + decodeURIComponent(layer.sel) + ')')
-                                biocacheService.count(layer, outFq).then(function (count) {
-                                    layer.withoutSelCount=count
-                                })
+                            var fq = ["(latitude:[" + occurenceBBox[0][0] + " TO " + occurenceBBox[1][0] + "] AND longitude:[" + occurenceBBox[0][1] + " TO " + occurenceBBox[1][1] + "])"];
+                            //layer.sel has been encoded in spLengend.js
+                            var inFq = fq.slice();
+                            inFq.push(decodeURIComponent(layer.sel));
+                            biocacheService.count(layer, inFq).then(function (count) {
+                                layer.selCount = count;
+                                //layer.withoutSelCount = layer.total - count;
+                            })
+                            // sel ends
+                            var outFq = fq.slice()
+                            outFq.push('-(' + decodeURIComponent(layer.sel) + ')')
+                            biocacheService.count(layer, outFq).then(function (count) {
+                                layer.withoutSelCount=count
+                            })
 
-                            }// sel ends
+                        }// sel ends
 
-                        });
+
                     });
 
 
