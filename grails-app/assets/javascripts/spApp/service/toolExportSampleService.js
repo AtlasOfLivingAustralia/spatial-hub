@@ -8,8 +8,12 @@
      *   Client side tool to export points of occurrence layers
      */
     angular.module('tool-export-sample-service', [])
-        .factory("ToolExportSampleService", ["$http", "$q", "MapService", "LayersService", "BiocacheService", function ($http, $q, MapService, LayersService, BiocacheService) {
-            return {
+        .factory("ToolExportSampleService", ["$http", "$q", "MapService", "LayersService", "BiocacheService",
+            function ($http, $q, MapService, LayersService, BiocacheService) {
+                var _this = {
+                    species: undefined,
+                    area: undefined,
+                    layers: undefined,
 
                 // Override text with view-config.json
                 spec: {
@@ -51,31 +55,38 @@
                 },
 
                 execute: function (inputs) {
-                    var area = inputs[0];
-                    var species = inputs[1];
-                    var layers = inputs[2];
+                    _this.area = inputs[0];
+                    _this.species = inputs[1];
+                    _this.layers = inputs[2];
 
-                    return BiocacheService.newLayer(species, area[0], '').then(function (query) {
+                    return BiocacheService.newLayer(_this.species, _this.area, '').then(function (query) {
                         //include redirect to biocache-service/occurrences/search page
-                        var sampleUrl = species.ws + '/download/options1?searchParams=' +
+                        var sampleUrl = _this.species.ws + '/download/options1?searchParams=' +
                             encodeURIComponent('q=' + query.qid) +
                             "&targetUri=/occurrences/search%3F&downloadType=records";
 
-                        if (layers && (layers.length > 0)) {
+                        if (_this.layers && (_this.layers.length > 0)) {
                             var layers = '';
                             var layerNames = '';
-                            $.map(layers,
-                                function (v, k) {
-                                    layers += (layers.length > 0 ? ',' : '') + v.id;
-                                    layerNames += (layerNames.length > 0 ? ',' : '') + v.name;
+                            $.map(_this.layers,
+                                function (v) {
+                                    layers += (layers.length > 0 ? ',' : '') + v;
+                                    layerNames += (layerNames.length > 0 ? ',' : '') + LayersService.getLayer(v).name;
                                 });
-                            sampleUrl += '&layers=' + layers + '&customHeader' + encodeURIComponent(layerNames) +
+
+                            if (_this.species.species_list) layers += ',' + _this.species.species_list;
+
+                            sampleUrl += '&layers=' + layers + '&customHeader=' + encodeURIComponent(layerNames) +
                                 "&layersServiceUrl=" + encodeURIComponent($SH.layersServiceUrl);
+                        } else {
+                            sampleUrl += '&layers=' + _this.species.species_list;
                         }
 
                         return $q.when({output: {0: {openUrl: sampleUrl}}});
                     });
                 }
             };
+
+                return _this;
         }])
 }(angular));

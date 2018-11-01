@@ -205,7 +205,7 @@
                 $scope.checkStatusTimeout = null;
 
                 $scope.getInputChecks = function (i) {
-                    var value = ToolsService.getCap($scope.toolName).input[i];
+                    var value = $scope.spec.input[i];
                     if (value.constraints === undefined) value.constraints = {};
                     if (value.constraints.optional) {
                         return false
