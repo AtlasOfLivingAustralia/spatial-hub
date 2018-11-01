@@ -521,7 +521,7 @@
 
                         }
 
-                      
+
                         layer.outAdhocQ = '-('+layer.inAdhocQ+')';
 
                         return fqs;
@@ -593,6 +593,13 @@
                         $('.leaflet-popup-close-button')[0].click()
                     };
 
+                    this.devMode = function(){
+                        if ($SH.enviroment=== 'DEVELOPMENT')
+                            return true;
+                        else
+                            return false;
+                    }
+
                     this.showAdhocBBoxList = function(){
                         this.hideAhhocBBoxList = !this.hideAhhocBBoxList
                     }
@@ -644,12 +651,15 @@
 
                     //Watch if sel on a layer is changed
                     $rootScope.$watch(function() {
-                       return self.layer.sel;
+                        if (self.layer)
+                           return self.layer.sel;
+                        else
+                            return ''
                     }, function(newValues, oldValues) {
                        var layer = self.layer;
                             //var q = self.getQueryParams(layer);
                             //Count occurences with facet selection
-                        if (layer.sel) {
+                        if (layer && layer.sel) {
                             //layer.sel has been encoded in spLengend.js
 
                             var fq = ["(latitude:[" + occurenceBBox[0][0] + " TO " + occurenceBBox[1][0] + "] AND longitude:[" + occurenceBBox[0][1] + " TO " + occurenceBBox[1][1] + "])"];

@@ -22,6 +22,7 @@
 
 <script type="text/javascript">
     $SH = {
+        enviroment:'${grails.util.Environment.current}',
         baseUrl: '${config.grails.serverURL}',
         biocacheUrl: '${config.biocache.url}',
         biocacheServiceUrl: '${config.biocacheService.url}',

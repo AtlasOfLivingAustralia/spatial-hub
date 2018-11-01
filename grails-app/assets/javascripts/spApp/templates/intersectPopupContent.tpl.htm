@@ -115,7 +115,8 @@
 
                         </button>
 
-                         <span ng-show="olist.layer.adhocBBoxes.length > 0"><i class="glyphicon glyphicon-th-list" ng-click="olist.showAdhocBBoxList()"> </i></span>
+
+                         <span ng-show="olist.layer.adhocBBoxes.length > 0 && olist.devMode"><i class="glyphicon glyphicon-th-list" ng-click="olist.showAdhocBBoxList()"> </i></span>
                     </div>
 
                     <div ng-show="olist.hideAhhocBBoxList" class="col-sm-6">
@@ -126,7 +127,9 @@
                 </div>
             </div>
             <div class="row">
-
+                <div class="col-sm-12">
+                    &nbsp;
+                </div>
             </div>
 
             <div class="row">
