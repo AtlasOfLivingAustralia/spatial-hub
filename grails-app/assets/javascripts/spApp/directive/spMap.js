@@ -68,7 +68,7 @@
                     };
 
                     scope.info = function (item) {
-                        MapService.info(item)
+                        LayoutService.info(item)
                     };
 
                     scope.isSelected = function (item) {

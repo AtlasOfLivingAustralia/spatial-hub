@@ -77,13 +77,13 @@
                                     case 'metadata':
                                         switch (inputs) {
                                             case 'species':
-                                                MapService.info($scope.species);
+                                                LayoutService.info($scope.species);
                                                 break;
                                             case 'layer':
-                                                MapService.info($scope.layer);
+                                                LayoutService.info($scope.layer);
                                                 break;
                                             case 'area':
-                                                MapService.info($scope.area);
+                                                LayoutService.info($scope.area);
                                                 break;
                                         }
 
