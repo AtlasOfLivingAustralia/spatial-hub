@@ -9,6 +9,16 @@
      */
     angular.module('biocache-service', [])
         .factory("BiocacheService", ["$http", "$q", function ($http, $q) {
+            var _httpDescription = function (method, httpconfig) {
+                if (httpconfig === undefined) {
+                    httpconfig = {};
+                }
+                httpconfig.service = 'BiocacheService';
+                httpconfig.method = method;
+
+                return httpconfig;
+            };
+
             return {
                 /**
                  * Get the number of unique species (by facet names_and_lsid)
@@ -34,7 +44,7 @@
                 speciesCount: function (query, fqs, httpconfig) {
                     var fqList = (fqs === undefined ? '' : '&fq=' + this.joinAndEncode(fqs));
                     return this.registerQuery(query).then(function (response) {
-                        return $http.get(query.bs + "/occurrence/facets?facets=names_and_lsid&flimit=0&q=" + response.qid + fqList, httpconfig).then(function (response) {
+                        return $http.get(query.bs + "/occurrence/facets?facets=names_and_lsid&flimit=0&q=" + response.qid + fqList, _httpDescription('speciesCount', httpconfig)).then(function (response) {
                             if (response.data !== undefined && response.data.length > 0 && response.data[0].count !== undefined) {
                                 return response.data[0].count;
                             } else {
@@ -66,11 +76,11 @@
                  */
                 speciesCountEndemic: function (query, fqs) {
                     var q;
-                    if (fqs !== undefined) q = $scope.newLayerAddFq(query, fqs, '');
+                    if (fqs !== undefined) q = this.newLayerAddFq(query, fqs, '');
                     else q = query;
 
                     return this.registerQuery(query).then(function (response) {
-                        return $http.get(query.bs + "/explore/endemic/speciescount/" + q.qid + "?facets=names_and_lsid").then(function (response) {
+                        return $http.get(query.bs + "/explore/endemic/speciescount/" + response.qid.replace("qid:", "") + "?facets=names_and_lsid", _httpDescription('speciesCountEndemic')).then(function (response) {
                             return response.data.count;
                         });
                     })
@@ -101,7 +111,7 @@
                  */
                 speciesList: function (query, fqs, config) {
                     return this.speciesListUrl(query, fqs).then(function (url) {
-                        return $http.get(url, config).then(function (response) {
+                        return $http.get(url, _httpDescription('speciesList', config)).then(function (response) {
                             return response.data;
                         });
                     })
@@ -160,7 +170,7 @@
                  */
                 speciesListEndemic: function (query, fqs, config) {
                     this.speciesListEndemicUrl(query, fqs).then(function (url) {
-                        return $http.get(url, config).then(function (response) {
+                        return $http.get(url, _httpDescription('speciesListEndemic', config)).then(function (response) {
                             return response.data;
                         });
                     })
@@ -188,11 +198,11 @@
                  */
                 speciesListEndemicUrl: function (query, fqs) {
                     var q;
-                    if (fqs !== undefined) q = $scope.newLayerAddFq(query, fqs, '');
+                    if (fqs !== undefined) q = this.newLayerAddFq(query, fqs, '');
                     else q = query;
 
                     return this.registerQuery(query).then(function (response) {
-                        return query.bs + "/explore/endemic/species/" + q.qid + ".csv?facets=names_and_lsid&lookup=true&count=true&lists=true";
+                        return query.bs + "/explore/endemic/species/" + response.qid.replace("qid:", "") + ".csv?facets=names_and_lsid&lookup=true&count=true&lists=true";
                     })
                 },
                 /**
@@ -219,7 +229,7 @@
                 dataProviderList: function (query, fqs) {
                     var fqList = (fqs === undefined ? '' : '&fq=' + this.joinAndEncode(fqs));
                     return this.registerQuery(query).then(function (response) {
-                        return $http.jsonp(query.bs + "/webportal/dataProviders?q=" + response.qid + fqList).then(function (response) {
+                        return $http.jsonp(query.bs + "/webportal/dataProviders?q=" + response.qid + fqList, _httpDescription('dataProviderList')).then(function (response) {
                             return response.data;
                         });
                     })
@@ -245,15 +255,15 @@
                  * Output:
                  *  500
                  */
-                count: function (query, fqs ) {
+                count: function (query, fqs) {
                     var fqList = (fqs === undefined ? '' : '&fq=' + this.joinAndEncode(fqs));
 
                     return this.registerQuery(query).then(function (response) {
-                        var url= query.bs + "/occurrences/search?facet=false&pageSize=0&q=" + response.qid + fqList
+                        var url = query.bs + "/occurrences/search?facet=false&pageSize=0&q=" + response.qid + fqList
 
-                        return $http.get(url).then(function (response) {
+                        return $http.get(url, _httpDescription('count')).then(function (response) {
                             if (response.data !== undefined && response.data.totalRecords !== undefined) {
-                                var c =  response.data.totalRecords?  response.data.totalRecords : 0
+                                var c = response.data.totalRecords ? response.data.totalRecords : 0
                                 console.log('Occurence count: ' + c);
                                 return c;
                             }
@@ -284,7 +294,7 @@
                 queryTitle: function (query, fqs) {
                     var fqList = (fqs === undefined ? '' : '&fq=' + this.joinAndEncode(fqs));
                     return this.registerQuery(query).then(function (response) {
-                        return $http.get(query.bs + "/webportal/params/details/" + response.qid.replace("qid:", "") + fqList).then(function (response) {
+                        return $http.get(query.bs + "/webportal/params/details/" + response.qid.replace("qid:", "") + fqList, _httpDescription('queryTitle')).then(function (response) {
                             if (response.data !== undefined && response.data.displayString !== undefined) {
                                 //remove html wrapping from title
                                 var div = document.createElement('div');
@@ -372,11 +382,11 @@
                     offset = offset || 0;
                     var fqList = (fqs === undefined ? '' : '&fq=' + this.joinAndEncode(fqs));
                     return this.registerQuery(query).then(function (response) {
-                        return $http.get(query.bs + "/occurrences/search?facet=" + facet + "&pageSize=" + pageSize + "&startIndex=" + offset + "&q=" + response.qid + fqList+'&sort=_id').then(function (response) {
+                        return $http.get(query.bs + "/occurrences/search?facet=" + facet + "&pageSize=" + pageSize + "&startIndex=" + offset + "&q=" + response.qid + fqList + '&sort=_id', _httpDescription('searchForOccurrences')).then(function (response) {
                             if (response.data !== undefined) {
                                 return response.data;
                             }
-                        });
+                        })
                     })
                 },
                 /**
@@ -420,7 +430,7 @@
                  */
                 facet: function (facet, query) {
                     return this.registerQuery(query).then(function (response) {
-                        return $http.get(query.bs + "/webportal/legend?cm=" + facet + "&q=" + response.qid + "&type=application/json").then(function (response) {
+                        return $http.get(query.bs + "/webportal/legend?cm=" + facet + "&q=" + response.qid + "&type=application/json", _httpDescription('facet')).then(function (response) {
                             $.map(response.data, function (v, k) {
                                 v.displayname = Messages.get(facet + '.' + v.name, v.name ? v.name : "")
                             });
@@ -472,7 +482,7 @@
 
                         var url = query.bs + "/occurrence/facets?facets=" + facet + "&flimit=" + pageSize + "&foffset=" + offset + "&q=" + response.qid;
 
-                        return $http.get(url, config).then(function (response) {
+                        return $http.get(url, _httpDescription('facetGeneral', config)).then(function (response) {
                             if (response.data && response.data[0] && response.data[0].fieldResult) {
                                 $.map(response.data[0].fieldResult, function (v, k) {
                                     v.displaylabel = Messages.get(facet + '.' + v.label, v.label ? v.label : "")
@@ -526,7 +536,7 @@
                  */
                 bbox: function (query) {
                     return this.registerQuery(query).then(function (response) {
-                        return $http.get(query.bs + "/webportal/bbox?q=" + response.qid + "&type=application/json").then(function (response) {
+                        return $http.get(query.bs + "/webportal/bbox?q=" + response.qid + "&type=application/json", _httpDescription('bbox')).then(function (response) {
                             var bb = response.data.split(",");
                             return [[bb[1], bb[0]], [bb[3], bb[2]]];
                         });
@@ -578,7 +588,7 @@
                         //     query.qid = data.q;
                         //     return $q.when(query)
                         // } else {
-                        return $http.post($SH.baseUrl + "/portal/q", data).then(function (response) {
+                        return $http.post($SH.baseUrl + "/portal/q", data, _httpDescription('registerQuery')).then(function (response) {
                             query.qid = 'qid:' + response.data.qid;
                             return query
                         });
@@ -607,7 +617,7 @@
                 registerParam: function (bs, q, fq) {
                     var data = {q: q, bs: bs};
                     if (fq !== undefined && fq !== null) data.fq = fq;
-                    return $http.post($SH.baseUrl + "/portal/q", data).then(function (response) {
+                    return $http.post($SH.baseUrl + "/portal/q", data, _httpDescription('registerParam')).then(function (response) {
                         return response.data
                     });
                 },
@@ -714,9 +724,22 @@
                  *  }
                  */
                 newLayerAddFq: function (query, newFq, newName) {
-                    var fq = [query.q].concat(query.fq).concat([newFq]);
+                    var fqs;
 
-                    return this.registerLayer(query.bs, query.ws, fq, query.wkt, newName)
+                    if (query.q instanceof Array) fqs = angular.merge(query.q, []);
+                    else fqs = [query.q];
+
+                    if ((query.fq instanceof Array) && query.fq.length > 0) {
+                        fqs = angular.merge(fqs, query.fq)
+                    }
+
+                    if (newFq instanceof Array) {
+                        fqs = angular.merge(fqs, newFq)
+                    } else if (newFq !== undefined) {
+                        fqs = angular.merge(fqs, [newFq])
+                    }
+
+                    return this.registerLayer(query.bs, query.ws, fqs, query.wkt, newName)
                 },
                 /**
                  * Create a layer and register for qid

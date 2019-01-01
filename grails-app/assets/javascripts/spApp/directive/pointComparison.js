@@ -11,6 +11,16 @@
         .directive('pointComparison', ['$rootScope', 'MapService', '$timeout', 'LayersService', 'LayoutService',
             'PredefinedAreasService', "$http", '$filter',
             function ($rootScope, MapService, $timeout, LayersService, LayoutService, PredefinedAreasService, $http, $filter) {
+                var _httpDescription = function (method, httpconfig) {
+                    if (httpconfig === undefined) {
+                        httpconfig = {};
+                    }
+                    httpconfig.service = 'PointComparison';
+                    httpconfig.method = method;
+
+                    return httpconfig;
+                };
+
                 return {
                     scope: {},
                     templateUrl: '/spApp/pointComparisonContent.htm',
@@ -45,7 +55,7 @@
                         scope.remove = function (idx) {
                             scope.points.splice(idx, 1);
                             scope.update()
-                        }
+                        };
 
                         scope.addMarker = function () {
                             scope.placingMarker = true;
@@ -95,14 +105,14 @@
                         };
 
                         scope.checkStatus = function () {
-                            $http.get(scope.statusUrl).then(function (response) {
+                            $http.get(scope.statusUrl, _httpDescription('checkStatus')).then(function (response) {
                                 if (response.status === 200) {
                                     scope.status = response.data.status;
                                     if (response.data.statusUrl) {
                                         scope.statusUrl = response.data.statusUrl
                                         $timeout(scope.checkStatus(), 2000)
                                     } else if (response.data.downloadUrl) {
-                                        $http.get($SH.baseUrl + '/portal/getSampleCSV?url=' + encodeURIComponent(response.data.downloadUrl)).then(function (response) {
+                                        $http.get($SH.baseUrl + '/portal/getSampleCSV?url=' + encodeURIComponent(response.data.downloadUrl), _httpDescription('getCsv')).then(function (response) {
                                             if (scope.comparison.length > 0)
                                                 scope.comparison.splice(0, scope.comparison.length);
 
@@ -126,6 +136,10 @@
                                             scope.exportUrl = (window.URL || window.webkitURL).createObjectURL(blob);
 
                                             scope.searching = false;
+
+                                            $timeout(function () {
+                                                $(window).trigger("resize");
+                                            }, 0);
                                         });
                                     } else {
                                         $timeout(scope.checkStatus(), 2000)

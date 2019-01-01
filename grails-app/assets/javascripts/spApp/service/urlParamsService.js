@@ -11,8 +11,8 @@
      *   Service that alters the map with URL parameters
      */
     angular.module('url-params-service', ['layers-service', 'facet-auto-complete-service', 'biocache-service', 'map-service', "layout-service"])
-        .factory("UrlParamsService", ['$rootScope', '$timeout', 'LayersService', 'BiocacheService', 'MapService', "LayoutService", "SessionsService", "$q",
-            function ($rootScope, $timeout, LayersService, BiocacheService, MapService, LayoutService, SessionsService, $q) {
+        .factory("UrlParamsService", ['$rootScope', '$timeout', 'LayersService', 'BiocacheService', 'MapService', "LayoutService", "SessionsService", "$q", "ToolsService",
+            function ($rootScope, $timeout, LayersService, BiocacheService, MapService, LayoutService, SessionsService, $q, ToolsService) {
                 var _this = {
                     /**
                      * Alter the map with URL parameters
@@ -210,7 +210,17 @@
                             if (tool === 'phylogeneticdiversity') {
                                 //TODO: translate SpatialPortal phylogenetic diversity input parameters to SpatialHub format
                             }
-                            LayoutService.openModal('tool', {processName: tool, input: parameters}, false)
+
+                            if (LayoutService.isPanel(tool)) {
+                                // is panel
+                                LayoutService.openPanel(tool, parameters, false)
+                            } else if (ToolsService.isTool(tool)) {
+                                // is a tool, local or remote
+                                LayoutService.openModal("tool", {"processName": tool})
+                            } else {
+                                // is controller
+                                LayoutService.openModal(tool, parameters);
+                            }
                         }
                     },
                     mapObjectFromParams: function (params) {

@@ -14,16 +14,22 @@
 <div class="modal-body">
     <div class="row">
         <div class="col-md-12">
-                <div  id="warning" class="alert alert-danger" ng-show="warning">
-                    <p i18n="317"  class="alert-heading">Warning!</p>
-                    <hr>
-                    <div ng-hide="moreInfo">
-                        {{ warning | limitTo: 200 }} <button type="button" class="btn btn-primary" ng-show="warning.length > 200" ng-click="showInfo()">...More...</button>
-                    </div>
-                    <div ng-show="moreInfo">
-                      {{ warning }} <button type="button" class="btn btn-primary" ng-show="warning.length > 200" ng-click="showInfo()">...Less...</button>
-                    </div>
+            <div id="warning" class="alert alert-danger" ng-show="warning">
+                <p i18n="317" class="alert-heading">Warning!</p>
+                <hr>
+                <div ng-hide="moreInfo">
+                    {{ warning | limitTo: 200 }}
+                    <button type="button" class="btn btn-primary" ng-show="warning.length > 200" ng-click="showInfo()">
+                        ...More...
+                    </button>
                 </div>
+                <div ng-show="moreInfo">
+                    {{ warning }}
+                    <button type="button" class="btn btn-primary" ng-show="warning.length > 200" ng-click="showInfo()">
+                        ...Less...
+                    </button>
+                </div>
+            </div>
 
             <div>
                 <radiogroup>

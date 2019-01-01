@@ -22,7 +22,8 @@
                         _areaIncludes: '=?areaIncludes',
                         _spatialValidity: '=?spatialValidity',
                         _speciesOption: '=?speciesOption',
-                        _absentOption: '=?absentOption'
+                        _absentOption: '=?absentOption',
+                        _canAddSpecies: '=?canAddSpecies'
                     },
                     templateUrl: '/spApp/selectSpeciesCtrl.htm',
                     link: function (scope, element, attrs) {
@@ -40,6 +41,7 @@
                             scope._speciesOptionMandatory = true;
                         }
                         if (scope._absentOption === undefined) scope._absentOption = true;
+                        if (scope._canAddSpecies === undefined) scope._canAddSpecies = true;
 
                         scope.spatiallyValid = true;
                         scope.spatiallySuspect = false;

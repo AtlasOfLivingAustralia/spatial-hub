@@ -11,6 +11,16 @@
         .factory("SpeciesAutoCompleteService", ["$http", "$rootScope", function ($http, $rootScope) {
             var lastUrl = '';
 
+            var _httpDescription = function (method, httpconfig) {
+                if (httpconfig === undefined) {
+                    httpconfig = {};
+                }
+                httpconfig.service = 'SpeciesAutoCompleteService';
+                httpconfig.method = method;
+
+                return httpconfig;
+            };
+
             var finishLoading = function (a, data) {
                 if (data.url === lastUrl) {
                     //hide all species spinners
@@ -78,7 +88,7 @@
                     var url = $SH.biocacheServiceUrl + "/autocomplete/search?q=" + term;
                     lastUrl = url;
 
-                    return $http.get(url).then(function (response) {
+                    return $http.get(url, _httpDescription('search')).then(function (response) {
                         return response.data;
                     });
                 }

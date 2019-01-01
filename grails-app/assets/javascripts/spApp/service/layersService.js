@@ -11,8 +11,18 @@
         .factory('LayersService', ['$http', '$timeout', '$q', 'Upload', function ($http, $timeout, $q, Upload) {
             var layers = [];
 
+            var _httpDescription = function (method, httpconfig) {
+                if (httpconfig === undefined) {
+                    httpconfig = {};
+                }
+                httpconfig.service = 'LayersService';
+                httpconfig.method = method;
+
+                return httpconfig;
+            };
+
             var url = $SH.layersServiceUrl + "/fields/search?q=";
-            $http.get(url).then(function (data) {
+            $http.get(url, _httpDescription('getLayers')).then(function (data) {
                 layers = data.data;
             });
 
@@ -66,7 +76,7 @@
                 getField: function (field, start, max, q) {
                     var url = this.url() + "/field/" + field + "?start=" + start + "&pageSize=" + max + "&q=" + q;
                     //return $http.get($SH.proxyUrl + "?url=" + encodeURIComponent(url))
-                    return $http.get(url)
+                    return $http.get(url, _httpDescription('getField'))
                 },
                 /**
                  * List all fields. See #searchLayers for output example
@@ -75,7 +85,7 @@
                  */
                 getLayers: function () {
                     var url = this.url() + "/fields/search?q=";
-                    return $http.get(url)
+                    return $http.get(url, _httpDescription('getField'))
                 },
                 /**
                  * Search spatial-service layers
@@ -150,7 +160,7 @@
                  */
                 searchLayers: function (q) {
                     var url = this.url() + '/fields/search?q=' + q;
-                    return $http.get(url)
+                    return $http.get(url, _httpDescription('searchLayers'))
                 },
                 /**
                  * Intersect layers with a single point
@@ -182,7 +192,11 @@
                  }]
                  */
                 intersectLayers: function (layers, lng, lat) {
-                    return $http.get(this.url() + '/intersect/' + layers.join() + "/" + lat + "/" + lng)
+                    if (layers.length > 0 && layers[0] !== undefined) {
+                        return $http.get(this.url() + '/intersect/' + layers.join() + "/" + lat + "/" + lng, _httpDescription('intersectLayers'))
+                    } else {
+                        return $q.when()
+                    }
                 },
                 /**
                  * Get layer information
@@ -227,7 +241,12 @@
                  */
                 createFromWkt: function (wkt, name, description) {
                     return $http.post($SH.baseUrl + '/portal/postAreaWkt',
-                        {wkt: wkt, name: name, description: description, user_id: $SH.userId})
+                        {
+                            wkt: wkt,
+                            name: name,
+                            description: description,
+                            user_id: $SH.userId
+                        }, _httpDescription('createFromWkt'))
                 },
                 /**
                  * Get object information
@@ -239,7 +258,7 @@
                  * { TODO: example }
                  */
                 getObject: function (id) {
-                    return $http.get(this.url() + '/object/' + id)
+                    return $http.get(this.url() + '/object/' + id, _httpDescription('getObject'))
                 },
                 /**
                  * Get objects for a layer (field)
@@ -251,7 +270,7 @@
                  * { TODO: example }
                  */
                 getObjects: function (id) {
-                    return $http.get(this.url() + '/objects/' + id)
+                    return $http.get(this.url() + '/objects/' + id, _httpDescription('getObjects'))
                 },
                 /**
                  * Get object WKT
@@ -260,7 +279,7 @@
                  * @returns {Promise(String)} WKT
                  */
                 getWkt: function (id) {
-                    return $http.get(this.url() + '/shape/wkt/' + id)
+                    return $http.get(this.url() + '/shape/wkt/' + id, _httpDescription('getWkt'))
                 },
                 /**
                  * Get spatial-service URL
@@ -343,7 +362,7 @@
                         shpId: shpId,
                         featureIdx: featureIdx
                     };
-                    return $http.post($SH.baseUrl + '/portal/postArea', param);
+                    return $http.post($SH.baseUrl + '/portal/postArea', param, _httpDescription('createArea'));
                 },
                 /**
                  * Search for areas associated with an LSID.
@@ -352,7 +371,7 @@
                  * @returns {Promise}
                  */
                 findOtherArea: function (type, lsid, area) {
-                    return $http.get(this.url() + '/' + type + '/lsid/' + lsid + '?nowkt=true')
+                    return $http.get(this.url() + '/' + type + '/lsid/' + lsid + '?nowkt=true', _httpDescription('findOtherArea', {ignoreErrors: true}))
                 },
                 /**
                  * Create Layer for mapping using field data

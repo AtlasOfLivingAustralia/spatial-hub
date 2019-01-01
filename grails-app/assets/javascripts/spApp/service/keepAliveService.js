@@ -23,6 +23,16 @@
                 $('#login-again-message').show()
             };
 
+            var _httpDescription = function (method, httpconfig) {
+                if (httpconfig === undefined) {
+                    httpconfig = {};
+                }
+                httpconfig.service = 'KeepAliveService';
+                httpconfig.method = method;
+
+                return httpconfig;
+            };
+
             var ping = function () {
                 var json = JSON.stringify(SessionsService.current());
 
@@ -33,7 +43,7 @@
                 }
 
                 //check for ala-login timeout
-                $http.post($SH.baseUrl + "/portal/ping?sessionId=" + $SH.sessionId, data).then(function (response) {
+                $http.post($SH.baseUrl + "/portal/ping?sessionId=" + $SH.sessionId, data, _httpDescription('ping', {ignoreErrors: true})).then(function (response) {
                     $timeout(ping, $SH.keepAliveTimeout)
                 }, function (response) {
                     //try silent login
@@ -45,7 +55,7 @@
                         var html = $('<iframe style="display:none" src="' + $SH.loginUrl +
                             encodeURIComponent(document.URL + "?silent=true") + '"></iframe>').load(function () {
                             //did silent login attempt succeed?
-                            $http.post($SH.baseUrl + "/portal/ping?sessionId=" + $SH.sessionId, data).then(function (response) {
+                            $http.post($SH.baseUrl + "/portal/ping?sessionId=" + $SH.sessionId, data, _httpDescription('ping', {ignoreErrors: true})).then(function (response) {
                                 $timeout(ping, $SH.keepAliveTimeout)
                             }, function (response) {
                                 loginAgainMessage();

@@ -107,6 +107,9 @@
                     //no need for initValues when $scope.values is populated from LayoutService.addToSave
                     if ($scope.values.length > 0) return;
 
+                    //check for previously entered value in LayoutService
+                    $scope.values = LayoutService.getValue($scope.componentName, 'values', $scope.values);
+
                     //defaults
                     var c = $scope.spec.input;
                     var k;
@@ -184,8 +187,9 @@
                             } else {
                                 v = null
                             }
-                            //check for previously entered value in LayoutService
-                            $scope.values[k] = LayoutService.getValue($scope.name, $scope.toolName + k, v);
+                            if ($scope.values[k] === undefined) {
+                                $scope.values[k] = v;
+                            }
                         }
                     }
                 };
@@ -212,7 +216,7 @@
                     } else if (value.type === 'area') {
                         return $scope.values[i].area.length === 0
                     } else if (value.type === 'species') {
-                        return $scope.values[i].q.length === 0;
+                        return !(value.constraints.min === 0 || $scope.values[i].q.length !== 0);
                     } else if (value.type === 'layer') {
                         return $scope.values[i].layers.length < value.constraints.min || $scope.values[i].layers.length > value.constraints.max
                     } else if (value.type === 'boolean') {
@@ -290,6 +294,9 @@
                 };
 
                 $scope.execute = function () {
+                    // save control state for retrying after http errors
+                    LayoutService.saveValues();
+
                     $scope.status = 'starting...';
                     $scope.statusRunning = true;
 

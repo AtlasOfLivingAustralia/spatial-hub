@@ -12,6 +12,16 @@
 
             var cache = $cacheFactory('listServiceCache');
 
+            var _httpDescription = function (method, httpconfig) {
+                if (httpconfig === undefined) {
+                    httpconfig = {};
+                }
+                httpconfig.service = 'ListsService';
+                httpconfig.method = method;
+
+                return httpconfig;
+            };
+
             var scope = {
 
                 list: function (q, max, offset, sort, order, user) {
@@ -25,7 +35,7 @@
 //                        if(order) params += '&order=' + order;
 //                        if(user) params += '&user=' + user;
                     params += "?" + "&max=2000";
-                    return $http.get(this.url() + "/ws/speciesList" + params, {withCredentials: true}).then(function (response) {
+                    return $http.get(this.url() + "/ws/speciesList" + params, _httpDescription('list', {withCredentials: true})).then(function (response) {
                         if (response.data.lists) {
                             return response.data.lists;
                         } else {
@@ -41,7 +51,7 @@
                         "description": description,
                         "isPrivate": makePrivate
                     };
-                    return $http.post($SH.baseUrl + "/portal/postSpeciesList", list, {withCredentials: true}).then(function (resp) {
+                    return $http.post($SH.baseUrl + "/portal/postSpeciesList", list, _httpDescription('createList', {withCredentials: true})).then(function (resp) {
                         return resp;
                     }, function (resp) {
                         return resp;
@@ -49,10 +59,10 @@
                 },
                 items: function (listId, params) {
                     params = params || {};
-                    return $http.get(this.url() + "/ws/speciesListItems/" + listId, {
+                    return $http.get(this.url() + "/ws/speciesListItems/" + listId, _httpDescription('items', {
                         params: params,
                         withCredentials: true
-                    }).then(function (response) {
+                    })).then(function (response) {
                         return response.data
                     })
                 },
@@ -63,11 +73,15 @@
                     // TODO: use 'species_list:' after biocache-service is redeployed
                     //return $q.when('species_list:' + listId);
 
-                    return scope.items(listId, {includeKVP: true}).then(function (data) {
-                        cache.put(listId, data);
+                    if (scope.getItemsQCached(listId)) {
+                        return $q.when(scope.listToFq(scope.getItemsQCached(listId)))
+                    } else {
+                        return scope.items(listId, {includeKVP: true}).then(function (data) {
+                            cache.put(listId, data);
 
-                        return $q.when(scope.listToFq(data));
-                    });
+                            return $q.when(scope.listToFq(data));
+                        });
+                    }
                 },
                 url: function () {
                     return $SH.listsUrl

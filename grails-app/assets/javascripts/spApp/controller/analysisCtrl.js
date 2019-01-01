@@ -33,9 +33,19 @@
                 $scope.list = [];
                 $scope.downloadImmediately = false;
 
+                $scope._httpDescription = function (method, httpconfig) {
+                    if (httpconfig === undefined) {
+                        httpconfig = {};
+                    }
+                    httpconfig.service = 'AnalysisCtrl';
+                    httpconfig.method = method;
+
+                    return httpconfig;
+                };
+
                 $scope.ok = function () {
                     if (angular.isDefined($scope.taskId)) {
-                        $http.get($SH.layersServiceUrl + '/tasks/status/' + $scope.taskId).then(function (resp) {
+                        $http.get($SH.layersServiceUrl + '/tasks/status/' + $scope.taskId, $scope._httpDescription('checkStatus')).then(function (resp) {
                             $timeout(function () {
                                 var processData = {
                                     processName: resp.data.name,

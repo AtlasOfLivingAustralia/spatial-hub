@@ -13,12 +13,22 @@
             function ($scope, MapService, $timeout, LayoutService, $uibModalInstance, BiocacheService, $http, LayersService) {
                 LayoutService.addToSave($scope);
 
+                $scope._httpDescription = function (method, httpconfig) {
+                    if (httpconfig === undefined) {
+                        httpconfig = {};
+                    }
+                    httpconfig.service = 'TabulationCtrl';
+                    httpconfig.method = method;
+
+                    return httpconfig;
+                };
+
                 $scope.tlayers = [];
                 $scope.tabulations = [];
 
                 $scope.loading = true;
 
-                $http.get(LayersService.url() + '/tabulations.json').then(function (response) {
+                $http.get(LayersService.url() + '/tabulations.json', $scope._httpDescription('get')).then(function (response) {
                     $scope.tabulations = response.data;
                     var unique = {};
                     var k;

@@ -8,7 +8,17 @@
      *   Access to spatial-hub sessions
      */
     angular.module('sessions-service', [])
-        .factory('SessionsService', ['$http', 'MapService', function ($http, MapService) {
+        .factory('SessionsService', ['$http', '$rootScope', 'MapService', function ($http, $rootScope, MapService) {
+
+            var _httpDescription = function (method, httpconfig) {
+                if (httpconfig === undefined) {
+                    httpconfig = {};
+                }
+                httpconfig.service = 'SessionsService';
+                httpconfig.method = method;
+
+                return httpconfig;
+            };
 
             var _this = {
                 /**
@@ -26,7 +36,8 @@
                         return {
                             layers: MapService.mappedLayers,
                             extents: MapService.getExtents(),
-                            basemap: MapService.leafletScope.getBaseMap()
+                            basemap: MapService.leafletScope.getBaseMap(),
+                            projection: $SH.projection
                         }
                     } else {
                         return {}
@@ -42,7 +53,7 @@
                  *  {TODO: example}
                  */
                 list: function () {
-                    return $http.get($SH.baseUrl + "/portal/sessions").then(function (response) {
+                    return $http.get($SH.baseUrl + "/portal/sessions", _httpDescription('list')).then(function (response) {
                         return response.data
                     });
                 },
@@ -61,7 +72,7 @@
                                     name = $i18n(403, "My saved session")
                                 }
                                 data.name = name;
-                                return $http.post($SH.baseUrl + "/portal/session/" + $SH.sessionId, data).then(function (response) {
+                                return $http.post($SH.baseUrl + "/portal/session/" + $SH.sessionId, data, _httpDescription('save')).then(function (response) {
                                     bootbox.alert('<h3>' + $i18n(404, "Session Saved") + '</h3><br/><br/>' + $i18n(405, "URL to retrived this saved session") + '<br/><br/><a target="_blank" href="' + response.data.url + '">' + response.data.url + '</a>')
                                 });
                             }
@@ -78,7 +89,7 @@
                  */
                 saveAndLogin: function (data, urlTemplate, encode, skipALALoskipALALoginUrlginUrl) {
                     //this is not a permanent save
-                    return $http.post($SH.baseUrl + "/portal/sessionCache/" + $SH.sessionId + "?save=false", data).success(function (response) {
+                    return $http.post($SH.baseUrl + "/portal/sessionCache/" + $SH.sessionId + "?save=false", data, _httpDescription('saveAndLogin')).success(function (response) {
                         //Not sure why service is not preserved and the additional / is added. Workaround with /?
                         var url;
                         if (response.data) {
@@ -110,7 +121,7 @@
                  * @return {Promise(SessionState)} saved session state
                  */
                 get: function (sessionId) {
-                    return $http.get($SH.baseUrl + "/portal/session/" + sessionId).then(function (response) {
+                    return $http.get($SH.baseUrl + "/portal/session/" + sessionId, _httpDescription('get')).then(function (response) {
                         return response.data
                     });
                 },
@@ -121,7 +132,7 @@
                  * @return {Promise}
                  */
                 'delete': function (sessionId) {
-                    return $http.delete($SH.baseUrl + "/portal/session/" + sessionId).then(function (response) {
+                    return $http.delete($SH.baseUrl + "/portal/session/" + sessionId, _httpDescription('delete')).then(function (response) {
                         return response.data
                     });
                 },
@@ -136,22 +147,35 @@
                  */
                 load: function (sessionId) {
                     return this.get(sessionId).then(function (data) {
+                        _this._load(data);
+                    })
+                },
+
+                _load: function (sessionData) {
+                    if (sessionData && sessionData.extents) {
                         MapService.removeAll();
 
-                        MapService.leafletScope.zoom(data.extents);
+                        $SH.projection = sessionData.projection;
+                        MapService.leafletScope.updateCRS();
 
-                        MapService.setBaseMap(data.basemap);
+                        MapService.leafletScope.zoom(sessionData.extents);
+
+                        MapService.setBaseMap(sessionData.basemap);
 
                         //add in index order
-                        data.layers.sort(function (a, b) {
+                        sessionData.layers.sort(function (a, b) {
                             return a.index - b.index
                         });
-                        for (var i = 0; i < data.layers.length; i++) {
-                            MapService.add(data.layers[i])
+                        for (var i = 0; i < sessionData.layers.length; i++) {
+                            MapService.add(sessionData.layers[i])
                         }
-                    })
+                    }
                 }
             };
+
+            $rootScope.$on('loadSession', function (event, data) {
+                _this._load(data)
+            });
 
             return _this;
         }])

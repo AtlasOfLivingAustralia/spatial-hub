@@ -9,6 +9,16 @@
      */
     angular.module('facet-auto-complete-service', [])
         .factory("FacetAutoCompleteService", ["$http", "BiocacheService", "ListsService", function ($http, BiocacheService, ListsService) {
+            var _httpDescription = function (method, httpconfig) {
+                if (httpconfig === undefined) {
+                    httpconfig = {};
+                }
+                httpconfig.service = 'FacetAutoCompleteService';
+                httpconfig.method = method;
+
+                return httpconfig;
+            };
+
             var scope = {
                 /**
                  * List default facets and data resource specific facets for a biocache-service query
@@ -39,8 +49,8 @@
                  */
                 search: function (query) {
                     return BiocacheService.registerQuery(query).then(function (response) {
-                        return $http.get(query.bs + "/upload/dynamicFacets?q=" + response.qid).then(function (dynamic) {
-                            return $http.get(query.bs + "/search/grouped/facets").then(function (groups) {
+                        return $http.get(query.bs + "/upload/dynamicFacets?q=" + response.qid, _httpDescription('search')).then(function (dynamic) {
+                            return $http.get(query.bs + "/search/grouped/facets", _httpDescription('search')).then(function (groups) {
                                 return scope.getFacets(dynamic, groups, query.species_list);
                             });
                         });

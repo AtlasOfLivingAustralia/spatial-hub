@@ -49,13 +49,43 @@ spApp.config(['$locationProvider', function ($locationProvider) {
 }]);
 
 spApp.config(['$logProvider', function ($logProvider) {
-    $logProvider.debugEnabled(false);
+    //$logProvider.debugEnabled(false);
 }]);
 
 spApp.config(['$httpProvider', function ($httpProvider) {
     $httpProvider.interceptors.push(function ($q) {
         return {
+            'request': function (config) {
+                var httpService = angular.element(document.querySelector('sp-app')).injector().get('HttpService');
+                if (httpService) httpService.push(config);
+
+                return config;
+            },
+
+            'requestError': function (rejection) {
+                var httpService = angular.element(document.querySelector('sp-app')).injector().get('HttpService');
+                if (httpService) httpService.pop(rejection, 'requestError');
+
+                return $q.reject(rejection);
+            },
+
+            // optional method
+            'response': function (response) {
+                var httpService = angular.element(document.querySelector('sp-app')).injector().get('HttpService');
+                if (httpService) {
+                    if (!httpService.pop(response)) {
+                        // hopefully this will cause a failure
+                        return response;
+                    }
+                }
+
+                return response;
+            },
+
             'responseError': function (rejection, a, c) {
+                var httpService = angular.element(document.querySelector('sp-app')).injector().get('HttpService');
+                if (httpService) httpService.pop(rejection, 'responseError');
+
                 if (rejection.status == -1) {
                     // urls not accessible are ignored.
                     console.error('Request to ' + rejection.config.url + ' is not accessible')
@@ -76,7 +106,7 @@ spApp.config(['$httpProvider', function ($httpProvider) {
         };
     });
 
-}])
+}]);
 
 
 spApp.config(['cfpLoadingBarProvider', function (cfpLoadingBarProvider) {
@@ -99,6 +129,10 @@ function isBrowserSupported() {
  * @returns {*}
  */
 function fetchData() {
+    var _httpDescription = function (method) {
+        return {service: 'startup', method: method}
+    };
+
     var initInjector = angular.injector(["ng"]);
     var $http = initInjector.get("$http");
     var $q = initInjector.get("$q");
@@ -113,13 +147,13 @@ function fetchData() {
 
     var distancesUrl = $SH.layersServiceUrl + "/layerDistances/layerdistancesJSON";
 
-    $http.get(distancesUrl).then(function (response) {
+    $http.get(distancesUrl, _httpDescription('getLayerDistances')).then(function (response) {
         $.map(response.data, function (v, k) {
             gLayerDistances[k] = v
         });
     });
 
-    promises.push($http.get($SH.baseUrl + "/portal/i18n?lang=" + $SH.i18n).then(function (result) {
+    promises.push($http.get($SH.baseUrl + "/portal/i18n?lang=" + $SH.i18n, _httpDescription('geti18n')).then(function (result) {
         for (k in result.data) {
             gMessages[k + ""] = result.data[k]
         }
@@ -134,10 +168,10 @@ function fetchData() {
         }
     }));
 
-    promises.push($http.get($SH.baseUrl + '/portal/config/view').then(function (data) {
+    promises.push($http.get($SH.baseUrl + '/portal/config/view', _httpDescription('getViewConfig')).then(function (data) {
         $SH.viewConfig = data.data;
         var url = $SH.layersServiceUrl + '/capabilities';
-        return $http.get(url).then(function (data) {
+        return $http.get(url, _httpDescription('getLayersCapabilities')).then(function (data) {
             var k, merged, cap = {};
             for (k in data.data) {
                 if (data.data.hasOwnProperty(k)) {
@@ -291,6 +325,14 @@ initLayoutContainer = function () {
 
             setTimeout(function () {
                 $('#left-panel')[0].style.maxHeight = $('#map').height() + "px";
+
+                var panelHeader = $('#left-panel .panel-heading:last');
+                var panelBody = $('#left-panel .panel-body:last');
+                var panelFooter = $('#left-panel .modal-footer:last');
+                if (panelFooter.size() > 0 && panelHeader.size() > 0 && panelBody.size() > 0) {
+                    var bodyMargin = panelBody.outerHeight() - panelBody.height();
+                    panelBody[0].style.maxHeight = ($('#map').height() - panelHeader.outerHeight() - panelFooter.outerHeight() - bodyMargin) + "px";
+                }
 
                 setTimeout(function () {
                     $SH.defaultPaneResizer.resizeAll();

@@ -26,11 +26,7 @@
 
                         scope.countRequests = [];
 
-                        scope.list = PredefinedAreasService.getList();
-
-                        FacetAutoCompleteService.search('').then(function (data) {
-                            scope.list = data
-                        });
+                        scope.refreshTimeout = null;
 
                         scope.save = function () {
                             //create new layer
@@ -48,12 +44,19 @@
                                 'stage': 'execute'
                             };
                             //delete template layers
-                            scope.close();
+                            scope.cancel();
 
                             LayoutService.openModal('tool', data, false);
                         };
 
-                        scope.close = function () {
+                        scope.cancel = function () {
+                            scope.cancelCountRequests();
+
+                            if (scope.refreshTimeout != null) {
+                                $timeout.cancel(scope.refreshTimeout);
+                                scope.refreshTimeout = null;
+                            }
+
                             while (scope.layers.length > 0) {
                                 scope.removeLayer()
                             }
@@ -75,7 +78,10 @@
 
                                 MapService.add(layer).then(function (uid) {
                                     layer.uid = uid;
-                                })
+                                });
+
+                                scope.update();
+                                scope.updateDisplay();
                             }
                         };
 
@@ -94,13 +100,15 @@
 
                             var mappedLayer = MapService.getLayer(layer.uid);
 
-                            var ly = mappedLayer.layerOptions.layers[0];
-                            ly.layerParams.sld_body = scope.getSldBody(layer.layer.name, layer.min, layer.max);
+                            if (mappedLayer) {
+                                var ly = mappedLayer.layerOptions.layers[0];
+                                ly.layerParams.sld_body = scope.getSldBody(layer.layer.name, layer.min, layer.max);
 
-                            layer.layer.uid = layer.uid;
-                            layer.layer.leaflet = {layerParams: mappedLayer.layerParams};
+                                layer.layer.uid = layer.uid;
+                                layer.layer.leaflet = {layerParams: mappedLayer.layerParams};
 
-                            MapService.reMap(layer)
+                                MapService.reMap(layer)
+                            }
                         };
 
                         scope.getSldBody = function (name, min, max) {
@@ -119,7 +127,6 @@
                             }
                             return fq
                         };
-
 
                         scope.cancelCountRequests = function () {
                             var size = scope.countRequests.length;
@@ -158,6 +165,22 @@
                         scope.refreshAll = function () {
                             scope.update();
                             scope.updateDisplay()
+                        };
+
+                        scope.refreshAllTimeout = function () {
+                            scope.cancelCountRequests();
+
+                            if (scope.refreshTimeout != null) {
+                                $timeout.cancel(scope.refreshTimeout);
+                                scope.refreshTimeout = null;
+                            }
+
+                            var layer = scope.layers[scope.layers.length - 1];
+                            layer.envelopeSpeciesCount = -1;
+
+                            scope.refreshTimeout = $timeout(function () {
+                                scope.refreshAll()
+                            }, 2000)
                         }
                     }
                 };

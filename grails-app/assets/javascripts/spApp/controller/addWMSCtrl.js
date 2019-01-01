@@ -10,6 +10,16 @@
     angular.module('add-w-m-s-ctrl', ['map-service', 'layers-service', 'predefined-areas-service'])
         .controller('AddWMSCtrl', ['LayoutService', '$scope', '$http', 'MapService',
             function (LayoutService, $scope, $http, MapService) {
+                $scope._httpDescription = function (method, httpconfig) {
+                    if (httpconfig === undefined) {
+                        httpconfig = {};
+                    }
+                    httpconfig.service = 'AddWMSCtrl';
+                    httpconfig.method = method;
+
+                    return httpconfig;
+                };
+
 
                 $scope.loading = false;
                 $scope.warning = '';
@@ -30,7 +40,7 @@
                     $scope.warning = '';
                     $scope.loading = true;
 
-                    $http.get($SH.baseUrl + "/portal/proxy?url=" + url)
+                    $http.get($SH.baseUrl + "/portal/proxy?url=" + url, $scope._httpDescription('proxyGetCapabilities'))
                         .success(function (resp) {
                             $scope.availableLayers = [];
                             var x2js = new X2JS({attributePrefix: []});

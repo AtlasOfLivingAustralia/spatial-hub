@@ -1,35 +1,43 @@
 <div>
-    <div ng-show="olist.occurrences.length" >
-       <div class="popover-title">
+    <div ng-show="olist.occurrences.length">
+        <div class="popover-title">
             <h4 ng-show="!olist.zoomedToRecord">
                 <span i18n="99">Occurrence record&nbsp;</span>({{olist.index + 1}}<span i18n="100">&nbsp;of&nbsp;</span>{{olist.total}})
             </h4>
 
 
-
-           <div class="dropdown">
-                <button class="btn btn-xs btn-secondary dropdown-toggle" type="button" id="chooseDisplayedLayerMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <div class="dropdown">
+                <button class="btn btn-xs btn-secondary dropdown-toggle" type="button"
+                        id="chooseDisplayedLayerMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
                     <span><i class="glyphicon glyphicon-triangle-right"></i></span>
-                    {{olist.layer.isSelectedFacetsOnly ? olist.layer.name + ' - selected ' + olist.layer.facet+ "("+olist.layer.selCount+")" : olist.layer.isWithoutSelectedFacetsOnly ? olist.layer.name + ' - unselected ' + olist.layer.facet+" ("+olist.layer.withoutSelCount+")" : olist.layer.name + '('+olist.layer.total+')'}}
+                    {{olist.layer.isSelectedFacetsOnly ? olist.layer.name + ' - selected ' + olist.layer.facet+
+                    "("+olist.layer.selCount+")" : olist.layer.isWithoutSelectedFacetsOnly ? olist.layer.name + ' -
+                    unselected ' + olist.layer.facet+" ("+olist.layer.withoutSelCount+")" : olist.layer.name +
+                    '('+olist.layer.total+')'}}
 
                 </button>
 
                 <div class="dropdown-menu" aria-labelledby="chooseDisplayedLayerMenuButton">
                     <div ng-repeat="layer in olist.layersWithResults" class=" col-sm-12">
 
-                            <input type="checkbox" ng-model="layer.isDisplayed" ng-change="olist.toggleDisplayLayer(layer)">
-                            <button class="btn btn-xs" ng-click="olist.showThisLayerOnly(layer)">
-                                <a class="dropdown-item"  href="#">{{layer.name}} ({{layer.total}})</a>
-                            </button>
+                        <input type="checkbox" ng-model="layer.isDisplayed" ng-change="olist.toggleDisplayLayer(layer)">
+                        <button class="btn btn-xs" ng-click="olist.showThisLayerOnly(layer)">
+                            <a class="dropdown-item" href="#">{{layer.name}} ({{layer.total}})</a>
+                        </button>
                         <div ng-if="layer.sel" class="col-sm-10 offset-sm-2">
-                            <button class="btn btn-xs" ng-click="olist.toggleSelFacadeOnLayer(layer)">Selected {{olist.layer.facet}} ({{layer.selCount}})</button>
+                            <button class="btn btn-xs" ng-click="olist.toggleSelFacadeOnLayer(layer)">Selected
+                                {{olist.layer.facet}} ({{layer.selCount}})
+                            </button>
                             <br/>
-                            <button class="btn btn-xs" ng-click="olist.toggleUnSelFacadeOnLayer(layer)">Not selected {{olist.layer.facet}}({{layer.withoutSelCount}})</button>
+                            <button class="btn btn-xs" ng-click="olist.toggleUnSelFacadeOnLayer(layer)">Not selected
+                                {{olist.layer.facet}}({{layer.withoutSelCount}})
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
-       </div>
+        </div>
 
         <!--
         <div class = "col-sm-12" ng-repeat = 'layer in olist.layersWithResults' >
@@ -50,8 +58,7 @@
             </div>
 
 
-
-             <div class="row" ng-show="oc.layername">
+            <div class="row" ng-show="oc.layername">
                 <div i18n="72" class="col-sm-6">Layer</div>
                 <div class="col-sm-6">{{oc.layername}}</div>
             </div>
@@ -101,8 +108,11 @@
             <div class="row">
                 <div class="col-sm-12">
                     <input type="checkbox" ng-model="oc.adhocGroup" ng-change="olist.toggleAdhocGroup()">&nbsp;
-                    <span ng-hide="olist.isAdhocGroup()">Assign record to ad hoc group <i class="glyphicon glyphicon-question-sign" title="This occurence has NOT been added into adhoc"></i></span>
-                    <span ng-show="olist.isAdhocGroup()" >Assigned <i class="glyphicon glyphicon-question-sign" title="This occurence has been added into adhoc"></i></span>
+                    <span ng-hide="olist.isAdhocGroup()">Assign record to ad hoc group <i
+                            class="glyphicon glyphicon-question-sign"
+                            title="This occurence has NOT been added into adhoc"></i></span>
+                    <span ng-show="olist.isAdhocGroup()">Assigned <i class="glyphicon glyphicon-question-sign"
+                                                                     title="This occurence has been added into adhoc"></i></span>
                 </div>
                 <div class="col-sm-12">
                     <div class="col-sm-6">
@@ -116,12 +126,15 @@
                         </button>
 
 
-                         <span ng-show="olist.layer.adhocBBoxes.length > 0 && olist.devMode"><i class="glyphicon glyphicon-th-list" ng-click="olist.showAdhocBBoxList()"> </i></span>
+                        <span ng-show="olist.layer.adhocBBoxes.length > 0 && olist.devMode"><i
+                                class="glyphicon glyphicon-th-list" ng-click="olist.showAdhocBBoxList()"> </i></span>
                     </div>
 
                     <div ng-show="olist.hideAhhocBBoxList" class="col-sm-6">
                         <ul>
-                            <li  ng-repeat="bbox in olist.layer.adhocBBoxes"><i class="glyphicon glyphicon-map-marker" title="{{bbox[0]}} - {{bbox[1]}}"></i>{{bbox[2]}}  <i ng-click="olist.removeAdhocBBox($index)" class="glyphicon glyphicon-trash"></i></li>
+                            <li ng-repeat="bbox in olist.layer.adhocBBoxes"><i class="glyphicon glyphicon-map-marker"
+                                                                               title="{{bbox[0]}} - {{bbox[1]}}"></i>{{bbox[2]}}
+                                <i ng-click="olist.removeAdhocBBox($index)" class="glyphicon glyphicon-trash"></i></li>
                         </ul>
                     </div>
                 </div>

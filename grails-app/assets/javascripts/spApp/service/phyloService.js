@@ -10,6 +10,16 @@
     angular.module('phylo-service', [])
         .factory('PhyloService', ['$http', function ($http) {
 
+            var _httpDescription = function (method, httpconfig) {
+                if (httpconfig === undefined) {
+                    httpconfig = {};
+                }
+                httpconfig.service = 'PhyloService';
+                httpconfig.method = method;
+
+                return httpconfig;
+            };
+
             return {
                 /**
                  * Get phylolink tree list
@@ -37,11 +47,11 @@
                 getExpertTrees: function () {
                     //TODO: add parameter to exclude "tree"
                     var url = $SH.phylolinkUrl + "/phylo/getExpertTrees?noTreeText=true";
-                    return $http.get(url, {
+                    return $http.get(url, _httpDescription('search', {
                         headers: {
                             'Content-Type': 'application/json'
                         }
-                    })
+                    }))
                 }
             };
         }])

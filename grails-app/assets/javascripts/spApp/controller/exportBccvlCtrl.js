@@ -14,6 +14,19 @@
 
             $scope.stepNames = ['Select species'];
 
+            $scope.isSpeciesList = false;
+            $scope.includeSpeciesList = true;
+
+            $scope._httpDescription = function (method, httpconfig) {
+                if (httpconfig === undefined) {
+                    httpconfig = {};
+                }
+                httpconfig.service = 'ExportBccvlCtrl';
+                httpconfig.method = method;
+
+                return httpconfig;
+            };
+
             if (config && config.selectedQ) {
                 $scope.selectedQs = config.selectedQs
             } else {
@@ -30,6 +43,15 @@
 
             LayoutService.addToSave($scope);
 
+            $scope.setQ = function (query) {
+                console.log(query);
+                console.log(selectedQs);
+
+                if (query.species_list) {
+                    $scope.isSpeciesList = true;
+                }
+            };
+
             $scope.ok = function () {
                 if ($scope.step === 1) {
                     $scope.step = $scope.step + 1
@@ -40,12 +62,37 @@
                     $.each($scope.selectedQs, function (i) {
                         var q = $scope.selectedQs[i];
                         promises.push(BiocacheService.registerQuery(q).then(function (response) {
-                            data.push({name: q.name, query: response.qid, url: q.bs});
-                            return true
+                            BiocacheService.facet('taxon_name', response).then(function (facets) {
+                                if ($scope.includeSpeciesList && q.species_list) {
+                                    var species = [];
+                                    facets && facets.forEach(function (facet) {
+                                        if (facet && facet.count > 0 && facet.name) {
+                                            speices.push(facet.name)
+                                        }
+                                    });
+
+                                    data.push({
+                                        name: q.name,
+                                        query: response.qid,
+                                        url: q.bs,
+                                        trait: q.species_list,
+                                        species_list: species
+                                    });
+                                } else {
+                                    data.push({name: q.name, query: response.qid, url: q.bs});
+                                }
+
+                                console.log(data);
+
+                                return true
+                            })
                         }));
                     });
                     $q.all(promises).then(function () {
-                        $http.post(url, data).then(function (response) {
+                        var authorizationToken = "Bearer " + window.location.hash.split('&')[0].split('=')[1];
+                        var config = {headers: {Accept: 'application/json', Authorization: authorizationToken}};
+
+                        $http.post(url, {data: data}, $scope._httpDescription('export', config)).then(function (response) {
                             $scope.bccvlOpenUrl = response.headers('location');
                         });
                     });
@@ -58,7 +105,7 @@
             };
 
             $scope.bccvlLogin = function () {
-                var bccvlExportTool = encodeURI("&tool=exportBCCVL&toolParameters=" + encodeURIComponent('{"step":2}'));
+                var bccvlExportTool = encodeURIComponent("&tool=exportBccvl&toolParameters=" + encodeURIComponent('{"step":2}'));
 
                 //save session and open BCCVL login page
                 SessionsService.saveAndLogin(SessionsService.current(), $SH.bccvlLoginUrl + '$url' + bccvlExportTool, true, true)

@@ -11,6 +11,16 @@
         .factory("i18nService", ["$http", "gMessages", function ($http, gMessages) {
             var map = gMessages;
 
+            var _httpDescription = function (method, httpconfig) {
+                if (httpconfig === undefined) {
+                    httpconfig = {};
+                }
+                httpconfig.service = 'i18nService';
+                httpconfig.method = method;
+
+                return httpconfig;
+            };
+
             var object = {
                 map: map,
                 /**
@@ -57,7 +67,10 @@
 
                     map[k] = v;
 
-                    $http.post($SH.baseUrl + "/portal/i18n?lang=" + $SH.i18n, {key: k, value: v})
+                    $http.post($SH.baseUrl + "/portal/i18n?lang=" + $SH.i18n, {
+                        key: k,
+                        value: v
+                    }, _httpDescription('commit'))
                 }
             };
 

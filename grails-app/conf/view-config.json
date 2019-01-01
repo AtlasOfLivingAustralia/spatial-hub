@@ -37,7 +37,7 @@
         ]
       },
       {
-        "name": "Select environmental layers",
+        "name": "Select environmental layer",
         "inputs": [
           "grid",
           "layer"
@@ -244,6 +244,30 @@
         }
       }
     }
+  },
+  "TaxonFrequency": {
+    "view": [
+      {
+        "inputs": [
+          "area"
+        ]
+      },
+      {
+        "inputs": [
+          "minYear"
+        ]
+      },
+      {
+        "inputs": [
+          "species1"
+        ]
+      },
+      {
+        "inputs": [
+          "species2"
+        ]
+      }
+    ]
   }
 }
 

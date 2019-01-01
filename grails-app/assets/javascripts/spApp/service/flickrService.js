@@ -8,6 +8,16 @@
 
             var flickrCache = $cacheFactory('FlickrServiceCache');
 
+            var _httpDescription = function (method, httpconfig) {
+                if (httpconfig === undefined) {
+                    httpconfig = {};
+                }
+                httpconfig.service = 'FlickrService';
+                httpconfig.method = method;
+
+                return httpconfig;
+            };
+
             return {
                 getPhotos: function (bbox) {
                     var url = $SH.flickrUrl + $SH.flickrSearchPhotos
@@ -19,7 +29,7 @@
                         + '&per_page=' + $SH.flickrNbrOfPhotosToDisplay
                         + '&format=json&nojsoncallback=1&bbox='; //??? 50 perpage ???
 
-                    return $http.get(url + bbox).then(function (response) {
+                    return $http.get(url + bbox, _httpDescription('getPhotos')).then(function (response) {
                         return response.data;
                     });
                 },
@@ -34,14 +44,14 @@
                         + '&api_key=' + $SH.flickrApiKey
                         + '&format=json&nojsoncallback=1';
 
-                    return $http.get(url).then(function (response) {
+                    return $http.get(url, _httpDescription('getLicences')).then(function (response) {
                         if (response.data.licenses) {
                             var result = {};
                             angular.forEach(response.data.licenses.license, function (lic) {
                                 result[lic.id] = lic.name;
                             });
 
-                            flickrCache.put('licenses', result);
+                            flickrCache.put('licences', result);
                             return result;
                         }
                     });
@@ -51,7 +61,7 @@
                     var url = $SH.flickrUrl + $SH.flickrLicensesInfo
                         + '&api_key=' + $SH.flickrApiKey
                         + '&format=json&nojsoncallback=1';
-                    $http.get(url, {cache: flickrCache}).then(function (response) {
+                    $http.get(url, _httpDescription('getLicence', {cache: flickrCache})).then(function (response) {
                         var licenseName = '';
                         angular.forEach(response.data.licenses.license, function (lic) {
                             if (lic.id === licenseId) {

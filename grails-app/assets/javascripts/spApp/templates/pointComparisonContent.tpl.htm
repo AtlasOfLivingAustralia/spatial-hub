@@ -39,7 +39,8 @@
                     <button i18n="178" class="btn btn-default" ng-disabled="placingMarker" ng-click="addMarker()">Add
                         point
                     </button>
-                    <button i18n="179" class="btn btn-primary" ng-click="compare()" ng-disabled="points.length == 0">
+                    <button i18n="179" class="btn btn-primary" ng-click="compare()"
+                            ng-disabled="points.length == 0 || searching">
                         Compare
                     </button>
                 </div>

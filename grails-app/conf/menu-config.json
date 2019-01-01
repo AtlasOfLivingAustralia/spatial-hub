@@ -26,64 +26,71 @@
     "width": 70,
     "items": [
       {
-        "name": "Area Report",
+        "name": "Area Report - interactive",
         "open": "ToolAreaReportService"
       },
       {
-        "name": "Detailed Area Report (PDF)",
+        "name": "Area Report - PDF",
         "open": "AreaReport"
       },
       {
-        "name": "Calculate AOO and EOO",
-        "open": "AooEoo"
-      },
-      {
-        "name": "Nearest Locality",
-        "open": "nearestLocality"
-      },
-      {
-        "name": "Point Comparisons",
-        "open": "pointComparison"
-      },
-      {
-        "name": "Scatterplot",
+        "name": "Scatterplot - single",
         "open": "ScatterplotCreate"
       },
       {
-        "name": "Scatterplot List",
+        "name": "Scatterplot - multiple",
         "open": "ScatterplotList"
+      },
+      {
+        "name": "Taxon Frequency",
+        "open": "TaxonFrequency"
       },
       {
         "name": "Tabulate",
         "open": "tabulate"
       },
       {
-        "name": "Compare Areas",
-        "open": "CompareAreas"
+        "name": "Compare Points",
+        "open": "pointComparison"
       },
       {
-        "name": "Points to Grid",
-        "open": "PointsToGrid"
+        "name": "Compare Areas",
+        "open": "CompareAreas"
       },
       {
         "name": "Generate Points",
         "open": "GeneratePoints"
       },
       {
-        "name": "Phylogenetic Diversity",
-        "open": "PhylogeneticDiversity"
+        "name": "Points to Grid",
+        "open": "PointsToGrid"
       },
       {
-        "name": "Classify",
-        "open": "Classification"
+        "name": "Calculate AOO and EOO",
+        "open": "AooEoo"
       },
       {
         "name": "Predict",
         "open": "Maxent"
       },
       {
+        "name": "Classify",
+        "open": "Classification"
+      },
+      {
+        "name": "Phylogenetic Diversity",
+        "open": "PhylogeneticDiversity"
+      },
+      {
         "name": "GDM",
         "open": "GDMStep1"
+      },
+      {
+        "name": "Nearest Locality",
+        "open": "nearestLocality"
+      },
+      {
+        "separator": true
       },
       {
         "name": "Restore Prior Analysis",
@@ -120,6 +127,9 @@
         }
       },
       {
+        "separator": true
+      },
+      {
         "name": "Restore prior analysis",
         "open": "analysis"
       }
@@ -134,7 +144,7 @@
         "open": "exportMap"
       },
       {
-        "name": "Species List",
+        "name": "Area Checklist",
         "open": "ToolExportChecklistService"
       },
       {
@@ -148,10 +158,6 @@
       {
         "name": "Points to BCCVL",
         "open": "exportBccvl"
-      },
-      {
-        "name": "Session",
-        "open": "saveSession"
       }
     ]
   },

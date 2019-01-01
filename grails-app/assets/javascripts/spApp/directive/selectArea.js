@@ -97,6 +97,12 @@
 
                                     scope.selected = scope._selectedArea.area[0].name
                                 }
+                            } else {
+                                if (scope._selectedArea.area[0].uid === undefined) {
+                                    scope.selected = scope._selectedArea.area[0].name
+                                } else {
+                                    scope.selected = scope._selectedArea.area[0].uid
+                                }
                             }
                         }, 0);
                     }

@@ -7,9 +7,20 @@
      * @description
      *    Panel displaying selected map layer information and controls
      */
-    angular.module('sp-legend-directive', ['map-service', 'biocache-service', 'layers-service','popup-service'])
-        .directive('spLegend', ['$timeout', '$q', 'MapService', 'BiocacheService', 'LayersService', 'ColourService', '$http', 'PopupService',
-            function ($timeout, $q, MapService, BiocacheService, LayersService, ColourService, $http, PopupService) {
+    angular.module('sp-legend-directive', ['map-service', 'biocache-service', 'layers-service', 'popup-service'])
+        .directive('spLegend', ['$timeout', '$q', 'MapService', 'BiocacheService', 'LayersService', 'ColourService', '$http', 'LayoutService', 'PopupService',
+            function ($timeout, $q, MapService, BiocacheService, LayersService, ColourService, $http, LayoutService, PopupService) {
+
+                var _httpDescription = function (method, httpconfig) {
+                    if (httpconfig === undefined) {
+                        httpconfig = {};
+                    }
+                    httpconfig.service = 'spLegend';
+                    httpconfig.method = method;
+
+                    return httpconfig;
+                };
+
                 return {
                     scope: {},
                     templateUrl: '/spApp/legendContent.htm',
@@ -20,12 +31,21 @@
                         scope.yearMax = new Date().getFullYear();
 
                         scope.selected = MapService.selected;
+                        scope.selectedWatch = [MapService.selected];
 
 
                         scope.sortType = 'count';
                         scope.sortReverse = true;
 
-                        scope.$watch('selected', function (oldValue, newValue) {
+                        scope.getSelected = function () {
+                            if (scope.selected && scope.selected.layer) {
+                                return scope.selected.layer.id
+                            } else {
+                                return 0
+                            }
+                        };
+
+                        scope.$watch('getSelected()', function (oldValue, newValue) {
                             scope.setAreaLayers();
                         });
 
@@ -100,7 +120,7 @@
 
                         scope.adhocCreateInOut = function () {
                             if (scope.selected.layer !== undefined) {
-                                if (scope.selected.layer.inAdhocQ){
+                                if (scope.selected.layer.inAdhocQ) {
                                     var inFq = scope.selected.layer.inAdhocQ
                                     BiocacheService.newLayerAddFq(scope.selected.layer, inFq,
                                         scope.selected.layer.name + " : " + $i18n(340, "in adhoc")).then(function (data) {
@@ -108,7 +128,7 @@
                                     });
                                 }
 
-                                if (scope.selected.layer.outAdhocQ){
+                                if (scope.selected.layer.outAdhocQ) {
                                     var outFq = scope.selected.layer.outAdhocQ;
                                     BiocacheService.newLayerAddFq(scope.selected.layer, outFq,
                                         scope.selected.layer.name + " : " + $i18n(341, "out adhoc")).then(function (data) {
@@ -284,14 +304,16 @@
                         scope.setColor = function (color) {
                             if (scope.selected.layer !== undefined) {
                                 scope.selected.layer.color = color;
-                                scope.updateWMS()
+                                scope.updateWMS();
+                                scope.scatterplotUpdate()
                             }
                         };
 
                         scope.setColorType = function (colorType) {
                             if (scope.selected.layer !== undefined) {
                                 scope.selected.layer.colorType = colorType;
-                                scope.updateWMS()
+                                scope.updateWMS();
+                                scope.scatterplotUpdate()
                             }
                         };
 
@@ -342,10 +364,10 @@
                             }
                         };
 
-                        scope.checkAllFacets = function(){
-                            if (scope.isAllFacetsSelected){
+                        scope.checkAllFacets = function () {
+                            if (scope.isAllFacetsSelected) {
                                 scope.facetSelectAll()
-                            }else{
+                            } else {
                                 scope.facetClearSelection()
                             }
                         }
@@ -361,11 +383,11 @@
 
                         scope.isAllFacetsSelected = false;
 
-                        scope.ifAllFacetsSelected = function(){
+                        scope.ifAllFacetsSelected = function () {
                             if (scope.selected.layer !== undefined) {
                                 for (var i = 0; i < scope.selected.layer.facetList[scope.selected.layer.facet].length; i++) {
                                     if (!scope.selected.layer.facetList[scope.selected.layer.facet][i].selected) {
-                                       return false;
+                                        return false;
                                     }
                                 }
                                 return true;
@@ -566,6 +588,7 @@
                             } else {
                                 scope.updateWMS();
                             }
+                            scope.scatterplotUpdate();
                         };
 
                         scope.moveUp = function () {
@@ -639,7 +662,8 @@
                         scope.setSize = function (size) {
                             if (scope.selected.layer !== undefined) {
                                 scope.selected.layer.size = size;
-                                scope.updateWMS()
+                                scope.updateWMS();
+                                scope.scatterplotUpdate()
                             }
                         };
 
@@ -673,7 +697,13 @@
                                     if (scope.fq.length) {
                                         firstLayer.layerParams.fq = scope.fq
                                     } else {
-                                        firstLayer.layerParams.fq = undefined
+                                        // workaround for 'sel' bug
+                                        if (scope.selected.layer.sel !== undefined && scope.selected.layer.sel.length > 0) {
+                                            firstLayer.layerParams.fq = [""]
+                                        } else {
+                                            firstLayer.layerParams.fq = undefined
+                                        }
+
                                     }
 
                                     MapService.reMap(scope.selected);
@@ -788,26 +818,31 @@
                         };
 
                         scope.scatterplotUpdate = function (value) {
-                            scope.selected.layer.scatterplotUpdating = true;
-                            var task = {
-                                name: 'ScatterplotDraw',
-                                input: $.extend({}, scope.selected.layer)
-                            };
-                            task.input.opacity = task.input.opacity / 100;
-                            if (value) {
-                                scope.selected.layer.scatterplotSelection = value;
-                                task.input.selection = value;
-                            } else {
-                                task.input.selection = scope.selected.layer.scatterplotSelection;
+                            if (scope.selected && scope.selected.layer && scope.selected.layer.scatterplotUrl) {
+
+                                scope.selected.layer.scatterplotUpdating = true;
+                                var task = {
+                                    name: 'ScatterplotDraw',
+                                    input: $.extend({}, scope.selected.layer)
+                                };
+                                if (task.input.facet !== -1) task.input.colorType = task.input.facet;
+
+                                task.input.opacity = task.input.opacity / 100;
+                                if (value || value == null) {
+                                    scope.selected.layer.scatterplotSelection = value;
+                                    task.input.selection = value;
+                                } else {
+                                    task.input.selection = scope.selected.layer.scatterplotSelection;
+                                }
+                                task.input.wkt = [{pid: scope.selected.layer.highlightWkt}];
+                                $http.post($SH.baseUrl + '/portal/postTask?sessionId=' + $SH.sessionId, task, _httpDescription('updateScatterplot', {ignoreErrors: true})).then(function (response) {
+                                    scope.checkScatterplotStatus(LayersService.url() + '/tasks/status/' + response.data.id, scope.selected.layer)
+                                })
                             }
-                            task.input.wkt = [{pid: scope.selected.layer.highlightWkt}];
-                            $http.post($SH.baseUrl + '/portal/postTask?sessionId=' + $SH.sessionId, task).then(function (response) {
-                                scope.checkScatterplotStatus(LayersService.url() + '/tasks/status/' + response.data.id, scope.selected.layer)
-                            })
                         };
 
                         scope.checkScatterplotStatus = function (url, layer) {
-                            $http.get(url).then(function (response) {
+                            $http.get(url, _httpDescription('checkScatterplotStatus', {ignoreErrors: true})).then(function (response) {
                                 scope.status = response.data.message;
 
                                 if (response.data.status < 2) {
@@ -850,6 +885,8 @@
                                                         scope.selected.layer.sel = undefined;
                                                         fqs = [];
                                                         scope.selected.layer.scatterplotSelectionCount = 0;
+
+                                                        scope.updateWMS();
                                                     } else {
                                                         var sel = encodeURIComponent(fq);
                                                         if (sel !== scope.selected.layer.sel) {
@@ -869,12 +906,25 @@
                                                         scope.selected.layer.scatterplotLabel2 = Messages.get('facet.' + species.scatterplotLayers[1]) + " : " +
                                                             species.scatterplotSelectionExtents[0].toFixed(4) + " - " + species.scatterplotSelectionExtents[2].toFixed(4);
                                                     }
+                                                } else {
+                                                    scope.selected.layer.scatterplotSelectionExtents = null;
+                                                    scope.selected.layer.scatterplotLabel1 = '';
+                                                    scope.selected.layer.scatterplotLabel2 = '';
+                                                    scope.selected.layer.scatterplotFq = [];
+                                                    scope.selected.layer.sel = undefined;
+                                                    scope.selected.layer.scatterplotSelectionCount = 0;
+                                                    scope.updateWMS();
                                                 }
                                             }
                                         }
                                     }
                                     if (updateNow) layer.scatterplotUpdating = false;
                                 }
+                            }, function (error) {
+                                // retry
+                                $timeout(function () {
+                                    scope.checkScatterplotStatus(url, layer)
+                                }, 500)
                             })
                         };
 
@@ -912,7 +962,8 @@
                         };
 
                         scope.applyColour = function () {
-                            scope.updateWMS()
+                            scope.updateWMS();
+                            scope.scatterplotUpdate()
                         }
                     }
 
