@@ -70,8 +70,8 @@
                                         //end fix
 
                                         for (var j in i.layerParams) {
-                                            if (i.layerParams.hasOwnProperty(j)) {
-                                                url += '&' + j + '=' + encodeURIComponent(i.layerParams[j])
+                                            if (i.layerParams.hasOwnProperty(j) && i.layerParams[j] !== undefined) {
+                                                url += '&' + j + '=' + i.layerParams[j]
                                             }
                                         }
                                         //Check if opacity has been defined

@@ -591,6 +591,11 @@
                                 }
                             });
 
+                            $scope.bounds.southWest.lng = map.getBounds().getWest();
+                            $scope.bounds.northEast.lng = map.getBounds().getEast();
+                            $scope.bounds.southWest.lat = map.getBounds().getSouth();
+                            $scope.bounds.northEast.lat = map.getBounds().getNorth();
+
                             //all setup finished
                             if ($spMapLoaded !== undefined) {
                                 $spMapLoaded();
