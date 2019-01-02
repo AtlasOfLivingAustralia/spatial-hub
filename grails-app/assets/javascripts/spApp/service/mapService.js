@@ -8,8 +8,8 @@
      *   Access to map functions
      */
     angular.module('map-service', ['layers-service', 'facet-auto-complete-service', 'biocache-service', 'logger-service'])
-        .factory("MapService", ['LayoutService', '$q', '$timeout', 'LayersService', 'FacetAutoCompleteService', 'BiocacheService', 'ColourService', 'LoggerService',
-            function (LayoutService, $q, $timeout, LayersService, FacetAutoCompleteService, BiocacheService, ColourService, LoggerService) {
+        .factory("MapService", ['$rootScope', '$q', '$timeout', 'LayersService', 'FacetAutoCompleteService', 'BiocacheService', 'ColourService', 'LoggerService', 'ListsService',
+            function ($rootScope, $q, $timeout, LayersService, FacetAutoCompleteService, BiocacheService, ColourService, LoggerService, ListsService) {
                 var bounds = {};
                 var layers = [];
                 var highlightTemplate = {
@@ -433,6 +433,10 @@
                                 newLayer.layerParams.fq = fq;
                             }
 
+                            if (id.species_list && $SH.listsFacets) {
+                                promises.push(ListsService.getItemsQ(id.species_list));
+                            }
+
                             promises.push(FacetAutoCompleteService.search(id).then(function (data) {
                                 id.list = data;
                             }));
@@ -607,8 +611,10 @@
 
                         // do not select this layer if it is a child layer
                         if (!parentLeafletGroup) {
-                            promises.push(LayoutService.enable('legend'));
-                            promises.push(MapService.select(id));
+                            $timeout(function () {
+                                $rootScope.$broadcast('showLegend');
+                                MapService.select(id);
+                            }, 0);
                         }
 
                         //add to promises if waiting is required
@@ -739,38 +745,6 @@
                         query.area.uid = layer.uid;
                         query.area.type = layer.type || '';
                         return query
-                    },
-                    info: function (item) {
-                        if (item.layertype === 'species') {
-                            item.display = {size: 'full'};
-                            LayoutService.openModal('speciesInfo', item, false)
-                        } else if (item.layertype === 'area' && item.metadataUrl === undefined) {
-                            var b = item.bbox;
-                            if ((item.bbox + '').match(/^POLYGON/g)) {
-                                //convert POLYGON box to bounds
-                                var split = item.bbox.split(',');
-                                var p1 = split[1].split(' ');
-                                var p2 = split[3].split(' ');
-                                b = [[Math.min(p1[1], p2[1]), Math.min(p1[0], p2[0])], [Math.max(p1[1], p2[1]), Math.max(p1[0], p2[0])]]
-                            }
-                            if (item.bbox && item.bbox.length === 4) {
-                                b = [[item.bbox[1], item.bbox[0]], [item.bbox[3], item.bbox[2]]]
-                            }
-
-                            bootbox.alert("<b>Area</b><br/><br/>" +
-                                "<table class='table-striped table table-bordered'>" +
-                                "<tr><td style='width:100px'>" + $i18n("Name") + "</td><td>" + item.name + "</td></tr>" +
-                                "<tr><td>" + $i18n(347, "Description") + "</td><td>" + item.description + "</td></tr>" +
-                                "<tr><td>" + $i18n(348, "Area (sq km)") + "</td><td>" + item.area_km.toFixed(2) + "</td></tr>" +
-                                "<tr><td>" + $i18n(349, "Extents") + "</td><td>" + b[0][0] + " " + b[0][1] + ", " +
-                                b[1][0] + " " + b[1][1] + "</td></tr></table>")
-                        } else {
-                            if (item.metadataUrl !== undefined) {
-                                LayoutService.openIframe(item.metadataUrl, '', '')
-                            } else {
-                                LayoutService.openIframe(LayersService.url() + '/layer/more/' + item.layerId, '', '')
-                            }
-                        }
                     },
                     setBaseMap: function (basemap) {
                         this.leafletScope.setBaseMap(basemap);

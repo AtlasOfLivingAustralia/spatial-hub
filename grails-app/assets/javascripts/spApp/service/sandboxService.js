@@ -9,6 +9,16 @@
      */
     angular.module('sandbox-service', [])
         .factory("SandboxService", ["$http", function ($http) {
+            var _httpDescription = function (method, httpconfig) {
+                if (httpconfig === undefined) {
+                    httpconfig = {};
+                }
+                httpconfig.service = 'SandboxService';
+                httpconfig.method = method;
+
+                return httpconfig;
+            };
+
             return {
                 /**
                  * List sandbox layers for the current user. User must be logged in.
@@ -24,7 +34,7 @@
                  *  [TODO: example]
                  */
                 list: function (userId) {
-                    return $http.get($SH.collectionsUrl + "/ws/tempDataResource?alaId=" + userId, {withCredentials: true}).then(function (response) {
+                    return $http.get($SH.collectionsUrl + "/ws/tempDataResource?alaId=" + userId, _httpDescription('list', {withCredentials: true})).then(function (response) {
                         return response.data;
                     });
                 }

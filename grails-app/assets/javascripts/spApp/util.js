@@ -210,6 +210,8 @@ var Util = {
         var link = document.createElement("a");
         if (filename !== undefined) {
             link.download = filename
+        } else {
+            link.download = "download"
         }
         link.target = '_blank';
         link.href = url;

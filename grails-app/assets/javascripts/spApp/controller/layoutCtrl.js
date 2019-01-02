@@ -47,12 +47,6 @@
                         SessionsService.load(sessionId)
                     }
                 };
-
-                $timeout(function () {
-                    var sessionId = /[\?&]ss=[0-9]*/.exec(window.location.search);
-                    $scope.loadSession(sessionId)
-                }, 2000)
-
             }])
 }(angular));
 

@@ -13,6 +13,16 @@
             //TODO: current session history for retrieval of client side tool outputs (stored) and spatial-service outputs
             var history = [];
 
+            var _httpDescription = function (method, httpconfig) {
+                if (httpconfig === undefined) {
+                    httpconfig = {};
+                }
+                httpconfig.service = 'LoggerService';
+                httpconfig.method = method;
+
+                return httpconfig;
+            };
+
             return {
                 /**
                  * Log event for this user. e.g. client side tool usage
@@ -29,7 +39,7 @@
                         '&sessionId=' + encodeURIComponent($SH.sessionId) +
                         '&userId=' + encodeURIComponent($SH.userId);
 
-                    return $http.post($SH.layersServiceUrl + "/log" + params, data)
+                    return $http.post($SH.layersServiceUrl + "/log" + params, data, _httpDescription('log', {ignoreErrors: true}))
                 }
             }
         }])

@@ -2165,3 +2165,26 @@ body > footer > div > div.col-md-12.acknowledgement-callout.acknowledgement-call
 .glyphicon-hide {
     color: transparent;
 }
+
+.modeless {
+    pointer-events: none;
+}
+
+.modeless + .modal-backdrop {
+    display: none;
+}
+
+.modeless > .modal-dialog > .modal-content {
+    border-radius: 6px 6px 0 0;
+    border: 2px solid;
+    pointer-events: all;
+}
+
+.modeless > .modal-dialog {
+    margin: 0px;
+}
+
+.modeless > .modal-dialog > .modal-content > .modal-body {
+    height: 500px;
+    overflow-y: scroll;
+}

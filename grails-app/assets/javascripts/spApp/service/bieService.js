@@ -10,6 +10,16 @@
      */
     angular.module('bie-service', [])
         .factory("BieService", ["$http", function ($http) {
+            var _httpDescription = function (method, httpconfig) {
+                if (httpconfig === undefined) {
+                    httpconfig = {};
+                }
+                httpconfig.service = 'BieService';
+                httpconfig.method = method;
+
+                return httpconfig;
+            };
+
             return {
                 /**
                  * Get taxon classification information
@@ -31,7 +41,7 @@
                  * }]
                  */
                 classification: function (lsid) {
-                    return $http.get($SH.bieServiceUrl + "/classification/" + lsid).then(function (response) {
+                    return $http.get($SH.bieServiceUrl + "/classification/" + lsid, _httpDescription('classification')).then(function (response) {
                         var list = response.data;
                         for (var i in list) {
                             if (list.hasOwnProperty(i)) {
@@ -87,7 +97,7 @@
                     return $http.post($SH.bieServiceUrl + "/species/lookup/bulk", {
                         names: names,
                         vernacular: false
-                    }).then(function (response) {
+                    }, _httpDescription('nameLookup')).then(function (response) {
                         var list = response.data;
                         for (var i in list) {
                             if (list.hasOwnProperty(i)) {
@@ -129,7 +139,7 @@
                  *  }]
                  */
                 guidLookup: function (guids) {
-                    return $http.post($SH.bieServiceUrl + "/species/guids/bulklookup", guids).then(function (response) {
+                    return $http.post($SH.bieServiceUrl + "/species/guids/bulklookup", guids, _httpDescription('guidLookup')).then(function (response) {
                         var list = response.data.searchDTOList;
                         for (var i in list) {
                             if (list.hasOwnProperty(i)) {

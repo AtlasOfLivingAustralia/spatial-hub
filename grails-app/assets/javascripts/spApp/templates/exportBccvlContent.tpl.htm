@@ -18,7 +18,10 @@
                         <i style="float:right;font-size:25px;color:red;" class="glyphicon glyphicon-asterisk"
                            ng-show="isDisabled()"></i>
 
-                        <div select-species on-custom="setQ" selected-q="selectedQs"></div>
+                        <div select-species on-custom="setQ" selected-q="selectedQs" can-add-species="false"></div>
+
+                        <input type="checkbox"
+                               ng-model="includeSpeciesList"><span>Include species traits (if available)</span>
                     </div>
                     <div ng-show="step == '3'">
                         <span i18n="89" class="process-description">Export Status</span>

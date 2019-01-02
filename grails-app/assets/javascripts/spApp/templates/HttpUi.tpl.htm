@@ -1,0 +1,42 @@
+<div style="position:absolute;border:1px solid;top:0px;z-index:9999999;">
+    <button ng-click="console.log('b');abcd()">resetLayout</button>
+
+    <button ng-click="console.log('c');failNext()">fail next http request</button>
+
+
+    <table>
+        <tr>
+            <td>requests</td>
+            <td>
+                errors
+            </td>
+
+        </tr>
+        <tr>
+            <td>
+                <div ng-repeat="request in requests">
+                    {{request.config.service}}, {{request.config.method}}<br/>
+                </div>
+            </td>
+            <td>
+                <div ng-repeat="error in errors">
+                    <div>
+                        <i class="glyphicon glyphicon-warning-sign"></i>
+                        <div class="btn-group btn-group-sm">
+                            <button>retry
+                            </button>
+                        </div>
+                    </div>
+
+                    {{error.config.service}}, {{error.config.method}}, {{error.layout.id}}, {{error.layout.panelMode}},
+                    {{error.layout.layoutStack.length}}
+                    <button ng-click="console.log('a');retry(error)">retry</button>
+                    <br/>
+                </div>
+            </td>
+
+        </tr>
+    </table>
+
+
+</div>

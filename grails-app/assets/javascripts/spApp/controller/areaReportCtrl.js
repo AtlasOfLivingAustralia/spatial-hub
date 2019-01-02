@@ -14,6 +14,17 @@
                       ListsService, LayersService) {
                 LayoutService.addToSave($scope);
 
+                $scope._httpDescription = function (method, httpconfig) {
+                    if (httpconfig === undefined) {
+                        httpconfig = {};
+                    }
+                    httpconfig.service = 'AreaReportCtrl';
+                    httpconfig.method = method;
+                    httpconfig.ignoreErrors = true;
+
+                    return httpconfig;
+                };
+
                 $scope.area = data;
                 $scope.endemic = data.endemic;
 
@@ -24,11 +35,11 @@
 
                 $scope.journalMapDocumentCount = function () {
                     if ($scope.area.wkt !== undefined && $scope.area.wkt.length > 0) {
-                        $http.get(LayersService.url() + "/journalMap/search?wkt=" + $scope.area.wkt).then(function (response) {
+                        $http.get(LayersService.url() + "/journalMap/search?wkt=" + $scope.area.wkt, $scope._httpDescription('journalmapCount')).then(function (response) {
                             $scope.setJournalMapCount(response.data)
                         });
                     } else {
-                        $http.get(LayersService.url() + "/journalMap/search?pid=" + $scope.area.pid).then(function (response) {
+                        $http.get(LayersService.url() + "/journalMap/search?pid=" + $scope.area.pid, $scope._httpDescription('journalmapCount')).then(function (response) {
                             $scope.setJournalMapCount(response.data)
                         });
                     }
@@ -60,11 +71,11 @@
 
                 $scope.distributionCounts = function () {
                     if ($scope.area.wkt !== undefined && $scope.area.wkt.length > 0) {
-                        $http.get(LayersService.url() + "/distributions?wkt=" + $scope.area.wkt).then(function (response) {
+                        $http.get(LayersService.url() + "/distributions?wkt=" + $scope.area.wkt, $scope._httpDescription('distributionCounts')).then(function (response) {
                             $scope.setDistributionCount(response.data)
                         });
                     } else {
-                        $http.get(LayersService.url() + "/distributions?pid=" + $scope.area.pid).then(function (response) {
+                        $http.get(LayersService.url() + "/distributions?pid=" + $scope.area.pid, $scope._httpDescription('distributionCounts')).then(function (response) {
                             $scope.setDistributionCount(response.data)
                         });
                     }
@@ -96,11 +107,11 @@
                 };
                 $scope.checklistCounts = function () {
                     if ($scope.area.wkt !== undefined && $scope.area.wkt.length > 0) {
-                        $http.get(LayersService.url() + "/checklists?wkt=" + $scope.area.wkt).then(function (response) {
+                        $http.get(LayersService.url() + "/checklists?wkt=" + $scope.area.wkt, $scope._httpDescription('checklistCounts')).then(function (response) {
                             $scope.setChecklistCount(response.data)
                         });
                     } else {
-                        $http.get(LayersService.url() + "/checklists?pid=" + $scope.area.pid).then(function (response) {
+                        $http.get(LayersService.url() + "/checklists?pid=" + $scope.area.pid, $scope._httpDescription('checklistCounts')).then(function (response) {
                             $scope.setChecklistCount(response.data)
                         });
                     }
@@ -120,11 +131,11 @@
                 };
                 $scope.gazPointCounts = function () {
                     if ($scope.area.wkt !== undefined && $scope.area.wkt.length > 0) {
-                        $http.get(LayersService.url() + "/objects/inarea/" + LayersService.gazField() + "?wkt=" + $scope.area.wkt + "&limit=9999999").then(function (response) {
+                        $http.get(LayersService.url() + "/objects/inarea/" + LayersService.gazField() + "?wkt=" + $scope.area.wkt + "&limit=9999999", $scope._httpDescription('gazetteerCounts')).then(function (response) {
                             $scope.setGazCount(response.data)
                         });
                     } else {
-                        $http.get(LayersService.url() + "/objects/inarea/" + LayersService.gazField() + "?pid=" + $scope.area.pid + "&limit=9999999").then(function (response) {
+                        $http.get(LayersService.url() + "/objects/inarea/" + LayersService.gazField() + "?pid=" + $scope.area.pid + "&limit=9999999", $scope._httpDescription('gazetteerCounts')).then(function (response) {
                             $scope.setGazCount(response.data)
                         });
                     }
@@ -143,11 +154,11 @@
                 };
                 $scope.pointOfInterestCounts = function () {
                     if ($scope.area.wkt !== undefined && $scope.area.wkt.length > 0) {
-                        $http.get(LayersService.url() + "/intersect/poi/wkt?wkt=" + $scope.area.wkt + "&limit=9999999").then(function (response) {
+                        $http.get(LayersService.url() + "/intersect/poi/wkt?wkt=" + $scope.area.wkt + "&limit=9999999", $scope._httpDescription('pointsOfInterestCount')).then(function (response) {
                             $scope.setPoi(response.data)
                         });
                     } else {
-                        $http.get(LayersService.url() + "/intersect/poi/wkt?pid=" + $scope.area.pid + "&limit=9999999").then(function (response) {
+                        $http.get(LayersService.url() + "/intersect/poi/wkt?pid=" + $scope.area.pid + "&limit=9999999", $scope._httpDescription('pointsOfInterestCount')).then(function (response) {
                             $scope.setPoi(response.data)
                         });
                     }
@@ -184,24 +195,20 @@
                             query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
                             map: false,
                             extraQ: ["geospatial_kosher:true"]
+                        },
+                        {
+                            name: $i18n(366, "Number of endemic species"),
+                            endemic: true,
+                            query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
+                            map: false
+                        },
+                        {
+                            name: $i18n(429, "Number of endemic species - spatially valid only"),
+                            endemic: true,
+                            query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
+                            map: false,
+                            extraQ: ["geospatial_kosher:true"]
                         }];
-
-                    if ($scope.endemic) {
-                        $.each([
-                            {
-                                name: $i18n(366, "Number of endemic species"),
-                                query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
-                                map: false
-                            },
-                            {
-                                name: $i18n(367, "Number of endemic - spatially valid only"),
-                                query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
-                                map: false,
-                                extraQ: ["geospatial_kosher:true"]
-                            }], function (i, v) {
-                            $scope.items.push(v)
-                        })
-                    }
 
                     // TODO: move this into config and retrieve from $SH
                     $.each([
@@ -402,6 +409,39 @@
                             $scope.makeCSV()
                         }, 2000)
                     }
+                };
+
+                $scope.makeModeless = function () {
+                    $('.modal').addClass('modeless');
+
+                    // $('.modal-backdrop')[0].style.display = 'none';
+                    //
+                    // $('.modal')[0].style.pointerEvents = 'none';
+                    //
+                    // $('.modal-dialog')[0].style.margin = '0px';
+
+                    $('.modal-dialog').draggable({
+                        handle: ".modal-header"
+                    });
+
+                    // $('.modal-dialog')[0].style.pointerEvents = 'all';
+                    //
+                    // $('.modal-content')[0].style.borderRadius = '6px 6px 0 0';
+                    // $('.modal-content')[0].style.border = '2px solid';
+                    //
+                    // $('.modal-body')[0].style.height = '500px';
+                    // $('.modal-body')[0].style.overflowY = 'scroll';
+
+                    $('.modal-content').resizable({
+                        minHeight: 180,
+                        minWidth: 350
+                    });
+
+                    $('.modal-content').on("resize", function () {
+                        $('.modal-body').height($('.modal-dialog').height() - $('.modal-header').outerHeight() - $('.modal-footer').outerHeight() - ($('.modal-body').outerHeight() - $('.modal-body').height()))
+                    }).trigger('resize');
                 }
+
+                $timeout($scope.makeModeless, 0);
             }])
 }(angular));

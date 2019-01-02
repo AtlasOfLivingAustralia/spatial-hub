@@ -9,6 +9,16 @@
      */
     angular.module('gaz-auto-complete-service', ['layers-service'])
         .factory("GazAutoCompleteService", ["$http", "LayersService", function ($http, LayersService) {
+            var _httpDescription = function (method, httpconfig) {
+                if (httpconfig === undefined) {
+                    httpconfig = {};
+                }
+                httpconfig.service = 'GazAutoCompleteService';
+                httpconfig.method = method;
+
+                return httpconfig;
+            };
+
             return {
                 /**
                  * Search gazetteer
@@ -32,7 +42,7 @@
                      }]
                  */
                 search: function (term) {
-                    return $http.get(LayersService.url() + "/search?q=" + term).then(function (response) {
+                    return $http.get(LayersService.url() + "/search?q=" + term, _httpDescription('search')).then(function (response) {
                         return response.data;
                     });
                 }

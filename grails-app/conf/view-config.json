@@ -37,7 +37,7 @@
         ]
       },
       {
-        "name": "Select environmental layers",
+        "name": "Select environmental layer",
         "inputs": [
           "grid",
           "layer"
@@ -245,22 +245,30 @@
       }
     }
   },
-  "TaxonFrequency":{
-    "input":{
-      "area": {
-              },
-      "species1": {
-            },
-      "species2": {
-        "description": "A supset of the first species(optional).",
-        "constraints": {
-          "min":0,
-          "max": 1
-        }
-       }
-    }
+  "TaxonFrequency": {
+    "view": [
+      {
+        "inputs": [
+          "area"
+        ]
+      },
+      {
+        "inputs": [
+          "minYear"
+        ]
+      },
+      {
+        "inputs": [
+          "species1"
+        ]
+      },
+      {
+        "inputs": [
+          "species2"
+        ]
+      }
+    ]
   }
-
 }
 
 

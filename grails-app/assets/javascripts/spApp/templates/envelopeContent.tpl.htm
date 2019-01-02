@@ -52,14 +52,14 @@
             </table>
             <div ng-show="layers.length > 0">
                 <div>
-                    <input style="width:150px" ng-model="selection.min" ng-change="refreshAll()">
+                    <input style="width:150px" ng-model="selection.min" ng-change="refreshAllTimeout()">
                     <label i18n="83">Min</label>
                     <span style="display:inline-block;width:150px;vertical-align: text-top;">
                         &nbsp;(>=&nbsp;{{selection.layer.environmentalvaluemin + " " + selection.layer.environmentalvalueunits}})
                     </span>
                 </div>
                 <div ng-show="layers.length > 0">
-                    <input style="width:150px" ng-model="selection.max" ng-change="refreshAll()">
+                    <input style="width:150px" ng-model="selection.max" ng-change="refreshAllTimeout()">
                     <label i18n="84">Max</label>
                     <span style="display:inline-block;width:150px;vertical-align: text-top;">
                         &nbsp;(<=&nbsp;{{selection.layer.environmentalvaluemax + " " + selection.layer.environmentalvalueunits}})

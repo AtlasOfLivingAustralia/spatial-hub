@@ -11,6 +11,16 @@
         .directive('nearestLocality', ['$rootScope', 'MapService', '$timeout', 'LayersService', 'LayoutService',
             'PredefinedAreasService', "$http", '$filter',
             function ($rootScope, MapService, $timeout, LayersService, LayoutService, PredefinedAreasService, $http, $filter) {
+                var _httpDescription = function (method, httpconfig) {
+                    if (httpconfig === undefined) {
+                        httpconfig = {};
+                    }
+                    httpconfig.service = 'NearestLocality';
+                    httpconfig.method = method;
+
+                    return httpconfig;
+                };
+
                 return {
                     scope: {},
                     templateUrl: '/spApp/nearestLocalityContent.htm',
@@ -94,7 +104,11 @@
                                 scope.pointLabel = '';
                                 scope.searching = true;
 
-                                $http.get(url).then(function (response) {
+                                $timeout(function () {
+                                    $(window).trigger("resize");
+                                }, 0);
+
+                                $http.get(url, _httpDescription('search')).then(function (response) {
                                     scope.points = response.data;
                                     scope.showWkt();
                                     scope.searching = false;
@@ -110,6 +124,10 @@
                                         $i18n(160, "Feature") + "," + $i18n(161, "Location") + "," + $i18n(162, "Distance (km)") + "," + $i18n(163, "Heading (deg)");
                                     var blob = new Blob([header + rows], {type: 'text/plain'});
                                     scope.exportUrl = (window.URL || window.webkitURL).createObjectURL(blob);
+
+                                    $timeout(function () {
+                                        $(window).trigger("resize");
+                                    }, 0);
                                 }, function (response) {
                                     scope.searching = false;
                                     scope.pointLabel = $i18n(337, "Error")
