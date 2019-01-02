@@ -88,7 +88,12 @@
       {
         "name": "Restore Prior Analysis",
         "open": "analysis"
+      },
+      {
+        "name": "Taxon Frequency Graph",
+        "open": "TaxonFrequency"
       }
+
     ]
   },
   {

@@ -244,7 +244,23 @@
         }
       }
     }
+  },
+  "TaxonFrequency":{
+    "input":{
+      "area": {
+              },
+      "species1": {
+            },
+      "species2": {
+        "description": "A supset of the first species(optional).",
+        "constraints": {
+          "min":0,
+          "max": 1
+        }
+       }
+    }
   }
+
 }
 
 
