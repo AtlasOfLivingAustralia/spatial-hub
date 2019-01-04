@@ -132,6 +132,11 @@
                                     LayoutService.openModal('csv', {
                                         title: uiScope.toolName + " (" + csvFile + ")",
                                         csv: data.data,
+                                        priorityColumns: ['Species Name',
+                                        'Vernacular Name',
+                                        'Number of records',
+                                        'Conservation',
+                                        'Invasive'],
                                         info: '',
                                         filename: csvFile,
                                         display: {size: 'full'}

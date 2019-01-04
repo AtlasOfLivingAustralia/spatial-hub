@@ -103,6 +103,11 @@
                         LayoutService.openModal('csv', {
                             title: (endemic ? $i18n(427, "Endemic") + ' ' : '') + $i18n(428, "Species List"),
                             csv: csv,
+                            priorityColumns: ['Species Name',
+                            'Vernacular Name',
+                            'Number of records',
+                            'Conservation',
+                            'Invasive'],
                             info: '',
                             filename: (endemic ? 'endemicS' : 's') + 'peciesList.csv',
                             display: {size: 'full'}

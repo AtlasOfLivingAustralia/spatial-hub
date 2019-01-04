@@ -347,6 +347,11 @@
                         LayoutService.openModal('csv', {
                             title: item.name,
                             csv: data,
+                            priorityColumns: ['Species Name',
+                                'Vernacular Name',
+                                'Number of records',
+                                'Conservation',
+                                'Invasive'],
                             info: item.name + ' csv',
                             filename: item.name.replace(' ', '') + '.csv',
                             display: {size: 'full'}
