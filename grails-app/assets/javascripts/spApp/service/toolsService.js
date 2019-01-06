@@ -132,7 +132,7 @@
                                     LayoutService.openModal('csv', {
                                         title: uiScope.toolName + " (" + csvFile + ")",
                                         csv: data.data,
-                                        priorityColumns: ['Species Name',
+                                        columnOrder: ['Species Name',
                                         'Vernacular Name',
                                         'Number of records',
                                         'Conservation',

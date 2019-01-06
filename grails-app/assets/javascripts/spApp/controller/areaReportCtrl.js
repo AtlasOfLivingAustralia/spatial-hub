@@ -347,7 +347,7 @@
                         LayoutService.openModal('csv', {
                             title: item.name,
                             csv: data,
-                            priorityColumns: ['Species Name',
+                            columnOrder: ['Species Name',
                                 'Vernacular Name',
                                 'Number of records',
                                 'Conservation',

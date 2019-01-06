@@ -17,18 +17,18 @@
 
                 //adjust sequence of header
                 $scope.sortColumn = function(src){
-                    var priorityColumns = ['Species Name',
+                    var columnOrder = ['Species Name',
                         'Vernacular Name',
                         'Number of records',
                         'Conservation',
                         'Invasive']
 
-                    if (data.priorityColumns)
-                        priorityColumns = data.priorityColumns
+                    if (data.columnOrder)
+                        columnOrder = data.columnOrder
 
                     var csv_data = new Map();
-                    for(i in priorityColumns){
-                        csv_data.set(priorityColumns[i] , []);
+                    for(i in columnOrder){
+                        csv_data.set(columnOrder[i] , []);
                     }
 
                     var transpose = _.zip.apply(null, src);
