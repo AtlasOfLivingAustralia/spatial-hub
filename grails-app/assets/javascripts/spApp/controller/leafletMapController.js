@@ -2,8 +2,8 @@
     'use strict';
     angular.module('leaflet-map-controller', ['leaflet-directive', 'map-service', 'popup-service'])
         .controller('LeafletMapController', ["$scope", "LayoutService", "$http", "leafletData", "leafletBoundsHelpers",
-            "MapService", '$timeout', 'leafletHelpers', 'PopupService', 'FlickrService', 'ToolsService', '$q',
-            function ($scope, LayoutService, $http, leafletData, leafletBoundsHelpers, MapService, $timeout, leafletHelpers, popupService, FlickrService, ToolsService, $q) {
+            "MapService", '$timeout', 'leafletHelpers', 'PopupService', 'FlickrService', 'ToolsService', '$q', 'PoiService',
+            function ($scope, LayoutService, $http, leafletData, leafletBoundsHelpers, MapService, $timeout, leafletHelpers, popupService, FlickrService, ToolsService, $q, poiService) {
                 //ToolsService included so it is initiated
 
                 //the default base layer must be defined first
@@ -45,7 +45,7 @@
                     controls: {
                         draw: {}
                     },
-                    defaults: {crs: $scope.getCRS()}
+                    defaults: {crs: $scope.getCRS(), zoomControl: false, zoomsliderControl: true}
                 });
 
                 MapService.leafletScope = $scope;
@@ -274,7 +274,14 @@
                     }
                 };
 
-                $scope.existingMarkers = {};
+                $scope.togglePoi = function (context) {
+                    if (context.poiControl._poi_state) {
+                        $scope.addPoiToMap();
+                    }
+                    else {
+                        $scope.deletePoiImages();
+                    }
+                };
 
                 $scope.addPanoramioToMap = function () {
                     leafletData.getMap().then(function (map) {
@@ -303,18 +310,60 @@
                         }
 
                         $q.all(promises).then(function () {
-                            $scope.addPhotosToMap(newMarkers, $scope.existingMarkers);
+                            $scope.addPhotosToMap(newMarkers);
                         });
                     })
                 };
 
-                $scope.addPhotosToMap = function (newMarkers, oldMarkers) {
+                $scope.addPoiToMap = function () {
+                    leafletData.getMap().then(function (map) {
+                        var promises = [];
+
+                        var newMarkers = {};
+
+                        var bounds = map.getBounds();
+
+                        var multipBounds = MapService.splitBounds(bounds.getSouthWest(), bounds.getNorthEast());
+
+                        var nbrOfPhotosToDisplay = Math.round($SH.flickrNbrOfPhotosToDisplay / multipBounds.length);
+                        for (var i = 0; i < multipBounds.length; i++) {
+                            $(".icon-poi").addClass("icon-spin-poi");
+                            promises.push(poiService.getPhotos(multipBounds[i]).then(function (data) {
+                                if (data) {
+                                    for (var i = 0; i < nbrOfPhotosToDisplay && i < data.length; i++) {
+                                        var photoContent = data[i];
+                                        photoContent.url_m = $SH.biocollectUrl + "/site/index/" + photoContent.siteId;
+                                        photoContent.url_s = photoContent.thumbnailUrl;
+                                        photoContent.url_t = photoContent.thumbnailUrl;
+                                        photoContent.url = photoContent.thumbnailUrl;
+                                        photoContent.title = photoContent.name;
+                                        photoContent.datetaken = photoContent.dateTaken;
+                                        photoContent.ownername = photoContent.attribution;
+                                        photoContent.licence = photoContent.thirdPartyConsentDeclarationMade;
+
+                                        newMarkers[photoContent.id] = photoContent;
+                                    }
+                                }
+                                $(".icon-poi").removeClass("icon-spin-poi");
+                            }));
+                        }
+
+                        $q.all(promises).then(function () {
+                            $scope.addPhotosToMap(newMarkers, true);
+                        });
+                    })
+                };
+
+                $scope.addPhotosToMap = function (newMarkers, isPoi) {
+                    if (newMarkers.length == 0) {
+                        return
+                    }
                     var popupHTML = function (photo, licenseName) {
                         var result = "<div><h3 class='popover-title'>" + photo.title + "</h3>";
                         result += "<div class='panel-body'> ";
                         result += "<div class='row'> <div class='col-sm-12'>";
                         result += "<a href='" + photo.url_m + "' target='_blank'>";
-                        result += "<img class='img-thumbnail' style='display: block; margin: 0 auto;' src='" + photo.url_s + "' alt='Click to view large image'></a>";
+                        result += "<img class='img-thumbnail' style='display: block; margin: 0 auto;width:250px' src='" + photo.url_s + "' alt='Click to view large image'></a>";
                         result += "</div> </div>";
 
                         result += "<div class='row'> <div class='col-sm-12'>";
@@ -338,36 +387,30 @@
                     leafletData.getMap().then(function () {
                         leafletData.getLayers().then(function (baselayers) {
                             var drawnItems = baselayers.overlays.images;
+                            if (isPoi) {
+                                drawnItems = baselayers.overlays.poiImages;
+                            }
 
-                            // remove markers that are not in the new feed
-                            Object.keys(oldMarkers).forEach(function (key) {
-                                if (!newMarkers.hasOwnProperty(key)) {
-                                    var photoContent = oldMarkers[key];
-                                    var marker = L.marker([photoContent.latitude, photoContent.longitude]);
-                                    promises.push(drawnItems.removeLayer(marker));
-                                }
-                            });
+                            var layers = drawnItems.getLayers();
+                            for (var i = layers.length - 1; i >= 0; i--) {
+                                if (!newMarkers.hasOwnProperty(layers[i].uniqueId))
+                                    drawnItems.removeLayer(layers[i])
+                            }
 
                             // draw new markers
                             Object.keys(newMarkers).forEach(function (key) {
-                                // don't redraw
-                                if (!oldMarkers.hasOwnProperty(key)) {
-                                    var photoContent = newMarkers[key];
-                                    var photoIcon = L.icon(
-                                        {
-                                            iconUrl: photoContent.url_t,
-                                            iconSize: [photoContent.width_t * 0.5, photoContent.height_t * 0.5]
-                                        }  //reduces thumbnails 50%
-                                    );
-                                    var marker = L.marker([photoContent.latitude, photoContent.longitude], {icon: photoIcon});
-                                    var license = $scope.licenses[photoContent.license];
-                                    marker.bindPopup(popupHTML(photoContent, license), {minWidth: 280});
-                                    promises.push(drawnItems.addLayer(marker));
-                                }
-                            });
-
-                            $q.all(promises).then(function () {
-                                $scope.existingMarkers = Object.assign(newMarkers);
+                                var photoContent = newMarkers[key];
+                                var photoIcon = L.icon(
+                                    {
+                                        iconUrl: photoContent.url_t,
+                                        iconSize: [20, 20]
+                                    }  //reduces thumbnails 50%
+                                );
+                                var marker = L.marker([photoContent.latitude, photoContent.longitude], {icon: photoIcon});
+                                marker.uniqueId = key;
+                                var license = $scope.licenses[photoContent.license];
+                                marker.bindPopup(popupHTML(photoContent, license), {minWidth: 280});
+                                promises.push(drawnItems.addLayer(marker));
                             });
                         })
                     })
@@ -519,6 +562,19 @@
                     })
                 };
 
+                $scope.deletePoiImages = function (layerToIgnore) {
+                    leafletData.getMap().then(function () {
+                        leafletData.getLayers().then(function (baselayers) {
+                            var drawnItems = baselayers.overlays.poiImages;
+                            var layers = drawnItems.getLayers();
+                            for (var i = layers.length - 1; i >= 0; i--) {
+                                if (layers[i] !== layerToIgnore)
+                                    drawnItems.removeLayer(layers[i])
+                            }
+                        })
+                    })
+                };
+
                 $scope.getLicenses = function () {
                     FlickrService.getLicenses().then(function (data) {
                         $scope.licenses = data
@@ -530,6 +586,8 @@
                         leafletData.getLayers().then(function (baselayers) {
 
                             var drawnItems = baselayers.overlays.draw;
+
+                            L.control.zoomslider({position: 'topleft'}).addTo(map);
 
                             L.control.scale({position: 'bottomright'}).addTo(map);
 
@@ -546,9 +604,17 @@
                                 toggleExpandLeft: $scope.toggleExpandLeft
                             }).addTo(map);
 
-                            new L.Control.Panoramio({
-                                togglePanoramio: $scope.togglePanoramio
-                            }).addTo(map);
+                            if ($SH.flickrUrl) {
+                                new L.Control.Panoramio({
+                                    togglePanoramio: $scope.togglePanoramio
+                                }).addTo(map);
+                            }
+
+                            if ($SH.biocollectUrl) {
+                                new L.Control.Poi({
+                                    togglePoi: $scope.togglePoi
+                                }).addTo(map);
+                            }
 
                             map.on('draw:created', function (e) {
                                 var layer = e.layer;
@@ -583,11 +649,17 @@
                                 if (e.target.panoramioControl._panoramio_state) {
                                     $scope.addPanoramioToMap();
                                 }
+                                if (e.target.poiControl._poi_state) {
+                                    $scope.addPoiToMap();
+                                }
                             });
 
                             map.on('zoomend', function (e) {
                                 if (e.target.panoramioControl._panoramio_state) {
                                     $scope.addPanoramioToMap();
+                                }
+                                if (e.target.poiControl._poi_state) {
+                                    $scope.addPoiToMap();
                                 }
                             });
 

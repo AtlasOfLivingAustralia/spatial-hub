@@ -264,6 +264,9 @@ character:
 http:
     timeout: 10000
 
+biocollect:
+  url: ''
+
 bccvl:
     login:
         url: 'https://app.bccvl.org.au/bccvl/oauth2/authorize?client_id=F031d7ce-abb0-11e6-a678-0242ac120005&response_type=token&redirect_uri='

@@ -104,7 +104,8 @@
         wmsIntersect: ${config.wms.intersect},
         projections: ${(config.projections as grails.converters.JSON).toString().encodeAsRaw()},
         projection: '${config.projection.default}',
-        fqExcludeAbsent: '${config.fq.excludeAbsent}'
+        fqExcludeAbsent: '${config.fq.excludeAbsent}',
+        biocollectUrl: '${config.biocollect.url}'
     };
 
     BIE_VARS = {

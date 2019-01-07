@@ -27,7 +27,7 @@
                         + '&content_type=' + encodeURIComponent($SH.flickrContentType)
                         + $SH.flickrFilter
                         + '&per_page=' + $SH.flickrNbrOfPhotosToDisplay
-                        + '&format=json&nojsoncallback=1&bbox='; //??? 50 perpage ???
+                        + '&format=json&nojsoncallback=1&bbox=';
 
                     return $http.get(url + bbox, _httpDescription('getPhotos')).then(function (response) {
                         return response.data;

@@ -40,6 +40,14 @@
                         layerParams: {
                             showOnSelector: false
                         }
+                    },
+                    poiImages: {
+                        name: 'poiImages',
+                        type: 'group',
+                        visible: true,
+                        layerParams: {
+                            showOnSelector: false
+                        }
                     }
                 };
                 var selected = {layer: null};

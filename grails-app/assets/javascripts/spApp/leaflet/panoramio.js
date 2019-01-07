@@ -19,14 +19,12 @@ L.Control.Panoramio = L.Control.extend({
 
         map.panoramioControl = this;
 
-        this.link = L.DomUtil.create('a', 'icon-panoramio', container);
+        this.link = L.DomUtil.create('a', 'icon-panoramio icon-exit-panoramio', container);
         this.link.href = '#';
         this.link.title = this.options.title;
         L.DomEvent.addListener(this.link, 'click', L.DomEvent.stopPropagation)
             .addListener(this.link, 'click', L.DomEvent.preventDefault)
             .addListener(this.link, 'click', this._toggle, map); //map->this?
-
-        $(".icon-panoramio").addClass("icon-exit-panoramio");
 
         return container;
     },
