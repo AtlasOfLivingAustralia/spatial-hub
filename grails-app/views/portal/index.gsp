@@ -105,7 +105,8 @@
         projections: ${(config.projections as grails.converters.JSON).toString().encodeAsRaw()},
         projection: '${config.projection.default}',
         fqExcludeAbsent: '${config.fq.excludeAbsent}',
-        biocollectUrl: '${config.biocollect.url}'
+        biocollectUrl: '${config.biocollect.url}',
+        lifeforms: ${(config.lifeforms as grails.converters.JSON).toString().encodeAsRaw()}
     };
 
     BIE_VARS = {

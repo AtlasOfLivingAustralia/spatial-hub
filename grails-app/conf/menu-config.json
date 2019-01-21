@@ -50,6 +50,10 @@
         "open": "tabulate"
       },
       {
+        "name": "Species by Layer",
+        "open": "SpeciesByLayer"
+      },
+      {
         "name": "Compare Points",
         "open": "pointComparison"
       },
@@ -95,10 +99,6 @@
       {
         "name": "Restore Prior Analysis",
         "open": "analysis"
-      },
-      {
-        "name": "Taxon Frequency Graph",
-        "open": "TaxonFrequency"
       }
 
     ]

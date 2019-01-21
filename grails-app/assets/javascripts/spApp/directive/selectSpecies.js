@@ -64,6 +64,10 @@
                             scope.multiselect = true;
                         }
 
+                        scope.lifeformQ = {q: [], name: ''};
+
+                        scope.multiSelection = [];
+
                         scope.sandboxName = '';
                         scope.speciesListName = '';
 
@@ -103,28 +107,6 @@
                             scope.speciesListName = query.name
                         };
 
-                        scope.setMultiQ = function (query, checked) {
-                            var q = {name: '', bs: undefined, ws: undefined, q: []};
-                            if (query.q.length > 0) {
-                                if (checked) {
-                                    q.name = query.name;
-                                    q.q = query.q;
-                                    if (q.bs === undefined) q.bs = $SH.biocacheServiceUrl;
-                                    if (q.ws === undefined) q.ws = $SH.biocacheUrl;
-                                    if (query.species_list !== undefined) q.species_list = query.species_list;
-                                    scope._selectedQ.push(q);
-                                } else {
-                                    for (var k in scope._selectedQ) {
-                                        if (scope.compareQ(scope._selectedQ.q, query.q)) {
-                                            scope._selectedQ.splice(k, 1);
-                                            return;
-
-                                        }
-                                    }
-                                }
-                            }
-                        };
-
                         scope.sandboxEnabled = function () {
                             return $SH.sandboxUrl !== '';
                         };
@@ -137,22 +119,25 @@
                             LayoutService.openModal('tool', {processName: 'ToolAddSpeciesService'})
                         };
 
-                        scope.compareQ = function (q1, q2) {
-                            for (var k in q1) {
-                                if (q1[k] !== q2[k]) {
-                                    return false;
-                                }
-                            }
-                            return true;
-                        };
-
                         scope.setQ = function (query) {
+                            var selection = scope._selectedQ;
+
+                            // when this is species multiselect replace the selectedQ
+                            if (scope.multiselect) {
+                                scope._selectedQ.splice(0, scope._selectedQ.length);
+                                scope._selectedQ.push({});
+                                selection = scope._selectedQ[0];
+                            }
                             if (query && query.q.length === 0) {
-                                scope._selectedQ.name = '';
-                                scope._selectedQ.bs = undefined;
-                                scope._selectedQ.ws = undefined;
-                                scope._selectedQ.q = []
-                            } else if (scope._selectedQ) {
+                                if (!scope.multiselect) {
+                                    selection.name = '';
+                                    selection.bs = undefined;
+                                    selection.ws = undefined;
+                                    selection.q = []
+                                } else {
+                                    scope._selectedQ.splice(0, scope._selectedQ.length);
+                                }
+                            } else if (selection) {
                                 if (query === undefined) query = scope._selectedQ;
                                 var includeTrue = scope.spatiallyValid;
                                 var includeFalse = scope.spatiallySuspect;
@@ -171,18 +156,24 @@
                                 }
 
                                 if (query.species_list) {
-                                    scope._selectedQ.species_list = query.species_list
+                                    selection.species_list = query.species_list
                                 }
 
-                                scope._selectedQ.includeAnimalMovement = scope.includeAnimalMovement;
-                                scope._selectedQ.includeExpertDistributions = scope.includeExpertDistributions;
-                                scope._selectedQ.q = query.q.concat(gs).concat(absent);
-                                scope._selectedQ.name = query.name;
-                                scope._selectedQ.bs = query.bs;
-                                scope._selectedQ.ws = query.ws;
-                                if (scope._selectedQ.bs === undefined) scope._selectedQ.bs = $SH.biocacheServiceUrl;
-                                if (scope._selectedQ.ws === undefined) scope._selectedQ.ws = $SH.biocacheUrl
+                                selection.includeAnimalMovement = scope.includeAnimalMovement;
+                                selection.includeExpertDistributions = scope.includeExpertDistributions;
+                                selection.q = query.q.concat(gs).concat(absent);
+                                selection.name = query.name;
+                                selection.bs = query.bs;
+                                selection.ws = query.ws;
+                                if (selection.bs === undefined) scope._selectedQ.bs = $SH.biocacheServiceUrl;
+                                if (selection.ws === undefined) scope._selectedQ.ws = $SH.biocacheUrl
                             }
+                        };
+
+                        scope.setLifeformQ = function (query) {
+                            scope.lifeformQ = query;
+                            scope.setQ(query)
+
                         };
 
                         scope.clearQ = function () {
@@ -195,9 +186,11 @@
                             scope.speciesOption = option;
                             if (scope.speciesOption === 'none') {
                                 scope.clearQ();
+                            } else if (scope.speciesOption === 'lifeform') {
+                                scope.setQ(scope.lifeformQ)
                             } else if (scope.speciesOption === 'allSpecies') {
                                 scope.setQ({
-                                    q: ["*:*"], name: $i18n("All species"), bs: $SH.biocacheServiceUrl,
+                                    q: ["*:*"], name: $i18n(244, "All species"), bs: $SH.biocacheServiceUrl,
                                     ws: $SH.biocacheUrl
                                 })
                             } else if (scope.speciesOption === 'searchSpecies') {
@@ -230,18 +223,23 @@
                             }
                         };
 
-                        scope.toggleQ = function (idx) {
-                            var item = scope.speciesLayers[idx];
-                            var layer = MapService.getFullLayer(item.uid);
-                            var q = [layer.q];
-                            if (layer.fq !== undefined && layer.fq.length > 0) q = q.concat(layer.fq);
-                            scope.setMultiQ({
-                                q: q,
-                                bs: layer.bs,
-                                ws: layer.ws,
-                                name: layer.name,
-                                species_list: layer.species_list
-                            }, item.checked);
+                        scope.toggleQ = function () {
+                            // replace the selection with the selected species layers
+                            scope._selectedQ.splice(0, scope._selectedQ.length);
+                            $.each(scope.speciesLayers, function (i, item) {
+                                if (item.checked) {
+                                    var layer = MapService.getFullLayer(item.uid);
+                                    var q = [layer.q];
+                                    if (layer.fq !== undefined && layer.fq.length > 0) q = q.concat(layer.fq);
+
+                                    var query = {name: layer.name, bs: layer.bs, ws: layer.ws, q: [q]};
+                                    if (query.bs === undefined) query.bs = $SH.biocacheServiceUrl;
+                                    if (query.ws === undefined) query.ws = $SH.biocacheUrl;
+                                    if (layer.species_list !== undefined) query.species_list = layer.species_list;
+
+                                    scope._selectedQ.push(query)
+                                }
+                            });
                         };
 
                         scope.isLoggedIn = $SH.userId !== undefined && $SH.userId !== null && $SH.userId.length > 0;

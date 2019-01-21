@@ -164,177 +164,170 @@
                     }
                 };
 
-                var areaQ = jQuery.extend({}, $scope.area);
-                if (areaQ.q === undefined || areaQ.q.length === 0) {
-                    areaQ.q = ["*:*"]
-                } else {
-                    areaQ.wkt = undefined
-                }
-                areaQ.bs = BiocacheService.newQuery().bs;
-                areaQ.ws = BiocacheService.newQuery().ws;
-
                 $scope.items = [];
 
-                BiocacheService.registerQuery(areaQ).then(function (response) {
-                    areaQ.qid = response.qid;
+                $scope.init = function (areaQ) {
+                    BiocacheService.registerQuery(areaQ).then(function (response) {
+                        areaQ.qid = response.qid;
 
-                    $scope.items = [
-                        {
-                            name: $i18n(348, "Area (sq km)"),
-                            link: $i18n(362, "https://www.ala.org.au/spatial-portal-help/note-area-sq-km/"),
-                            linkName: $i18n(363, "Info"),
-                            value: $scope.area.area_km.toFixed(2)
-                        },
-                        {
-                            name: $i18n(364, "Number of species"),
-                            query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
-                            map: false
-                        },
-                        {
-                            name: $i18n(365, "Number of species - spatially valid only"),
-                            query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
-                            map: false,
-                            extraQ: ["geospatial_kosher:true"]
-                        },
-                        {
-                            name: $i18n(366, "Number of endemic species"),
-                            endemic: true,
-                            query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
-                            map: false
-                        },
-                        {
-                            name: $i18n(429, "Number of endemic species - spatially valid only"),
-                            endemic: true,
-                            query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
-                            map: false,
-                            extraQ: ["geospatial_kosher:true"]
-                        }];
-
-                    // TODO: move this into config and retrieve from $SH
-                    $.each([
-                        {
-                            name: $i18n(282, "Occurrences"),
-                            query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
-                            occurrences: true
-                        },
-                        {
-                            name: $i18n(368, "Occurrences - spatially valid only"),
-                            query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
-                            occurrences: true,
-                            extraQ: ["geospatial_kosher:true"]
-                        },
-                        {
-                            name: $i18n(356, "Expert distributions"),
-                            list: $scope.distributions,
-                            value: ''
-                        },
-                        {
-                            name: $i18n(359, "Checklist areas"),
-                            value: ''
-                        },
-                        {
-                            name: $i18n(358, "Checklist species distributions"),
-                            list: $scope.checklists,
-                            value: ''
-                        },
-                        {
-                            name: $i18n(357, "JournalMap articles"),
-                            list: $scope.journalMap,
-                            link: $SH.journalMapUrl,
-                            linkName: $i18n(369, "JournalMap"),
-                            value: '',
-                            ignore: $SH.journalMapUrl === ''
-                        },
-                        {
-                            name: $i18n(360, "Gazetteer Points"),
-                            mapGaz: true,
-                            value: ''
-                        },
-                        {
-                            name: $i18n(361, "Points of interest"),
-                            value: ''
-                        },
-                        {
-                            name: $i18n(370, "Invasive Species"),
-                            query: {
-                                q: areaQ.q.concat([$SH.invasiveQ]),
-                                bs: areaQ.bs,
-                                ws: areaQ.ws,
-                                wkt: areaQ.wkt,
-                                qid: areaQ.qid
+                        $scope.items = [
+                            {
+                                name: $i18n(348, "Area (sq km)"),
+                                link: $i18n(362, "https://www.ala.org.au/spatial-portal-help/note-area-sq-km/"),
+                                linkName: $i18n(363, "Info"),
+                                value: $scope.area.area_km.toFixed(2)
                             },
-                            extraQ: [$SH.invasiveQ],
-                            ignore: $SH.listsUrl === '' || $SH.invasiveQ === ''
-                        },
-                        {
-                            name: $i18n(371, "Threatened Species"),
-                            query: {
-                                q: areaQ.q.concat([$SH.threatenedQ]),
-                                bs: areaQ.bs,
-                                ws: areaQ.ws,
-                                wkt: areaQ.wkt
+                            {
+                                name: $i18n(364, "Number of species"),
+                                query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
+                                map: false
                             },
-                            extraQ: [$SH.threatenedQ],
-                            ignore: $SH.listsUrl === '' || $SH.threatenedQ === ''
-                        },
-                        {
-                            name: $i18n(372, "Migratory species - EPBC"),
-                            query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
-                            link: ListsService.url() + '/speciesListItem/list/' + $SH.migratoryDR,
-                            linkName: $i18n(373, "Full list"),
-                            extraQ: ["species_list_uid:" + $SH.migratoryDR],
-                            ignore: $SH.listsUrl === '' || $SH.migratoryDR === ''
-                        },
-                        {
-                            name: $i18n(374, "Australian iconic species"),
-                            query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
-                            link: ListsService.url() + '/speciesListItem/list/' + $SH.iconicSpeciesDR,
-                            linkName: $i18n(373, "Full list"),
-                            extraQ: ["species_list_uid:" + $SH.iconicSpeciesDR],
-                            ignore: $SH.listsUrl === '' || $SH.iconicSpeciesDR === ''
-                        }], function (i, v) {
-                        if (v.ignore === undefined || !v.ignore) {
-                            $scope.items.push(v)
-                        }
-                    });
+                            {
+                                name: $i18n(365, "Number of species - spatially valid only"),
+                                query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
+                                map: false,
+                                extraQ: ["geospatial_kosher:true"]
+                            },
+                            {
+                                name: $i18n(366, "Number of endemic species"),
+                                endemic: true,
+                                query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
+                                map: false
+                            },
+                            {
+                                name: $i18n(429, "Number of endemic species - spatially valid only"),
+                                endemic: true,
+                                query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
+                                map: false,
+                                extraQ: ["geospatial_kosher:true"]
+                            }];
 
-                    $.each(['Algae', 'Amphibians', 'Angiosperms', 'Animals', 'Arthropods', 'Bacteria', 'Birds',
-                        'Bryophytes', 'Chromista', 'Crustaceans', 'Dicots', 'FernsAndAllies', 'Fish', 'Fungi',
-                        'Gymnosperms', 'Insects', 'Mammals', 'Molluscs', 'Monocots', 'Plants', 'Protozoa', 'Reptiles'], function (i, v) {
-                        $scope.items.push({
-                            name: v,
-                            query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
-                            extraQ: ["species_group:" + v]
-                        })
-                    });
+                        // TODO: move this into config and retrieve from $SH
+                        $.each([
+                            {
+                                name: $i18n(282, "Occurrences"),
+                                query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
+                                occurrences: true
+                            },
+                            {
+                                name: $i18n(368, "Occurrences - spatially valid only"),
+                                query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
+                                occurrences: true,
+                                extraQ: ["geospatial_kosher:true"]
+                            },
+                            {
+                                name: $i18n(356, "Expert distributions"),
+                                list: $scope.distributions,
+                                value: ''
+                            },
+                            {
+                                name: $i18n(359, "Checklist areas"),
+                                value: ''
+                            },
+                            {
+                                name: $i18n(358, "Checklist species distributions"),
+                                list: $scope.checklists,
+                                value: ''
+                            },
+                            {
+                                name: $i18n(357, "JournalMap articles"),
+                                list: $scope.journalMap,
+                                link: $SH.journalMapUrl,
+                                linkName: $i18n(369, "JournalMap"),
+                                value: '',
+                                ignore: $SH.journalMapUrl === ''
+                            },
+                            {
+                                name: $i18n(360, "Gazetteer Points"),
+                                mapGaz: true,
+                                value: ''
+                            },
+                            {
+                                name: $i18n(361, "Points of interest"),
+                                value: ''
+                            },
+                            {
+                                name: $i18n(370, "Invasive Species"),
+                                query: {
+                                    q: areaQ.q.concat([$SH.invasiveQ]),
+                                    bs: areaQ.bs,
+                                    ws: areaQ.ws,
+                                    wkt: areaQ.wkt,
+                                    qid: areaQ.qid
+                                },
+                                extraQ: [$SH.invasiveQ],
+                                ignore: $SH.listsUrl === '' || $SH.invasiveQ === ''
+                            },
+                            {
+                                name: $i18n(371, "Threatened Species"),
+                                query: {
+                                    q: areaQ.q.concat([$SH.threatenedQ]),
+                                    bs: areaQ.bs,
+                                    ws: areaQ.ws,
+                                    wkt: areaQ.wkt
+                                },
+                                extraQ: [$SH.threatenedQ],
+                                ignore: $SH.listsUrl === '' || $SH.threatenedQ === ''
+                            },
+                            {
+                                name: $i18n(372, "Migratory species - EPBC"),
+                                query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
+                                link: ListsService.url() + '/speciesListItem/list/' + $SH.migratoryDR,
+                                linkName: $i18n(373, "Full list"),
+                                extraQ: ["species_list_uid:" + $SH.migratoryDR],
+                                ignore: $SH.listsUrl === '' || $SH.migratoryDR === ''
+                            },
+                            {
+                                name: $i18n(374, "Australian iconic species"),
+                                query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
+                                link: ListsService.url() + '/speciesListItem/list/' + $SH.iconicSpeciesDR,
+                                linkName: $i18n(373, "Full list"),
+                                extraQ: ["species_list_uid:" + $SH.iconicSpeciesDR],
+                                ignore: $SH.listsUrl === '' || $SH.iconicSpeciesDR === ''
+                            }], function (i, v) {
+                            if (v.ignore === undefined || !v.ignore) {
+                                $scope.items.push(v)
+                            }
+                        });
 
-                    $timeout(function () {
-                        $scope.checklistCounts();
-                        $scope.distributionCounts();
-                        $scope.journalMapDocumentCount();
-                        $scope.gazPointCounts();
-                        $scope.pointOfInterestCounts()
-                    }, 0);
+                        $.each(['Algae', 'Amphibians', 'Angiosperms', 'Animals', 'Arthropods', 'Bacteria', 'Birds',
+                            'Bryophytes', 'Chromista', 'Crustaceans', 'Dicots', 'FernsAndAllies', 'Fish', 'Fungi',
+                            'Gymnosperms', 'Insects', 'Mammals', 'Molluscs', 'Monocots', 'Plants', 'Protozoa', 'Reptiles'], function (i, v) {
+                            $scope.items.push({
+                                name: v,
+                                query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
+                                extraQ: ["species_group:" + v]
+                            })
+                        });
 
-                    var items = $scope.items;
-                    var k;
-                    for (k in items) {
-                        if (items.hasOwnProperty(k)) {
-                            if (items[k].query !== undefined) {
-                                items[k].value = '';
-                                if (items[k].occurrences !== undefined && items[k].occurrences) {
-                                    $scope.count(items[k], BiocacheService.count(items[k].query, items[k].extraQ))
-                                } else if (items[k].name.indexOf('endemic') >= 0) {
-                                    $scope.count(items[k], BiocacheService.speciesCountEndemic(items[k].query, items[k].extraQ))
-                                } else {
-                                    $scope.count(items[k], BiocacheService.speciesCount(items[k].query, items[k].extraQ))
+                        $timeout(function () {
+                            $scope.checklistCounts();
+                            $scope.distributionCounts();
+                            $scope.journalMapDocumentCount();
+                            $scope.gazPointCounts();
+                            $scope.pointOfInterestCounts()
+                        }, 0);
+
+                        var items = $scope.items;
+                        var k;
+                        for (k in items) {
+                            if (items.hasOwnProperty(k)) {
+                                if (items[k].query !== undefined) {
+                                    items[k].value = '';
+                                    if (items[k].occurrences !== undefined && items[k].occurrences) {
+                                        $scope.count(items[k], BiocacheService.count(items[k].query, items[k].extraQ))
+                                    } else if (items[k].name.indexOf('endemic') >= 0) {
+                                        $scope.count(items[k], BiocacheService.speciesCountEndemic(items[k].query, items[k].extraQ))
+                                    } else {
+                                        $scope.count(items[k], BiocacheService.speciesCount(items[k].query, items[k].extraQ))
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    $scope.makeCSV()
-                });
+                        $scope.makeCSV()
+                    });
+                };
 
                 $scope.count = function (item, promise) {
                     promise.then(function (data) {
@@ -347,11 +340,7 @@
                         LayoutService.openModal('csv', {
                             title: item.name,
                             csv: data,
-                            columnOrder: ['Species Name',
-                                'Vernacular Name',
-                                'Number of records',
-                                'Conservation',
-                                'Invasive'],
+                            columnOrder: [],
                             info: item.name + ' csv',
                             filename: item.name.replace(' ', '') + '.csv',
                             display: {size: 'full'}
@@ -445,7 +434,21 @@
                     $('.modal-content').on("resize", function () {
                         $('.modal-body').height($('.modal-dialog').height() - $('.modal-header').outerHeight() - $('.modal-footer').outerHeight() - ($('.modal-body').outerHeight() - $('.modal-body').height()))
                     }).trigger('resize');
+                };
+
+                // build area query
+                var areaQ = jQuery.extend({}, $scope.area);
+                areaQ.bs = BiocacheService.newQuery().bs;
+                areaQ.ws = BiocacheService.newQuery().ws;
+                if (areaQ.q === undefined || areaQ.q.length === 0) {
+                    areaQ.q = ["*:*"];
+                    if (areaQ.wkt === undefined && areaQ.pid !== undefined) {
+                        areaQ.wkt = areaQ.pid
+                    }
+                } else {
+                    areaQ.wkt = undefined;
                 }
+                $scope.init(areaQ);
 
                 $timeout($scope.makeModeless, 0);
             }])

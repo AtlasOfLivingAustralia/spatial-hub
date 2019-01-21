@@ -352,3 +352,12 @@ jQuery.ui.autocomplete.prototype._resizeMenu = function () {
     ul.outerWidth(this.element.outerWidth());
 };
 
+var authWorkaround = function (url) {
+    if (url) {
+        $("body").append('<div style="display:none"><iframe src="' + url + '"></iframe></div>')
+    }
+};
+
+// This is to fix auth issues with ajax calls to other ala applications
+//authWorkaround($SH.biocollectUrl);
+

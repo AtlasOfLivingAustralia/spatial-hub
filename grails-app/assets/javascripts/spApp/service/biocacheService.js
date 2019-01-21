@@ -263,9 +263,7 @@
 
                         return $http.get(url, _httpDescription('count')).then(function (response) {
                             if (response.data !== undefined && response.data.totalRecords !== undefined) {
-                                var c = response.data.totalRecords ? response.data.totalRecords : 0
-                                console.log('Occurence count: ' + c);
-                                return c;
+                                return response.data.totalRecords ? response.data.totalRecords : 0
                             }
                         });
                     })
@@ -614,9 +612,10 @@
                  * Output:
                  * 1234
                  */
-                registerParam: function (bs, q, fq) {
+                registerParam: function (bs, q, fq, wkt) {
                     var data = {q: q, bs: bs};
                     if (fq !== undefined && fq !== null) data.fq = fq;
+                    if (wkt !== undefined && wkt !== null && wkt.length > 0) data.wkt = wkt;
                     return $http.post($SH.baseUrl + "/portal/q", data, _httpDescription('registerParam')).then(function (response) {
                         return response.data
                     });

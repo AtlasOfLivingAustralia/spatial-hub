@@ -10,8 +10,7 @@
     angular.module('tool-export-checklist-service', [])
         .factory("ToolExportChecklistService", ["$http", "$q", "MapService", "BiocacheService", "LayoutService",
             function ($http, $q, MapService, BiocacheService, LayoutService) {
-                return {
-
+                var _this = {
                     // Override text with view-config.json
                     spec: {
                         "input": [
@@ -40,8 +39,8 @@
                     downloadSize: 0,
 
                     init: function () {
-                        this.downloading = false;
-                        this.downloadSize = 0;
+                        _this.downloading = false;
+                        _this.downloadSize = 0;
                     },
 
                     execute: function (inputs) {
@@ -66,37 +65,36 @@
 
                         var future;
 
-                        // TODO: enable species list preview
-                        // if (showPreview) {
-                        //     this.downloading = true;
-                        //     this.cancelDownload = $q.defer();
-                        //
-                        //     var config = {
-                        //         eventHandlers: {
-                        //             progress: function (c) {
-                        //                 this.downloadSize = c.loaded
-                        //             }
-                        //         },
-                        //         timeout: this.cancelDownload.promise
-                        //     };
-                        //
-                        //     future = speciesOptions.includeEndemic ? BiocacheService.speciesListEndemic(query, undefined, config) :
-                        //         BiocacheService.speciesList(query, undefined, config);
-                        //
-                        //     future.then(function (data) {
-                        //         this.cancelDownload.resolve();
-                        //         this.openCsv(data, speciesOptions.includeEndemic);
-                        //     })
-                        // } else {
-                        if (this.cancelDownload) this.cancelDownload.resolve();
-                        future = this.endemic ? BiocacheService.speciesListEndemicUrl(query) :
-                            BiocacheService.speciesListUrl(query);
+                        var showPreview = false;
+                        if (showPreview) {
+                            _this.downloading = true;
+                            _this.cancelDownload = $q.defer();
 
-                        future.then(function (url) {
-                            Util.download(url);
-                            this.close();
-                        })
-                        // }
+                            var config = {
+                                eventHandlers: {
+                                    progress: function (c) {
+                                        _this.downloadSize = c.loaded
+                                    }
+                                },
+                                timeout: _this.cancelDownload.promise
+                            };
+
+                            future = speciesOptions.includeEndemic ? BiocacheService.speciesListEndemic(query, undefined, config) :
+                                BiocacheService.speciesList(query, undefined, config);
+
+                            future.then(function (data) {
+                                _this.openCsv(data, speciesOptions.includeEndemic);
+                                _this.cancelDownload.resolve();
+                            })
+                        } else {
+                            if (_this.cancelDownload) _this.cancelDownload.resolve();
+                            future = _this.endemic ? BiocacheService.speciesListEndemicUrl(query) :
+                                BiocacheService.speciesListUrl(query);
+
+                            future.then(function (url) {
+                                Util.download(url);
+                            })
+                        }
                     },
 
                     openCsv: function (csv, endemic) {
@@ -113,6 +111,8 @@
                             display: {size: 'full'}
                         }, false)
                     }
-                }
+                };
+
+                return _this
             }])
 }(angular));

@@ -14,42 +14,7 @@
                 $scope.data = data;
                 $scope.truncated = data.csv.length > 100000;
 
-
-                //adjust sequence of header
-                $scope.sortColumn = function(src){
-                    var columnOrder = ['Species Name',
-                        'Vernacular Name',
-                        'Number of records',
-                        'Conservation',
-                        'Invasive']
-
-                    if (data.columnOrder)
-                        columnOrder = data.columnOrder
-
-                    var csv_data = new Map();
-                    for(i in columnOrder){
-                        csv_data.set(columnOrder[i] , []);
-                    }
-
-                    var transpose = _.zip.apply(null, src);
-
-                    for(var i=0; i< transpose.length; i++){
-                        csv_data.set(transpose[i][0], transpose[i].slice(1))
-                    }
-
-                    //Map to Array
-                    var da = Array.from(csv_data)
-
-                    //flat array
-                    for(i in da){
-                        da[i] = da[i].flat();
-                    }
-                    // reverse x/y
-                    return _.zip.apply(null, da)
-                }
-
-                $scope.summary = $scope.sortColumn($.csv.toArrays(data.csv.substring(0, 100000)));
-
+                $scope.summary = $.csv.toArrays(data.csv.substring(0, 100000));
 
                 if ($scope.truncated) {
                     // cleanup last row that was truncated
@@ -73,7 +38,33 @@
                     }
                 };
 
+                //adjust sequence of header
+                $scope.sortColumn = function(src){
+                    if (data.columnOrder) {
+                        var columnOrder = data.columnOrder;
 
+                        var csv_data = new Map();
+                        for (i in columnOrder) {
+                            csv_data.set(columnOrder[i], []);
+                        }
+
+                        var transpose = _.zip.apply(null, src);
+
+                        for (var i = 0; i < transpose.length; i++) {
+                            csv_data.set(transpose[i][0], transpose[i].slice(1))
+                        }
+
+                        //Map to Array
+                        var da = Array.from(csv_data);
+
+                        //flat array
+                        for (i in da) {
+                            da[i] = da[i].flat();
+                        }
+                        // reverse x/y
+                        return _.zip.apply(null, da)
+                    }
+                };
 
                 if ($scope.summary.length > 0 && $scope.summary[0].length > 0) {
                     $.each($scope.summary[0], function (fieldName) {
@@ -84,7 +75,9 @@
                             $scope.mappable = true;
                             $scope.species = true
                         }
-                    })
+                    });
+
+                    $scope.summary = $scope.sortColumn($scope.summary);
                 }
 
                 $timeout(function () {

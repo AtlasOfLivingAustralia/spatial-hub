@@ -129,14 +129,13 @@
                                 var url = LayersService.url() + '/tasks/output/' + uiScope.finishedData.id + '/' + d.file;
                                 csvFile = d.file;
                                 $http.get(url, _httpDescription('getCsv')).then(function (data) {
+                                    var columnOrder = uiScope.spec.output.columnOrder;
+                                    if (!columnOrder) columnOrder = [];
+
                                     LayoutService.openModal('csv', {
                                         title: uiScope.toolName + " (" + csvFile + ")",
                                         csv: data.data,
-                                        columnOrder: ['Species Name',
-                                        'Vernacular Name',
-                                        'Number of records',
-                                        'Conservation',
-                                        'Invasive'],
+                                        columnOrder: columnOrder,
                                         info: '',
                                         filename: csvFile,
                                         display: {size: 'full'}
