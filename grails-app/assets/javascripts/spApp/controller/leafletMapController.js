@@ -646,19 +646,19 @@
                             });
 
                             map.on('moveend', function (e) {
-                                if (e.target.panoramioControl._panoramio_state) {
+                                if (e.target.panoramioControl && e.target.panoramioControl._panoramio_state) {
                                     $scope.addPanoramioToMap();
                                 }
-                                if (e.target.poiControl._poi_state) {
+                                if (e.target.poiControl && e.target.poiControl._poi_state) {
                                     $scope.addPoiToMap();
                                 }
                             });
 
                             map.on('zoomend', function (e) {
-                                if (e.target.panoramioControl._panoramio_state) {
+                                if (e.target.panoramioControl && e.target.panoramioControl._panoramio_state) {
                                     $scope.addPanoramioToMap();
                                 }
-                                if (e.target.poiControl._poi_state) {
+                                if (e.target.poiControl && e.target.poiControl._poi_state) {
                                     $scope.addPoiToMap();
                                 }
                             });
