@@ -65,10 +65,10 @@
                         this._errors.push({msg: msg, config: config, layout: this._layout});
                         LoggerService.log('httpService', msg, config.url);
 
-                        $rootScope.$broadcast('resetLayout');
+                        // $rootScope.$broadcast('resetLayout');
 
                         // restore session
-                        $rootScope.$broadcast('loadSession', lastSession);
+                        //$rootScope.$broadcast('loadSession', lastSession);
                     }
                 },
 
