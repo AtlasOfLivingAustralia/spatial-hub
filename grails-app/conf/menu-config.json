@@ -86,10 +86,6 @@
         "open": "PhylogeneticDiversity"
       },
       {
-        "name": "GDM",
-        "open": "GDMStep1"
-      },
-      {
         "name": "Nearest Locality",
         "open": "nearestLocality"
       },
