@@ -56,7 +56,7 @@
 
                         for (var k in MapService.leafletLayers) {
                             if (MapService.leafletLayers.hasOwnProperty(k)) {
-                                if (k !== 'draw' && !k.match(/highlight.*/) && k !== 'images') {
+                                if (k !== 'draw' && k.match(/highlight.*/) == null && k !== 'images') {
                                     var group = MapService.leafletLayers[k].layerOptions.layers;
                                     for (var j in group) {
                                         var i = group[j];

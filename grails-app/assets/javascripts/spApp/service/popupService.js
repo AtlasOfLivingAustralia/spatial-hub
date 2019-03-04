@@ -915,7 +915,7 @@
                             existingParams = split[1].split('&');
                         }
                         for (var i in existingParams) {
-                            if (!existingParams[i].match(/^layers=.*/)) {
+                            if (existingParams[i].match(/^layers=.*/) == null) {
                                 urlBase += '&' + existingParams[i];
                             }
                         }
@@ -983,7 +983,7 @@
 
                                 if (sname) {
                                     for (var i in properties) {
-                                        if (properties[i].toUpperCase().match('^' + sname.toUpperCase() + ' = .*')) {
+                                        if (properties[i].toUpperCase().match('^' + sname.toUpperCase() + ' = .*') != null) {
                                             value = properties[i].substring(properties[i].indexOf('=') + 2, properties[i].length).trim();
                                         }
                                     }

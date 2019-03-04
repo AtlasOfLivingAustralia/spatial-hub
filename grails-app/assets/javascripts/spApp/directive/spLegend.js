@@ -187,7 +187,7 @@
                                     var bTemp = undefined;
                                     if (i > 0) bTemp = bbox;
                                     bbox = objects[i].bbox;
-                                    if ((objects[i].bbox + '').match(/^POLYGON/g)) {
+                                    if ((objects[i].bbox + '').match(/^POLYGON/g) != null) {
                                         //convert POLYGON box to bounds
                                         var split = objects[i].bbox.split(',');
                                         var p1 = split[1].split(' ');
@@ -404,7 +404,7 @@
                                 for (var i = 0; i < scope.selected.layer.facetList[scope.selected.layer.facet].length; i++) {
                                     if (scope.selected.layer.facetList[scope.selected.layer.facet][i].selected) {
                                         var fq = scope.selected.layer.facetList[scope.selected.layer.facet][i].fq;
-                                        if (fq.match(/^-/g) && (fq.match(/:\*$/g) || fq.match(/\[\* TO \*\]$/g))) {
+                                        if (fq.match(/^-/g) != null && (fq.match(/:\*$/g) != null || fq.match(/\[\* TO \*\]$/g) != null)) {
                                             invert = true
                                         }
                                         count++;
@@ -420,7 +420,7 @@
 
                                         if (invert) {
                                             if (sel.length > 0) sel += " AND ";
-                                            if (fq.match(/^-/g) && (fq.match(/:\*$/g) || fq.match(/\[\* TO \*\]$/g))) {
+                                            if (fq.match(/^-/g) != null && (fq.match(/:\*$/g) != null || fq.match(/\[\* TO \*\]$/g) != null)) {
                                                 sel += fq.substring(1)
                                             } else {
                                                 sel += '-' + fq

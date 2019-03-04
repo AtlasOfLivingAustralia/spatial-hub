@@ -68,7 +68,7 @@
                         } else if ($scope.area === 'addressRadius') {
                         } else if ($scope.area === 'pointRadius') {
                         } else if ($scope.area === 'gazetteer') {
-                        } else if ($scope.area.match(/^preset_/g)) {
+                        } else if ($scope.area.match(/^preset_/g) != null) {
                             for (var i = 0; i < $scope.defaultAreas.length; i++) {
                                 var v = $scope.defaultAreas[i].name.replace(' ', '_');
                                 if ($scope.area.indexOf(v) == $scope.area.length - v.length) {
@@ -101,7 +101,7 @@
                         } else if ($scope.area === 'pointRadius') {
                             $scope.createCircle()
                         } else if ($scope.area === 'gazetteer') {
-                        } else if ($scope.area.match(/^preset_/g)) {
+                        } else if ($scope.area.match(/^preset_/g) != null) {
                             //n/a
                         } else if ($scope.area === 'importShapefile') {
                             var featureIdxs = $scope.areaList.filter(function (area) {
@@ -257,7 +257,7 @@
                 };
 
                 $scope.showLocationRadius = function () {
-                    return $scope.selectedArea !== undefined && $scope.selectedArea.wkt !== undefined && $scope.selectedArea.wkt.match(/^POINT/);
+                    return $scope.selectedArea !== undefined && $scope.selectedArea.wkt !== undefined && $scope.selectedArea.wkt.match(/^POINT/) != null;
                 };
 
                 $scope.setWkt = function (wkt) {
@@ -299,7 +299,7 @@
                         return $scope.circle.longitude.length === 0 || $scope.circle.latitude.length === 0
                     } else if ($scope.area === 'gazetteer') {
                         return $scope.selectedArea.pid === undefined
-                    } else if ($scope.area.match(/^preset_/g)) {
+                    } else if ($scope.area.match(/^preset_/g) != null) {
                     } else if ($scope.area === 'importShapefile' || $scope.area === 'importKML') {
                         if ($scope.areaList) {
                             return $scope.areaList.filter(function (area) {

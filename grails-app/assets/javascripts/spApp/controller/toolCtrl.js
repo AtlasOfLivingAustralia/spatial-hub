@@ -330,7 +330,7 @@
                                             var a = $scope.values[k].area[j];
 
                                             var b = a.bbox;
-                                            if ((a.bbox + '').match(/^POLYGON/g)) {
+                                            if ((a.bbox + '').match(/^POLYGON/g) != null) {
                                                 //convert POLYGON box to bounds
                                                 var split = a.bbox.split(',');
                                                 var p1 = split[1].split(' ');

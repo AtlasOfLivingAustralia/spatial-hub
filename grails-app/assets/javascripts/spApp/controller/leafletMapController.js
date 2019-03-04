@@ -123,7 +123,7 @@
 
                 $scope.zoom = function (bounds) {
                     var b = bounds;
-                    if ((bounds + '').match(/^POLYGON/g)) {
+                    if ((bounds + '').match(/^POLYGON/g) != null) {
                         //convert POLYGON box to bounds
                         var split = bounds.split(',');
                         var p1 = split[1].split(' ');

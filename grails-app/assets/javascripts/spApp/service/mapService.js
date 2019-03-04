@@ -307,7 +307,7 @@
 
                     removeHighlight: function () {
                         for (var name in leafletLayers) {
-                            if (name.match(/highlight.*/)) {
+                            if (name.match(/highlight.*/) != null) {
                                 delete leafletLayers[name];
                             }
                         }

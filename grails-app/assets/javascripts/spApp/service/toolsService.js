@@ -97,7 +97,7 @@
                     for (k in uiScope.finishedData.output) {
                         if (uiScope.finishedData.output.hasOwnProperty(k)) {
                             var d = uiScope.finishedData.output[k];
-                            if (d.file && d.file.match(/\.zip$/g)) {
+                            if (d.file && d.file.match(/\.zip$/g) != null) {
                                 var filename = uiScope.toolName + " (" + uiScope.externalTaskId + ").zip";
                                 uiScope.downloadUrl = LayersService.url() + '/tasks/output/' + uiScope.finishedData.id + '/' + encodeURI(filename) + '?filename=' + d.file;
 
@@ -120,11 +120,11 @@
                             var d = uiScope.finishedData.output[k];
                             if (d.openUrl) {
                                 uiScope.metadataUrl = d.openUrl
-                            } else if (d.file && d.file.match(/\.zip$/g)) {
+                            } else if (d.file && d.file.match(/\.zip$/g) != null) {
                                 //processed earlier
-                            } else if (d.file && d.file.match(/\.html$/g)) {
+                            } else if (d.file && d.file.match(/\.html$/g) != null) {
                                 uiScope.metadataUrl = LayersService.url() + '/tasks/output/' + uiScope.finishedData.id + '/' + d.file
-                            } else if (d.file && d.file.match(/\.csv/g)) {
+                            } else if (d.file && d.file.match(/\.csv/g) != null) {
                                 //can only display one csv file
                                 var url = LayersService.url() + '/tasks/output/' + uiScope.finishedData.id + '/' + d.file;
                                 csvFile = d.file;
@@ -141,7 +141,7 @@
                                         display: {size: 'full'}
                                     }, false)
                                 });
-                            } else if (d.file && d.file.match(/\.tif$/g)) {
+                            } else if (d.file && d.file.match(/\.tif$/g) != null) {
                                 var name = d.file.replace('/layer/', '').replace('.tif', '');
                                 layers.push({
                                     id: name,
@@ -261,7 +261,7 @@
                     //inject all Tools into ToolsService
                     $.each(spApp.requires, function (x) {
                         var v = spApp.requires[x];
-                        if (v.match(/-service$/g) && v.match(/^tool-/g)) {
+                        if (v.match(/-service$/g) != null && v.match(/^tool-/g) != null) {
                             var name = v.replace(/-.|^./g, function (match) {
                                 return match.toUpperCase().replace('-', '')
                             });
