@@ -965,6 +965,7 @@
                         var blockString = "--------------------------------------------";
                         for (var ly in layers) {
                             var layerName = layers[ly].leaflet.layerOptions.layers[0].layerOptions.layers;
+                            layerName = layerName.replace("ALA:", "");
                             var field = LayersService.getLayer(layers[ly].id + '');
                             var sname;
                             if (field) {
