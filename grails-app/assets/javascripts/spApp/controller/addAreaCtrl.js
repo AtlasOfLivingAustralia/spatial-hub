@@ -30,7 +30,7 @@
                     metadata: '',
                     wms: ''
                 };
-                $scope.locationRadius = 10;
+                $scope.radius = 10;
                 $scope.location = '';
                 $scope.areaname = '';
                 $scope.intersect = {};
@@ -42,8 +42,7 @@
 
                 $scope.circle = {
                     longitude: '',
-                    latitude: '',
-                    radius: '10'
+                    latitude: ''
                 };
 
                 $scope.myAreaName = $i18n(332, "new area");
@@ -141,8 +140,8 @@
                         if ($scope.isPoint()) {
                             //create circle
                             var coord = $scope.selectedArea.wkt.match(/\((.*)\)/)[1].split(" ");
-                            $scope.selectedArea.name += ' (' + $scope.locationRadius + 'km radius)';
-                            $scope.selectedArea.wkt = Util.createCircle(parseFloat(coord[0]), parseFloat(coord[1]), $scope.circle.radius * 1000)
+                            $scope.selectedArea.name += ' (' + $scope.radius + 'km radius)';
+                            $scope.selectedArea.wkt = Util.createCircle(parseFloat(coord[0]), parseFloat(coord[1]), $scope.radius * 1000)
                         }
                         if ($scope.selectedArea.wkt !== undefined && $scope.selectedArea.wkt.length > 0) {
                             if ($scope.selectedArea.area !== undefined && $scope.selectedArea.q !== undefined && $scope.selectedArea.q.length > 0) {
@@ -178,13 +177,13 @@
                 };
 
                 $scope.createCircle = function () {
-                    $scope.setWkt(Util.createCircle($scope.circle.longitude, $scope.circle.latitude, $scope.circle.radius * 1000))
+                    $scope.setWkt(Util.createCircle($scope.circle.longitude, $scope.circle.latitude, $scope.radius * 1000))
                 };
 
                 $scope.useAddress = function () {
                     var coords = $scope.location.split(',');
-                    $scope.selectedArea.name += ' (' + $scope.locationRadius + 'km radius)';
-                    $scope.setWkt(Util.createCircle(coords[1] * 1, coords[0] * 1, $scope.locationRadius * 1000))
+                    $scope.selectedArea.name += ' (' + $scope.radius + 'km radius)';
+                    $scope.setWkt(Util.createCircle(coords[1] * 1, coords[0] * 1, $scope.radius * 1000))
                 };
 
                 $scope.selectShpArea = function () {
