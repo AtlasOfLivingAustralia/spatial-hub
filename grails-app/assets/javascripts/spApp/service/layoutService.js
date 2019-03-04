@@ -302,7 +302,7 @@
                             this.openModal('speciesInfo', item, false)
                         } else if (item.layertype === 'area' && item.metadataUrl === undefined) {
                             var b = item.bbox;
-                            if ((item.bbox + '').match(/^POLYGON/g)) {
+                            if ((item.bbox + '').match(/^POLYGON/g) != null) {
                                 //convert POLYGON box to bounds
                                 var split = item.bbox.split(',');
                                 var p1 = split[1].split(' ');
