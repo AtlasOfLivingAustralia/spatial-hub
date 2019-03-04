@@ -64,12 +64,15 @@
 
                         var biocacheServiceUrl = $SH.biocacheServiceUrl;
                         var biocacheUrl = $SH.biocacheUrl;
-                        if (!params.ws || params.ws === undefined) {
-                            params.ws = biocacheUrl
+                        var ws = params.ws;
+                        var bs = params.bs;
+
+                        if (!ws || ws === undefined) {
+                            ws = biocacheUrl
                         }
 
-                        if (!params.bs || params.bs === undefined) {
-                            params.bs = biocacheServiceUrl
+                        if (!bs || bs === undefined) {
+                            bs = biocacheServiceUrl
                         }
 
                         var useSpeciesWMSCache = "on";
@@ -169,7 +172,7 @@
                         var promises = [];
 
                         if (sbList.length > 0 || (s !== null && s !== undefined && s.length > 0)) {
-                            var query = {q: sList, fq: sbList, bs: params.bs, ws: params.ws};
+                            var query = {q: sList, fq: sbList, bs: bs, ws: ws};
                             promises.push(BiocacheService.queryTitle(query, params.fq).then(function (response) {
                                 query.name = response;
                                 query.wkt = wkt;
@@ -183,7 +186,7 @@
                             promises.push(SessionsService.load(savedsession))
                         }
 
-                        $.each(this.mapMultiQuerySpeciesLayers(params, geospatialKosher), function (it) {
+                        $.each(this.mapMultiQuerySpeciesLayers(params, bs, ws, geospatialKosher), function (it) {
                             promises.push(it);
                         });
 
@@ -191,7 +194,7 @@
                             promises.push(it);
                         });
 
-                        $.each(this.mapObjectFromParams(params), function (it) {
+                        $.each(this.mapObjectFromParams(params, bs), function (it) {
                             promises.push(it);
                         });
 
@@ -223,7 +226,7 @@
                             }
                         }
                     },
-                    mapObjectFromParams: function (params) {
+                    mapObjectFromParams: function (params, bs) {
                         var promises = [];
                         var pids = params["pid"] ? params["pid"].trim() : "";
                         if (pids !== "") {
@@ -232,14 +235,14 @@
                                 if (pidList.hasOwnProperty(index)) {
                                     promises.push(LayersService.getObject(pidList[index]).then(function (resp) {
                                         resp.data.layertype = 'area';
-                                        MapService.add(resp.data, params.bs)
+                                        MapService.add(resp.data, bs)
                                     }));
                                 }
                             }
                         }
                         return promises;
                     },
-                    mapMultiQuerySpeciesLayers: function (params, geospatialKosher) {
+                    mapMultiQuerySpeciesLayers: function (params, bs, ws, geospatialKosher) {
                         var promises = [];
                         var speciesLayerPattern = new RegExp("ly\\.[0-9]{1,}");
                         for (var key in params) {
@@ -262,7 +265,7 @@
                                             fqList.push(geospatialKosher);
                                         }
 
-                                        var multiQuery = {q: multiLayerQuery, fq: fqList, bs: params.bs, ws: params.ws};
+                                        var multiQuery = {q: multiLayerQuery, fq: fqList, bs: bs, ws: ws};
 
                                         (function () {
                                             var style = params[key + ".s"];

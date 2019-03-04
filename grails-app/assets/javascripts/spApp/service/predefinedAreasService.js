@@ -34,9 +34,9 @@
                     return [
                         MapService.newArea($i18n("Current extent"),
                             ["longitude:[" + extents[0] + " TO " + extents[2] + "]", "latitude:[" + extents[1] + " TO " + extents[3] + "]"],
-                            'POLYGON((' + extents[0] + ' ' + extents[1] + ',' + extents[0] + ' ' + extents[3] + ',' +
-                            extents[2] + ' ' + extents[3] + ',' + extents[2] + ' ' + extents[1] + ',' +
-                            extents[0] + ' ' + extents[1] + '))',
+                            'POLYGON((' + extents[0] + ' ' + extents[3] + ',' + extents[0] + ' ' + extents[1] + ',' +
+                            extents[2] + ' ' + extents[1] + ',' + extents[2] + ' ' + extents[3] + ',' +
+                            extents[0] + ' ' + extents[3] + '))',
                             LGeo.area(wellknown.parse('POLYGON((' + extents[0] + ' ' + extents[1] + ',' + extents[0] + ' ' + extents[3] + ',' +
                                 extents[2] + ' ' + extents[3] + ',' + extents[2] + ' ' + extents[1] + ',' +
                                 extents[0] + ' ' + extents[1] + '))')) / 1000000,

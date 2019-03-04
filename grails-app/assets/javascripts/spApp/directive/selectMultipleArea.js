@@ -57,6 +57,8 @@
                             return false;
                         };
 
+                        LayoutService.addToSave(scope);
+
                         scope.layerAreas = [];
                         $.map(MapService.areaLayers(), function (x, idx) {
                             // Remove incompatible areas that have area.pid.contains(':')
@@ -82,8 +84,6 @@
                                 return x
                             })
                         }
-
-                        LayoutService.addToSave(scope);
 
                         scope.editPickContextualLayerVisible = function () {
                             scope.pickContextualLayerVisible = true;
@@ -215,6 +215,10 @@
                                     scope.selectedInOutLayer.layers.push(a);
                                 }
                             }
+                        };
+
+                        scope.createArea = function () {
+                            LayoutService.openModal('addArea', undefined, true);
                         };
 
                         scope.applyLayersSelections();

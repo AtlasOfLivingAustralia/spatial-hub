@@ -576,9 +576,7 @@
                 };
 
                 $scope.getLicenses = function () {
-                    FlickrService.getLicenses().then(function (data) {
-                        $scope.licenses = data
-                    });
+                    $scope.licenses = FlickrService.getLicenses();
                 };
 
                 $scope.setupTriggers = function () {

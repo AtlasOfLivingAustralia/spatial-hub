@@ -475,10 +475,11 @@
                          }]
                      }]
                  */
-                facetGeneral: function (facet, query, pageSize, offset, config) {
+                facetGeneral: function (facet, query, pageSize, offset, prefixFilter, config) {
                     return this.registerQuery(query).then(function (response) {
 
                         var url = query.bs + "/occurrence/facets?facets=" + facet + "&flimit=" + pageSize + "&foffset=" + offset + "&q=" + response.qid;
+                        if (prefixFilter !== undefined && prefixFilter.length > 0) url += "&fprefix=" + encodeURIComponent(prefixFilter);
 
                         return $http.get(url, _httpDescription('facetGeneral', config)).then(function (response) {
                             if (response.data && response.data[0] && response.data[0].fieldResult) {
@@ -567,7 +568,7 @@
                     if (query.qid) {
                         return $q.when(query)
                     } else {
-                        var q = query.q;
+                        var q = jQuery.extend([], query.q);
                         var fq;
                         if (query.q instanceof Array) {
                             q = query.q[0];
@@ -725,7 +726,7 @@
                 newLayerAddFq: function (query, newFq, newName) {
                     var fqs;
 
-                    if (query.q instanceof Array) fqs = angular.merge(query.q, []);
+                    if (query.q instanceof Array) fqs = angular.merge([], query.q);
                     else fqs = [query.q];
 
                     if ((query.fq instanceof Array) && query.fq.length > 0) {

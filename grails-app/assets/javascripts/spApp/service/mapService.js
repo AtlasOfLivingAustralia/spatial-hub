@@ -764,7 +764,7 @@
                         while (changed) {
                             changed = false;
                             for (var i = 0; i < this.mappedLayers.length; i++) {
-                                var formatted = idx === 0 ? name : name + ' (' + idx + ')';
+                                var formatted = idx === 0 ? name : name + '-' + idx;
                                 if (this.mappedLayers[i].name === formatted) {
                                     idx = idx + 1;
                                     changed = true;
@@ -772,7 +772,7 @@
                             }
                         }
 
-                        return idx === 0 ? name : name + ' (' + idx + ')';
+                        return idx === 0 ? name : name + '-' + idx;
                     }
                 };
 

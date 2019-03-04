@@ -12,6 +12,12 @@
         "inputs": [
           "species"
         ]
+      },
+      {
+        "name": "Alpha value",
+        "inputs": [
+          "coverage"
+        ]
       }
     ]
   },
@@ -151,13 +157,19 @@
         ]
       },
       {
-        "name": "Number of groups and Shapefile generation",
+        "name": "Number of groups",
         "inputs": [
-          "groups",
-          "shp"
+          "groups"
         ]
       }
-    ]
+    ],
+    "input": {
+      "shp": {
+        "constraints": {
+          "default": true
+        }
+      }
+    }
   },
   "MapImage": {
     "view": [

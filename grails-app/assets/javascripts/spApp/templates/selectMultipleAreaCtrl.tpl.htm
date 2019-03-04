@@ -42,3 +42,10 @@
     <div ng-if="pickContextualLayerVisible" select-layers selected-layers="selectedLayer"
          min-count="1" max-count="1" mandatory="false" environmental="false" contextual="true" analysis="false"></div>
 </div>
+
+<div>
+    <label>
+        <input type="radio" ng-click="createArea()" ng-model="selected"
+               ng-model="_selectedArea.area[0]" ng-value="create"
+               name="selectedArea"><span i18n="222">Define new area...</span></label><br/>
+</div>

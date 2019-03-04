@@ -25,7 +25,7 @@
                         scope.exportUrl = null;
 
 
-                        FacetAutoCompleteService.search(BiocacheService.newQuery("-*:*")).then(function (data) {
+                        FacetAutoCompleteService.search(BiocacheService.newQuery(["-*:*"])).then(function (data) {
                             scope.facets = data
                         });
 
@@ -101,16 +101,13 @@
 
                             scope.applySelection();
 
-                            var qid = "*:*";
-                            if (scope.facetFilter.length > 0) {
-                                qid = scope.facet + ":*" + scope.facetFilter + "*"
-                            }
+                            var qid = ["*:*"];
                             var pageSize = 10;
                             var offset = scope.offset;
                             BiocacheService.facetGeneral(scope.facet, {
                                 qid: qid,
                                 bs: $SH.biocacheServiceUrl
-                            }, pageSize, offset, config).then(function (data) {
+                            }, pageSize, offset, scope.facetFilter, config).then(function (data) {
                                 if (data.length > 0) {
                                     scope.facetList = data[0].fieldResult;
                                     scope.exportUrl = BiocacheService.facetDownload(scope.facet);

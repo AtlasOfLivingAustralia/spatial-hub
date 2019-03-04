@@ -64,7 +64,7 @@
         baseLayers: ${(config.startup.baselayers as grails.converters.JSON).toString().encodeAsRaw()},
         defaultBaseLayer: '${config.startup.baselayer.default}',
         flickrUrl: '${config.flickr.url}',
-        flickrLicensesInfo: '${config.flickr.licensesInfo}',
+        flickrLicensesData: ${(config.flickr.licensesData as grails.converters.JSON).toString().encodeAsRaw()},
         flickrSearchPhotos: '${config.flickr.searchPhotos}',
         flickrApiKey: '${config.flickr.apiKey}',
         flickrTags: '${config.flickr.tags}',

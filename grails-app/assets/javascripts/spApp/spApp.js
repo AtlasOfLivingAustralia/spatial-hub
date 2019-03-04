@@ -359,5 +359,19 @@ var authWorkaround = function (url) {
 };
 
 // This is to fix auth issues with ajax calls to other ala applications
-//authWorkaround($SH.biocollectUrl);
+if ($SH.biocollectUrl) {
+    authWorkaround($SH.biocollectUrl);
+}
 
+// // Override Leaflet to fix map locking up when using different EPSGs
+L.oldLatLng = L.LatLng;
+L.LatLng = function (lat, lng, alt) { // (Number, Number, Number)
+    this.lat = parseFloat(lat);
+    this.lng = parseFloat(lng);
+
+    if (alt !== undefined) {
+        L.noConflict.alt = parseFloat(alt);
+    }
+};
+L.extend(L.LatLng, L.oldLatLng);
+L.LatLng.prototype = L.oldLatLng.prototype;
