@@ -60,14 +60,16 @@
                 getFacets: function (dynamic, groups, species_list) {
                     var list = groups.data;
                     var i;
-                    if (dynamic.length > 0) {
+                    if (dynamic.data.length > 0) {
                         var dynamicList = [];
-                        for (i = 0; i < dynamic.length; i++) {
-                            dynamicList.add({
-                                sort: 'index',
-                                description: dynamic[i],
-                                field: dynamic[i]
-                            })
+                        for (i = 0; i < dynamic.data.length; i++) {
+                            if (!dynamic.data[i].name.endsWith("_RNG")) {
+                                dynamicList.push({
+                                    sort: 'index',
+                                    description: dynamic.data[i].displayName,
+                                    field: dynamic.data[i].name
+                                })
+                            }
                         }
                         list.unshift({
                             title: $i18n("Other"),

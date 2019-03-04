@@ -14,12 +14,23 @@
         ]
       },
       {
+        "name": "AOO grid resolution",
+        "inputs": [
+          "resolution"
+        ]
+      },
+      {
         "name": "Alpha value",
         "inputs": [
           "coverage"
         ]
       }
-    ]
+    ],
+    "input": {
+      "resolution": {
+        "description": "Grid resolution (decimal degrees)"
+      }
+    }
   },
   "ScatterplotCreate": {
     "download": false,
