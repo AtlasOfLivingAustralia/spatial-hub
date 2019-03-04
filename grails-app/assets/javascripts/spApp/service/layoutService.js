@@ -322,9 +322,9 @@
                                 b[1][0] + " " + b[1][1] + "</td></tr></table>")
                         } else {
                             if (item.metadataUrl !== undefined) {
-                                LayoutService.openIframe(item.metadataUrl, '', '')
+                                this.openIframe(item.metadataUrl, '', '')
                             } else {
-                                LayoutService.openIframe($SH.layersServiceUrl + '/layer/more/' + item.layerId, '', '')
+                                this.openIframe($SH.layersServiceUrl + '/layer/more/' + item.layerId, '', '')
                             }
                         }
                     }
