@@ -248,11 +248,38 @@
                                         name = item.scientific + " (" + name + ")"
                                     }
 
+                                    // map distributions fields to metadata object
+                                    var metadata = {};
+                                    if (Util.notEmpty(item.data_resource_uid)) metadata.dataResourceUid = $SH.collectionsUrl + "/public/show/" + item.data_resource_uid;
+                                    if (Util.notEmpty(item.scientific)) metadata.scientificName = item.scientific;
+                                    if (Util.notEmpty(item.authority_)) metadata.authority = item.authority_;
+                                    if (Util.notEmpty(item.common_nam)) metadata.commonName = item.common_nam;
+                                    if (Util.notEmpty(item.family)) metadata.family = item.family;
+                                    if (Util.notEmpty(item.genus_name)) metadata.genusName = item.genus_name;
+                                    if (Util.notEmpty(item.specific_n)) metadata.specificName = item.specific_n;
+                                    if (Util.notEmpty(item.min_depth)) metadata.minDepth = item.min_depth;
+                                    if (Util.notEmpty(item.max_depth)) metadata.maxDepth = item.max_depth;
+                                    if (Util.notEmpty(item.pelagic_fl)) metadata.isPelagic = item.pelagic_fl;
+                                    if (Util.notEmpty(item.estuarine_fl)) metadata.isEstuarine = item.estuarine_fl;
+                                    if (Util.notEmpty(item.coastal_fl)) metadata.isCoastal = item.coastal_fl;
+                                    if (Util.notEmpty(item.desmersal_fl)) metadata.isDesmersal = item.desmersal_fl;
+                                    if (Util.notEmpty(item.caab_species_number)) metadata.caabSpeciesNumber = item.caab_species_number;
+                                    if (Util.notEmpty(item.caab_family_number)) metadata.caabFamilyNumber = item.caab_family_number;
+                                    if (Util.notEmpty(item.area_name)) metadata.areaName = item.area_name;
+                                    if (Util.notEmpty(item.checklist_name)) metadata.checklistName = item.checklist_name;
+                                    if (Util.notEmpty(item.notes)) metadata.notes = item.notes;
+                                    if (Util.notEmpty(item.group_name)) metadata.groupName = item.group_name;
+                                    if (Util.notEmpty(item.genus_exemplar)) metadata.genusExemplar = item.genus_exemplar;
+                                    if (Util.notEmpty(item.family_exemplar)) metadata.familyExemplar = item.family_exemplar;
+                                    if (Util.notEmpty(item.endemic)) metadata.endemic = item.endemic;
+                                    if (Util.notEmpty(metadataUrl)) metadata.metadataUrl = metadataUrl;
+
                                     if (data[i].pid) {
-                                        data[i].metadataUrl = metadataUrl;
+                                        //data[i].metadataUrl = metadataUrl;
                                         data[i].name = name;
                                         data[i].geom_idx = item.geom_idx;
                                         data[i].query = query;
+                                        data[i].metadata = metadata;
 
                                         pidList.push(data[i]);
                                     } else {
@@ -285,6 +312,7 @@
                                 if (next.name) data.data.name = next.name;
                                 if (next.name) data.data.displayname = next.name;
                                 if (next.geom_idx) data.data.geom_idx = next.geom_idx;
+                                if (next.metadata) data.data.metadata = next.metadata;
 
                                 MapService.add(data.data);
 

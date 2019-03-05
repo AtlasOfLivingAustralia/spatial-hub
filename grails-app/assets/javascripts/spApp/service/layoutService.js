@@ -313,13 +313,26 @@
                                 b = [[item.bbox[1], item.bbox[0]], [item.bbox[3], item.bbox[2]]]
                             }
 
+                            var metadata = "";
+                            if (item.metadata !== undefined) {
+                                for (var k in item.metadata) {
+                                    if (item.metadata.hasOwnProperty(k)) {
+                                        if (item.metadata[k].indexOf !== undefined && item.metadata[k].indexOf("http") == 0) {
+                                            metadata += "<tr><td>" + k + "</td><td><a target='_blank' href='" + item.metadata[k] + "'>" + item.metadata[k] + "</a></td></tr>"
+                                        } else {
+                                            metadata += "<tr><td>" + k + "</td><td>" + item.metadata[k] + "</td></tr>"
+                                        }
+                                    }
+                                }
+                            }
+
                             bootbox.alert("<b>Area</b><br/><br/>" +
                                 "<table class='table-striped table table-bordered'>" +
                                 "<tr><td style='width:100px'>" + $i18n("Name") + "</td><td>" + item.name + "</td></tr>" +
                                 "<tr><td>" + $i18n(347, "Description") + "</td><td>" + item.description + "</td></tr>" +
                                 "<tr><td>" + $i18n(348, "Area (sq km)") + "</td><td>" + item.area_km.toFixed(2) + "</td></tr>" +
                                 "<tr><td>" + $i18n(349, "Extents") + "</td><td>" + b[0][0] + " " + b[0][1] + ", " +
-                                b[1][0] + " " + b[1][1] + "</td></tr></table>")
+                                b[1][0] + " " + b[1][1] + "</td></tr>" + metadata + "</table>")
                         } else {
                             if (item.metadataUrl !== undefined) {
                                 this.openIframe(item.metadataUrl, '', '')

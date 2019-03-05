@@ -234,5 +234,9 @@ var Util = {
                 }
             }, 1000)
         }
+    },
+
+    notEmpty: function (inputString) {
+        return inputString !== undefined && inputString !== null && ("" + inputString).length > 0
     }
 };
