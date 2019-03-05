@@ -97,7 +97,8 @@
                         scope.contextualClearHighlight = function () {
                             if (scope.selected.layer !== undefined) {
                                 //remove highlight layer
-                                scope.selected.layer.contextualHighlight = ""
+                                scope.selected.layer.contextualHighlight = "";
+                                MapService.setHighlightVisible(false);
                             }
                         };
 

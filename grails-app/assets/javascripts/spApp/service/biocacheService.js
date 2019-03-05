@@ -568,6 +568,9 @@
                     if (query.qid) {
                         return $q.when(query)
                     } else {
+                        if (!(query.q instanceof Array)) {
+                            query.q = [query.q]
+                        }
                         var q = jQuery.extend([], query.q);
                         var fq;
                         if (query.q instanceof Array) {

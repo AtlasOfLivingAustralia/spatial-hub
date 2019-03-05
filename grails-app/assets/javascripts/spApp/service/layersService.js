@@ -74,8 +74,7 @@
                  *
                  */
                 getField: function (field, start, max, q) {
-                    var url = this.url() + "/field/" + field + "?start=" + start + "&pageSize=" + max + "&q=" + q;
-                    //return $http.get($SH.proxyUrl + "?url=" + encodeURIComponent(url))
+                    var url = this.url() + "/field/" + field + "?start=" + start + "&pageSize=" + max + "&q=" + encodeURIComponent(q);
                     return $http.get(url, _httpDescription('getField'))
                 },
                 /**

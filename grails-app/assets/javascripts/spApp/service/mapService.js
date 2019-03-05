@@ -143,6 +143,12 @@
                         }
                     },
 
+                    setHighlightVisible: function (show) {
+                        this.leafletScope.showHighlight(show);
+                        $timeout(function () {
+                        }, 0)
+                    },
+
                     getExtents: function () {
                         if (this.leafletScope && this.leafletScope.bounds) {
                             return [
@@ -330,6 +336,9 @@
                             MapService.add(id, {leaflet: template});
                             leafletLayers["highlight" + uid] = template;
                             uid = uid + 1;
+                            $timeout(function () {
+                                MapService.setHighlightVisible(true)
+                            })
                         }, 0);
                     },
 

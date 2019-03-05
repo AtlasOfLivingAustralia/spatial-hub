@@ -186,6 +186,45 @@
                     })
                 };
 
+                $scope.showHighlight = function (show) {
+                    leafletData.getMap().then(function (map) {
+                        leafletData.getLayers().then(function (leafletLayers) {
+                            var ly;
+                            for (var k in $scope.layers.overlays) {
+                                if ($scope.layers.overlays.hasOwnProperty(k)) {
+                                    if (k.match(/highlight.*/) != null) {
+                                        ly = leafletLayers.overlays[k];
+                                        $scope.layers.overlays[k].visible = show;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (map.hasLayer(ly)) {
+                                // all layers are groups
+                                // when more than one layer in the group, the first is always visible=false
+                                var pos = 0;
+                                var len = 0;
+                                var i;
+                                for (i in ly._layers) {
+                                    len = len + 1;
+                                }
+                                for (i in ly._layers) {
+                                    var layer = ly._layers[i];
+                                    if (pos === 0 && len > 1) {
+                                        layer.visible = false
+                                    } else {
+                                        layer.visible = show
+                                    }
+                                    pos = pos + 1;
+                                }
+
+                                $timeout(function () {
+                                }, 0)
+                            }
+                        })
+                    })
+                };
+
                 $scope.moveLayer = function (layerIn, newIndex) {
                     leafletData.getMap().then(function (map) {
                         leafletData.getLayers().then(function (leafletLayers) {
