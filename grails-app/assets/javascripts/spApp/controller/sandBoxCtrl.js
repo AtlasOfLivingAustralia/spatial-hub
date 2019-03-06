@@ -38,6 +38,7 @@
                     var child = $scope.$$childHead;
                     while (child) {
                         if (child.preview && !setWatchFlag) {
+                            child.preview.datasetName = $i18n("My dataset");
                             (function () {
                                 var dataResourceUid, datasetName;
                                 child.$watch('preview.dataResourceUid', function (newValue) {
