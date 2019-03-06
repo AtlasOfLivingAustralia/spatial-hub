@@ -90,6 +90,24 @@
                     })
                 }
 
+                /**
+                 * Operate on tool output uiScope.finishedData.output.
+                 *
+                 * Match output file:
+                 * *.zip - Automatically initiate download when uiScope.spec.download==true
+                 * *.html - Assigned to metadataUrl. LayersServiceUrl metadataUrls are opened in an iframe, others in a new tab
+                 * *.csv - Opened with CsvCtrl only when there is no *.html
+                 * *.tif - Add to the map as a new environmental layer
+                 *
+                 * Match output name:
+                 * "area" - Add a new area to the map
+                 * "species" - Add a new species layer to the map
+                 * "nextprocess" - Initiate a new tool
+                 *
+                 * @param uiScope
+                 * @returns {Promise<any>}
+                 * @private
+                 */
                 function _executeResult(uiScope) {
                     var layers = [];
                     var nextprocess;
@@ -114,9 +132,10 @@
                         }
                     }
 
+                    var csvFile = null;
+                    var csvUrl = null;
                     for (k in uiScope.finishedData.output) {
                         if (uiScope.finishedData.output.hasOwnProperty(k)) {
-                            var csvFile = '';
                             var d = uiScope.finishedData.output[k];
                             if (d.openUrl) {
                                 uiScope.metadataUrl = d.openUrl
@@ -126,21 +145,8 @@
                                 uiScope.metadataUrl = LayersService.url() + '/tasks/output/' + uiScope.finishedData.id + '/' + d.file
                             } else if (d.file && d.file.match(/\.csv/g) != null) {
                                 //can only display one csv file
-                                var url = LayersService.url() + '/tasks/output/' + uiScope.finishedData.id + '/' + d.file;
+                                csvUrl = LayersService.url() + '/tasks/output/' + uiScope.finishedData.id + '/' + d.file;
                                 csvFile = d.file;
-                                $http.get(url, _httpDescription('getCsv')).then(function (data) {
-                                    var columnOrder = uiScope.spec.output.columnOrder;
-                                    if (!columnOrder) columnOrder = [];
-
-                                    LayoutService.openModal('csv', {
-                                        title: uiScope.toolName + " (" + csvFile + ")",
-                                        csv: data.data,
-                                        columnOrder: columnOrder,
-                                        info: '',
-                                        filename: csvFile,
-                                        display: {size: 'full'}
-                                    }, false)
-                                });
                             } else if (d.file && d.file.match(/\.tif$/g) != null) {
                                 var name = d.file.replace('/layer/', '').replace('.tif', '');
                                 layers.push({
@@ -219,7 +225,23 @@
                         LoggerService.log('Tools', uiScope.toolName, '{ "taskId": "' + uiScope.finishedData.id + '"}')
                     }
 
-                    if (uiScope.metadataUrl !== null) uiScope.openUrl(uiScope.metadataUrl);
+                    if (uiScope.metadataUrl !== null) {
+                        uiScope.openUrl(uiScope.metadataUrl);
+                    } else if (csvUrl !== null) {
+                        $http.get(csvUrl, _httpDescription('getCsv')).then(function (data) {
+                            var columnOrder = uiScope.spec.output.columnOrder;
+                            if (!columnOrder) columnOrder = [];
+
+                            LayoutService.openModal('csv', {
+                                title: uiScope.toolName + " (" + csvFile + ")",
+                                csv: data.data,
+                                columnOrder: columnOrder,
+                                info: '',
+                                filename: csvFile,
+                                display: {size: 'full'}
+                            }, false)
+                        });
+                    }
 
                     return $q.all(promises).then(function () {
                         uiScope.finished = true;

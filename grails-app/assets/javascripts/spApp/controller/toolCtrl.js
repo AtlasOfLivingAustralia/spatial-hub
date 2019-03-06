@@ -378,11 +378,13 @@
                 };
 
                 $scope.openUrl = function (url) {
-                    // Always open in a new window
-                    Util.download(url)
-
-                    // open in an iframe
-                    // LayoutService.openIframe(url, false);
+                    if (url.indexOf($SH.layerServiceUrl) != 0) {
+                        // Always open in a new window when not from spatial-service
+                        Util.download(url);
+                    } else {
+                        // open in an iframe
+                        LayoutService.openIframe(url, false);
+                    }
 
                 };
 

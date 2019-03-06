@@ -129,10 +129,10 @@ security:
         bypass: false # set to true for non-ALA deployment
         disableCAS: false
 
-        autocompleteUrl: 'https://bie.ala.org.au/ws/search/auto.jsonp'
+autocompleteUrl: 'https://bie.ala.org.au/ws/search/auto.jsonp'
         
-    auth:
-        admin_role: ROLE_ADMIN
+auth:
+    admin_role: ROLE_ADMIN
 
 app:
     http:
