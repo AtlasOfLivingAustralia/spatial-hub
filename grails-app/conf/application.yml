@@ -356,7 +356,7 @@ presetWMSServers:
     - name: "GA"
       url: "http://www.ga.gov.au/gis/services/earth_science/GA_Surface_Geology_of_Australia/MapServer/WMSServer?request=GetCapabilities"
     - name: "Geofabric BOM"
-      url: "http://geofabric.bom.gov.au/simplefeatures/ows?request=getcapabilities"
+      url: "http://geofabric.bom.gov.au/simplefeatures/ows?service=WMS&request=GetCapabilities"
 
 allowProxy:
     server: 'data.auscover.org.au,data.auscover.org.au:80,geoserver.imos.org.au,www.ga.gov.au/gis,geofabric.bom.gov.au'

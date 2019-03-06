@@ -337,7 +337,7 @@
                         } else {
                             if (item.metadataUrl !== undefined) {
                                 this.openIframe(item.metadataUrl, '', '')
-                            } else {
+                            } else if (item.layerId) {
                                 this.openIframe($SH.layersServiceUrl + '/layer/more/' + item.layerId, '', '')
                             }
                         }

@@ -25,10 +25,9 @@ import org.apache.commons.httpclient.params.HttpClientParams
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.client.methods.HttpPut
-
-//import org.codehaus.groovy.grails.web.servlet.HttpHeaders
 import org.springframework.web.multipart.MultipartFile
 
+//import org.codehaus.groovy.grails.web.servlet.HttpHeaders
 /**
  * Helper class for invoking other ALA web services.
  */
@@ -176,8 +175,8 @@ class HubWebService {
             def responseHeaders = [:]
             call.responseHeaders.each { h -> responseHeaders.put(h.name, h.value) }
 
-            [statusCode: call.statusCode, text: call.responseBodyAsString, headers: responseHeaders,
-                contentType: call.getResponseHeader(HttpHeaders.CONTENT_TYPE)?.value]
+            [statusCode : call.statusCode, text: call.responseBody, headers: responseHeaders,
+             contentType: call.getResponseHeader(HttpHeaders.CONTENT_TYPE)?.value]
         } catch (IOException e) {
             log.error url, e
             [statusCode: HttpURLConnection.HTTP_INTERNAL_ERROR]

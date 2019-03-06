@@ -11,9 +11,8 @@ import org.apache.commons.io.FileUtils
 import org.apache.commons.lang.StringUtils
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.client.methods.HttpPost
-import org.springframework.web.multipart.MultipartHttpServletRequest
-import org.springframework.web.multipart.commons.CommonsMultipartFile
 import org.springframework.web.multipart.MultipartFile
+import org.springframework.web.multipart.MultipartHttpServletRequest
 
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
@@ -472,29 +471,43 @@ class PortalController {
             String url = params.url
 
             String extra = portalService.rebuildParameters(request.parameterMap, url.contains('?'))
-            String target = url + extra
+            String target = url
+            if (extra) {
+                if (url.contains('?')) {
+                    target += "&" + extra
+                } else {
+                    target += "?" + extra
+                }
+            }
 
             response.addHeader(HttpHeaders.CACHE_CONTROL, (String) grailsApplication.config.cache.headers.control)
 
             //use caching for GET requests
             if (request.method == HttpGet.METHOD_NAME) {
-                def value = grailsCacheManager.getCache(portalService.caches.PROXY).get(params.url)
+                def value = grailsCacheManager.getCache(portalService.caches.PROXY).get(target)
                 if (value) {
                     response.setContentType((String) ((Map) value.get()).contentType)
                     ((Map) value.get()).headers.each { k, v ->
                         response.setHeader(k, v)
                     }
-                    response.outputStream << String.valueOf(((Map) value.get()).text)
+                    if (((Map) value.get()).contentType.startsWith("image")) {
+                        response.outputStream << ((Map) value.get()).text
+                    } else {
+                        response.outputStream << new String(((Map) value.get()).text)
+                    }
                 } else {
                     def headers = [:]
                     request.headerNames.each { name -> headers.put(name, request.getHeader(name)) }
 
-
                     value = hubWebService.getUrlMap(target, headers)
                     if (value) {
-                        grailsCacheManager.getCache(portalService.caches.PROXY).put(params.url, value)
+                        grailsCacheManager.getCache(portalService.caches.PROXY).put(target, value)
                         response.setContentType(String.valueOf(value.contentType))
-                        response.outputStream << String.valueOf(value.text)
+                        if (value.contentType.startsWith("image")) {
+                            response.outputStream << value.text
+                        } else {
+                            response.outputStream << new String(value.text)
+                        }
                     }
                 }
             } else {

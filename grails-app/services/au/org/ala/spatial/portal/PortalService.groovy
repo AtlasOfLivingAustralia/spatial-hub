@@ -36,7 +36,7 @@ class PortalService {
 
     def rebuildParameters(Map params, boolean returnWithAmpersand) {
         StringBuilder uri = new StringBuilder()
-        String delim = returnWithAmpersand ? '?' : '&'
+        String delim = returnWithAmpersand ? '' : '&'
         for (Object o : params.entrySet()) {
             Map.Entry entry = (Map.Entry) o
             // skip the url parameter - removal from the map is not allowed
