@@ -55,22 +55,23 @@
                     saveValues: function () {
                         var top = layoutStack[layoutStack.length - 1];
 
-                        for (var k1 in top[1]) {
-                            if (k1[0] !== '$' && k1[0] !== '_' && top[1].hasOwnProperty(k1)) {
-                                var s = top[1][k1];
-                                for (var k2 in s) {
-                                    if (k2[0] !== '$' && k2[0] !== '_' && s.hasOwnProperty(k2)) {
-                                        if (!(s[k2] instanceof Function)) {
-                                            if (top[2][s.componentName] === undefined)
-                                                top[2][s.componentName] = {};
-                                            top[2][s.componentName][k2] = s[k2]
+                        if (top !== undefined) {
+                            for (var k1 in top[1]) {
+                                if (k1[0] !== '$' && k1[0] !== '_' && top[1].hasOwnProperty(k1)) {
+                                    var s = top[1][k1];
+                                    for (var k2 in s) {
+                                        if (k2[0] !== '$' && k2[0] !== '_' && s.hasOwnProperty(k2)) {
+                                            if (!(s[k2] instanceof Function)) {
+                                                if (top[2][s.componentName] === undefined)
+                                                    top[2][s.componentName] = {};
+                                                top[2][s.componentName][k2] = s[k2]
+                                            }
                                         }
                                     }
                                 }
                             }
+                            this.createCheckpoint();
                         }
-
-                        this.createCheckpoint();
                     },
                     /* Save the state of a controller. Call after initialising controller vars. */
                     addToSave: function (scopeToSave) {

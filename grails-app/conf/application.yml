@@ -332,7 +332,7 @@ startup:
             name: 'Satellite'
             layerType: 'SATELLITE'
             type: 'google'
-            exportType: 'normal'
+            exportType: 'satellite'
             link: 'https://www.google.com/intl/en_au/help/terms_maps.html'
             projections: ['3857']
 
