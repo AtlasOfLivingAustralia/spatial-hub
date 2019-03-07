@@ -265,7 +265,7 @@ class PortalController {
             def r = hubWebService.urlResponse(HttpPost.METHOD_NAME, url, null, null,
                     new StringRequestEntity((json as JSON).toString()))
 
-            render JSON.parse(String.valueOf(r?.text)) as JSON
+            render JSON.parse(new String(r?.text ?: "")) as JSON
         }
     }
 
@@ -307,7 +307,7 @@ class PortalController {
                 log.error("failed ${type} upload: ${r}")
                 render [:] as JSON
             } else {
-                def json = JSON.parse(String.valueOf(r?.text))
+                def json = JSON.parse(new String(r?.text ?: "{}"))
                 def shapeFileId = json.id
                 def area = json.collect { key, value ->
                     if (key == 'shp_id') {
@@ -339,7 +339,7 @@ class PortalController {
             def r = hubWebService.urlResponse(HttpPost.METHOD_NAME, url, null, null,
                     new StringRequestEntity((json as JSON).toString()))
 
-            render JSON.parse(String.valueOf(r?.text)) as JSON
+            render JSON.parse(new String(r?.text ?: "{}")) as JSON
         } else {
             render [:] as JSON
         }
@@ -361,7 +361,7 @@ class PortalController {
             if (r == null) {
                 render [:] as JSON
             } else {
-                render JSON.parse(String.valueOf(r?.text)) as JSON
+                render JSON.parse(new String(r?.text ?: "{}")) as JSON
             }
         }
     }
@@ -442,11 +442,11 @@ class PortalController {
                 def r = hubWebService.postUrl("${json.bs}/webportal/params", json)
 
                 if (r.statusCode >= 400) {
-                    log.error("Couldn't post $json to ${json.bs}/webportal/params, status code ${r.statusCode}, body: ${r.text}")
+                    log.error("Couldn't post $json to ${json.bs}/webportal/params, status code ${r.statusCode}, body: ${new String(r.text ?: "")}")
                     def result = ['error': "${r.statusCode} when calling ${json.bs}"]
                     render result as JSON, status: 500
                 } else {
-                    value = [qid: r.text] as JSON
+                    value = [qid: new String(r.text)] as JSON
 
                     if (r?.text) {
                         grailsCacheManager.getCache(portalService.caches.QID).put(json, value.toString())

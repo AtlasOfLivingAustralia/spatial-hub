@@ -102,7 +102,7 @@
     }
   },
   "PointsToGrid": {
-    "description": "Create a grid from points.",
+    "description": "Create grids from points.",
     "view": [
       {
         "name": "Area to restrict the points.",

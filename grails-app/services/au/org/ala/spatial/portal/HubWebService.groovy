@@ -41,7 +41,7 @@ class HubWebService {
     }
 
     String getUrl(String url, Map headers = null, Boolean doAuthentication = null) {
-        urlResponse(HttpGet.METHOD_NAME, url, null, headers, null, doAuthentication)?.text
+        new String(urlResponse(HttpGet.METHOD_NAME, url, null, headers, null, doAuthentication)?.text ?: "")
     }
 
     Map postUrl(String url, Map nameValues = null, Map headers = null, MultipartFile mFile = null,

@@ -8,7 +8,7 @@
     <div ng-repeat="x in defaultAreas" class="radio">
         <label>
             <input type="radio" ng-click="change(x)" ng-model="selected"
-                   ng-value="x.name" name="{{_uniqueId}}}">{{x.name}}</label><br/>
+                   ng-value="x.name" name="{{_uniqueId}}">{{x.name}}</label><br/>
     </div>
     <br ng-show="defaultAreas.length > 0" class="radio"/>
 
