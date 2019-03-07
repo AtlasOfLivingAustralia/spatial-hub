@@ -116,7 +116,7 @@
                         if (uiScope.finishedData.output.hasOwnProperty(k)) {
                             var d = uiScope.finishedData.output[k];
                             if (d.file && d.file.match(/\.zip$/g) != null) {
-                                var filename = uiScope.toolName + " (" + uiScope.externalTaskId + ").zip";
+                                var filename = uiScope.toolName + " (" + (uiScope.taskId || uiScope.externalTaskId) + ").zip";
                                 uiScope.downloadUrl = LayersService.url() + '/tasks/output/' + uiScope.finishedData.id + '/' + encodeURI(filename) + '?filename=' + d.file;
 
                                 if (uiScope.downloadImmediately && uiScope.spec.download !== false) {

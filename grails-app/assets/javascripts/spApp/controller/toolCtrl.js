@@ -378,7 +378,7 @@
                 };
 
                 $scope.openUrl = function (url) {
-                    if (url.indexOf($SH.layerServiceUrl) != 0) {
+                    if (url.indexOf($SH.layersServiceUrl) != 0) {
                         // Always open in a new window when not from spatial-service
                         Util.download(url);
                     } else {
