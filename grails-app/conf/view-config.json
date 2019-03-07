@@ -68,7 +68,7 @@
     }
   },
   "ScatterplotList": {
-    "description": "Detailed Scatterplot list area report.",
+    "description": "Scatterplot list.",
     "view": [
       {
         "name": "Area to restrict the scatterplot list.",
