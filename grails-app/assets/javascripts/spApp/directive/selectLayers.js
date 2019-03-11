@@ -33,6 +33,8 @@
                         if (scope._contextual === undefined) scope._contextual = true;
                         if (scope._analysis === undefined) scope._analysis = false;
 
+                        scope.baseUrl = $SH.baseUrl; // for image icons
+
                         scope.sortType = 'classification'; // set the default sort type
                         scope.sortReverse = false;  // set the default sort order
                         scope.searchLayer = '';   // set the default search/filter term

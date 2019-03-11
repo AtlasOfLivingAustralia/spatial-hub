@@ -81,25 +81,37 @@ class PortalService {
     }
 
     @Cacheable('configCache')
-    def getConfig(type, showDefault) {
+    def getConfig(type, showDefault, hub) {
         def config
         def defaultFile = type + '-config.json'
         def configFilename = grailsApplication.config[type + "Config"]?.json
         File file = null
         if (configFilename) {
-            file = new File((String) configFilename)
+            if (hub) {
+                file = new File(hub + "/" + configFilename)
+            } else {
+                file = new File((String) configFilename)
+            }
         }
 
         if (file != null && file.exists()) {
             config = JSON.parse(new FileReader(file))
         } else {
             def filename = grailsApplication.config[type + "Config"]?.json?:defaultFile
-            file = new File("/data/spatial-hub/config/" + filename)
+            file = new File("/data/spatial-hub/config/" + (hub != null ? hub + "/" : "") + filename)
             if (!showDefault && file.exists()) {
                 config = JSON.parse(new FileReader(file))
             } else {
-                def text = PortalController.classLoader.getResourceAsStream(defaultFile).text
-                config = JSON.parse(text)
+                try {
+                    def text = PortalController.classLoader.getResourceAsStream(defaultFile).text
+                    config = JSON.parse(text)
+                } catch (Exception e) {
+                    if (!hub) {
+                        log.error("Missing resource: " + defaultFile, e)
+                    } else {
+                        config = [:]
+                    }
+                }
             }
         }
         config
@@ -145,5 +157,16 @@ class PortalService {
         (url =~/${pattern}/).find() | predefined
     }
 
-
+    def getAppConfig(hub) {
+        if (hub) {
+            def hubConfig = getConfig("app", false, hub)
+            if (hubConfig) {
+                grailsApplication.config + hubConfig
+            } else {
+                [:]
+            }
+        } else {
+            grailsApplication.config
+        }
+    }
 }

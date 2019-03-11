@@ -6,6 +6,8 @@ class UrlMappings {
 
     static mappings = {
 
+        "/hub/$hub"(controller: "portal", action: "index")
+
         "/$controller/$action?/$id?(.$format)?" {
             constraints {
                 // apply constraints here

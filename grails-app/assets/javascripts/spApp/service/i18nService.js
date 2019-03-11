@@ -67,7 +67,7 @@
 
                     map[k] = v;
 
-                    $http.post($SH.baseUrl + "/portal/i18n?lang=" + $SH.i18n, {
+                    $http.post($SH.baseUrl + "/portal/i18n?lang=" + $SH.i18n + "&hub=" + $SH.hub, {
                         key: k,
                         value: v
                     }, _httpDescription('commit'))

@@ -217,9 +217,11 @@
                             $timeout(function () {
                                 $templateRequest('/spApp/quickLinksContent.htm').then(function (content) {
                                     var html = $compile(content)($scope);
-                                    leafletData.getMap().then(function (map) {
-                                        new L.Control.QuickLinks({template: html[0]}).addTo(map)
-                                    });
+                                    if ($SH.config.quicklinks) {
+                                        leafletData.getMap().then(function (map) {
+                                            new L.Control.QuickLinks({template: html[0]}).addTo(map)
+                                        });
+                                    }
                                 })
                             }, 500);
                         }]

@@ -581,6 +581,7 @@
                             }
                         }
                         var data = {q: q, bs: query.bs};
+                        if ($SH.qc !== undefined && $SH.qc !== null && $SH.qc.length > 0) data.qc = $SH.qc;
                         if (fq !== undefined && fq !== null) data.fq = fq;
                         if (query.wkt !== undefined && query.wkt !== null && query.wkt.length > 0) data.wkt = query.wkt;
 
@@ -618,6 +619,7 @@
                  */
                 registerParam: function (bs, q, fq, wkt) {
                     var data = {q: q, bs: bs};
+                    if ($SH.qc !== undefined && $SH.qc !== null && $SH.qc.length > 0) data.qc = $SH.qc;
                     if (fq !== undefined && fq !== null) data.fq = fq;
                     if (wkt !== undefined && wkt !== null && wkt.length > 0) data.wkt = wkt;
                     return $http.post($SH.baseUrl + "/portal/q", data, _httpDescription('registerParam')).then(function (response) {
@@ -794,9 +796,11 @@
                             }
                         })
                     } else {
+                        var qc = [];
+                        if ($SH.qc !== undefined && $SH.qc != null && $SH.qc.length > 0) qc = [$SH.qc];
                         return $q.when({
                             q: q,
-                            fq: fq,
+                            fq: qc, //fq.length == 0 so it is safe to use qc here
                             wkt: wkt,
                             qid: q,
                             bs: bs,

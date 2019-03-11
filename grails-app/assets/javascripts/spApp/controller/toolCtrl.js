@@ -390,10 +390,6 @@
 
                 $scope.init();
 
-                $scope.getConstraintValue = function (item, constraint, deflt) {
-                    return $spNc(item.constraints, [constraint], deflt)
-                };
-
                 $scope.isLocalTask = function () {
                     return ToolsService.isLocalTask($scope.toolName)
                 }

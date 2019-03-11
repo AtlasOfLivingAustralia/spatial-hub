@@ -275,14 +275,13 @@
                 }, true);
 
                 $scope.toggleExpandLeft = function (context) {
-                    if ($("#right-panel")[0].style.marginLeft == "0px") {
-                        $("#left-panel")[0].style.marginLeft = "0px";
-                        $("#right-panel")[0].style.marginLeft = "420px";
-                    } else {
+                    if ($("#right-panel")[0].style.marginLeft == "420px") {
                         $("#left-panel")[0].style.marginLeft = "-420px";
                         $("#right-panel")[0].style.marginLeft = "0px";
+                    } else {
+                        $("#left-panel")[0].style.marginLeft = "0px";
+                        $("#right-panel")[0].style.marginLeft = "420px";
                     }
-                    ;
                     $(window).trigger('resize');
                     context.invalidateSize()
                 };
@@ -628,18 +627,22 @@
 
                             L.control.scale({position: 'bottomright'}).addTo(map);
 
-                            new L.Control.InfoPanel({
-                                data: []
-                            }).addTo(map);
+                            if ($SH.config.cursorCoordinates) {
+                                new L.Control.InfoPanel({
+                                    data: []
+                                }).addTo(map);
+                            }
 
                             new L.Control.FullScreen({
                                 data: []
                             }).addTo(map);
 
-                            new L.Control.Expand({
-                                toggleExpandUp: $scope.toggleExpandUp,
-                                toggleExpandLeft: $scope.toggleExpandLeft
-                            }).addTo(map);
+                            if ($SH.config.collapseUp || $SH.config.collapseLeft) {
+                                new L.Control.Expand({
+                                    toggleExpandUp: $scope.toggleExpandUp,
+                                    toggleExpandLeft: $scope.toggleExpandLeft
+                                }).addTo(map);
+                            }
 
                             if ($SH.flickrUrl) {
                                 new L.Control.Panoramio({

@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" ng-if="config.optionsSelectBaseMap">
     <p i18n="164">Select the base map type.</p>
 
     <div class="radio" ng-model="selection.name" ng-repeat="x in baselayers">
@@ -31,7 +31,8 @@
 <hr/>
 
 <div class="btn-group btn-group-sm alignright">
-    <button i18n="165" class="btn btn-default" ng-click="addWMS()">Add WMS Layer</button>
-    <button i18n="166" class="btn btn-default" ng-click="downloadMap()">Download map</button>
-    <button i18n="167" class="btn btn-default" ng-click="resetMap()">Reset map</button>
+    <button i18n="165" class="btn btn-default" ng-click="addWMS()" ng-if="config.optionsAddWms">Add WMS Layer</button>
+    <button i18n="166" class="btn btn-default" ng-click="downloadMap()" ng-if="config.optionsDownloadMap">Download map
+    </button>
+    <button i18n="167" class="btn btn-default" ng-click="resetMap()" ng-if="config.optionsResetMap">Reset map</button>
 </div>

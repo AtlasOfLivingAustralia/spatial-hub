@@ -2,7 +2,7 @@
 <html>
 <head>
     <title><g:if env="development">Grails Runtime Exception</g:if><g:else>Error</g:else></title>
-    <meta name="layout" content="main">
+    <meta name="layout" content="generic">
     <link rel="stylesheet" href="assets/errors.css" type="text/css">
 </head>
 
@@ -14,7 +14,6 @@
     <ul class="errors">
         <li>An error has occurred</li>
     </ul>
-    <g:renderException exception="${exception}"/>
 </g:else>
 </body>
 </html>

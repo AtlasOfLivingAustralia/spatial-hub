@@ -17,7 +17,7 @@
 <script src="https://maps.google.com/maps/api/js?language=en-US&libraries=places&key=${grailsApplication.config.google.apikey}"
         type="text/javascript"></script>
 
-<g:set var="sandboxUrl" value="${grailsApplication.config.sandbox.uiUrl}"></g:set>
+<g:set var="sandboxUrl" value="${config.sandbox.uiUrl}"></g:set>
 
 <script type="text/javascript">
     $SH = {

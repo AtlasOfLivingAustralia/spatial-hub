@@ -7,7 +7,7 @@
     </div>
 </div>
 
-<div style="width:410px;padding-left:25px;overflow-y:scroll"
+<div style="width:410px;padding-left:25px;overflow-y:scroll;margin-left:-420px;"
      ng-style="(panelMode[0] == 'default' && {'overflow-y':'visible'}) || {'overflow-y':'scroll'}"
      class="pull-left"
      ng-controller="LayoutCtrl" id="left-panel">
@@ -47,7 +47,7 @@
     <div ng-if="panelMode[0] == 'pointComparison'" point-comparison></div>
 </div>
 
-<div style="margin-left:420px" id="right-panel">
+<div id="right-panel">
     <area-create style="height:500px;width:500px;"></area-create>
     <div class="row" style="margin:0px" ng-controller="LeafletMapController as leafletMapController">
         <leaflet id="map" lf-center="australia" layers="layers" controls="controls"

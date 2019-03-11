@@ -8,20 +8,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <meta http-equiv="Content-type" content="text/html; charset=utf-8">
-    <meta name="layout" content="${grailsApplication.config.skin.layout}"/>
-    <title>${grailsApplication.config.skin.orgNameLong} | Spatial Portal</title>
+    <meta name="layout" content="${config.skin.layout}"/>
+    <title>${config.skin.orgNameLong} | Spatial Portal</title>
+
+    <g:if test="${hub != null}">
+        <asset:stylesheet href="hub/${hub}.css"/>
+    </g:if>
 </head>
 
 <body>
 
-<script src="portal/messages.js?id=${messagesAge}" type="text/javascript" defer></script>
-<script src="https://maps.google.com/maps/api/js?language=en-US&libraries=places&key=${grailsApplication.config.google.apikey}" type="text/javascript"></script>
+<script src="${config.grails.serverURL}/portal/messages.js?id=${messagesAge}" type="text/javascript" defer></script>
+<script src="https://maps.google.com/maps/api/js?language=en-US&libraries=places&key=${config.google.apikey}"
+        type="text/javascript"></script>
 
+<g:set var="sandboxUrl" value="${config.sandbox.uiUrl}"></g:set>
 
-<g:set var="sandboxUrl" value="${grailsApplication.config.sandbox.uiUrl}"></g:set>
-
-<script type="text/javascript">
+<script type="text/javascript" asset-defer="false">
     $SH = {
+        hub: '${hub}',
         enviroment:'${grails.util.Environment.current}',
         baseUrl: '${config.grails.serverURL}',
         biocacheUrl: '${config.biocache.url}',
@@ -73,12 +78,14 @@
         flickrGeoContext: '${config.flickr.geoContext}',
         flickrFilter: '${config.flickr.filter}',
         flickrNbrOfPhotosToDisplay: '${config.flickr.nbrOfPhotosToDisplay}',
-        menu: '${config.grails.serverURL}/portal/config/menu',
+        menu: '${config.grails.serverURL}/portal/config/menu?hub=${hub}',
         defaultAreas: ${(config.defaultareas as grails.converters.JSON).toString().encodeAsRaw()},
         defaultSpeciesDotSize: ${config.speciesDotSize},
         defaultSpeciesDotOpacity: ${config.speciesDotOpacity},
         presetWMSServers: ${(config.presetWMSServers as grails.converters.JSON).toString().encodeAsRaw()},
         getMapExamples: ${(config.getMapExamples as grails.converters.JSON).toString().encodeAsRaw()},
+
+        qc: '${config.qc}',
 
         validUrls: [
             'self',
@@ -106,22 +113,24 @@
         projection: '${config.projection.default}',
         fqExcludeAbsent: '${config.fq.excludeAbsent}',
         biocollectUrl: '${config.biocollect.url}',
-        lifeforms: ${(config.lifeforms as grails.converters.JSON).toString().encodeAsRaw()}
+        lifeforms: ${(config.lifeforms as grails.converters.JSON).toString().encodeAsRaw()},
+
+        config: ${(config.spApp as grails.converters.JSON).toString().encodeAsRaw()}
     };
 
     BIE_VARS = {
         autocompleteUrl: '${config.autocompleteUrl}'
     };
 
-    var SANDBOX_CONFIG = {
+    SANDBOX_CONFIG = {
         autocompleteColumnHeadersUrl: '${sandboxUrl}/dataCheck/autocomplete',
-        biocacheServiceUrl: '${grailsApplication.config.biocacheServiceUrl}',
+        biocacheServiceUrl: '${config.biocacheServiceUrl}',
         chartOptionsUrl: '${sandboxUrl}/myDatasets/chartOptions',
         deleteResourceUrl: '${sandboxUrl}/myDatasets/deleteResource',
         getAllDatasetsUrl: '${sandboxUrl}/myDatasets/allDatasets',
         getDatasetsUrl: '${sandboxUrl}/myDatasets/userDatasets',
         keepaliveUrl: '${sandboxUrl}/dataCheck/ping',
-        loginUrl: '${grailsApplication.config.casServerLoginUrl}?service=${createLink(uri: '/', absolute: true)}',
+        loginUrl: '${config.casServerLoginUrl}?service=${createLink(uri: '/', absolute: true)}',
         parseColumnsUrl: '${sandboxUrl}/dataCheck/parseColumns',
         processDataUrl: '${sandboxUrl}/dataCheck/processData',
         reloadDataResourceUrl: '${sandboxUrl}/dataCheck/reload',
@@ -135,6 +144,8 @@
     };
 
 </script>
+
+<asset:javascript src="application.js"/>
 
 <sp-app></sp-app>
 

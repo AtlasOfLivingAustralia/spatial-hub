@@ -3,7 +3,7 @@
         <li ng-repeat="item in list" class="list-group-item" ng-class="{ 'layer-selected' : isSelected(item)}"
             ng-click="select(item)">
             <input type="checkbox" ng-model="item.visible" ng-change="updateVisibility(item)">
-            <img ng-src="assets/icon_{{item.layertype}}-layer.png">
+            <img ng-src="{{baseUrl}}/assets/icon_{{item.layertype}}-layer.png">
             <span style="max-width: 270px;display: inline-block;word-wrap:break-word;vertical-align: top;">{{item.name}}</span>
             <i style="float:right" class="glyphicon glyphicon-trash" ng-click="delete(item)"></i>
             <a ng-show="item.metadataUrl.length > 0" target="_blank" href="{{item.metadataUrl}}"><i style="float:right"
@@ -14,7 +14,7 @@
         </li>
     </ul>
     <ul class="list-group layer-list">
-        <li class="list-group-item" ng-click="selectControls()" style="border-radius: 0px;"
+        <li class="list-group-item" ng-click="selectControls()" style="border-radius: 0px;" ng-if="config.mapOptions"
             ng-class="{ 'layer-selected' : LayoutService.showLegend[0] }">
 
             <div class="btn-group" style="float:left;margin-top:-3px;margin-right:20px">

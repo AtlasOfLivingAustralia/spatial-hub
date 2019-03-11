@@ -51,20 +51,6 @@
                             $scope.animationsEnabled = !$scope.animationsEnabled;
                         };
 
-                        scope.hidePanel = function () {
-                            $("#left-panel")[0].style.marginLeft = "-410px";
-                            $("#right-panel")[0].style.marginLeft = "0px";
-                            $("#restore-left-panel").show();
-                            MapService.leafletScope.invalidate()
-                        };
-
-                        scope.showPanel = function () {
-                            $("#restore-left-panel").hide();
-                            $("#left-panel")[0].style.marginLeft = "0px";
-                            $("#right-panel")[0].style.marginLeft = "400px";
-                            MapService.leafletScope.invalidate()
-                        };
-
                         scope.saveSession = function () {
                             SessionsService.save(SessionsService.current())
                         };

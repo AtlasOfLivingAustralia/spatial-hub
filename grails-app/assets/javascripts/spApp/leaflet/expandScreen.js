@@ -23,19 +23,28 @@ L.Control.Expand = L.Control.extend({
 
         map.expandControl = this;
 
-        this.up = L.DomUtil.create('a', 'icon-expand-up', container);
-        this.up.href = '#';
-        this.up.title = this.options.titleUp;
-        L.DomEvent.addListener(this.up, 'click', L.DomEvent.stopPropagation)
-            .addListener(this.up, 'click', L.DomEvent.preventDefault)
-            .addListener(this.up, 'click', this._toggleUp, map);
+        if ($SH.config.collapseUp) {
+            this.up = L.DomUtil.create('a', 'icon-expand-up', container);
+            this.up.href = '#';
+            this.up.title = this.options.titleUp;
+            L.DomEvent.addListener(this.up, 'click', L.DomEvent.stopPropagation)
+                .addListener(this.up, 'click', L.DomEvent.preventDefault)
+                .addListener(this.up, 'click', this._toggleUp, map);
+        }
 
-        this.left = L.DomUtil.create('a', 'icon-expand-left', container);
-        this.left.href = '#';
-        this.left.title = this.options.titleLeft;
-        L.DomEvent.addListener(this.left, 'click', L.DomEvent.stopPropagation)
-            .addListener(this.left, 'click', L.DomEvent.preventDefault)
-            .addListener(this.left, 'click', this._toggleLeft, map);
+        if ($SH.config.collapseLeft) {
+            this._left_state = !$SH.config.leftPanel;
+            if (this._left_state) {
+                this.left = L.DomUtil.create('a', 'icon-expand-left icon-expand-right', container);
+            } else {
+                this.left = L.DomUtil.create('a', 'icon-expand-left', container);
+            }
+            this.left.href = '#';
+            this.left.title = this.options.titleLeft;
+            L.DomEvent.addListener(this.left, 'click', L.DomEvent.stopPropagation)
+                .addListener(this.left, 'click', L.DomEvent.preventDefault)
+                .addListener(this.left, 'click', this._toggleLeft, map);
+        }
 
         return container;
     },

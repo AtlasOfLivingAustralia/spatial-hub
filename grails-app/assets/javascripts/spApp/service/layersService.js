@@ -74,6 +74,7 @@
                  *
                  */
                 getField: function (field, start, max, q) {
+                    if (q === undefined) q = '';
                     var url = this.url() + "/field/" + field + "?start=" + start + "&pageSize=" + max + "&q=" + encodeURIComponent(q);
                     return $http.get(url, _httpDescription('getField'))
                 },

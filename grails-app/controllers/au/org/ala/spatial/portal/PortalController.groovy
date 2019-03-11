@@ -128,17 +128,26 @@ class PortalController {
     def index() {
         def userId = getValidUserId(params)
 
+        def hub = params.hub
+
         if (params?.silent) {
             render html: '<html>' + (authService.userId != null ? 'isLoggedIn' : 'isLoggedOut') + '</html>'
         } else if (request.forwardURI.contains(';jsessionid=')) {
             //clean forwards from CAS
-            redirect(url: grailsApplication.config.grails.serverURL, params: params)
+            redirect(url: grailsApplication.config.grails.serverURL + (hub != null ? "/hub/" + hub : ""), params: params)
         } else {
-            render(view: 'index',
-                    model: [config   : grailsApplication.config,
-                            userId   : userId,
-                            sessionId: sessionService.newId(userId),
-                            messagesAge: messageService.messagesAge])
+            def config = portalService.getAppConfig(hub)
+            if (!config && hub) {
+                response.setStatus(HttpURLConnection.HTTP_NOT_FOUND)
+                render ''
+            } else {
+                render(view: 'index',
+                        model: [config     : config,
+                                userId     : userId,
+                                sessionId  : sessionService.newId(userId),
+                                messagesAge: messageService.messagesAge,
+                                hub        : hub])
+            }
         }
     }
 
@@ -528,20 +537,22 @@ class PortalController {
     def config(String id) {
         def userId = getValidUserId(params)
 
+        def hub = params.hub
+
         if (!userId) {
             notAuthorised()
         } else {
             def type = ["view", "menu"].contains(id) ? id : "view"
-            def config = portalService.getConfig(type, params?.version?.equalsIgnoreCase(defaultConfigLabel()) ?: false)
+            def config = portalService.getConfig(type, params?.version?.equalsIgnoreCase(defaultConfigLabel()) ?: false, hub)
 
             if (params.version && !params.version.equalsIgnoreCase(defaultConfigLabel())) {
                 if (params.version != "current" && params.version != "json") {
-                    def file = new File("/data/spatial-hub/config/" + type + "-config." + params.version + ".json")
+                    def file = new File("/data/spatial-hub/config/" + (hub != null ? hub + "/" : "") + type + "-config." + params.version + ".json")
 
                     if (file.exists()) {
                         config = JSON.parse(new FileReader(file))
                     } else {
-                        config = ""
+                        config = "{}"
                     }
                 }
             } else {

@@ -41,9 +41,11 @@
                     }
 
                     var result = {};
-                    angular.forEach($SH.flickrLicensesData.licenses.license, function (lic) {
-                        result[lic.id] = lic.name;
-                    });
+                    if ($SH.flickrLicensesData && $SH.flickrLicensesData.licenses && $SH.flickrLicensesData.licenses.license) {
+                        angular.forEach($SH.flickrLicensesData.licenses.license, function (lic) {
+                            result[lic.id] = lic.name;
+                        });
+                    }
 
                     flickrCache.put('licences', result);
                     return result;

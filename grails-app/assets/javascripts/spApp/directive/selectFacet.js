@@ -102,6 +102,7 @@
                             scope.applySelection();
 
                             var qid = ["*:*"];
+                            if ($SH.qc !== undefined && $SH.qc != null && $SH.qc.length > 0) qid = [$SH.qc];
                             var pageSize = 10;
                             var offset = scope.offset;
                             BiocacheService.facetGeneral(scope.facet, {

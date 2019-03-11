@@ -100,7 +100,8 @@
                                                           ng-click="toggle(layer)">
                             </td>
                             <td style="width:20px"><img
-                                    ng-src="assets/icon_{{layer.type == 'e' ? 'grid':'contextual'}}-layer.png"></td>
+                                    ng-src="{{baseUrl}}/assets/icon_{{layer.type == 'e' ? 'grid':'contextual'}}-layer.png">
+                            </td>
                             <td style="width:300px">{{ layer.classification}}</td>
                             <td style="width:300px">{{ layer.name }}</td>
                             <td style="float:right">

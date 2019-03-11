@@ -70,9 +70,8 @@ Replacement for spatial-portal with Grails, AngularJS and Leaflet.
 
 ## Header and Footer
 
-* **Configure [ala-bootstrap3](https://github.com/AtlasOfLivingAustralia/ala-bootstrap3)**
-
-    This is recommended since it can be reused by all components that use [ala-bootstrap3](https://github.com/AtlasOfLivingAustralia/ala-bootstrap3)
+#####Configure [ala-bootstrap3](https://github.com/AtlasOfLivingAustralia/ala-bootstrap3)
+* This is recommended since it can be reused by all components that use [ala-bootstrap3](https://github.com/AtlasOfLivingAustralia/ala-bootstrap3)
 
     1. Fork [commonui-bs3](https://github.com/AtlasOfLivingAustralia/commonui-bs3), modify and deploy
 
@@ -83,12 +82,12 @@ Replacement for spatial-portal with Grails, AngularJS and Leaflet.
     headerAndFooter.baseURL=<URL to deployed commonui-bs3>
     ```
 
-* **Fork [spatial-hub](https://github.com/AtlasOfLivingAustralia/spatial-hub), modify and deploy**
+#####Fork [spatial-hub](https://github.com/AtlasOfLivingAustralia/spatial-hub), modify and deploy
+* Use when development of spatial-hub is expected. It can be used with with the other methods.
 
-    Use when development of spatial-hub is expected. It can be used with with the other methods.
-
-* **Local files**
-
+#####Local files
+* Adding files local to deployment can add new layouts and resources.
+    
     1. Add a new layout gsp to the ```/data/spatial-hub/views/layouts``` directory.
         ```
         /data/spatial-hub/views/layouts/myLayout.gsp
@@ -108,7 +107,7 @@ Replacement for spatial-portal with Grails, AngularJS and Leaflet.
         <asset:image src="img/externalImg.png" />
         ```
 
-    1. Configure to use the new layout gsp
+    1. Change config to use the new layout gsp.
         ```
         # edit /data/spatial-hub/config/spatial-hub-config.properties
         skin.layout=myLayout
@@ -123,7 +122,21 @@ Replacement for spatial-portal with Grails, AngularJS and Leaflet.
 > headerAndFooter.baseURL=<URL to this spatial-hub instance>/assets
 > ```
 
+# Adding hubs to spatial-hub
 
+Additional map views can be created and served from urls hub/{{hub_name}}. This is done by creating additional files in the /data/spatial-hub directory.
+
+Files required to create a new hub view. 
+
+Files required | Overrides ```/data/spatial-hub/config/``` | Overrides ```grailsApp/conf/```
+------------ | ------------- | -------------
+```/data/spatial-hub/config/{{hub_name}}/app-config.json``` | ```spatial-hub-config.yml``` | ```application.yml```
+```/data/spatial-hub/config/{{hub_name}}/view-config.json``` | ```view-config.json``` | ```view-config.json```
+```/data/spatial-hub/config/{{hub_name}}/menu-config.json``` | ```menu-config.json``` | ```menu-config.json```
+
+An additional css can be included with ```/data/spatial-hub/assets/css/{{hub_name}}.css``` when using ```skin.layout``` ```portal``` or ```generic```. This may not be used by a [local layout gsp file](#local-files). 
+
+  
 # Embedding spatial-hub
 
 Example [embedExample.html](embedExample.html) (TODO: finish implementation)

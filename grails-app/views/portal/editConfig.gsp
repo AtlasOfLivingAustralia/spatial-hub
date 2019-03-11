@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <meta name="layout" content="plain"/>
+    <meta name="layout" content="generic"/>
 
     <asset:javascript src="ace.js" />
     <asset:javascript src="ace-diff.js" />

@@ -17,6 +17,9 @@
                 scope: {},
                 templateUrl: '/spApp/mapContent.htm',
                 link: function (scope, element, attrs) {
+                    scope.baseUrl = $SH.baseUrl; // for image icons
+                    scope.config = $SH.config; // used by mapContent.tpl.htm
+
                     scope.list = MapService.mappedLayers;
 
                     scope.sortingLog = [];

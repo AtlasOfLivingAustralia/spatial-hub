@@ -25,6 +25,8 @@
                     scope: {},
                     templateUrl: '/spApp/legendContent.htm',
                     link: function (scope, element, attrs) {
+                        scope.baseUrl = $SH.baseUrl; // for image icons
+
                         scope.facetFilter = '';
                         scope.fq = [];
                         scope.yearMin = 1800;

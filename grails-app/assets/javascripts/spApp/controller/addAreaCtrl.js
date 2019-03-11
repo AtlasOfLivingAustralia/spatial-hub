@@ -13,6 +13,8 @@
             function (LayoutService, $scope, MapService, $timeout, LayersService, $uibModalInstance, PredefinedAreasService, inputData) {
 
                 $scope.inputData = inputData;
+                $scope.gazField = $SH.gazField; // used by addAreaContent.tpl.htm
+                $scope.config = $SH.config; // used by addAreaContent.tpl.htm
 
                 $scope.step = 'default';
                 $scope.area = 'drawBoundingBox';
@@ -70,7 +72,7 @@
                         } else if ($scope.area === 'gazetteer') {
                         } else if ($scope.area.match(/^preset_/g) != null) {
                             for (var i = 0; i < $scope.defaultAreas.length; i++) {
-                                var v = $scope.defaultAreas[i].name.replace(' ', '_');
+                                var v = $scope.defaultAreas[i].name;
                                 if ($scope.area.indexOf(v) == $scope.area.length - v.length) {
                                     $scope.selectedArea.name = $scope.defaultAreas[i].name;
                                     $scope.selectedArea.wkt = $scope.defaultAreas[i].wkt;
@@ -262,6 +264,10 @@
 
                 $scope.setWkt = function (wkt) {
                     $scope.selectedArea.wkt = wkt
+                };
+
+                $scope.selectPresetArea = function (area) {
+                    $scope.area = "preset_" + area.name;
                 };
 
                 $scope.setPid = function (pid, mapNow) {
