@@ -340,6 +340,7 @@
                                 if (data.photos) {
                                     for (var i = 0; i < nbrOfPhotosToDisplay; i++) {
                                         var photoContent = data.photos.photo[i];
+                                        photoContent.url_m = "https://www.flickr.com/photos/" + photoContent.owner + "/" + photoContent.id
                                         newMarkers[photoContent.id] = photoContent;
                                     }
                                 }
