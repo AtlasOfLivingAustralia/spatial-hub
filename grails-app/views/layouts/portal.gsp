@@ -64,6 +64,10 @@
                     <div class="hidden-xs" id="login-buttons">
                         <g:if test="userId != null">
                             <ul class="nav navbar-nav navbar-right nav-logged-in">
+                                <g:if test="config.extraLinkUrl != null">
+                                    <li class="dropdown font-xsmall"><a
+                                            href="${config.extraLinkUrl}">${config.extraLinkText}</a></li>
+                                </g:if>
                                 <li class="dropdown font-xsmall"><a href="#"
                                                                     onclick="$('#saveSessionButton')[0].click()"
                                                                     data-toggle="dropdown" role="button"
@@ -213,6 +217,10 @@
                         <ul class="nav navbar-nav ">
                             <li class="divider"></li>
                             <g:if test="userId != null">
+                                <g:if test="config.extraLinkUrl != null">
+                                    <li class="dropdown font-xsmall"><a
+                                            href="${config.extraLinkUrl}">${config.extraLinkText}</a></li>
+                                </g:if>
                                 <li class="dropdown font-xsmall"><a href="#"
                                                                     onclick="$('#saveSessionButton')[0].click()"
                                                                     data-toggle="dropdown" role="button"

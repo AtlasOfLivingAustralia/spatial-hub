@@ -451,6 +451,11 @@ projections:
 #    # show the left panel by default
 #    leftPanel: true
 
+#
+# portal.gsp layout options
+#
+#extraLinkUrl: "https://spatial-old.ala.org.au"
+#extraLinkText: "Old site"
 
 ---
 environments:
