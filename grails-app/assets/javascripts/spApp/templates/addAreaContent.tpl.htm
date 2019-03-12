@@ -19,18 +19,22 @@
                                 <label><span i18n="4">Interact with the map</span></label>
                                 <div class="checkbox"><label><input type="radio" ng-disabled="selectionDone"
                                                                     ng-model="area" name="addArea_area"
+                                                                    ng-change="selectArea('drawBoundingBox')"
                                                                     value="drawBoundingBox"><span i18n="5">Draw bounding box</span></label>
                                 </div>
                                 <div class="checkbox"><label><input type="radio" ng-disabled="selectionDone"
                                                                     ng-model="area" name="addArea_area"
+                                                                    ng-change="selectArea('drawPolygon')"
                                                                     value="drawPolygon"><span
                                         i18n="6">Draw polygon</span></label>
                                 </div>
                                 <div class="checkbox"><label><input type="radio" ng-disabled="selectionDone"
                                                                     ng-model="area" name="addArea_area"
+                                                                    ng-change="selectArea('drawPointRadius')"
                                                                     value="drawPointRadius"><span i18n="7">Draw point and radius</span></label>
                                 </div>
                                 <div class="checkbox"><label><input type="radio" ng-model="area" name="addArea_area"
+                                                                    ng-change="selectArea('pointOnLayer')"
                                                                     value="pointOnLayer"><span i18n="8">Select area from polygonal layer</span></label>
                                 </div>
                             </div>
@@ -41,15 +45,18 @@
                                                                                                   ng-model="area"
                                                                                                   name="addArea_area"
                                                                                                   value="addressRadius"
+                                                                                                  ng-change="selectArea('addressRadius')"
                                                                                                   ng-disabled="selectionDone"><span i18n="10">Google location</span></label>
                                 </div>
                                 <div class="checkbox"><label><input type="radio" ng-model="area" name="addArea_area"
                                                                     value="pointRadius"
+                                                                    ng-change="selectArea('pointRadius')"
                                                                     ng-disabled="selectionDone"><span i18n="11">Create
                                     radius from point</span></label></div>
                                 <div class="checkbox" ng-if="gazField.length > 0"><label><input type="radio"
                                                                                                 ng-model="area"
                                                                                                 name="addArea_area"
+                                                                                                ng-change="selectArea('gazetteer')"
                                                                                                 value="gazetteer" ng-disabled="selectionDone"><span
                                         i18n="12">Gazetteer
                                     polygon</span></label></div>
@@ -60,7 +67,7 @@
                                 <label><span i18n="13">Preset areas</span></label>
                                 <div class="checkbox" ng-repeat="a in defaultAreas">
                                     <label><input type="radio" ng-model="area" name="addArea_area"
-                                                  ng-change="selectPresetArea(a)"
+                                                  ng-change="selectArea('preset_' + a.name)"
                                                   value="preset_{{a.name}}"
                                                   ng-disabled="selectionDone"><span>{{a.name}}</span></label>
                                 </div>
@@ -70,6 +77,7 @@
                                 <label><span i18n="17">Import</span></label>
                                 <div class="checkbox"><label><input i18n="18" type="radio" ng-model="area"
                                                                     value="importShapefile" name="addArea_area"
+                                                                    ng-change="selectArea('importShapefile')"
                                                                     ng-disabled="isNotLoggedIn || selectionDone">Import
                                     Shapefile</label></div>
                                 <div class="well-lg" ng-show="fileName.length > 0 && area == 'importShapefile'"
@@ -80,6 +88,7 @@
                                 </div>
                                 <div class="checkbox"><label><input i18n="20" type="radio" ng-model="area"
                                                                     value="importKML" name="addArea_area"
+                                                                    ng-change="selectArea('importKML')"
                                                                     ng-disabled="isNotLoggedIn || selectionDone">Import
                                     KML</label></div>
                                 <div class="well-lg" ng-show="fileName.length > 0 && area == 'importKML'">
@@ -93,13 +102,16 @@
                                 <label><span i18n="22">Other</span></label>
                                 <div class="checkbox"><label><input type="radio" ng-model="area" name="addArea_area"
                                                                     ng-disabled="selectionDone"
+                                                                    ng-change="selectArea('environmentalEnvelope')"
                                                                     value="environmentalEnvelope"><span i18n="23">Define environmental envelope</span></label>
                                 </div>
                                 <div class="checkbox"><label><input type="radio" ng-model="area" name="addArea_area"
+                                                                    ng-change="selectArea('wkt')"
                                                                     value="wkt" ng-disabled="selectionDone"><span
                                         i18n="24">Enter area
                                     coordinates (WKT)</span></label></div>
                                 <div class="checkbox"><label><input type="radio" ng-model="area" name="addArea_area"
+                                                                    ng-change="selectArea('mergeArea')"
                                                                     value="mergeArea" ng-disabled="selectionDone"><span
                                         i18n="25">Merge map areas</span></label>
                                 </div>

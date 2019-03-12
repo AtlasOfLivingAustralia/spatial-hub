@@ -266,8 +266,8 @@
                     $scope.selectedArea.wkt = wkt
                 };
 
-                $scope.selectPresetArea = function (area) {
-                    $scope.area = "preset_" + area.name;
+                $scope.selectArea = function (area) {
+                    $scope.area = area;
                 };
 
                 $scope.setPid = function (pid, mapNow) {
