@@ -32,9 +32,98 @@
                  */
                 current: function () {
                     if (MapService.leafletScope) {
-                        //TODO: remove temporary information from output
+                        var layers = [];
+                        for (var idx in MapService.mappedLayers) {
+                            var src = MapService.mappedLayers[idx];
+
+                            // Take a copy of the display parameters
+                            var leaflet = Util.deepCopy(src.leaflet);
+
+                            // Copy layer state
+                            var lyr = {
+                                // mapService info
+                                uid: src.uid,
+                                id: src.id,
+
+                                // general info
+                                visible: src.visible,
+                                layertype: src.layertype,
+                                legendurl: src.legendurl,
+                                name: src.name,
+                                type: src.type,
+                                displaypath: src.displaypath,
+                                metadata: src.metadata,
+                                bbox: src.bbox,
+                                legend: src.legend,
+
+                                // species list info
+                                species_list: src.species_list,
+
+                                // wms layer info
+                                url: src.url,
+
+                                // area layer info
+                                area_km: src.area_km,
+                                pid: src.pid,
+                                wkt: (src.pid === undefined ? src.wkt : undefined),
+
+                                // biocache query info
+                                ws: src.ws,
+                                fq: src.fq,
+                                q: src.q,
+                                qid: src.qid,
+                                bs: src.bs,
+
+                                // legend state info
+                                hidelegend: src.hidelegend,
+                                displayname: src.displayname,
+                                color: src.color,
+                                colorType: src.colorType,
+                                facet: src.facet,
+                                size: src.size,
+                                opacity: src.opacity,
+                                uncertainty: src.uncertainty,
+                                contextualSelection: src.contextualSelection,
+                                contextualFilter: src.contextualFilter,
+                                facetSelectionCount: src.facetSelectionCount,
+                                sel: src.sel,
+
+                                index: src.index,
+
+                                // layer display info
+                                leaflet: leaflet,
+
+                                // scatterplot info
+                                scatterplotFq: src.scatterplotFq,
+                                scatterplotDataUrl: src.scatterplotDataUrl,
+                                scatterplotUrl: src.scatterplotUrl,
+                                scatterplotUpdating: src.scatterplotUpdating,
+                                scatterplotSelection: src.scatterplotSelection,
+                                highlightWkt: src.highlightWkt,
+                                scatterplotSelectionExtents: src.scatterplotSelectionExtents,
+                                scatterplotSelectionCount: src.scatterplotSelectionCount,
+                                scatterplotLabel1: src.scatterplotLabel1,
+                                scatterplotLabel2: src.scatterplotLabel2,
+
+                                // adhoc group info
+                                inAdhocQ: src.inAdhocQ,
+                                outAdhocQ: src.outAdhocQ,
+                                adhocGroup: src.adhocGroup,
+                                adhocGroupSize: src.adhocGroupSize,
+                                adhocBBoxes: src.adhocBBoxes,
+                                isSelectedFacetsOnly: src.isSelectedFacetsOnly,
+                                isWithoutSelectedFacetsOnly: src.isWithoutSelectedFacetsOnly,
+
+                                // expert distribution info
+                                metadataUrl: src.metadataUrl,
+                                geom_idx: src.geom_idx,
+                                query: src.query
+                            };
+                            layers.push(lyr);
+                        }
+
                         return {
-                            layers: MapService.mappedLayers,
+                            layers: layers,
                             extents: MapService.getExtents(),
                             basemap: MapService.leafletScope.getBaseMap(),
                             projection: $SH.projection
@@ -166,7 +255,10 @@
                         sessionData.layers.sort(function (a, b) {
                             return a.index - b.index
                         });
+                        var uidOffset = MapService.uid + 1;
                         for (var i = 0; i < sessionData.layers.length; i++) {
+                            sessionData.layers[i].fromSave = true;
+                            sessionData.layers[i].uid += uidOffset;
                             MapService.add(sessionData.layers[i])
                         }
                     }

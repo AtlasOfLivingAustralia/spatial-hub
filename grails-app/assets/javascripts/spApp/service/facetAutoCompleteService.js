@@ -8,7 +8,8 @@
      *   List of available facets for a biocache-service occurrences layer
      */
     angular.module('facet-auto-complete-service', [])
-        .factory("FacetAutoCompleteService", ["$http", "BiocacheService", "ListsService", function ($http, BiocacheService, ListsService) {
+        .factory("FacetAutoCompleteService", ["$http", '$q', "BiocacheService", "ListsService",
+            function ($http, $q, BiocacheService, ListsService) {
             var _httpDescription = function (method, httpconfig) {
                 if (httpconfig === undefined) {
                     httpconfig = {};
@@ -138,45 +139,52 @@
 
                     if (species_list && $SH.listsFacets) {
                         var data = ListsService.getItemsQCached(species_list);
-                        if (data.length > 0 && data[0].kvpValues && data[0].kvpValues.length > 0) {
-                            expanded.push({
-                                name: "--- species list traits ---",
-                                separator: true
-                            });
+                        if (data === undefined) {
+                            return ListsService.getItemsQ(species_list).then(function () {
+                                // species list info is now cached
+                                return scope.getFacets(dynamic, groups, species_list)
+                            })
+                        } else {
+                            if (data.length > 0 && data[0].kvpValues && data[0].kvpValues.length > 0) {
+                                expanded.push({
+                                    name: "--- species list traits ---",
+                                    separator: true
+                                });
 
-                            // convert kvp to usable map
-                            var map = {};
-                            for (var k in data) {
-                                var kvp = data[k].kvpValues;
-                                for (var i in kvp) {
-                                    if (kvp[i].key) {
-                                        if (!map[kvp[i].key]) {
-                                            map[kvp[i].key] = {values: {}};
+                                // convert kvp to usable map
+                                var map = {};
+                                for (var k in data) {
+                                    var kvp = data[k].kvpValues;
+                                    for (var i in kvp) {
+                                        if (kvp[i].key) {
+                                            if (!map[kvp[i].key]) {
+                                                map[kvp[i].key] = {values: {}};
+                                            }
+                                            if (!map[kvp[i].key].values[kvp[i].value]) {
+                                                map[kvp[i].key].values[kvp[i].value] = {listOfSpecies: []};
+                                            }
+                                            map[kvp[i].key].values[kvp[i].value].listOfSpecies.push(data[k])
                                         }
-                                        if (!map[kvp[i].key].values[kvp[i].value]) {
-                                            map[kvp[i].key].values[kvp[i].value] = {listOfSpecies: []};
-                                        }
-                                        map[kvp[i].key].values[kvp[i].value].listOfSpecies.push(data[k])
                                     }
                                 }
-                            }
 
-                            // convert list of species to fq and push to 'expanded'
-                            for (var k in map) {
-                                for (var i in map[k].values) {
-                                    map[k].values[i].fq = ListsService.listToFq(map[k].values[i].listOfSpecies);
+                                // convert list of species to fq and push to 'expanded'
+                                for (var k in map) {
+                                    for (var i in map[k].values) {
+                                        map[k].values[i].fq = ListsService.listToFq(map[k].values[i].listOfSpecies);
+                                    }
+                                    expanded.push({
+                                        name: k,
+                                        separator: false,
+                                        facet: 'species_list' + k,
+                                        species_list_facet: map[k].values
+                                    })
                                 }
-                                expanded.push({
-                                    name: k,
-                                    separator: false,
-                                    facet: 'species_list' + k,
-                                    species_list_facet: map[k].values
-                                })
                             }
                         }
                     }
 
-                    return expanded
+                    return $q.when(expanded);
                 }
             };
 

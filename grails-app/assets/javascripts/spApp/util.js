@@ -238,5 +238,19 @@ var Util = {
 
     notEmpty: function (inputString) {
         return inputString !== undefined && inputString !== null && ("" + inputString).length > 0
+    },
+
+    deepCopy: function (src) {
+        var copy = src instanceof Array ? [] : {}
+        for (var i in src) {
+            if ((i + '').indexOf('_') != 0 && typeof src[i] !== "function") {
+                if ($.isArray(src[i]) || typeof src[i] === "object") {
+                    copy[i] = Util.deepCopy(src[i])
+                } else {
+                    copy[i] = src[i]
+                }
+            }
+        }
+        return copy
     }
 };

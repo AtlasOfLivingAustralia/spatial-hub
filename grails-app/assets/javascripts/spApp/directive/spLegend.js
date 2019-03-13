@@ -47,8 +47,9 @@
                             }
                         };
 
-                        scope.$watch('getSelected()', function (oldValue, newValue) {
+                        scope.$watch('selected.layer.uid', function (oldValue, newValue) {
                             scope.setAreaLayers();
+                            scope.updateFacet();
                         });
 
                         scope.showLegend = function () {
@@ -671,7 +672,7 @@
                         };
 
                         scope.updateWMS = function () {
-                            if (scope.selected.layer !== undefined) {
+                            if (scope.selected.layer !== undefined && scope.selected.layer !== null) {
                                 scope.selected.layer.wms = scope.selected.layer.name + ', ' + scope.selected.layer.color + ', '
                                     + scope.selected.layer.colorType + ', ' + scope.selected.layer.opacity + ', '
                                     + scope.selected.layer.uncertainty + ', ' + scope.selected.layer.size;

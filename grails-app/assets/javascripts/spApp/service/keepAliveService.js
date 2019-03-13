@@ -34,7 +34,7 @@
             };
 
             var ping = function () {
-                var json = JSON.stringify(SessionsService.current());
+                var json = {}; //JSON.stringify(SessionsService.current());
 
                 var data;
                 if (status !== json) {

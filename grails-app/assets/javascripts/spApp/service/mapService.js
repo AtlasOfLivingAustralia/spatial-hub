@@ -386,7 +386,10 @@
                             id.colorType = '-1'
                         }
 
-                        id.facet = '-1';
+                        if (id.facet === undefined) {
+                            id.facet = '-1';
+                        }
+
                         id.facetList = {};
 
                         if (id.size === undefined) {
@@ -492,7 +495,7 @@
 
                             promises.push(BiocacheService.count(id).then(function (data) {
                                 id.count = data;
-                                if (id.count < 100000) {
+                                if (id.count < 100000 && id.fromSave === undefined) {
                                     id.colorType = '-1'
                                 }
                             }));
@@ -606,6 +609,9 @@
                                 if (id.sldBody) {
                                     newLayer.layerParams.sld_body = id.sldBody
                                     newLayer.url = newLayer.url.replace("gwc/service/", "")
+                                } else if (id.sld_body) {
+                                    newLayer.layerParams.sld_body = id.sld_body
+                                    newLayer.url = newLayer.url.replace("gwc/service/", "")
                                 } else {
                                     //id.leaflet.layerParams.styles = layer.id
                                 }
@@ -622,44 +628,50 @@
                             }
                         }
 
-                        // add as a layer group
-                        var layerGroup = parentLeafletGroup || {
-                            type: 'group',
-                            visible: true,
-                            layerOptions: {
-                                layers: []
-                            },
-                            name: newLayer.name
-                        };
-
-                        layerGroup.layerOptions.layers.push(newLayer);
-
-                        if (!parentLeafletGroup) {
-                            id.leaflet = layerGroup;
-                            leafletLayers[id.uid] = layerGroup;
+                        if (id.leaflet !== undefined && id.fromSave !== undefined) {
+                            leafletLayers[id.uid] = id.leaflet;
                             $timeout(function () {
                             }, 0);
                         } else {
-                            leafletLayers[id.uid] = id.leaflet;
-                            delete leafletLayers[id.uid];
-                            $timeout(function () {
-                                leafletLayers[parentLayer.uid] = parentLayer.leaflet;
-                            }, 0);
-                        }
+                            // add as a layer group
+                            var layerGroup = parentLeafletGroup || {
+                                type: 'group',
+                                visible: true,
+                                layerOptions: {
+                                    layers: []
+                                },
+                                name: newLayer.name
+                            };
 
-                        if (id.q && id.layertype !== 'area') {
-                            promises.push(MapService.addOtherArea("distribution", id, id.area, id.includeExpertDistributions));
-                            promises.push(MapService.addOtherArea("track", id, id.area, id.includeAnimalMovement));
-                            promises.push(MapService.addOtherArea("checklist", id, id.area, id.includeChecklists));
+                            layerGroup.layerOptions.layers.push(newLayer);
 
-                        }
+                            if (!parentLeafletGroup) {
+                                id.leaflet = layerGroup;
+                                leafletLayers[id.uid] = layerGroup;
+                                $timeout(function () {
+                                }, 0);
+                            } else {
+                                leafletLayers[id.uid] = id.leaflet;
+                                delete leafletLayers[id.uid];
+                                $timeout(function () {
+                                    leafletLayers[parentLayer.uid] = parentLayer.leaflet;
+                                }, 0);
+                            }
 
-                        // do not select this layer if it is a child layer
-                        if (!parentLeafletGroup) {
-                            $timeout(function () {
-                                $rootScope.$broadcast('showLegend');
-                                MapService.select(id);
-                            }, 0);
+                            if (id.q && id.layertype !== 'area' && id.fromSave === undefined) {
+                                promises.push(MapService.addOtherArea("distribution", id, id.area, id.includeExpertDistributions));
+                                promises.push(MapService.addOtherArea("track", id, id.area, id.includeAnimalMovement));
+                                promises.push(MapService.addOtherArea("checklist", id, id.area, id.includeChecklists));
+
+                            }
+
+                            // do not select this layer if it is a child layer
+                            if (!parentLeafletGroup) {
+                                $timeout(function () {
+                                    $rootScope.$broadcast('showLegend');
+                                    MapService.select(id);
+                                }, 0);
+                            }
                         }
 
                         //add to promises if waiting is required
