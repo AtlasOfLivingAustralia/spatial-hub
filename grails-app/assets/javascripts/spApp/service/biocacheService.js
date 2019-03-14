@@ -428,7 +428,8 @@
                  */
                 facet: function (facet, query) {
                     return this.registerQuery(query).then(function (response) {
-                        return $http.get(query.bs + "/webportal/legend?cm=" + facet + "&q=" + response.qid + "&type=application/json", _httpDescription('facet')).then(function (response) {
+                        return $http.get(query.bs + "/webportal/legend?cm=" + facet + "&q=" + response.qid + "&type=application/json", _httpDescription('facet',
+                            {headers: {Accept: "application/json"}})).then(function (response) {
                             $.map(response.data, function (v, k) {
                                 v.displayname = Messages.get(facet + '.' + v.name, v.name ? v.name : "")
                             });

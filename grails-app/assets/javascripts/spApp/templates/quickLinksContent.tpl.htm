@@ -8,101 +8,118 @@
                 class="glyphicon glyphicon-arrow-down pull-right"></i></div>
         <ol class="leaflet-quick-links">
             <!-- Species Area start-->
-            <li ng-show="controlVisibility('speciesarea')">
-                <a href="#" ng-click="delegateCall('download', 'speciesarea')"><span
-                        i18n="183">Download all records for </span>
-                    "<span class="leaflet-quick-links-text btn-link" title="{{species.name}}">{{species.name}}</span>"
-                    <span i18n="184"> in </span>"<span class="leaflet-quick-links-text btn-link" title="{{area.name}}">{{area.name}}</span>"</a>
-            </li>
-            <li ng-show="controlVisibility('speciesarea')">
-                <a href="#" ng-click="delegateCall('scatterplot', 'speciesarea')"><span i18n="185">Produce scatterplot for </span>
-                    "<span class="leaflet-quick-links-text btn-link" title="{{species.name}}">{{species.name}}</span>"
-                    <span i18n="184"> in </span>"<span class="leaflet-quick-links-text btn-link" title="{{area.name}}">{{area.name}}</span>"</a>
-            </li>
-            <li ng-show="controlVisibility('speciesarea')">
-                <a href="#" ng-click="delegateCall('prediction', 'speciesarea')"><span i18n="186">Generate prediction for </span>
-                    "<span class="leaflet-quick-links-text btn-link" title="{{species.name}}">{{species.name}}</span>"
-                    <span i18n="184"> in </span>"<span class="leaflet-quick-links-text btn-link" title="{{area.name}}">{{area.name}}</span>"</a>
-            </li>
-            <li ng-show="controlVisibility('speciesarea')">
-                <a href="#" ng-click="delegateCall('pointstogrid', 'speciesarea')"><span i18n="187">Produce points to grid for </span>
-                    "<span class="leaflet-quick-links-text btn-link" title="{{species.name}}">{{species.name}}</span>"
-                    <span i18n="184"> in </span>"<span class="leaflet-quick-links-text btn-link" title="{{area.name}}">{{area.name}}</span>"</a>
-            </li>
-            <li ng-show="controlVisibility('speciesarea')">
-                <a href="#" ng-click="delegateCall('gdm', 'speciesarea')"><span
-                        i18n="188">Produce GDM using species </span>"<span
-                        class="leaflet-quick-links-text btn-link" title="{{species.name}}">{{species.name}}</span>"
-                    <span i18n="184"> in </span>"<span class="leaflet-quick-links-text btn-link" title="{{area.name}}">{{area.name}}</span>"
-                </a>
-            </li>
+            <div ng-show="controlVisibility('speciesarea')">
+                <li>
+                    <a href="#" ng-click="delegateCall('download', 'speciesarea')"><span
+                            i18n="183">Download all records for </span>
+                        "<span class="leaflet-quick-links-text btn-link"
+                               title="{{species.name}}">{{species.name}}</span>"
+                        <span i18n="184"> in </span>"<span class="leaflet-quick-links-text btn-link"
+                                                           title="{{area.name}}">{{area.name}}</span>"</a>
+                </li>
+                <li>
+                    <a href="#" ng-click="delegateCall('scatterplot', 'speciesarea')"><span i18n="185">Produce scatterplot for </span>
+                        "<span class="leaflet-quick-links-text btn-link"
+                               title="{{species.name}}">{{species.name}}</span>"
+                        <span i18n="184"> in </span>"<span class="leaflet-quick-links-text btn-link"
+                                                           title="{{area.name}}">{{area.name}}</span>"</a>
+                </li>
+                <li>
+                    <a href="#" ng-click="delegateCall('prediction', 'speciesarea')"><span i18n="186">Generate prediction for </span>
+                        "<span class="leaflet-quick-links-text btn-link"
+                               title="{{species.name}}">{{species.name}}</span>"
+                        <span i18n="184"> in </span>"<span class="leaflet-quick-links-text btn-link"
+                                                           title="{{area.name}}">{{area.name}}</span>"</a>
+                </li>
+                <li>
+                    <a href="#" ng-click="delegateCall('pointstogrid', 'speciesarea')"><span i18n="187">Produce points to grid for </span>
+                        "<span class="leaflet-quick-links-text btn-link"
+                               title="{{species.name}}">{{species.name}}</span>"
+                        <span i18n="184"> in </span>"<span class="leaflet-quick-links-text btn-link"
+                                                           title="{{area.name}}">{{area.name}}</span>"</a>
+                </li>
+                <li>
+                    <a href="#" ng-click="delegateCall('gdm', 'speciesarea')"><span
+                            i18n="188">Produce GDM using species </span>"<span
+                            class="leaflet-quick-links-text btn-link" title="{{species.name}}">{{species.name}}</span>"
+                        <span i18n="184"> in </span>"<span class="leaflet-quick-links-text btn-link"
+                                                           title="{{area.name}}">{{area.name}}</span>"
+                    </a>
+                </li>
+            </div>
             <!-- Species Area end-->
 
             <!-- Species start-->
-            <li ng-show="controlVisibility('species')">
-                <a href="#" ng-click="delegateCall('download', 'species')"><span
-                        i18n="183">Download all records for </span>
-                    "<span class="leaflet-quick-links-text btn-link"
-                           title="{{species.name}}">{{species.name}}</span>"</a>
-            </li>
-            <li ng-show="controlVisibility('species')">
-                <a href="#" ng-click="delegateCall('scatterplot', 'species')"><span
-                        i18n="185">Produce scatterplot for </span>
-                    "<span class="leaflet-quick-links-text btn-link"
-                           title="{{species.name}}">{{species.name}}</span>"</a>
-            </li>
-            <li ng-show="controlVisibility('species')">
-                <a href="#" ng-click="delegateCall('prediction', 'species')"><span
-                        i18n="186">Generate prediction for </span>
-                    "<span class="leaflet-quick-links-text btn-link"
-                           title="{{species.name}}">{{species.name}}</span>"</a>
-            </li>
-            <li ng-show="controlVisibility('species')">
-                <a href="#" ng-click="delegateCall('pointstogrid', 'species')"><span i18n="187">Produce points to grid for </span>
-                    "<span class="leaflet-quick-links-text btn-link"
-                           title="{{species.name}}">{{species.name}}</span>"</a>
-            </li>
-            <li ng-show="controlVisibility('species')">
-                <a href="#" ng-click="delegateCall('gdm', 'species')"><span i18n="188">Produce GDM using species </span>"<span
-                        class="leaflet-quick-links-text btn-link" title="{{species.name}}">{{species.name}}</span>"
-                </a>
-            </li>
-            <!-- todo - add facet display when it is possible drop down facets with JS -->
-            <li ng-show="controlVisibility('species')">
-                <a href="#" ng-click="delegateCall('metadata', 'species')"><span
-                        i18n="189">View metadata for </span>"<span
-                        class="leaflet-quick-links-text btn-link" title="{{species.name}}">{{species.name}}</span>"</a>
-            </li>
+            <div ng-show="controlVisibility('species')">
+                <li>
+                    <a href="#" ng-click="delegateCall('download', 'species')"><span
+                            i18n="183">Download all records for </span>
+                        "<span class="leaflet-quick-links-text btn-link"
+                               title="{{species.name}}">{{species.name}}</span>"</a>
+                </li>
+                <li>
+                    <a href="#" ng-click="delegateCall('scatterplot', 'species')"><span
+                            i18n="185">Produce scatterplot for </span>
+                        "<span class="leaflet-quick-links-text btn-link"
+                               title="{{species.name}}">{{species.name}}</span>"</a>
+                </li>
+                <li>
+                    <a href="#" ng-click="delegateCall('prediction', 'species')"><span
+                            i18n="186">Generate prediction for </span>
+                        "<span class="leaflet-quick-links-text btn-link"
+                               title="{{species.name}}">{{species.name}}</span>"</a>
+                </li>
+                <li>
+                    <a href="#" ng-click="delegateCall('pointstogrid', 'species')"><span i18n="187">Produce points to grid for </span>
+                        "<span class="leaflet-quick-links-text btn-link"
+                               title="{{species.name}}">{{species.name}}</span>"</a>
+                </li>
+                <li>
+                    <a href="#" ng-click="delegateCall('gdm', 'species')"><span
+                            i18n="188">Produce GDM using species </span>"<span
+                            class="leaflet-quick-links-text btn-link" title="{{species.name}}">{{species.name}}</span>"
+                    </a>
+                </li>
+                <!-- todo - add facet display when it is possible drop down facets with JS -->
+                <li>
+                    <a href="#" ng-click="delegateCall('metadata', 'species')"><span
+                            i18n="189">View metadata for </span>"<span
+                            class="leaflet-quick-links-text btn-link" title="{{species.name}}">{{species.name}}</span>"</a>
+                </li>
+            </div>
             <!-- Species end-->
 
             <!-- AREA start-->
-            <li ng-show="controlVisibility('area')">
-                <a href="#" ng-click="delegateCall('areareport',{includeSpecies:false, includeArea: true})"><span
-                        i18n="190">View area report for </span>"<span
-                        class="leaflet-quick-links-text btn-link" title="{{area.name}}">{{area.name}}</span>"</a>
-            </li>
-            <li ng-show="controlVisibility('area')">
-                <a href="#" ng-click="delegateCall('metadata', 'area')"><span i18n="189">View metadata for </span>"<span
-                        class="leaflet-quick-links-text btn-link" title="{{area.name}}">{{area.name}}</span>"</a>
-            </li>
-            <li ng-show="controlVisibility('area')">
-                <a href="#" ng-click="delegateCall('download', 'specieslist')"><span i18n="191">Download species list for </span>
-                    "<span class="leaflet-quick-links-text btn-link" title="{{area.name}}">{{area.name}}</span>"</a>
-            </li>
-            <li ng-show="controlVisibility('area')">
-                <a href="#" ng-click="delegateCall('download', 'area')"><span
-                        i18n="183">Download all records for </span>"<span
-                        class="leaflet-quick-links-text btn-link" title="{{area.name}}">{{area.name}}</span>"</a>
-            </li>
-            <li ng-show="controlVisibility('area')">
-                <a href="#" ng-click="delegateCall('classification')"><span
-                        i18n="192">Generate classification for </span>"<span
-                        class="leaflet-quick-links-text btn-link" title="{{area.name}}">{{area.name}}</span>"</a>
-            </li>
-            <li ng-show="controlVisibility('area')">
-                <a href="#" ng-click="delegateCall('export', 'area')"><span i18n="193">Export area </span>"<span
-                        class="leaflet-quick-links-text btn-link" title="{{area.name}}">{{area.name}}</span>"</a>
-            </li>
+            <div ng-show="controlVisibility('area')">
+                <li>
+                    <a href="#" ng-click="delegateCall('areareport',{includeSpecies:false, includeArea: true})"><span
+                            i18n="190">View area report for </span>"<span
+                            class="leaflet-quick-links-text btn-link" title="{{area.name}}">{{area.name}}</span>"</a>
+                </li>
+                <li>
+                    <a href="#" ng-click="delegateCall('metadata', 'area')"><span
+                            i18n="189">View metadata for </span>"<span
+                            class="leaflet-quick-links-text btn-link" title="{{area.name}}">{{area.name}}</span>"</a>
+                </li>
+                <li>
+                    <a href="#" ng-click="delegateCall('download', 'specieslist')"><span i18n="191">Download species list for </span>
+                        "<span class="leaflet-quick-links-text btn-link" title="{{area.name}}">{{area.name}}</span>"</a>
+                </li>
+                <li>
+                    <a href="#" ng-click="delegateCall('download', 'area')"><span
+                            i18n="183">Download all records for </span>"<span
+                            class="leaflet-quick-links-text btn-link" title="{{area.name}}">{{area.name}}</span>"</a>
+                </li>
+                <li>
+                    <a href="#" ng-click="delegateCall('classification')"><span
+                            i18n="192">Generate classification for </span>"<span
+                            class="leaflet-quick-links-text btn-link" title="{{area.name}}">{{area.name}}</span>"</a>
+                </li>
+                <li>
+                    <a href="#" ng-click="delegateCall('export', 'area')"><span i18n="193">Export area </span>"<span
+                            class="leaflet-quick-links-text btn-link" title="{{area.name}}">{{area.name}}</span>"</a>
+                </li>
+            </div>
             <!-- AREA end-->
 
             <!-- Layer start-->
@@ -114,18 +131,20 @@
             <!-- Layer end-->
 
             <!-- Basic menu start-->
-            <li ng-show="controlVisibility()">
-                <a href="#" ng-click="openTool('ToolAddSpeciesService')">Add occurrences to map</a>
-            </li>
-            <li ng-show="controlVisibility()">
-                <a href="#" ng-click="openModal('addArea')">Add area to map</a>
-            </li>
-            <li ng-show="controlVisibility()">
-                <a href="#" ng-click="openTool('ToolAddLayerService')">Add layer to map</a>
-            </li>
-            <li ng-show="controlVisibility()">
-                <a href="#" ng-click="openTool('ToolAddFacetService')">Add facet to map</a>
-            </li>
+            <div ng-show="controlVisibility()">
+                <li>
+                    <a href="#" ng-click="openTool('ToolAddSpeciesService')">Add occurrences to map</a>
+                </li>
+                <li>
+                    <a href="#" ng-click="openModal('addArea')">Add area to map</a>
+                </li>
+                <li>
+                    <a href="#" ng-click="openTool('ToolAddLayerService')">Add layer to map</a>
+                </li>
+                <li>
+                    <a href="#" ng-click="openTool('ToolAddFacetService')">Add facet to map</a>
+                </li>
+            </div>
             <!-- Basic menu end-->
         </ol>
     </div>

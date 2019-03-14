@@ -30,7 +30,7 @@
     <nav class="navbar navbar-default navbar-fixed-top ::authStatusClass::">
         <div class="container container-navbar">
 
-            <div style="position:absolute; float:right; width:100%" id="expand-div">
+            <div style="position:absolute; float:right; width:100px; right: -20px" id="expand-div">
                 <button type="button" id="expand-button" class="navbar-toggle collapsed" data-toggle="collapse"
                         data-target="#bs-example-navbar-collapse-2">
                     <span class="sr-only">Toggle navigation</span>

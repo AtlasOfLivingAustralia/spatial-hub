@@ -63,7 +63,7 @@ spApp.config(['$locationProvider', function ($locationProvider) {
 }]);
 
 spApp.config(['$logProvider', function ($logProvider) {
-    //$logProvider.debugEnabled(false);
+    $logProvider.debugEnabled(false);
 }]);
 
 spApp.config(['$httpProvider', function ($httpProvider) {
@@ -268,7 +268,9 @@ function bootstrapApplication() {
 $spBootstrapState = false;
 $spMapLoadedState = false;
 $spPanelsResized = false;
-$spMapLoaded = function () {
+$resetMap = undefined;
+$spMapLoaded = function (resetMap) {
+    $resetMap = resetMap;
     $spMapLoadedState = true;
     setTimeout($spPageLoadingHide, 0);
 };
@@ -279,8 +281,10 @@ $spBootstrapReady = function () {
 };
 $spPageLoadingHide = function () {
     if ($spMapLoadedState && $spBootstrapState && $spPanelsResized) {
+        $resetMap();
+
         //$(".page-loading").fadeOut(0)
-        $(".page-loading").detach()
+        $(".page-loading").detach();
 
         if (!isBrowserSupported()) {
             $('#browser-supported-message').removeClass('hide');

@@ -92,6 +92,20 @@
                             MapService.leafletScope.deleteDrawing()
                         };
 
+                        scope.zoom = function () {
+                            var minLat, maxLat, minLng, maxLng;
+                            for (var i = 0; i < scope.points.length; i++) {
+                                var coords = scope.points[i].geometry.split(" ");
+                                var lat = coords[1];
+                                var lng = coords[0].substring(6);
+                                if (i == 0 || minLat > lat) minLat = lat;
+                                if (i == 0 || maxLat < lat) maxLat = lat;
+                                if (i == 0 || minLng > lng) minLng = lng;
+                                if (i == 0 || maxLng < lng) maxLng = lng;
+                            }
+                            MapService.zoomToExtents([[minLat, minLng], [maxLat, maxLng]])
+                        };
+
                         $rootScope.$on('setWkt', function (event, data) {
                             if (data[0] === 'point') {
                                 //points must be layer intersected

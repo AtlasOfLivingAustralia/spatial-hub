@@ -140,15 +140,13 @@
 
                 $scope.zoomToPoint = function (latlng, level) {
                     leafletData.getMap().then(function (map) {
+                        map.invalidateSize();
                         map.setView(latlng, level)
                     });
                 };
 
                 $scope.resetZoom = function () {
-                    leafletData.getMap().then(function (map) {
-                        map.panTo(L.latLng(-25, 132));
-                        map.setZoom(4)
-                    });
+                    $scope.zoomToPoint(L.latLng($SH.defaultLat, $SH.defaultLng), $SH.defaultZoom);
                 };
 
                 $scope.showLayer = function (layerIn, show) {
@@ -282,8 +280,7 @@
                         $("#left-panel")[0].style.marginLeft = "0px";
                         $("#right-panel")[0].style.marginLeft = "420px";
                     }
-                    $(window).trigger('resize');
-                    context.invalidateSize()
+                    $scope.invalidate();
                 };
 
                 $scope.toggleExpandUp = function (context) {
@@ -298,9 +295,7 @@
                         $(".navbar-default").hide();
                     }
 
-                    //
-                    $(window).trigger('resize');
-                    context.invalidateSize()
+                    $scope.invalidate();
                 };
 
                 $scope.togglePanoramio = function (context) {
@@ -711,7 +706,7 @@
 
                             //all setup finished
                             if ($spMapLoaded !== undefined) {
-                                $spMapLoaded();
+                                $spMapLoaded($scope.resetZoom);
                             }
                         })
                     });
@@ -728,7 +723,6 @@
                         }
                     }
 
-                    $scope.invalidate();
                     $timeout(function () {
                         $scope.setupTriggers();
                         $scope.getLicenses();

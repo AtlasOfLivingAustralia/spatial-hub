@@ -6,13 +6,17 @@
                 <div i18n="156">Nearest locality</div>
             </h3>
         </div>
-        <div class="panel-body">
+        <div class="panel-body" style="overflow-y:scroll;">
             <div class="alert alert-ala-success" role="alert">
                 <div class="container">
                     <p style="display:inline;" ng-show="pointLabel.length > 0"><strong>{{pointLabel}}</strong></p>
                     <div class="btn-group btn-group-sm" style="float:right" ng-show="points.length > 0">
                         <button i18n="157" class="btn btn-default" ng-click="enableDrawing()"
-                                ng-disabled="selectedArea.wkt.length == 0">Edit location
+                                ng-disabled="selectedArea.wkt.length == 0 && points.length > 0">Edit location
+                        </button>
+                        <br/>
+                        <button class="btn btn-default" ng-click="zoom()"
+                                ng-disabled="selectedArea.wkt.length == 0">Zoom to Localities
                         </button>
                     </div>
                     <p style="" ng-hide="pointLabel.length > 0"><span i18n="158">Longitude:&nbsp;</span>{{point.longitude
@@ -42,7 +46,7 @@
                     <td class="td-vertical-align table-text-ellipsis">{{ x.geometry.replace('POINT(','').replace(')','')
                         }}
                     </td>
-                    <td class="td-vertical-align text-right">{{ x.distance | number : 1 }}</td>
+                    <td class="td-vertical-align text-right">{{ x.distance/1000.0 | number : 1 }}</td>
                     <td class="td-vertical-align text-right">{{ x.degrees | number : 1}}</td>
                 </tr>
                 </tbody>

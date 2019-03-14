@@ -59,8 +59,6 @@
 
                                         //set base layer
                                         MapService.setBaseMap($SH.defaultBaseLayer);
-
-                                        MapService.leafletScope.baseMap()
                                     }
                                 }
                             );
