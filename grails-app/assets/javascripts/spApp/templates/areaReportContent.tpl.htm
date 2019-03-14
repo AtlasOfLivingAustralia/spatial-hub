@@ -22,6 +22,10 @@
                             ng-show="item.query !== undefined && (item.occurrences === undefined || !item.occurrences) && item.value !== 0"
                             class="btn btn-default" ng-click="list(item)">List
                     </button>
+                    <button i18n="48" style="float:right;"
+                            ng-show="item.list !== undefined && item.list.length > 0"
+                            class="btn btn-default" ng-click="listCsv(item.list, item.name)">List
+                    </button>
                 </div>
             </td>
             <td style="width:70px">

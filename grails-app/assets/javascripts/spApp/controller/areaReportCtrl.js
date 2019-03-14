@@ -47,7 +47,11 @@
 
                 $scope.distributions = [];
                 $scope.setDistributionCount = function (data) {
-                    $scope.distributions = data;
+                    for (var i in data) {
+                        if (data.hasOwnProperty(i)) {
+                            $scope.distributions.push(data[i]);
+                        }
+                    }
                     for (var k in $scope.items) {
                         if ($scope.items.hasOwnProperty(k)) {
                             if ($i18n(356, "Expert distributions") === $scope.items[k].name) {
@@ -59,7 +63,11 @@
 
                 $scope.journalMap = [];
                 $scope.setJournalMapCount = function (data) {
-                    $scope.journalMap = data;
+                    for (var i in data.article) {
+                        if (data.article.hasOwnProperty(i)) {
+                            $scope.journalMap.push(data.article[i]);
+                        }
+                    }
                     for (var k in $scope.items) {
                         if ($scope.items.hasOwnProperty(k)) {
                             if ($i18n(357, "JournalMap articles") === $scope.items[k].name) {
@@ -83,7 +91,11 @@
 
                 $scope.checklists = [];
                 $scope.setChecklistCount = function (data) {
-                    $scope.checklists = data;
+                    for (var i in data) {
+                        if (data.hasOwnProperty(i)) {
+                            $scope.checklists.push(data[i]);
+                        }
+                    }
                     var areas = {};
                     for (var k in data) {
                         if (data.hasOwnProperty(k)) {
@@ -333,6 +345,42 @@
                     promise.then(function (data) {
                         item.value = data
                     })
+                };
+
+                $scope.listCsv = function (data, name) {
+                    var csv = '';
+                    var header = [];
+                    // use first record to determine the header
+                    for (var j in data[0]) {
+                        var content = data[0][j];
+                        if (('' + content).indexOf("[object") < 0) {
+                            header.push(j);
+                            var value = '"' + j.replace('"', "'") + '"';
+                            if (csv.length > 0) csv += ',';
+                            csv += value;
+                        }
+                    }
+                    csv += '\n'
+                    for (var i in data) {
+                        var rowLength = 0;
+                        for (var j in header) {
+                            var value = data[i][header[j]];
+                            if (value === undefined) value = '';
+                            var value = '"' + ('' + value).replace('"', "'") + '"';
+                            if (rowLength > 0) csv += ',';
+                            rowLength++;
+                            csv += value;
+                        }
+                        csv += '\n'
+                    }
+                    LayoutService.openModal('csv', {
+                        title: name,
+                        csv: csv,
+                        columnOrder: [],
+                        info: name + ' csv',
+                        filename: name.replace(' ', '') + '.csv',
+                        display: {size: 'full'}
+                    }, true)
                 };
 
                 $scope.list = function (item) {
