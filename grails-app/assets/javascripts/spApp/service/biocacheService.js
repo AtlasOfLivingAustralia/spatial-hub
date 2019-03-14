@@ -732,17 +732,17 @@
                 newLayerAddFq: function (query, newFq, newName) {
                     var fqs;
 
-                    if (query.q instanceof Array) fqs = angular.merge([], query.q);
+                    if (query.q instanceof Array) fqs = $.merge([], query.q);
                     else fqs = [query.q];
 
                     if ((query.fq instanceof Array) && query.fq.length > 0) {
-                        fqs = angular.merge(fqs, query.fq)
+                        $.merge(fqs, query.fq)
                     }
 
                     if (newFq instanceof Array) {
-                        fqs = angular.merge(fqs, newFq)
+                        $.merge(fqs, newFq)
                     } else if (newFq !== undefined) {
-                        fqs = angular.merge(fqs, [newFq])
+                        $.merge(fqs, [newFq])
                     }
 
                     return this.registerLayer(query.bs, query.ws, fqs, query.wkt, newName)
