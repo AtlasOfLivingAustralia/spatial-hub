@@ -298,9 +298,9 @@
                     $scope.invalidate();
                 };
 
-                $scope.togglePanoramio = function (context) {
-                    if (context.panoramioControl._panoramio_state) {
-                        $scope.addPanoramioToMap();
+                $scope.toggleImages = function (context) {
+                    if (context.imagesControl._images_state) {
+                        $scope.addImagesToMap();
                     }
                     else {
                         $scope.deleteImages();
@@ -316,7 +316,7 @@
                     }
                 };
 
-                $scope.addPanoramioToMap = function () {
+                $scope.addImagesToMap = function () {
                     leafletData.getMap().then(function (map) {
                         var promises = [];
 
@@ -330,7 +330,7 @@
                         // so we config total number of photos to display at one time ourselves
                         var nbrOfPhotosToDisplay = Math.round($SH.flickrNbrOfPhotosToDisplay / multipBounds.length);
                         for (var i = 0; i < multipBounds.length; i++) {
-                            $(".icon-panoramio").addClass("icon-spin-panoramio");
+                            $(".icon-images").addClass("icon-spin-images");
                             promises.push(FlickrService.getPhotos(multipBounds[i]).then(function (data) {
                                 if (data.photos) {
                                     for (var i = 0; i < nbrOfPhotosToDisplay; i++) {
@@ -339,7 +339,7 @@
                                         newMarkers[photoContent.id] = photoContent;
                                     }
                                 }
-                                $(".icon-panoramio").removeClass("icon-spin-panoramio");
+                                $(".icon-images").removeClass("icon-spin-images");
                             }));
                         }
 
@@ -641,8 +641,8 @@
                             }
 
                             if ($SH.flickrUrl) {
-                                new L.Control.Panoramio({
-                                    togglePanoramio: $scope.togglePanoramio
+                                new L.Control.Images({
+                                    toggleImages: $scope.toggleImages
                                 }).addTo(map);
                             }
 
@@ -682,8 +682,8 @@
                             });
 
                             map.on('moveend', function (e) {
-                                if (e.target.panoramioControl && e.target.panoramioControl._panoramio_state) {
-                                    $scope.addPanoramioToMap();
+                                if (e.target.imagesControl && e.target.imagesControl._images_state) {
+                                    $scope.addImagesToMap();
                                 }
                                 if (e.target.poiControl && e.target.poiControl._poi_state) {
                                     $scope.addPoiToMap();
@@ -691,8 +691,8 @@
                             });
 
                             map.on('zoomend', function (e) {
-                                if (e.target.panoramioControl && e.target.panoramioControl._panoramio_state) {
-                                    $scope.addPanoramioToMap();
+                                if (e.target.imagesControl && e.target.imagesControl._images_state) {
+                                    $scope.addImagesToMap();
                                 }
                                 if (e.target.poiControl && e.target.poiControl._poi_state) {
                                     $scope.addPoiToMap();

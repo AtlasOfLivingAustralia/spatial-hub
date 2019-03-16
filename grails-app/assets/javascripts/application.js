@@ -24,7 +24,7 @@
 //= require Leaflet.zoomslider-0.7.1/src/L.Control.Zoomslider.js
 
 //angular
-//= require angular/angular.js
+//= require angular/angular.min.js
 //= require angular-animate/angular-animate.min.js
 //= require angular-touch/angular-touch.min.js
 //= require angular-route/angular-route.min.js

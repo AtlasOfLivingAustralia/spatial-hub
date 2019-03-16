@@ -1,12 +1,12 @@
-L.Control.Panoramio = L.Control.extend({
+L.Control.Images = L.Control.extend({
     options: {
         position: 'topleft',
         title: 'Show Location Images',
         titleCancel: 'Hide Location Images',
-        togglePanoramio: null
+        toggleImages: null
     },
 
-    _panoramio_state: false,
+    _images_state: false,
 
     onAdd: function (map) {
         var container;
@@ -17,9 +17,9 @@ L.Control.Panoramio = L.Control.extend({
             container = L.DomUtil.create('div', 'leaflet-bar');
         }
 
-        map.panoramioControl = this;
+        map.imagesControl = this;
 
-        this.link = L.DomUtil.create('a', 'icon-panoramio icon-exit-panoramio', container);
+        this.link = L.DomUtil.create('a', 'icon-images icon-exit-images', container);
         this.link.href = '#';
         this.link.title = this.options.title;
         L.DomEvent.addListener(this.link, 'click', L.DomEvent.stopPropagation)
@@ -30,15 +30,15 @@ L.Control.Panoramio = L.Control.extend({
     },
 
     _toggle: function () {
-        this.panoramioControl._panoramio_state = !this.panoramioControl._panoramio_state;
-        this.panoramioControl.options.togglePanoramio(this);
+        this.imagesControl._images_state = !this.imagesControl._images_state;
+        this.imagesControl.options.toggleImages(this);
 
-        if (this.panoramioControl._panoramio_state) {
-            this.panoramioControl.link.title = this.panoramioControl.options.titleCancel;
-            $(".icon-panoramio").removeClass("icon-exit-panoramio")
+        if (this.imagesControl._images_state) {
+            this.imagesControl.link.title = this.imagesControl.options.titleCancel;
+            $(".icon-images").removeClass("icon-exit-images")
         } else {
-            this.panoramioControl.link.title = this.panoramioControl.options.title;
-            $(".icon-panoramio").addClass("icon-exit-panoramio")
+            this.imagesControl.link.title = this.imagesControl.options.title;
+            $(".icon-images").addClass("icon-exit-images")
         }
     }
 

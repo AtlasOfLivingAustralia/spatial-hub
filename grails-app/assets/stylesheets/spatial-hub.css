@@ -618,17 +618,17 @@ form.banner {
 .icon-expand-right { background-image: url(icon-expand-right.png); background-size: 26px 26px; }
 .icon-expand-down { background-image: url(icon-expand-down.png); background-size: 26px 26px; }
 
-.icon-panoramio, .icon-poi {
+.icon-images, .icon-poi {
     background-image: url(images_on.png);
     background-size: 18px 18px;
 }
 
-.icon-exit-panoramio, .icon-exit-poi {
+.icon-exit-images, .icon-exit-poi {
     background-image: url(images_off.png);
     background-size: 18px 18px;
 }
 
-.icon-spin-panoramio, .icon-spin-poi {
+.icon-spin-images, .icon-spin-poi {
     background: url(../images/spinner.gif);
     background-repeat: no-repeat;
     background-position-x: 100%;
@@ -2195,4 +2195,27 @@ body > footer > div > div.col-md-12.acknowledgement-callout.acknowledgement-call
 .modeless > .modal-dialog > .modal-content > .modal-body {
     height: 500px;
     overflow-y: scroll;
+}
+
+.modal.in .modal-dialog {
+    height: 100%;
+    margin-bottom: 0px;
+}
+
+.modal-footer {
+    position: sticky;
+    bottom: 0px;
+    right: 1px;
+    left: 1px;
+    background-color: white;
+}
+
+.modal-body {
+    position: relative;
+    padding: 15px;
+}
+
+.modal-content {
+    max-height: 100%;
+    overflow-y: auto;
 }
