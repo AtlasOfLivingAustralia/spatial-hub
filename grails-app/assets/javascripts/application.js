@@ -36,7 +36,7 @@
 
 //bootbox
 //= require ngbootbox/dist/ngBootbox.min.js
-//= require bootbox/bootbox.min.js
+//= require bootbox/dist/bootbox.min.js
 
 //sandbox
 //= require angular-aria/angular-aria.min.js
