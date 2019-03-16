@@ -370,7 +370,7 @@ code, kbd, pre, samp {
 }
 
 body, html {
-    font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: Roboto, "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
     padding: 0;
     margin: 0;
     background: #FFF;

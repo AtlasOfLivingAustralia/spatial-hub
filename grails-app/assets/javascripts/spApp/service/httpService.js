@@ -50,25 +50,30 @@
 
                 logError: function (config, msg) {
                     if (msg && msg.indexOf('Error') >= 0 && !config.ignoreErrors) {
-                        var lastSession = this._session;
+                        // TODO: identify fatal errors
+                        var isFatalError = false;
 
-                        // cancel outstanding promises
-                        for (var rq in this._requests) {
-                            if (this._requests[rq].uniqueId > lastSession.id) {
-                                if (this._requests[rq].timeoutObj) {
-                                    this._requests[rq].timeoutObj.resolve();
+                        if (isFatalError) {
+                            var lastSession = this._session;
+
+                            // cancel outstanding promises
+                            for (var rq in this._requests) {
+                                if (this._requests[rq].uniqueId > lastSession.id) {
+                                    if (this._requests[rq].timeoutObj) {
+                                        this._requests[rq].timeoutObj.resolve();
+                                    }
+                                    delete this._requests[rq]
                                 }
-                                delete this._requests[rq]
                             }
+
+                            $rootScope.$broadcast('resetLayout');
+
+                            // restore session
+                            $rootScope.$broadcast('loadSession', lastSession);
                         }
 
                         this._errors.push({msg: msg, config: config, layout: this._layout});
                         LoggerService.log('httpService', msg, config.url);
-
-                        // $rootScope.$broadcast('resetLayout');
-
-                        // restore session
-                        //$rootScope.$broadcast('loadSession', lastSession);
                     }
                 },
 

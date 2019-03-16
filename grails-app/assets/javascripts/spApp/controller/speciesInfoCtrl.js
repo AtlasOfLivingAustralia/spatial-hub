@@ -18,8 +18,9 @@
                 $scope.countKosherAny = $i18n(377, "counting...");
                 $scope.countAll = $i18n(377, "counting...");
                 $scope.speciesList = [];
-                $scope.dataProviderList = [];
-                $scope.lsids = [];
+                $scope.dataProviderList = [{name: $i18n("searching...")}];
+                $scope.lsids = [{name: $i18n("searching..."), list: [{scientificName: $i18n("searching...")}]}];
+                $scope.collectoryLinkPrefix = $SH.collectionsUrl + "/public/showDataProvider/";
 
                 $scope.init = function (species) {
                     $scope.speciesOrig = {
@@ -71,17 +72,21 @@
                         $scope.dataProviderList = data
                     });
 
-                    BiocacheService.facet('species_guid', $scope.speciesOrig).then(function (data) {
-                        $scope.speciesList = data;
+                    BiocacheService.facetGeneral('species_guid', $scope.speciesOrig, 10, 0).then(function (data) {
+                        $scope.lsids = [];
+                        if (data.length > 0 && data[0].fieldResult !== undefined) {
+                            data = data[0].fieldResult;
+                            $scope.speciesList = data;
 
-                        for (var i = 0; i < 10 && i < data.length; i++) {
-                            if (data[i].name.length > 0) {
-                                var item = {name: data[i].name, list: []};
-                                $scope.lsids.push(item);
-                                $scope.getClassification(item)
+                            for (var i = 0; i < 10 && i < data.length; i++) {
+                                if (data[i].label.length > 0 && data[i].fq.indexOf("-") !== 0) {
+                                    var item = {name: data[i].label, list: []};
+                                    item.list = [{scientificName: $i18n("searching...")}];
+                                    $scope.lsids.push(item);
+                                    $scope.getClassification(item)
+                                }
                             }
                         }
-
                     })
                 };
 

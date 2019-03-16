@@ -229,7 +229,7 @@
                 dataProviderList: function (query, fqs) {
                     var fqList = (fqs === undefined ? '' : '&fq=' + this.joinAndEncode(fqs));
                     return this.registerQuery(query).then(function (response) {
-                        return $http.jsonp(query.bs + "/webportal/dataProviders?q=" + response.qid + fqList, _httpDescription('dataProviderList')).then(function (response) {
+                        return $http.get(query.bs + "/webportal/dataProviders?q=" + response.qid + fqList, _httpDescription('dataProviderList')).then(function (response) {
                             return response.data;
                         });
                     })

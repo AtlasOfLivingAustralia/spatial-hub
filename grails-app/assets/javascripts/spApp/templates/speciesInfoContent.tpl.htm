@@ -48,6 +48,7 @@
         <tr>
             <td i18n="109">&nbsp;</td>
         </tr>
+
         <tr class="row-gray">
             <td i18n="266"
                 class="label-gray">List of LSIDs (first 10):
@@ -59,6 +60,22 @@
         <tr>
             <td i18n="109">&nbsp;</td>
         </tr>
+
+        <tr class="row-gray">
+            <td class="label-gray">Data providers:</td>
+            <td></td>
+            <td class="md_value">
+                <div ng-repeat="x in dataProviderList">
+                    <span ng-if="x.count === undefined">{{x.name}}</span>
+                    <span ng-if="x.count !== undefined">
+                    <a target="_blank" href="{{collectoryLinkPrefix}}{{x.id}}">{{x.name}}</a>: {{x.count}} records<br/></span>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td i18n="109">&nbsp;</td>
+        </tr>
+
 
         <tr class="">
             <td i18n="267" class="label-gray">QID</td>
