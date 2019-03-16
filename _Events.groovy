@@ -6,7 +6,7 @@ def build(String baseDir) {
     println 'Starting NPM install'
     final workdir = new File(baseDir, '')
     final proc = new ProcessBuilder().inheritIO()
-    final exec = proc.command('npm', 'install').start()
+    final exec = proc.command('npm', '-dd', 'install').start()
     def exitValue = exec.waitFor()
     if (exitValue) {
         println '*****************************************************'
