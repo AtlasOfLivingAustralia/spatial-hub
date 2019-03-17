@@ -333,7 +333,7 @@
                             $(".icon-images").addClass("icon-spin-images");
                             promises.push(FlickrService.getPhotos(multipBounds[i]).then(function (data) {
                                 if (data.photos) {
-                                    for (var i = 0; i < nbrOfPhotosToDisplay; i++) {
+                                    for (var i = 0; i < data.photos.photo.length; i++) {
                                         var photoContent = data.photos.photo[i];
                                         photoContent.url_m = "https://www.flickr.com/photos/" + photoContent.owner + "/" + photoContent.id
                                         newMarkers[photoContent.id] = photoContent;
@@ -397,7 +397,7 @@
                         result += "<div class='panel-body'> ";
                         result += "<div class='row'> <div class='col-sm-12'>";
                         result += "<a href='" + photo.url_m + "' target='_blank'>";
-                        result += "<img class='img-thumbnail' style='display: block; margin: 0 auto;width:250px' src='" + photo.url_s + "' alt='Click to view large image'></a>";
+                        result += "<img class='img-thumbnail' src='" + photo.url_s + "' alt='Click to view large image'></a>";
                         result += "</div> </div>";
 
                         result += "<div class='row'> <div class='col-sm-12'>";
@@ -434,12 +434,9 @@
                             // draw new markers
                             Object.keys(newMarkers).forEach(function (key) {
                                 var photoContent = newMarkers[key];
-                                var photoIcon = L.icon(
-                                    {
-                                        iconUrl: photoContent.url_t,
-                                        iconSize: [20, 20]
-                                    }  //reduces thumbnails 50%
-                                );
+                                var photoIcon = L.divIcon({
+                                    html: "<img class='map-icon' src='" + photoContent.url_t + "'></img>"
+                                });
                                 var marker = L.marker([photoContent.latitude, photoContent.longitude], {icon: photoIcon});
                                 marker.uniqueId = key;
                                 var license = $scope.licenses[photoContent.license];

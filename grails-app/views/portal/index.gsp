@@ -76,7 +76,7 @@
         flickrExtra: '${config.flickr.extra}',
         flickrContentType: '${config.flickr.contentType}',
         flickrGeoContext: '${config.flickr.geoContext}',
-        flickrFilter: '${config.flickr.filter}',
+        flickrFilter: '${(config.flickr.filter?:'').toString().encodeAsRaw()}',
         flickrNbrOfPhotosToDisplay: '${config.flickr.nbrOfPhotosToDisplay}',
         menu: '${config.grails.serverURL}/portal/config/menu?hub=${hub}',
         defaultAreas: ${(config.defaultareas as grails.converters.JSON).toString().encodeAsRaw()},

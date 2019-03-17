@@ -2221,3 +2221,18 @@ body > footer > div > div.col-md-12.acknowledgement-callout.acknowledgement-call
     max-height: 100%;
     overflow-y: auto;
 }
+
+.img-thumbnail {
+    display: block;
+    margin: 0 auto;
+    width: 250px
+}
+
+.leaflet-div-icon {
+    border: 0px;
+}
+
+img.map-icon {
+    max-width: 100px;
+    max-height: 100px;
+}
