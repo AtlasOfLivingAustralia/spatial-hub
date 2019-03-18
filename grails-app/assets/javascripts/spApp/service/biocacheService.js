@@ -289,10 +289,9 @@
                  * Output:
                  *  "<span>Macropus</span>"
                  */
-                queryTitle: function (query, fqs) {
-                    var fqList = (fqs === undefined ? '' : '&fq=' + this.joinAndEncode(fqs));
+                queryTitle: function (query) {
                     return this.registerQuery(query).then(function (response) {
-                        return $http.get(query.bs + "/webportal/params/details/" + response.qid.replace("qid:", "") + fqList, _httpDescription('queryTitle')).then(function (response) {
+                        return $http.get(query.bs + "/webportal/params/details/" + response.qid.replace("qid:", ""), _httpDescription('queryTitle')).then(function (response) {
                             if (response.data !== undefined && response.data.displayString !== undefined) {
                                 //remove html wrapping from title
                                 var div = document.createElement('div');

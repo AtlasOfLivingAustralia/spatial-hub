@@ -121,10 +121,22 @@
                                     if (value.match(/^\(/g) != null && value.match(/\)$/g) != null && !value.include(" ")) {
                                         s = value.substring(1, value.length() - 2);
                                     }
+
+                                    if (s && s !== undefined) {
+                                        sbList.push(s);
+                                    }
                                 } else if ("qname" === key) {
                                     qname = value;
                                 } else if ("fq" === key) {
-                                    sbList.push(value)
+                                    if ($.isArray(value)) {
+                                        for (var a in value) {
+                                            if (value.hasOwnProperty(a)) {
+                                                sbList.push(value[a])
+                                            }
+                                        }
+                                    } else {
+                                        sbList.push(value)
+                                    }
                                 } else if ("qc" === key) {
                                     qc = "&qc=" + encodeURIComponent(value);
                                 } else if ("wkt" === key) {
@@ -163,19 +175,12 @@
                             wkt = this.createCircle(lon, lat, radius * 1000);
                         }
 
-                        var sList = [];
-
-                        if (s && s !== undefined) {
-                            sList.push(s);
-                        }
-
                         var promises = [];
 
                         if (sbList.length > 0 || (s !== null && s !== undefined && s.length > 0)) {
-                            var query = {q: sList, fq: sbList, bs: bs, ws: ws};
-                            promises.push(BiocacheService.queryTitle(query, params.fq).then(function (response) {
+                            var query = {q: sbList, bs: bs, ws: ws};
+                            promises.push(BiocacheService.queryTitle(query).then(function (response) {
                                 query.name = response;
-                                query.wkt = wkt;
                                 return BiocacheService.newLayer(query, undefined, response).then(function (newLayerResp) {
                                     MapService.add(newLayerResp);
                                 });
