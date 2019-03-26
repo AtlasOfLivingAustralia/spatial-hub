@@ -9,7 +9,7 @@
 
     <meta http-equiv="Content-type" content="text/html; charset=utf-8">
     <meta name="layout" content="${config.skin.layout}"/>
-    <title>${config.skin.orgNameLong} | Spatial Portal</title>
+    <title>Spatial Portal | ${config.skin.orgNameLong}</title>
 
     <g:if test="${hub != null}">
         <asset:stylesheet href="hub/${hub}.css"/>
