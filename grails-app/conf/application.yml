@@ -425,31 +425,31 @@ projections:
 #
 # spApp configuration
 #
-#spApp:
-#    # show "map options" and associated controls in the list of layers
-#    mapOptions: true
-#    # show map control for collapsing up and hiding the header
-#    collapseUp: true
-#    # show map control for collapsing left and hiding left panel
-#    collapseLeft: true
-#    # show map control that displays the cursor coordinates (on the lower left of the map, above the scale)
-#    cursorCoordinates: true
-#    # show map control that displays the quicklinks
-#    quicklinks: true
-#    # show "map options" button "Add WMS Layer"
-#    optionsAddWms: true
-#    # show "map options" button "Download Map"
-#    optionsDownloadMap: true
-#    # show "map options" button "Reset Map"
-#    optionsResetMap: true
-#    # show "map options" section to change the base map
-#    optionsSelectBaseMap: true
-#    # load the layerDistances data to display the layer selection list's traffic light indicator
-#    layerDistances: true
-#    # show the "add to map | area | google location search" option
-#    googleLocation: true
-#    # show the left panel by default
-#    leftPanel: true
+spApp:
+    # show "map options" and associated controls in the list of layers
+    mapOptions: true
+    # show map control for collapsing up and hiding the header
+    collapseUp: true
+    # show map control for collapsing left and hiding left panel
+    collapseLeft: true
+    # show map control that displays the cursor coordinates (on the lower left of the map, above the scale)
+    cursorCoordinates: true
+    # show map control that displays the quicklinks
+    quicklinks: true
+    # show "map options" button "Add WMS Layer"
+    optionsAddWms: true
+    # show "map options" button "Download Map"
+    optionsDownloadMap: true
+    # show "map options" button "Reset Map"
+    optionsResetMap: true
+    # show "map options" section to change the base map
+    optionsSelectBaseMap: true
+    # load the layerDistances data to display the layer selection list's traffic light indicator
+    layerDistances: true
+    # show the "add to map | area | google location search" option
+    googleLocation: true
+    # show the left panel by default
+    leftPanel: true
 
 #
 # portal.gsp layout options

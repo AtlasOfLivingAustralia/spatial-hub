@@ -112,103 +112,108 @@ def build(String baseDir) {
 
     def totalNewProperties = 0
 
-    print 'i18n checking files: '
-    for (File f : new File(baseDir + '/grails-app/assets/javascripts/spApp/templates/').listFiles()) {
+    def dir = baseDir + '/grails-app/assets/javascripts/spApp/templates/'
+    print 'i18n - find new in templates : ' + dir
+    for (File f : new File(dir).listFiles()) {
 
         def label = ' ' + f.name
-        print (label)
+        print(label)
         def newCount = 0
 
         String input = FileUtils.readFileToString(f)
 
-        def output = new StringBuilder()
+        if (!input.contains("skipI18n")) {
+            def output = new StringBuilder()
 
-        start = 0
-        while (start < input.length() && start != -1) {
-            def next = input.indexOf('</', start)
+            start = 0
+            while (start < input.length() && start != -1) {
+                def next = input.indexOf('</', start)
 
-            if (next > start) {
-                output.append(input.substring(start, next))
-            }
+                if (next > start) {
+                    output.append(input.substring(start, next))
+                }
 
-            def writeAt = -1
-            for (int i = 0; i < textElements.length && writeAt < 0; i++) {
-                String e = textElements[i]
+                def writeAt = -1
+                for (int i = 0; i < textElements.length && writeAt < 0; i++) {
+                    String e = textElements[i]
 
-                if (input.startsWith(e, next + 1)) {
-                    //very rough matching
-                    def end1 = input.indexOf("/>", next)
-                    def end2 = input.indexOf(">", next)
-                    //check that end2 is not part of ng-*=".*" or {{*}}
-                    def s = input.substring(next, end2)
-                    while (end2 > 0 && (end1 == -1 || end1 > end2) &&
-                            (StringUtils.countMatches(s, "{{") < StringUtils.countMatches(s, "}}") ||
-                                    s.matches(".*\\sng-[^\\s=]+=(('[^']*)|(\"[^\"]*))\$"))) {
-                        end2 = input.indexOf(">", end2 + 1)
-                    }
+                    if (input.startsWith(e, next + 1)) {
+                        //very rough matching
+                        def end1 = input.indexOf("/>", next)
+                        def end2 = input.indexOf(">", next)
+                        //check that end2 is not part of ng-*=".*" or {{*}}
+                        def s = input.substring(next, end2)
+                        while (end2 > 0 && (end1 == -1 || end1 > end2) &&
+                                (StringUtils.countMatches(s, "{{") < StringUtils.countMatches(s, "}}") ||
+                                        s.matches(".*\\sng-[^\\s=]+=(('[^']*)|(\"[^\"]*))\$"))) {
+                            end2 = input.indexOf(">", end2 + 1)
+                        }
 
-                    if (end1 == -1 || end1 > end2) {
-                        //has interior
-                        def txtStart = end2 + 1
-                        def txtEnd = input.indexOf("<", txtStart)
-                        def str = input.substring(txtStart, txtEnd)
-                        // exclude whitespace, anything with angular substitution
-                        if (str.length() > 0 && !StringUtils.isWhitespace(str) && !str.contains("{{")) {
-                            //has text, insert next attr if missing
-                            if (!input.substring(next, end2).contains("i18n")) {
-                                writeAt = e.length() + next + 1
+                        if (end1 == -1 || end1 > end2) {
+                            //has interior
+                            def txtStart = end2 + 1
+                            def txtEnd = input.indexOf("<", txtStart)
+                            def str = input.substring(txtStart, txtEnd)
+                            // exclude whitespace, anything with angular substitution
+                            if (str.length() > 0 && !StringUtils.isWhitespace(str) && !str.contains("{{")) {
+                                //has text, insert next attr if missing
+                                if (!input.substring(next, end2).contains("i18n")) {
+                                    writeAt = e.length() + next + 1
 
-                                output.append(input.substring(next, writeAt))
-                                def value = input.substring(txtStart, txtEnd).replaceAll("\\s+", ' ').trim()
+                                    output.append(input.substring(next, writeAt))
+                                    def value = input.substring(txtStart, txtEnd).replaceAll("\\s+", ' ').trim()
 
-                                if (value != "&nbsp;") {
-                                    def currentIdx = idx
-                                    if (all.containsKey(value)) {
-                                        currentIdx = all.get(value)
-                                    } else {
-                                        all.put(value, idx)
-                                        idx++
+                                    if (value != "&nbsp;") {
+                                        def currentIdx = idx
+                                        if (all.containsKey(value)) {
+                                            currentIdx = all.get(value)
+                                        } else {
+                                            all.put(value, idx)
+                                            idx++
 
-                                        newProperties.append("\n${currentIdx}=${value}")
-                                        newCount++
-                                        totalNewProperties++
+                                            newProperties.append("\n${currentIdx}=${value}")
+                                            newCount++
+                                            totalNewProperties++
+                                        }
+
+                                        output.append(" i18n=\"${currentIdx}\" ")
                                     }
 
-                                    output.append(" i18n=\"${currentIdx}\" ")
+                                    output.append(input.substring(writeAt, txtEnd))
+                                    start = txtEnd
                                 }
-
-                                output.append(input.substring(writeAt, txtEnd))
-                                start = txtEnd
                             }
                         }
                     }
                 }
-            }
 
-            if (writeAt < 0) {
-                def end = input.indexOf(">", next)
-                if (next >= 0 && end >= 0) {
-                    output.append(input.substring(next, end + 1))
+                if (writeAt < 0) {
+                    def end = input.indexOf(">", next)
+                    if (next >= 0 && end >= 0) {
+                        output.append(input.substring(next, end + 1))
 
-                    start = end + 1
-                } else if (next >= 0) {
-                    output.append(input.substring(next, input.length()))
-                    start = input.length() + 1
-                } else {
-                    start = input.length() + 1
+                        start = end + 1
+                    } else if (next >= 0) {
+                        output.append(input.substring(next, input.length()))
+                        start = input.length() + 1
+                    } else {
+                        start = input.length() + 1
+                    }
                 }
             }
-        }
 
-        if (newCount > 0) {
-            // overwrite template file
-            FileUtils.writeStringToFile(f, output.toString())
+            if (newCount > 0) {
+                // overwrite template file
+                FileUtils.writeStringToFile(f, output.toString())
 
-            print " - $newCount new keys, "
+                print " - $newCount new keys, "
+            }
         }
     }
 
     for (def jsDir : jsDirs) {
+        print 'i18n - find new in scripts : ' + dir
+        dir = baseDir + '/grails-app/assets/javascripts/spApp/'
         for (File f : new File(baseDir + '/grails-app/assets/javascripts/spApp/' + jsDir).listFiles()) {
 
             def label = ' ' + f.name
@@ -222,15 +227,24 @@ def build(String baseDir) {
             start = 0
             while (start < input.length() && start != -1) {
                 // indexOf next $i18n call that does not have a messages.properties entry
-                def next = input.indexOf("\$i18n(\"", start)
+                def quote = "\'"
+                def dblQuote = "\""
+                def dblNext = input.indexOf("\$i18n(" + dblQuote, start)
+                def quoteNext = input.indexOf("\$i18n(" + quote, start)
+                def next = dblNext
+                def txtWrapper = dblQuote
+                if (dblNext < 0 || (quoteNext >= 0 && quoteNext < dblNext)) {
+                    next = quoteNext
+                    txtWrapper = quote
+                }
 
                 if (next > start) {
                     output.append(input.substring(start, next))
 
-                    // find end of the default value that is wrapped in " and may contain escaped values \"
-                    def end = input.indexOf("\")", next + 7)
-                    while (input.indexOf("\\\"", end - 1) == end - 1) {
-                        end = input.indexOf("\")", end + 1)
+                    // find end of the default value that is wrapped in " or ' and may contain escaped values \" or \'
+                    def end = input.indexOf(txtWrapper + ")", next + 7)
+                    while (input.indexOf("\\" + txtWrapper, end - 1) == end - 1) {
+                        end = input.indexOf(txtWrapper + ")", end + 1)
                     }
 
                     // find or create the properties idx for this value
