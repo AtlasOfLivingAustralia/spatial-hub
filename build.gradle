@@ -69,12 +69,12 @@ dependencies {
     testRuntime "net.sourceforge.htmlunit:htmlunit:2.18"
 
     // Additional Plugins
-    compile 'org.grails.plugins:external-config:1.1.2'
+    compile 'org.grails.plugins:external-config:1.2.2'
     compile group: 'commons-httpclient', name: 'commons-httpclient', version: '3.1'
 
 //    compile 'au.org.ala:ala-cas-client:2.2.1-SNAPSHOT'
-    compile "org.grails.plugins:ala-admin-plugin:2.0"
-    compile "org.grails.plugins:ala-auth:3.0.2"
+    compile "org.grails.plugins:ala-admin-plugin:2.1"
+    compile "org.grails.plugins:ala-auth:3.1.0"
     compile "org.grails.plugins:ala-bootstrap3:3.0.6"
 
     runtime 'org.grails.plugins:sandbox-hub:1.0'
