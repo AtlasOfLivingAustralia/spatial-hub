@@ -314,18 +314,18 @@ startup:
                 format: 'image/png'
                 continuousWorld: true
             exportType: 'outline'
-        osm_projection:
-            name: 'Open Street Map'
-            type: 'wms'
-            url: 'https://spatial.ala.org.au/geoserver/wms?'
-            layerParams:
-                # cascade WMS layer in geoserver
-                layers: 'ALA:osm'
-                format: 'image/png'
-                continuousWorld: true
-            exportType: 'minimal'
-            link: 'https://www.openstreetmap.org/about'
-            invalidProjections: ['3857']
+#        osm_projection:
+#            name: 'Open Street Map'
+#            type: 'wms'
+#            url: 'https://spatial.ala.org.au/geoserver/wms?'
+#            layerParams:
+#                # cascade WMS layer in geoserver
+#                layers: 'ALA:osm'
+#                format: 'image/png'
+#                continuousWorld: true
+#            exportType: 'minimal'
+#            link: 'https://www.openstreetmap.org/about'
+#            invalidProjections: ['3857']
         osm:
             name: 'Open Street Map'
             url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
@@ -372,7 +372,6 @@ getMapExamples:
 
 wms:
     intersect: true
-
 
 fq:
     excludeAbsent: "-occurrence_status_s:absent"
