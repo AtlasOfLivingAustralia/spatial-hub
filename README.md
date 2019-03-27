@@ -82,10 +82,10 @@ Replacement for spatial-portal with Grails, AngularJS and Leaflet.
     headerAndFooter.baseURL=<URL to deployed commonui-bs3>
     ```
 
-#####Fork [spatial-hub](https://github.com/AtlasOfLivingAustralia/spatial-hub), modify and deploy
+##### Fork [spatial-hub](https://github.com/AtlasOfLivingAustralia/spatial-hub), modify and deploy
 * Use when development of spatial-hub is expected. It can be used with with the other methods.
 
-#####Local files
+##### Local files
 * Adding files local to deployment can add new layouts and resources.
     
     1. Add a new layout gsp to the ```/data/spatial-hub/views/layouts``` directory.
