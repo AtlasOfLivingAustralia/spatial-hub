@@ -83,9 +83,14 @@
                             uiScope.status = 'error';
                             uiScope.finished = true
                         } else if (response.data.status === 4) {
-                            uiScope.status = 'successful';
-                            uiScope.finishedData = response.data;
-                            return _executeResult(uiScope)
+                            if (response.data.output === undefined) {
+                                uiScope.status = 'error';
+                                uiScope.finished = true
+                            } else {
+                                uiScope.status = 'successful';
+                                uiScope.finishedData = response.data;
+                                return _executeResult(uiScope)
+                            }
                         }
                     })
                 }
