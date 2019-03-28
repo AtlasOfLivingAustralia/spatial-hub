@@ -70,7 +70,7 @@ Replacement for spatial-portal with Grails, AngularJS and Leaflet.
 
 ## Header and Footer
 
-#####Configure [ala-bootstrap3](https://github.com/AtlasOfLivingAustralia/ala-bootstrap3)
+##### Configure [ala-bootstrap3](https://github.com/AtlasOfLivingAustralia/ala-bootstrap3)
 * This is recommended since it can be reused by all components that use [ala-bootstrap3](https://github.com/AtlasOfLivingAustralia/ala-bootstrap3)
 
     1. Fork [commonui-bs3](https://github.com/AtlasOfLivingAustralia/commonui-bs3), modify and deploy
