@@ -11,18 +11,20 @@
     <meta name="description" content="Atlas of Living Australia"/>
     <meta name="author" content="Atlas of Living Australia">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="${config.favicon.url}" rel="shortcut icon"
-          type="image/x-icon"/>
+    <link href="${config.favicon.url}" rel="shortcut icon" type="image/x-icon"/>
     <link href="${config.headerAndFooter.baseURL}/css/bootstrap.min.css" rel="stylesheet" media="all"/>
     <link href="${config.headerAndFooter.baseURL}/css/ala-styles.css" rel="stylesheet" media="all"/>
     <title><g:layoutTitle/></title>
     <g:layoutHead/>
-    <asset:stylesheet href="application.css" />
-
-    <g:if test="${hub != null}">
+    <asset:stylesheet href="generic-application.css" />
+    <g:if test="${hub}">
+        <!-- Hub is not null-->
         <asset:stylesheet href="css/${hub}.css"/>
     </g:if>
-
+    <g:else>
+        <!-- Hub is null wheres the style sheet-->
+        <asset:stylesheet href="generic.css"/>
+    </g:else>
 </head>
 
 <body class="${pageProperty(name: 'body.class')}" id="${pageProperty(name: 'body.id')}"
