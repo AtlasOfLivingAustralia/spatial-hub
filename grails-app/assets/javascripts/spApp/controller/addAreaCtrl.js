@@ -279,19 +279,23 @@
                         $scope.selectedArea.name = obj.name.length > 0 ? obj.name : $i18n(354, "area");
                         LayersService.getField(obj.fid, 0, 0, '').then(function (data) {
                             // only fetch wkt if it is not indexed in biocache
+                            $scope.selectedArea.pid = obj.pid;
+                            $scope.selectedArea.wms = obj.wmsurl;
+
                             if (data.data === undefined || data.data.id === undefined || !data.data.indb) {
                                 LayersService.getWkt(pid).then(function (wkt) {
                                     $scope.selectedArea.wkt = wkt.data
+                                    if (mapNow) {
+                                        $scope.addToMapAndClose();
+                                    }
                                 })
                             } else {
                                 $scope.selectedArea.q = obj.fid + ':"' + obj.name + '"';
                                 $scope.selectedArea.obj.q = $scope.selectedArea.q
-                            }
-                            $scope.selectedArea.pid = obj.pid;
-                            $scope.selectedArea.wms = obj.wmsurl;
 
-                            if (mapNow) {
-                                $scope.addToMapAndClose();
+                                if (mapNow) {
+                                    $scope.addToMapAndClose();
+                                }
                             }
                         })
                     })
