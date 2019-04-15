@@ -12,5 +12,7 @@
 *= require sandbox.css
 *= require angular-loading-bar/build/loading-bar.min.css
 *= require jquery-layout/jquery.layout.css
+*= require ala/ala-styles.css
 *= require spatial-hub.css
+*= require bootstrap-theme.css
 */
