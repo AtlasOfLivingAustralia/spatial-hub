@@ -8,8 +8,8 @@
      *    Panel displaying selected map layer information and controls
      */
     angular.module('sp-legend-directive', ['map-service', 'biocache-service', 'layers-service', 'popup-service'])
-        .directive('spLegend', ['$timeout', '$q', 'MapService', 'BiocacheService', 'LayersService', 'ColourService', '$http', 'LayoutService', 'PopupService',
-            function ($timeout, $q, MapService, BiocacheService, LayersService, ColourService, $http, LayoutService, PopupService) {
+        .directive('spLegend', ['$timeout', '$q', 'MapService', 'BiocacheService', 'LayersService', 'ColourService', '$http', 'LayoutService', 'PopupService', 'LoggerService',
+            function ($timeout, $q, MapService, BiocacheService, LayersService, ColourService, $http, LayoutService, PopupService, LoggerService) {
 
                 var _httpDescription = function (method, httpconfig) {
                     if (httpconfig === undefined) {
@@ -470,8 +470,6 @@
                         scope.asyncFacetCounts = function (queue, results) {
                             scope.facetProgress = (results.length + 1) + " of " + (queue.length + results.length);
                             var facetCount = queue.pop();
-                            console.log(queue.length);
-                            console.log(facetCount);
                             return scope.getFacetItemCount(facetCount[0], scope.selected.layer, facetCount[1]).then(
                                 function (data) {
                                     results.push(data);

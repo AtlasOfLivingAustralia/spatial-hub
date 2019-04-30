@@ -24,7 +24,7 @@
      *   Panel of controls for time series map layer filter and animation playback
      */
     angular.module('playback-directive', ['map-service']).directive('playback',
-        ['$timeout', 'MapService', 'BiocacheService', function ($timeout, MapService, BiocacheService) {
+        ['$timeout', 'MapService', 'BiocacheService', 'LoggerService', function ($timeout, MapService, BiocacheService, LoggerService) {
             return {
                 scope: {
                     _selected: '=selectedLayer'
@@ -49,6 +49,15 @@
 
                     scope.onPlay = function () {
                         var s = scope._selected.layer.playback;
+
+                        LoggerService.log("View", "timeSeriesPlayback", {
+                            query: scope._selected.layer.qid,
+                            yearStepSize: s.yearStepSize,
+                            monthStepSize: s.monthStepSize,
+                            timeout: s.timeout,
+                            type: s.type
+                        })
+
                         if (!s.play) {
                             if (!s.pause) {
                                 s.yearRange[0] = scope._selected.layer.yearMin;

@@ -9,8 +9,8 @@
      */
     angular.module('point-comparison-directive', ['map-service', 'layers-service', 'predefined-areas-service'])
         .directive('pointComparison', ['$rootScope', 'MapService', '$timeout', 'LayersService', 'LayoutService',
-            'PredefinedAreasService', "$http", '$filter',
-            function ($rootScope, MapService, $timeout, LayersService, LayoutService, PredefinedAreasService, $http, $filter) {
+            'PredefinedAreasService', 'LoggerService', "$http", '$filter',
+            function ($rootScope, MapService, $timeout, LayersService, LayoutService, PredefinedAreasService, LoggerService, $http, $filter) {
                 var _httpDescription = function (method, httpconfig) {
                     if (httpconfig === undefined) {
                         httpconfig = {};
@@ -112,6 +112,7 @@
                                         scope.statusUrl = response.data.statusUrl
                                         $timeout(scope.checkStatus(), 2000)
                                     } else if (response.data.downloadUrl) {
+                                        LoggerService.log("View", "pointComparison", {points: scope.points})
                                         $http.get($SH.baseUrl + '/portal/getSampleCSV?url=' + encodeURIComponent(response.data.downloadUrl), _httpDescription('getCsv')).then(function (response) {
                                             if (scope.comparison.length > 0)
                                                 scope.comparison.splice(0, scope.comparison.length);

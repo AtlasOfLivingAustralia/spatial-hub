@@ -142,6 +142,12 @@
                                     $timeout(function () {
                                         $(window).trigger("resize");
                                     }, 0);
+
+                                    LoggerService.log("View", "nearestLocality", {
+                                        gazField: $SH.gazField,
+                                        longitude: scope.point.longitude,
+                                        latitude: scope.point.latitude
+                                    })
                                 }, function (response) {
                                     scope.searching = false;
                                     scope.pointLabel = $i18n(337, "Error")

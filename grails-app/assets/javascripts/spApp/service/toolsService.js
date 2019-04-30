@@ -40,6 +40,10 @@
                     $http.post(url, m, _httpDescription('executeRemote')).then(function (response) {
                         uiScope.externalTaskId = response.data.id;
                         uiScope.statusUrl = LayersService.url() + '/tasks/status/' + response.data.id;
+
+                        // Create log entry for an external tool when the task is created with the taskId
+                        LoggerService.log('Tool', uiScope.toolName, '{ "taskId": "' + externalTaskId + '"}')
+
                         $timeout(function () {
                             _checkStatus(uiScope);
                         }, 5000)
@@ -189,6 +193,7 @@
                                     //might be an area pid
                                     promises.push(LayersService.getObject(d.file).then(function (data) {
                                         data.data.layertype = 'area';
+                                        data.data.log = false // The task is logged, no need to log adding the layer
                                         return MapService.add(data.data)
                                     }))
                                 }
@@ -199,6 +204,8 @@
                                 q.opacity = 60;
 
                                 q.scatterplotDataUrl = uiScope.downloadUrl;
+
+                                q.log = false // The task is logged, no need to log adding the layer
 
                                 promises.push(MapService.add(q))
                             } else if (d.name === 'nextprocess') {
@@ -219,15 +226,11 @@
                             var layer = this;
                             if (uiScope.metadataUrl !== null) layer.metadataUrl = uiScope.metadataUrl;
                             layer.name = uiScope.toolName + " (" + layer.name + ")";
+
+                            layer.log = false // The task is logged, no need to log adding the layer
+
                             promises.push(MapService.add(layer));
                         })
-                    }
-
-                    if (uiScope.metadataUrl !== null) {
-                        LoggerService.log('Tools', uiScope.toolName,
-                            '{ "taskId": "' + uiScope.finishedData.id + '", "metadataUrl": "' + uiScope.metadataUrl + '"}')
-                    } else {
-                        LoggerService.log('Tools', uiScope.toolName, '{ "taskId": "' + uiScope.finishedData.id + '"}')
                     }
 
                     if (uiScope.metadataUrl !== null) {
@@ -272,6 +275,10 @@
                         result.then(function (response) {
                             uiScope.finishedData = response;
                             _executeResult(uiScope);
+
+                            // Create log entry for a local tool when the task is finished with the input data
+                            LoggerService.log('Tool', uiScope.toolName, JSON.stringify(inputs))
+
                             uiScope.$close();
                         })
                     } else {

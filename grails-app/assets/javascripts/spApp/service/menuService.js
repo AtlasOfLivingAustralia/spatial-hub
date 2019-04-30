@@ -46,6 +46,18 @@
                         } else {
                             return setup
                         }
+                    },
+
+                    find: function (name) {
+                        for (var i in menuConfig) {
+                            var menu = menuConfig[i]
+                            for (var j in menu.items) {
+                                var item = menu.items[j]
+                                if (item.open == name) {
+                                    return {name: item.name, parent: menu.name}
+                                }
+                            }
+                        }
                     }
                 }
             }])

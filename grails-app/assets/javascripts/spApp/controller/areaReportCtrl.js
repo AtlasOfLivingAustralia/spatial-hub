@@ -456,23 +456,9 @@
                 $scope.makeModeless = function () {
                     $('.modal').addClass('modeless');
 
-                    // $('.modal-backdrop')[0].style.display = 'none';
-                    //
-                    // $('.modal')[0].style.pointerEvents = 'none';
-                    //
-                    // $('.modal-dialog')[0].style.margin = '0px';
-
                     $('.modal-dialog').draggable({
                         handle: ".modal-header"
                     });
-
-                    // $('.modal-dialog')[0].style.pointerEvents = 'all';
-                    //
-                    // $('.modal-content')[0].style.borderRadius = '6px 6px 0 0';
-                    // $('.modal-content')[0].style.border = '2px solid';
-                    //
-                    // $('.modal-body')[0].style.height = '500px';
-                    // $('.modal-body')[0].style.overflowY = 'scroll';
 
                     $('.modal-content').resizable({
                         minHeight: 180,

@@ -96,6 +96,8 @@
                     })
                 };
 
+                LoggerService.log("View", "speciesInfo", $scope.speciesOrig)
+
                 $scope.init(data);
             }])
 }(angular));

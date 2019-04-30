@@ -329,7 +329,6 @@
                     }
 
                     this.toggleDisplayLayer = function (targetedlayer) {
-                        console.log(targetedlayer.name + " " + targetedlayer.isDisplayed)
                         var result = {layer: undefined, index: 0}
                         var futureLayerIdx = 0;
 
@@ -463,7 +462,6 @@
                         var fq = this.buildAdhocQuery()
                         if (fq.length > 0)
                             biocacheService.count(layer, fq).then(function (count) {
-                                console.log(count + ' occurence(s) are selected.')
                                 layer.adhocGroupSize = count;
                             });
                         else

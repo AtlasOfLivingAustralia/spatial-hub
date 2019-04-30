@@ -282,7 +282,7 @@ bccvl:
 keep:
     alive:
         timeout:
-            ms: 10000
+            ms: 180000
     
 startup:
     lat: -25

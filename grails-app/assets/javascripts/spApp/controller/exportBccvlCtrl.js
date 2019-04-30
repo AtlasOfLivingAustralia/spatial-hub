@@ -8,9 +8,10 @@
      *   Manage export of occurrence layers to BCCVL
      */
     angular.module('export-bccvl-ctrl', ['map-service']).controller('ExportBccvlCtrl', ['$scope', 'MapService',
-        '$timeout', 'LayoutService', 'BiocacheService', '$window', '$uibModalInstance', 'SessionsService', '$http', '$q', 'data',
+        '$timeout', 'LayoutService', 'BiocacheService', '$window', '$uibModalInstance', 'SessionsService', '$http',
+        '$q', 'LoggerService', 'data',
         function ($scope, MapService, $timeout, LayoutService, BiocacheService, $window, $uibModalInstance,
-                  SessionsService, $http, $q, config) {
+                  SessionsService, $http, $q, LoggerService, config) {
 
             $scope.stepNames = ['Select species'];
 
@@ -44,9 +45,6 @@
             LayoutService.addToSave($scope);
 
             $scope.setQ = function (query) {
-                console.log(query);
-                console.log(selectedQs);
-
                 if (query.species_list) {
                     $scope.isSpeciesList = true;
                 }
@@ -62,7 +60,7 @@
                     $.each($scope.selectedQs, function (i) {
                         var q = $scope.selectedQs[i];
                         promises.push(BiocacheService.registerQuery(q).then(function (response) {
-                            BiocacheService.facet('taxon_name', response).then(function (facets) {
+                            return BiocacheService.facet('taxon_name', response).then(function (facets) {
                                 if ($scope.includeSpeciesList && q.species_list) {
                                     var species = [];
                                     facets && facets.forEach(function (facet) {
@@ -82,8 +80,6 @@
                                     data.push({name: q.name, query: response.qid, url: q.bs});
                                 }
 
-                                console.log(data);
-
                                 return true
                             })
                         }));
@@ -94,6 +90,11 @@
 
                         $http.post(url, {data: data}, $scope._httpDescription('export', config)).then(function (response) {
                             $scope.bccvlOpenUrl = response.headers('location');
+
+                            LoggerService.log('Export', 'exportBccvl', JSON.stringify({
+                                data: data,
+                                bccvlOpenUrl: $scope.bccvlOpenUrl
+                            }))
                         });
                     });
                     $scope.step = $scope.step + 1
