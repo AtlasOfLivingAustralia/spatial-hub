@@ -39,7 +39,8 @@
                         '&sessionId=' + encodeURIComponent($SH.sessionId) +
                         '&userId=' + encodeURIComponent($SH.userId);
 
-                    return $http.post($SH.layersServiceUrl + "/log" + params, data, _httpDescription('log', {ignoreErrors: true}))
+                   // return $http.post($SH.layersServiceUrl + "/log" + params, data, _httpDescription('log', {ignoreErrors: true}))
+                    return $http.post($SH.baseUrl + '/portal/postLog' +params, data, _httpDescription('log', {ignoreErrors: true}))
                 }
             }
         }])
