@@ -232,7 +232,7 @@
                                     var q = [layer.q];
                                     if (layer.fq !== undefined && layer.fq.length > 0) q = q.concat(layer.fq);
 
-                                    var query = {name: layer.name, bs: layer.bs, ws: layer.ws, q: [q]};
+                                    var query = {name: layer.name, bs: layer.bs, ws: layer.ws, q: q};
                                     if (query.bs === undefined) query.bs = $SH.biocacheServiceUrl;
                                     if (query.ws === undefined) query.ws = $SH.biocacheUrl;
                                     if (layer.species_list !== undefined) query.species_list = layer.species_list;
