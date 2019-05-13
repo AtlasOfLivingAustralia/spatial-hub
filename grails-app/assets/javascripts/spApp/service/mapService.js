@@ -436,8 +436,24 @@
                                 }
                             };
 
+                            // do not add to log if it is a child layer or already logged
+                            if ((id.log === undefined || id.log) && parentLayer === undefined) {
+                                LoggerService.log('Map', 'WMS', {
+                                    url: id.url,
+                                    label: id.displayname,
+                                    legendurl: id.legendurl
+                                });
+                            }
+
                         } else if (id.q && id.layertype !== 'area') {
-                            LoggerService.log('AddToMap', 'Species', {qid: id.qid});
+                            // do not add to log if it is a child layer or already logged
+                            if ((id.log === undefined || id.log) && parentLayer === undefined) {
+                                LoggerService.log('Map', 'Species', {
+                                    qid: id.qid,
+                                    label: id.displayname,
+                                    species_list: id.species_list
+                                });
+                            }
 
                             id.layertype = 'species';
                             var env = 'colormode%3Agrid%3Bname%3Acircle%3Bsize%3A3%3Bopacity%3A1';
@@ -520,8 +536,6 @@
                                         }
                                     };
                                 } else {
-                                    LoggerService.log('AddToMap', 'Area', {pid: id.pid, geom_idx: id.geom_idx});
-
                                     //backup sld_body
                                     if (id && id.leaflet && id.leaflet.layerParams && id.leaflet.layerParams.sld_body) {
                                         sld_body = id.leaflet.layerParams.sld_body
@@ -552,6 +566,16 @@
                                         layertype: 'area',
                                         layerParams: layerParams
                                     };
+
+                                    // do not add to log if it is a child layer or already logged
+                                    if ((id.log === undefined || id.log) && parentLayer === undefined) {
+                                        LoggerService.log('Map', 'Area', {
+                                            pid: id.pid,
+                                            geom_idx: id.geom_idx,
+                                            label: id.displayname,
+                                            query: id.query
+                                        });
+                                    }
                                 }
 
                                 //restore sld_body
@@ -565,7 +589,10 @@
                                 if (id.displaypath !== undefined) layer = id;
                                 else layer = LayersService.getLayer(id.id);
 
-                                LoggerService.log('AddToMap', 'Layer', {id: id.id});
+                                // do not add to log if it is a child layer or already logged
+                                if ((id.log === undefined || id.log) && parentLayer === undefined) {
+                                    LoggerService.log('Map', 'Layer', {id: id.id, label: layer.layer.displayname});
+                                }
 
                                 if (layer.type !== 'e') {
                                     id.layertype = 'contextual';

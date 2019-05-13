@@ -163,9 +163,13 @@ function fetchData() {
 
     if ($SH.config.layerDistances) {
         $http.get(distancesUrl, _httpDescription('getLayerDistances')).then(function (response) {
-            $.map(response.data, function (v, k) {
-                gLayerDistances[k] = v
-            });
+            if (response.data && response.data.length > 0){
+                $.map(response.data, function (v, k) {
+                    gLayerDistances[k] = v
+                });
+            } else {
+                gLayerDistances = {}
+            }
         });
     }
 

@@ -1,0 +1,54 @@
+<div class="modal-header">
+    <h3 class="modal-title">History</h3>
+</div>
+
+<div class="modal-body">
+    <button ng-click="updateContent({viewType: 'actions', viewLevel: 0, offset: 0});">Actions</button>
+    <button ng-click="updateContent({viewType: 'sessions', viewLevel: 0, offset: 0});">Sessions</button>
+    <br/>
+    <br/>
+    <a ng-if="back.length > 0" ng-click="goBack()">< back</a>
+    <table class="table table-striped csv-table">
+        <thead>
+        <th ng-repeat="(key, value) in content[0] track by $index">
+            {{$index < header.length ? header[$index] : (headerOrder.length == 0 ? lookup(key) : '')}}
+        </th>
+        </thead>
+        <tbody>
+        <tr ng-repeat="row in content">
+            <td ng-repeat="(key, value) in row track by $index">
+                <a ng-if="$index == 0 && viewType == 'sessions' && viewLevel == 0"
+                   ng-click="updateContent({sessionId:value, viewLevel:viewLevel+1, offset: 0});">
+                    {{lookup(value)}}</a>
+                <a ng-if="$index > 0 && viewType == 'actions' && viewLevel == 0"
+                   ng-click="updateContent({category2:row.category2, viewLevel:viewLevel+1, offset: 0});">
+                    {{lookup(value)}}</a>
+                <span ng-if="((viewLevel == 1 || $index == 0) && viewType == 'actions') || (($index > 0 || viewLevel == 1) && viewType == 'sessions')">
+                        {{$index < headerOrder.length ? lookup(row[headerOrder[$index]]) : (headerOrder.length == 0 ? lookup(value) : '')}}
+                    </span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <a ng-show="summary.length > 0" download="{{data.filename}}"
+       ng-href="{{exportUrl}}" ng-disabled="exportUrl == null">
+        <i class="glyphicon glyphicon-download-alt"></i><span i18n="51">Download</span>
+    </a>
+</div>
+
+<div class="modal-footer">
+    <div style="float:left;padding-left:15px" class="btn-group">
+        <button i18n="142" class="btn btn-xs btn-default"
+                ng-click="prevPage()" style="float:left">&lt;
+        </button>
+        <input style="float:left;width:50px" type="text"
+               ng-value="(offset / max) + 1" ng-min="1" disabled="true">
+        <input type="text" style="float:left;width:50px"
+               ng-value="'/' + totalPages" disabled="true"/>
+        <button i18n="143" style="float:left" class="btn btn-xs btn-default"
+                ng-click="nextPage()">&gt;
+        </button>
+    </div>
+    <button i18n="38" class="btn btn-primary" type="button" ng-click="$close()">Close</button>
+</div>

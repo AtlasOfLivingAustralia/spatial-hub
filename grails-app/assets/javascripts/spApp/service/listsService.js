@@ -35,7 +35,10 @@
 //                        if(order) params += '&order=' + order;
 //                        if(user) params += '&user=' + user;
                     params += "?" + "&max=2000";
-                    return $http.get(this.url() + "/ws/speciesList" + params, _httpDescription('list', {withCredentials: true})).then(function (response) {
+                    if ($SH.userId) {
+                        params += "&user=" + $SH.userId
+                    }
+                    return $http.get(this.url() + "/ws/speciesList" + params, _httpDescription('list')).then(function (response) {
                         if (response.data.lists) {
                             return response.data.lists;
                         } else {

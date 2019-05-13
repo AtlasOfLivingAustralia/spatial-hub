@@ -9,8 +9,8 @@
      */
     angular.module('tabulate-ctrl', ['map-service', 'biocache-service', 'layers-service'])
         .controller('TabulateCtrl', ['$scope', 'MapService', '$timeout', 'LayoutService', '$uibModalInstance',
-            'BiocacheService', '$http', 'LayersService',
-            function ($scope, MapService, $timeout, LayoutService, $uibModalInstance, BiocacheService, $http, LayersService) {
+            'BiocacheService', '$http', 'LayersService', 'LoggerService',
+            function ($scope, MapService, $timeout, LayoutService, $uibModalInstance, BiocacheService, $http, LayersService, LoggerService) {
                 LayoutService.addToSave($scope);
 
                 $scope._httpDescription = function (method, httpconfig) {
@@ -57,6 +57,12 @@
                     if ($scope.step === 1) {
 
                         var url = LayersService.url() + '/tabulation/' + $scope.type + '/' + $scope.layer1 + '/' + $scope.layer2 + '/tabulation.html';
+
+                        LoggerService.log("View", "tabulation", JSON.stringify({
+                            type: $scope.type,
+                            layer1: $scope.layer1,
+                            layer2: $scope.layer2
+                        }))
 
                         LayoutService.openIframe(url, false)
                     }

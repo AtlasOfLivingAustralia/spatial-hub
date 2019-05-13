@@ -129,14 +129,16 @@
                     </div>
                 </div>
 
-                <div class="panel-body" ng-if="stage == 'execute'">
+                <div class="panel-body" ng-if="stage == 'execute' || stage == 'output'">
                     <div class="panel-body" ng-hide="isLocalTask()">
                         <uib-progressbar ng-show="statusRunning" class="progress-striped active"
                                          value="100" type='info' title="Updating">{{status}}
                         </uib-progressbar>
+                        <uib-progressbar ng-show="!statusRunning" class=""
+                                         value="100" type='info' title="Finished">{{status}}
+                        </uib-progressbar>
 
-                        <textarea ng-model="logText"
-                                  style="height:300px;width:100%;overflow:scroll;display:block"></textarea>
+                        <textarea class="logText" ng-model="logText"></textarea>
                     </div>
                     <div class="panel-body" ng-show="isLocalTask()">
                         <uib-progressbar class="progress-striped active"

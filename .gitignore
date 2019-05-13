@@ -13,3 +13,4 @@ node_modules
 .tmpBin/
 grails-app/assets/compile/
 
+grails-app/conf/application-backup.yml

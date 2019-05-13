@@ -2236,3 +2236,11 @@ img.map-icon {
     max-width: 100px;
     max-height: 100px;
 }
+
+.logText {
+    height: 300px;
+    width: 100%;
+    overflow: scroll;
+    display: block;
+    font-size: 12px;
+}
