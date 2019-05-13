@@ -23,7 +23,8 @@
                         _spatialValidity: '=?spatialValidity',
                         _speciesOption: '=?speciesOption',
                         _absentOption: '=?absentOption',
-                        _canAddSpecies: '=?canAddSpecies'
+                        _canAddSpecies: '=?canAddSpecies',
+                        _includeWktInQuery: '=?includeWktInQuery'
                     },
                     templateUrl: '/spApp/selectSpeciesCtrl.htm',
                     link: function (scope, element, attrs) {
@@ -236,6 +237,7 @@
                                     if (query.bs === undefined) query.bs = $SH.biocacheServiceUrl;
                                     if (query.ws === undefined) query.ws = $SH.biocacheUrl;
                                     if (layer.species_list !== undefined) query.species_list = layer.species_list;
+                                    if (scope._includeWktInQuery && layer.wkt !== undefined) query.wkt = layer.wkt;
 
                                     scope._selectedQ.push(query)
                                 }
