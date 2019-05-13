@@ -39,10 +39,11 @@
                         '&sessionId=' + encodeURIComponent($SH.sessionId) +
                         '&userId=' + encodeURIComponent($SH.userId);
 
-                    return $http.post($SH.layersServiceUrl + "/log" + params, data, _httpDescription('log', {
-                        withCredentials: true,
-                        ignoreErrors: true
-                    }))
+                    // return $http.post($SH.layersServiceUrl + "/log" + params, data, _httpDescription('log', {
+                    //     withCredentials: true,
+                    //     ignoreErrors: true
+                    // }))
+                    return $http.post($SH.baseUrl + '/portal/postLog' +params, data, _httpDescription('log', { withCredentials: true,ignoreErrors: true}))
                 },
 
                 search: function (groupBy, countBy, sessionId, category1, category2, offset, max) {
@@ -55,13 +56,13 @@
                     if (offset) params += '&offset=' + encodeURIComponent(offset)
                     if (max) params += '&max=' + encodeURIComponent(max)
 
-                    return $http.get($SH.layersServiceUrl + "/log/search?" + params, _httpDescription('search', {
-                        withCredentials: true,
-                        ignoreErrors: true,
-                        headers: {Accept: "application/json"}
-                    }))
-                   // return $http.post($SH.layersServiceUrl + "/log" + params, data, _httpDescription('log', {ignoreErrors: true}))
-                    return $http.post($SH.baseUrl + '/portal/postLog' +params, data, _httpDescription('log', {ignoreErrors: true}))
+                    // return $http.get($SH.layersServiceUrl + "/log/search?" + params, _httpDescription('search', {
+                    //     withCredentials: true,
+                    //     ignoreErrors: true,
+                    //     headers: {Accept: "application/json"}
+                    // }))
+
+                    return $http.get($SH.baseUrl + '/portal/searchLog?' +params)
                 }
             }
         }])

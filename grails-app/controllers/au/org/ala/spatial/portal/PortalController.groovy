@@ -398,6 +398,25 @@ class PortalController {
         }
     }
 
+    def searchLog(params) {
+
+        try {
+            if (params != null) {
+                def qs = params.inject([]) { result, entry ->
+                    result << "${entry.key}=${URLEncoder.encode(entry.value.toString())}"
+                }.join('&')
+
+                String url = "${grailsApplication.config.layersService.url}/log/search/?"+qs
+
+                render hubWebService.getUrl(url, {Accept: "application/json"}, true) as JSON
+            }
+        } catch (err) {
+            log.error "failed to lookup object wkt: ${objectId}", err
+            render {error: err} as JSON
+        }
+
+    }
+
 
     def postSpeciesList() {
         def userId = getValidUserId(params)
