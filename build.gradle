@@ -92,9 +92,9 @@ dependencies {
 }
 
 task _Events {
-    doLast {
-        new GroovyScriptEngine([''] as String[]).run('_Events.groovy', new Binding())
-    }
+//    doLast {
+//        new GroovyScriptEngine([''] as String[]).run('_Events.groovy', new Binding())
+//    }
 }
 
 // the tasks used here for dependsOn may be incomplete/incorrect
