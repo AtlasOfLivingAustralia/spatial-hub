@@ -32,7 +32,7 @@
                  * - query
                  *  {
                  *      "q": ["Macropus"],
-                 *      "bs": "https://biocache.ala.org.au/ws",
+                 *      "bs": "https://biocache-ws.ala.org.au/ws",
                  *      "ws": "https://biocache.ala.org.au"
                  *  }
                  * - fqs
@@ -65,7 +65,7 @@
                  * - query
                  *  {
                  *      "q": ["Macropus"],
-                 *      "bs": "https://biocache.ala.org.au/ws",
+                 *      "bs": "https://biocache-ws.ala.org.au/ws",
                  *      "ws": "https://biocache.ala.org.au"
                  *  }
                  * - fqs
@@ -98,7 +98,7 @@
                  * - query
                  *  {
                  *      "q": ["Macropus"],
-                 *      "bs": "https://biocache.ala.org.au/ws",
+                 *      "bs": "https://biocache-ws.ala.org.au/ws",
                  *      "ws": "https://biocache.ala.org.au"
                  *  }
                  * - fqs
@@ -128,14 +128,14 @@
                  * - query
                  *  {
                  *      "q": ["Macropus"],
-                 *      "bs": "https://biocache.ala.org.au/ws",
+                 *      "bs": "https://biocache-ws.ala.org.au/ws",
                  *      "ws": "https://biocache.ala.org.au"
                  *  }
                  * - fqs
                  *  ["geospatial_kosher:true"]
                  *
                  * Output:
-                 *  "http://biocache.ala.org.au/ws/occurrences/facets/download?facets=names_and_lsid&lookup=true&count=true&lists=true&q=Macropus&fq=geospatial_kosher:true"
+                 *  "https://biocache-ws.ala.org.au/ws/occurrences/facets/download?facets=names_and_lsid&lookup=true&count=true&lists=true&q=Macropus&fq=geospatial_kosher:true"
                  */
                 speciesListUrl: function (query, fqs) {
                     var fqList = (fqs === undefined ? '' : '&fq=' + this.joinAndEncode(fqs));
@@ -155,7 +155,7 @@
                  * - query
                  *  {
                  *      "q": ["Macropus"],
-                 *      "bs": "https://biocache.ala.org.au/ws",
+                 *      "bs": "https://biocache-ws.ala.org.au/ws",
                  *      "ws": "https://biocache.ala.org.au"
                  *  }
                  * - fqs
@@ -187,7 +187,7 @@
                  * - query
                  *  {
                  *      "q": ["Macropus"],
-                 *      "bs": "https://biocache.ala.org.au/ws",
+                 *      "bs": "https://biocache-ws.ala.org.au/ws",
                  *      "ws": "https://biocache.ala.org.au"
                  *  }
                  * - fqs
@@ -217,7 +217,7 @@
                  * - query
                  *  {
                  *      "q": ["Macropus"],
-                 *      "bs": "https://biocache.ala.org.au/ws",
+                 *      "bs": "https://biocache-ws.ala.org.au/ws",
                  *      "ws": "https://biocache.ala.org.au"
                  *  }
                  * - fqs
@@ -246,7 +246,7 @@
                  * - query
                  *  {
                  *      "q": ["Macropus"],
-                 *      "bs": "https://biocache.ala.org.au/ws",
+                 *      "bs": "https://biocache-ws.ala.org.au/ws",
                  *      "ws": "https://biocache.ala.org.au"
                  *  }
                  * - fqs
@@ -280,7 +280,7 @@
                  * - query
                  *  {
                  *      "q": ["Macropus"],
-                 *      "bs": "https://biocache.ala.org.au/ws",
+                 *      "bs": "https://biocache-ws.ala.org.au/ws",
                  *      "ws": "https://biocache.ala.org.au"
                  *  }
                  * - fqs
@@ -318,14 +318,14 @@
                  * - query
                  *  {
                  *      "q": ["Macropus"],
-                 *      "bs": "https://biocache.ala.org.au/ws",
+                 *      "bs": "https://biocache-ws.ala.org.au/ws",
                  *      "ws": "https://biocache.ala.org.au"
                  *  }
                  * - fqs
                  *  ["geospatial_kosher:true"]
                  *
                  * Output:
-                 *  "http://biocache.ala.org.au/ws/occurrences/search?q=Macropus&fq=geospatial_kosher:true&pageSize=1&offset=0&facet=false"
+                 *  "http://biocache-ws.ala.org.au/ws/occurrences/search?q=Macropus&fq=geospatial_kosher:true&pageSize=1&offset=0&facet=false"
                  */
                 constructSearchResultUrl: function (query, fqs, pageSize, offset, facet) {
                     facet = facet || false;
@@ -351,7 +351,7 @@
                  * - query
                  *  {
                  *      "q": ["taxon_name:Macropus"],
-                 *      "bs": "https://biocache.ala.org.au/ws",
+                 *      "bs": "https://biocache-ws.ala.org.au/ws",
                  *      "ws": "https://biocache.ala.org.au"
                  *  }
                  * - pageSize
@@ -400,7 +400,7 @@
                  * - query
                  *  {
                  *      "q": ["taxon_name:Macropus"],
-                 *      "bs": "https://biocache.ala.org.au/ws",
+                 *      "bs": "https://biocache-ws.ala.org.au/ws",
                  *      "ws": "https://biocache.ala.org.au"
                  *  }
                  *
@@ -453,7 +453,7 @@
                  * - query
                  *  {
                  *      "q": ["taxon_name:Macropus"],
-                 *      "bs": "https://biocache.ala.org.au/ws",
+                 *      "bs": "https://biocache-ws.ala.org.au/ws",
                  *      "ws": "https://biocache.ala.org.au"
                  *  }
                  *
@@ -526,7 +526,7 @@
                  * - query
                  *  {
                  *      "q": ["taxon_name:Macropus"],
-                 *      "bs": "https://biocache.ala.org.au/ws",
+                 *      "bs": "https://biocache-ws.ala.org.au/ws",
                  *      "ws": "https://biocache.ala.org.au"
                  *  }
                  *
@@ -552,14 +552,14 @@
                  * - query
                  *  {
                  *      "q": ["taxon_name:Macropus"],
-                 *      "bs": "https://biocache.ala.org.au/ws",
+                 *      "bs": "https://biocache-ws.ala.org.au/ws",
                  *      "ws": "https://biocache.ala.org.au"
                  *  }
                  *
                  * Output:
                  * {
                  *      "q": ["taxon_name:Macropus"],
-                 *      "bs": "https://biocache.ala.org.au/ws",
+                 *      "bs": "https://biocache-ws.ala.org.au/ws",
                  *      "ws": "https://biocache.ala.org.au",
                  *      "qid": 1234
                  *  }
@@ -610,7 +610,7 @@
                  * @example
                  * Input:
                  * - bs
-                 *  "https://biocache.ala.org.au/ws"
+                 *  "https://biocache-ws.ala.org.au/ws"
                  * - q
                  *  ["taxon_name:Macropus"]
                  *
@@ -642,7 +642,7 @@
                  * Output:
                  *  {
                  *      "q": ["taxon_name:Macropus"],
-                 *      "bs": "https://biocache.ala.org.au/ws",
+                 *      "bs": "https://biocache-ws.ala.org.au/ws",
                  *      "ws": "https://biocache.ala.org.au",
                  *      "name": ""
                  *  }
@@ -674,7 +674,7 @@
                  * Output:
                  *  {
                  *      "q": ["taxon_name:Macropus"],
-                 *      "bs": "https://biocache.ala.org.au/ws",
+                 *      "bs": "https://biocache-ws.ala.org.au/ws",
                  *      "ws": "https://biocache.ala.org.au",
                  *      "name": ""
                  *  }
@@ -723,7 +723,7 @@
                  * Output:
                  *  {
                  *      "q": ["taxon_name:Macropus"],
-                 *      "bs": "https://biocache.ala.org.au/ws",
+                 *      "bs": "https://biocache-ws.ala.org.au/ws",
                  *      "ws": "https://biocache.ala.org.au",
                  *      "name": ""
                  *  }
@@ -759,7 +759,7 @@
                  * @example
                  * Input:
                  * - bs
-                 *  "https://biocache.ala.org.au/ws"
+                 *  "https://biocache-ws.ala.org.au/ws"
                  * - ws
                  *  "https://biocache.ala.org.au"
                  * - fq
@@ -768,7 +768,7 @@
                  * Output:
                  *  {
                  *      "q": ["taxon_name:Macropus"],
-                 *      "bs": "https://biocache.ala.org.au/ws",
+                 *      "bs": "https://biocache-ws.ala.org.au/ws",
                  *      "ws": "https://biocache.ala.org.au",
                  *      "name": ""
                  *  }
