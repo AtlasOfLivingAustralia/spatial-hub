@@ -141,7 +141,9 @@
                 $scope.zoomToPoint = function (latlng, level) {
                     leafletData.getMap().then(function (map) {
                         map.invalidateSize();
-                        map.setView(latlng, level)
+                        $timeout(function () {
+                            map.setView(latlng, level)
+                        }, 0)
                     });
                 };
 
@@ -710,7 +712,6 @@
                 };
 
                 $timeout(function () {
-                    $(window).trigger('resize');
 
                     // return non-default base layers
                     var otherBaseLayers = {};
