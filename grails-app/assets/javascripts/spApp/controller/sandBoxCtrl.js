@@ -24,9 +24,10 @@
      *   Import occurrences to the sandbox
      */
     angular.module('sand-box-ctrl', ['map-service', 'biocache-service', 'layers-service', 'ala.sandbox.preview'])
-        .controller('SandBoxCtrl', ['$scope', '$controller', 'MapService', '$timeout', 'LayoutService', '$uibModalInstance',
-            'BiocacheService', 'LayersService', 'data',
-            function ($scope, $controller, MapService, $timeout, LayoutService, $uibModalInstance, BiocacheService, LayersService, inputData) {
+        .controller('SandBoxCtrl', ['$scope', '$controller', 'MapService', '$timeout', 'LayoutService',
+            '$uibModalInstance', 'BiocacheService', 'LayersService', 'LoggerService', 'data',
+            function ($scope, $controller, MapService, $timeout, LayoutService, $uibModalInstance, BiocacheService,
+                      LayersService, LoggerService, inputData) {
                 var setWatchFlag = false;
 
                 //workaround for logging in to sandbox
