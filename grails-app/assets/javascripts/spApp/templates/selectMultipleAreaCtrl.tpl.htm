@@ -15,7 +15,7 @@
     <div class="alert alert-ala-success" ng-show="pickInOutLayerName.length > 0">
         <div ng-show="pickInOutLayerName.length > 0" class="btn-group btn-group-sm"
              style="float: right; margin-top: -3px;">
-            <button i18n="231" class="btn btn-default"
+            <button i18n="231" class="btn btn-default btn-xs"
                     ng-click='editPickInOutLayerVisible()'>Edit selection
             </button>
         </div>
@@ -33,7 +33,7 @@
     <div class="alert alert-ala-success" ng-show="pickContextualLayerName.length > 0">
         <div ng-show="pickContextualLayerName.length > 0" class="btn-group btn-group-sm"
              style="float: right; margin-top: -3px;">
-            <button i18n="231" class="btn btn-default"
+            <button i18n="231" type="button" class="btn btn-default btn-xs"
                     ng-click='editPickContextualLayerVisible()'>Edit selection
             </button>
         </div>
@@ -44,8 +44,8 @@
 </div>
 
 <div>
-    <label>
-        <input type="radio" ng-click="createArea()" ng-model="selected"
-               ng-model="_selectedArea.area[0]" ng-value="create"
-               name="selectedArea"><span i18n="222">Define new area...</span></label><br/>
+    <br/>
+    <button class="btn btn-default btn-xs" type="button" ng-click="createArea()" ng-value="create">
+        <span i18n="222">Define new area...</span></button>
+    <br/>
 </div>
