@@ -162,7 +162,7 @@ function fetchData() {
 
     if ($SH.config.layerDistances) {
         $http.get(distancesUrl, _httpDescription('getLayerDistances')).then(function (response) {
-            if (response.data && response.data.length > 0){
+            if (response.data) {
                 $.map(response.data, function (v, k) {
                     gLayerDistances[k] = v
                 });
