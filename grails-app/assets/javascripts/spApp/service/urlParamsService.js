@@ -127,7 +127,7 @@
                                     }
                                 } else if ("qname" === key) {
                                     qname = value;
-                                } else if ("fq" === key) {
+                                } else if ("fq" === key || "qc" === key) {
                                     if ($.isArray(value)) {
                                         for (var a in value) {
                                             if (value.hasOwnProperty(a)) {
@@ -137,8 +137,6 @@
                                     } else {
                                         sbList.push(value)
                                     }
-                                } else if ("qc" === key) {
-                                    qc = "&qc=" + encodeURIComponent(value);
                                 } else if ("wkt" === key) {
                                     wkt = value;
                                 } else if ("psize" === key) {
@@ -179,13 +177,24 @@
 
                         if (sbList.length > 0 || (s !== null && s !== undefined && s.length > 0)) {
                             var query = {q: sbList, bs: bs, ws: ws};
+                            if (wkt !== undefined && wkt !== null) query.wkt = wkt;
+
                             promises.push(BiocacheService.queryTitle(query).then(function (response) {
                                 query.name = response;
+                                if (qname !== undefined) newLayerResp.displayname = qname;
                                 return BiocacheService.newLayer(query, undefined, response).then(function (newLayerResp) {
+                                    if (colourBy !== undefined) newLayerResp.facet = colourBy;
+                                    if (pointtype !== undefined) newLayerResp.pointtype = pointtype;
+                                    if (size !== undefined) newLayerResp.size = size;
+                                    if (opacity !== undefined) newLayerResp.opacity = opacity;
+                                    if (colour !== undefined) newLayerResp.color = colour;
+
                                     MapService.add(newLayerResp);
                                 });
                             }));
                         }
+
+                        if (bb !== undefined) MapService.zoomToExtent(bb)
 
                         if (savedsession) {
                             promises.push(SessionsService.load(savedsession))
@@ -335,7 +344,7 @@
                             s = s + (points[i][0] + dist) + " " + points[i][1] + ","
                         }
                         // append the first point to close the circle
-                        s = s + points[0][0] + dist + " " + points[0][1] + "))";
+                        s = s + (points[0][0] + dist) + " " + points[0][1] + "))";
 
                         return s;
                     },
