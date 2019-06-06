@@ -54,7 +54,7 @@
         ]
       },
       {
-        "name": "Select environmental layer",
+        "name": "Select 2 environmental layers",
         "inputs": [
           "grid",
           "layer"
