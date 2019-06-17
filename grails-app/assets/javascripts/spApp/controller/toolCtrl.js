@@ -338,10 +338,14 @@
                     var inputs = {};
                     var k;
                     var j;
-                    var ignored = 0;    // arrays 'inputs' ('c') and 'scope.values' are not always aligned
+                    var ignored = 0;    // array 'inputs' ('c') and 'scope.values' are not always aligned
                     var kvalue
                     for (kvalue in c) {
-                        var k = parseInt(kvalue) + ignored
+                        var k = kvalue
+                        // include array offset when c is an array
+                        if (!isNaN(kvalue) && $.isArray(c)) {
+                            k = parseInt(kvalue) + ignored
+                        }
                         if (c.hasOwnProperty(kvalue)) {
                             if ($scope.values[k] !== undefined && $scope.values[k] !== null) {
                                 if ($scope.values[k].area !== undefined) {
