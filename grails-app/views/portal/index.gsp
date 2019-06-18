@@ -115,7 +115,11 @@
         biocollectUrl: '${config.biocollect.url}',
         lifeforms: ${(config.lifeforms as grails.converters.JSON).toString().encodeAsRaw()},
 
-        config: ${(config.spApp as grails.converters.JSON).toString().encodeAsRaw()}
+        config: ${(config.spApp as grails.converters.JSON).toString().encodeAsRaw()},
+
+        dateFacet: '${config.date.facet}',
+        dateMin: '${config.date.min}',
+        dateMax: '${config.date.max}'
     };
 
     BIE_VARS = {

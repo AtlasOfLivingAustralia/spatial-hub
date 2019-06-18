@@ -55,7 +55,11 @@
 
                     refresh: function (inputs, specs) {
                         if (specs) {
-                            specs.input[1].constraints.disable = !this.checkAreaCompatible(inputs[0].q);
+                            for (k in specs.iinjectDateRangenput) {
+                                if (specs.input[k].name === "speciesOptions") {
+                                    specs.input[k].constraints.disable = !this.checkAreaCompatible(inputs[0].q);
+                                }
+                            }
                         }
                     },
 

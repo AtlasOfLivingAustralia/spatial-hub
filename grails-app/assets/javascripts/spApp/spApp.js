@@ -102,7 +102,6 @@ spApp.config(['$httpProvider', function ($httpProvider) {
 
                 if (rejection.status == -1) {
                     // urls not accessible are ignored.
-                    console.error('Request to ' + rejection.config.url + ' is not accessible')
                 } else if (rejection.status === 0) {
                     if (window.isInWrapper) {
                         //Logout if in an app;
@@ -163,7 +162,7 @@ function fetchData() {
 
     if ($SH.config.layerDistances) {
         $http.get(distancesUrl, _httpDescription('getLayerDistances')).then(function (response) {
-            if (response.data && response.data.length > 0){
+            if (response.data) {
                 $.map(response.data, function (v, k) {
                     gLayerDistances[k] = v
                 });

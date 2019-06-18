@@ -1,0 +1,12 @@
+<div>
+    <input type="checkbox" ng-model="enabled" ng-change="apply()"><span>Limit by a date range</span>
+
+    <br/>
+    <br/>
+    <div style="margin-left:15px" ng-show="enabled">
+        <span>Date range</span>
+        <input type="date" ng-model="dateStart" ng-change="apply()" ng-min="dateMin" ng-min="dateMax"/>
+        <span> TO </span>
+        <input type="date" ng-model="dateEnd" ng-change="apply()" ng-min="dateMin" ng-min="dateMax"/>
+    </div>
+</div>

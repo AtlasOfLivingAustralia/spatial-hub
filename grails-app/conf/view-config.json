@@ -54,7 +54,7 @@
         ]
       },
       {
-        "name": "Select environmental layer",
+        "name": "Select 2 environmental layers",
         "inputs": [
           "grid",
           "layer"
@@ -205,7 +205,7 @@
         ]
       },
       {
-        "name": "Layers to use in the prediction. 1 to 10.",
+        "name": "Layers to use in the prediction. Between 1 and 20 layers.",
         "inputs": [
           "layer"
         ]

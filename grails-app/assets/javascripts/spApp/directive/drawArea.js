@@ -8,9 +8,8 @@
      *   A panel with controls for drawing a new area on the map
      */
     angular.module('draw-area-directive', ['map-service', 'layers-service', 'layout-service'])
-        .directive('drawArea', ['$rootScope', 'LayoutService', 'MapService', '$timeout', 'LayersService',
-
-            function ($rootScope, LayoutService, MapService, $timeout, LayersService) {
+        .directive('drawArea', ['$rootScope', 'LayoutService', 'MapService', '$timeout', 'LayersService', 'LoggerService',
+            function ($rootScope, LayoutService, MapService, $timeout, LayersService, LoggerService) {
 
                 return {
                     scope: {

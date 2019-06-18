@@ -8,8 +8,8 @@
      *   Display occurrence layer information
      */
     angular.module('species-info-ctrl', ['map-service', 'biocache-service'])
-        .controller('SpeciesInfoCtrl', ['$scope', 'MapService', '$timeout', 'LayoutService', '$uibModalInstance', 'BiocacheService', 'BieService', 'data',
-            function ($scope, MapService, $timeout, LayoutService, $uibModalInstance, BiocacheService, BieService, data) {
+        .controller('SpeciesInfoCtrl', ['$scope', 'MapService', '$timeout', 'LayoutService', '$uibModalInstance', 'BiocacheService', 'BieService', 'LoggerService', 'data',
+            function ($scope, MapService, $timeout, LayoutService, $uibModalInstance, BiocacheService, BieService, LoggerService, data) {
 
                 $scope.speciesCountKosher = $i18n(377, "counting...");
                 $scope.speciesCountKosherAny = $i18n(377, "counting...");
@@ -28,7 +28,8 @@
                         fq: species.fq,
                         wkt: species.wkt,
                         bs: species.bs,
-                        ws: species.ws
+                        ws: species.ws,
+                        name: species.name
                     };
 
                     //remove geospatial_kosher
@@ -96,8 +97,8 @@
                     })
                 };
 
-                LoggerService.log("View", "speciesInfo", $scope.speciesOrig)
-
                 $scope.init(data);
+
+                LoggerService.log("View", "speciesInfo", $scope.speciesOrig)
             }])
 }(angular));

@@ -27,6 +27,8 @@
                 $scope.cancelled = false;
                 $scope.continous = true;
 
+                $scope.injectDateRange = false;
+
                 // mandatory to provide inputData.processName
                 $scope.toolName = inputData !== undefined ? inputData.processName : '';
 
@@ -114,6 +116,20 @@
                     var c = $scope.spec.input;
                     var k;
                     var value;
+                    if ($scope.injectDateRange) {
+                        for (k in c) {
+                            if (c.hasOwnProperty(k)) {
+                                value = c[k];
+                                if (value.type === 'species') {
+                                    c.splice(parseInt(k) + 1, 0, {
+                                        type: "date",
+                                        description: "Select date range",
+                                        name: '_date'
+                                    })
+                                }
+                            }
+                        }
+                    }
                     for (k in c) {
                         if (c.hasOwnProperty(k)) {
                             value = c[k];
@@ -146,6 +162,8 @@
                                 if (value.constraints['max'] > 1) {
                                     v = []
                                 }
+                            } else if (value.type === 'date') {
+                                v = {fq: []}
                             } else if (value.type === 'layer') {
                                 if (value.constraints['default'] !== undefined) v = value.constraints['default'];
                                 else v = {layers: []}
@@ -320,11 +338,18 @@
                     var inputs = {};
                     var k;
                     var j;
-                    for (k in c) {
-                        if (c.hasOwnProperty(k)) {
+                    var ignored = 0;    // array 'inputs' ('c') and 'scope.values' are not always aligned
+                    var kvalue
+                    for (kvalue in c) {
+                        var k = kvalue
+                        // include array offset when c is an array
+                        if (!isNaN(kvalue) && $.isArray(c)) {
+                            k = parseInt(kvalue) + ignored
+                        }
+                        if (c.hasOwnProperty(kvalue)) {
                             if ($scope.values[k] !== undefined && $scope.values[k] !== null) {
                                 if ($scope.values[k].area !== undefined) {
-                                    inputs[k] = [];
+                                    inputs[kvalue] = [];
                                     for (j in $scope.values[k].area) {
                                         if ($scope.values[k].area.hasOwnProperty(j)) {
                                             var a = $scope.values[k].area[j];
@@ -338,7 +363,7 @@
 
                                                 b = [Math.min(p1[0], p2[0]), Math.min(p1[1], p2[1]), Math.max(p1[0], p2[0]), Math.max(p1[1], p2[1])];
                                             }
-                                            inputs[k].push({
+                                            inputs[kvalue].push({
                                                 q: a.q ? a.q : "",
                                                 name: a.name,
                                                 bbox: b,
@@ -349,7 +374,7 @@
                                         }
                                     }
                                 } else if ($scope.values[k].q !== undefined) {
-                                    inputs[k] = {
+                                    inputs[kvalue] = {
                                         q: $scope.values[k].q,
                                         ws: $scope.values[k].ws,
                                         bs: $scope.values[k].bs,
@@ -357,7 +382,12 @@
                                     };
                                     // additional species related values
                                     if ($scope.values[k].species_list) {
-                                        inputs[k].species_list = $scope.values[k].species_list;
+                                        inputs[kvalue].species_list = $scope.values[k].species_list;
+                                    }
+                                    // additional date range fq
+                                    if ($scope.injectDateRange) {
+                                        inputs[kvalue].q = inputs[kvalue].q.concat($scope.values[k + 1].fq)
+                                        ignored = ignored + 1
                                     }
                                 } else if ($scope.values[k].layers !== undefined) {
                                     var layers = [];
@@ -366,9 +396,9 @@
                                             layers.push($scope.values[k].layers[j].id)
                                         }
                                     }
-                                    inputs[k] = layers
+                                    inputs[kvalue] = layers
                                 } else {
-                                    inputs[k] = $scope.values[k]
+                                    inputs[kvalue] = $scope.values[k]
                                 }
                             }
                         }

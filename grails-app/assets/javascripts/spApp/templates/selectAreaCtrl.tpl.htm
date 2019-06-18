@@ -13,9 +13,9 @@
     <br ng-show="defaultAreas.length > 0" class="radio"/>
 
     <div>
-        <label>
-            <input type="radio" ng-click="createArea()" ng-model="selected"
-                   ng-model="_selectedArea.area[0]" ng-value="create"
-                   name="{{_uniqueId}}"><span i18n="222">Define new area...</span></label><br/>
+        <br/>
+        <button type="button" class="btn btn-default btn-xs" ng-click="createArea()" ng-value="create">
+            <span i18n="222">Define new area...</span></button>
+        <br/>
     </div>
 </div>

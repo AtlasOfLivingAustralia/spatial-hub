@@ -24,7 +24,7 @@
                         _speciesOption: '=?speciesOption',
                         _absentOption: '=?absentOption',
                         _canAddSpecies: '=?canAddSpecies',
-                        _includeWktInQuery: '=?includeWktInQuery'
+                        _dateRangeOption: '=?dateRangeOption'
                     },
                     templateUrl: '/spApp/selectSpeciesCtrl.htm',
                     link: function (scope, element, attrs) {
@@ -34,6 +34,7 @@
                         if (scope._includeLayers === undefined) scope._includeLayers = true;
                         if (scope._areaIncludes === undefined) scope._areaIncludes = false;
                         if (scope._spatialValidity === undefined) scope._spatialValidity = false;
+                        if (scope._dateRangeOption === undefined) scope._dateRangeOption = true;
                         if (scope._speciesOption === undefined) {
                             scope._speciesOptionMandatory = false;
                             scope._speciesOption = 'searchSpecies';
@@ -49,6 +50,9 @@
                         scope.includeExpertDistributions = scope._areaIncludes;
                         scope.includeChecklists = scope._areaIncludes;
                         scope.includeAnimalMovement = scope._areaIncludes;
+
+                        scope.dateRange = {fq: []};
+                        scope.prevDateRange = [];
 
                         scope.includeAbsences = false;
 
@@ -129,17 +133,34 @@
                                 scope._selectedQ.push({});
                                 selection = scope._selectedQ[0];
                             }
-                            if (query && query.q.length === 0) {
+
+                            if (query && query.q && query.q.length === 0) {
+                                // clear the selection
                                 if (!scope.multiselect) {
                                     selection.name = '';
                                     selection.bs = undefined;
                                     selection.ws = undefined;
-                                    selection.q = []
+                                    selection.q = [];
+                                    selection.wkt = undefined;
+                                    selection.qid = undefined;
+                                    selection.species_list = undefined;
                                 } else {
                                     scope._selectedQ.splice(0, scope._selectedQ.length);
                                 }
                             } else if (selection) {
-                                if (query === undefined) query = scope._selectedQ;
+                                // set the selection
+
+                                if (query === undefined || query.q === undefined) {
+                                    // input query is missing, try with the _selectedQ
+                                    if (scope._selectedQ !== undefined) {
+                                        scope.setQ(scope._selectedQ)
+                                    } else {
+                                        scope.clearQ()
+                                    }
+                                    return
+                                }
+
+                                // apply spatial validity options
                                 var includeTrue = scope.spatiallyValid;
                                 var includeFalse = scope.spatiallySuspect;
                                 var gs = ["-*:*"];
@@ -150,19 +171,44 @@
                                 } else if (includeTrue && includeFalse) {
                                     gs = ["geospatial_kosher:*"]
                                 }
+                                // exclude duplicates
+                                if (query.q.indexOf(gs[0]) >= 0) gs = []
 
+                                // apply exclude absent option
                                 var absent = [$SH.fqExcludeAbsent];
-                                if (scope.includeAbsences) {
+                                if (scope.includeAbsences || query.q.indexOf(absent[0]) >= 0) {
+                                    // exclude duplicates
                                     absent = []
                                 }
 
-                                if (query.species_list) {
-                                    selection.species_list = query.species_list
+                                // remove previous date range option
+                                for (var dr in scope.prevDateRange) {
+                                    var pos = query.q.indexOf(scope.prevDateRange[dr])
+                                    if (pos >= 0) query.q.splice(pos, 1)
                                 }
+                                // apply date range option
+                                var dateRange = angular.merge([], scope.dateRange.fq);
+                                // exclude duplicates
+                                for (var dr in dateRange) {
+                                    if (query.q.indexOf(dateRange[dr]) >= 0) dateRange.splice(dr, 1)
+                                }
+                                scope.prevDateRange = angular.merge([], dateRange);
+
+                                selection.species_list = query.species_list;
+                                selection.wkt = query.wkt;
 
                                 selection.includeAnimalMovement = scope.includeAnimalMovement;
                                 selection.includeExpertDistributions = scope.includeExpertDistributions;
-                                selection.q = query.q.concat(gs).concat(absent);
+                                selection.q = query.q.concat(gs).concat(absent).concat(dateRange);
+
+                                if (absent.length == 0 && gs.length == 0 && dateRange.length == 0) {
+                                    // qid did not change
+                                    selection.qid = query.qid
+                                } else {
+                                    // qid changed
+                                    selection.qid = undefined
+                                }
+
                                 selection.name = query.name;
                                 selection.bs = query.bs;
                                 selection.ws = query.ws;
@@ -212,15 +258,7 @@
                             } else if (MapService.getLayer(scope.speciesOption)) {
                                 scope.clearQ();
                                 var layer = MapService.getFullLayer(scope.speciesOption);
-                                var q = [layer.q];
-                                if (layer.fq !== undefined && layer.fq != null && layer.fq.length > 0) q = q.concat(layer.fq);
-                                scope.setQ({
-                                    q: q,
-                                    bs: layer.bs,
-                                    ws: layer.ws,
-                                    name: layer.name,
-                                    species_list: layer.species_list
-                                })
+                                scope.setQ(scope.layerToQuery(layer))
                             }
                         };
 
@@ -230,19 +268,32 @@
                             $.each(scope.speciesLayers, function (i, item) {
                                 if (item.checked) {
                                     var layer = MapService.getFullLayer(item.uid);
-                                    var q = [layer.q];
-                                    if (layer.fq !== undefined && layer.fq.length > 0) q = q.concat(layer.fq);
 
-                                    var query = {name: layer.name, bs: layer.bs, ws: layer.ws, q: q};
-                                    if (query.bs === undefined) query.bs = $SH.biocacheServiceUrl;
-                                    if (query.ws === undefined) query.ws = $SH.biocacheUrl;
-                                    if (layer.species_list !== undefined) query.species_list = layer.species_list;
-                                    if (scope._includeWktInQuery && layer.wkt !== undefined) query.wkt = layer.wkt;
-
-                                    scope._selectedQ.push(query)
+                                    scope._selectedQ.push(scope.layerToQuery(layer))
                                 }
                             });
                         };
+
+                        scope.layerToQuery = function (layer) {
+                            var q = layer.q;
+                            if (!(q instanceof Array)) q = [q]
+
+                            var query = {
+                                name: layer.name,
+                                bs: layer.bs,
+                                ws: layer.ws,
+                                q: q,
+                                species_list: layer.species_list,
+                                wkt: layer.wkt,
+                                qid: layer.qid,
+                                name: layer.name
+                            };
+
+                            if (query.bs === undefined) query.bs = $SH.biocacheServiceUrl;
+                            if (query.ws === undefined) query.ws = $SH.biocacheUrl;
+
+                            return query;
+                        }
 
                         scope.isLoggedIn = $SH.userId !== undefined && $SH.userId !== null && $SH.userId.length > 0;
                         scope.isNotLoggedIn = !scope.isLoggedIn;
@@ -261,24 +312,35 @@
                                 if (scope._selectedQ.q.length > 0) {
                                     for (var i = 0; i < scope.speciesLayers.length; i++) {
                                         var layer = scope.speciesLayers[i];
-                                        var q = [layer.q];
 
-                                        if (layer.fq !== undefined && layer.fq.length > 0) q = q.concat(layer.fq);
+                                        var selectThis = false;
 
-                                        if (scope.speciesLayers[i].name === scope._selectedQ.name &&
-                                            scope.speciesLayers[i].bs === scope._selectedQ.bs &&
-                                            q.length === scope._selectedQ.q.length) {
-                                            //check q
-                                            var match = 0;
-                                            for (var j = 0; j < q.length; j++) {
-                                                if (q[j] === scope._selectedQ.q[j]) {
-                                                    match++
+                                        // not all species layers must have a qid
+                                        if (layer.qid !== undefined && layer.qid == scope._selectedQ.qid) {
+                                            selectThis = true
+                                        } else {
+                                            var query = scope.layerToQuery(layer)
+
+                                            if (scope.speciesLayers[i].name === scope._selectedQ.name &&
+                                                scope.speciesLayers[i].bs === scope._selectedQ.bs &&
+                                                query.q.length === scope._selectedQ.q.length) {
+                                                //check q
+                                                var match = 0;
+                                                for (var j = 0; j < q.length; j++) {
+                                                    if (q[j] === scope._selectedQ.q[j]) {
+                                                        match++
+                                                    }
+                                                }
+                                                if (match === q.length &&
+                                                    layer.wkt === scope._selectedQ.wkt) {
+                                                    selectThis = true
                                                 }
                                             }
-                                            if (match === q.length) {
-                                                scope.speciesOption = scope.speciesLayers[i].uid;
-                                                scope.changeOption()
-                                            }
+                                        }
+
+                                        if (selectThis) {
+                                            scope.speciesOption = scope.speciesLayers[i].uid;
+                                            scope.changeOption()
                                         }
                                     }
                                 }

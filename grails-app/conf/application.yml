@@ -456,6 +456,10 @@ spApp:
 #extraLinkUrl: "https://spatial-old.ala.org.au"
 #extraLinkText: "Old site"
 
+date.facet: 'occurrence_date'
+date.min: '1780-01-01'
+date.max: '2020-01-01'
+
 ---
 environments:
     development:

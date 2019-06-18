@@ -33,6 +33,11 @@
     <hr>
 </div>
 
+<div ng-show="_dateRangeOption">
+    <select-date-range selected-date-range="dateRange" on-custom="setQ()"></select-date-range>
+    <hr>
+</div>
+
 <div ng-show="_min == 0" class="radio">
     <label>
         <input type="radio" ng-model="speciesOption" value="none" ng-change="changeOption('none')" name="{{_uniqueId}}"><span
@@ -112,7 +117,8 @@
     list</label>
     <div ng-show="speciesOption == 'importList'" style="margin-left:15px">
         <span i18n="249">List:</span><span class="strong"> {{speciesListName}}</span>
-        <button i18n="250" style="margin-left:30px" class="btn btn-default" ng-click="openSpeciesList()">
+        <button i18n="250" style="margin-left:30px" type="button" class="btn btn-default btn-xs"
+                ng-click="openSpeciesList()">
             Import species list
         </button>
         <hr>
@@ -137,7 +143,8 @@
 
     <div ng-show="speciesOption == 'importPoints'" style="margin-left:25px;margin-top:10px">
         <span i18n="253">Dataset: </span><span class="strong">{{sandboxName}}</span>
-        <button i18n="252" style="margin-left:30px" class="btn btn-default" ng-click="openSandbox()">
+        <button i18n="252" style="margin-left:30px" type="button" class="btn btn-default btn-xs"
+                ng-click="openSandbox()">
             Import points
         </button>
     </div>
