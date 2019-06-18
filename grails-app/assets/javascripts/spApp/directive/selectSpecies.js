@@ -285,8 +285,7 @@
                                 q: q,
                                 species_list: layer.species_list,
                                 wkt: layer.wkt,
-                                qid: layer.qid,
-                                name: layer.name
+                                qid: layer.qid
                             };
 
                             if (query.bs === undefined) query.bs = $SH.biocacheServiceUrl;
