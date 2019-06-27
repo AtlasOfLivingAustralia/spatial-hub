@@ -96,6 +96,32 @@
                                 $('#'+event.currentTarget.id).show(); // Keep the selection window open
                                 // ta-da!  To the end user, nothing changes when clicking on an item that was not selectable.
                             }
+                        },
+
+                        open: function( event, ui ) {
+                            $('.ui-autocomplete').css('height', 'auto');
+                            //Get some values needed to determine whether the widget is on
+                            //the screen
+                            var $input = $(event.target),
+                                inputTop = $input.offset().top,
+                                inputHeight = $input.height(),
+                                autocompleteHeight = $('.ui-autocomplete').height(),
+                                windowHeight = $(window).height();
+
+                            //The widget has left the screen if the input's height plus it's offset from the top of
+                            //the screen, plus the height of the autocomplete are greater than the height of the
+                            //window.
+                            if ((inputHeight + inputTop + autocompleteHeight) > windowHeight) {
+
+                                //Set the new height of the autocomplete to the height of the window, minus the
+                                //height of the input and the offset of the input from the top of the screen.  The
+                                //20 is simply there to give some spacing between the bottom of the screen and the
+                                //bottom of the autocomplete widget.
+                                $('.ui-autocomplete')
+                                    .css('max-height', (windowHeight - inputHeight - inputTop - 20) + 'px');
+
+                                $('.ui-autocomplete').css('overflow-y', 'auto');
+                            }
                         }
 
 
