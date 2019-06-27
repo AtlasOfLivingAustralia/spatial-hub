@@ -15,6 +15,8 @@
                     _custom: '&onCustom',
                 },
                 link: function (scope, iElement, iAttrs) {
+                    var gaz_selected = false;
+
                     var a = iElement.autocomplete({
                         source: function (searchTerm, response) {
                             GazAutoCompleteService.search(searchTerm.term).then(function (data) {
@@ -46,44 +48,69 @@
 
                         select: function (event, ui) {
                             //check on filter checkbox
-                            //if ($(event.toElement).is('input[name=filterOnFields]') || $(event.toElement).children(":first").is(':input[name=filterOnFields]')){
                             // click on radio button or label or outside label
-                            if ($(event.toElement).is('input[name=filterOnFields]') || $(event.toElement).has('input[name=filterOnFields]').length >0 ){
+                            if (ui.item.isField){
                                 event.stopPropagation();
                                 event.preventDefault();
-                                //Need to set radio button since default action stoped
-                                //$(event.currentTarget).find('input[name=filterOnFields]').prop('checked', false);
-                                $(event.toElement).find('input[name=filterOnFields]').prop('checked', true);
+                                //Tried to use radio button, Strangely, click on radio button does not make it checked
+                                //Others worked properly
+
+                                // if ($(event.toElement).is('input[name=filterOnFields]')) //click on checkbox
+                                //      $(event.toElement).first().prop('checked', true);
+                                //  else //click on lable
+                                //     $(event.toElement).first().find('input[name=filterOnFields]').prop('checked', true);
+                                // if (!$(event.toElement).is('input[name=filterOnFields]'))
+                                //     $(event.toElement).first().find('input[name=filterOnFields]').prop('checked', true);
+
+                                $(event.currentTarget).find('label span.glyphicon').removeClass('glyphicon-check').addClass('glyphicon-unchecked')
+                                if($(event.toElement).is('span.glyphicon')) //Click on span icon
+                                    $(event.toElement).removeClass('glyphicon-unchecked').addClass('glyphicon-check')
+                                else //click on other area
+                                    $(event.toElement).find('span.glyphicon').removeClass('glyphicon-unchecked').addClass('glyphicon-check')
 
                                 // on UL level
-                                $(event.currentTarget).find('li[field]').hide();
-                                $(event.currentTarget).find('li[field='+ui.item.fieldIdx+']').show();
-                                $(iElement).autocomplete( "focus") //maintain dropdownlist appear
+                                $(event.currentTarget).first().find("li[field][field!=" + ui.item.fieldIdx + "]").hide();
+                                $(event.currentTarget).first().find("li[field=" + ui.item.fieldIdx + "]").show();
+                                gaz_selected = false;
+
+                                //$(iElement).autocomplete('focus')
                                 return false;
 
                             }else {
                                 scope._custom()(ui.item.value.pid);
                                 scope.label = ui.item.label;
+                                gaz_selected = true;
 
                                 $timeout(function () {
                                     iElement.val(scope.label);
                                 }, 0)
                             }
+                        },
+
+                        close: function(event, ui){
+
+                            // This function fires after select: and after autocomplete has already "closed" everything.  This is why event.preventDefault() won't work.
+                            // ** ui is an empty object here so we have to use our own variable to check if the selected item is "selectable" or not..
+                            if (! gaz_selected){
+                                // We need to undo what autocomplete has already done..
+                                $('#'+event.currentTarget.id).show(); // Keep the selection window open
+                                // ta-da!  To the end user, nothing changes when clicking on an item that was not selectable.
+                            }
                         }
+
 
                     })
 
                     a.data("ui-autocomplete")._renderItem = function (ul, item) {
                         if(item.isField){
-                            var html = "<li class='autocomplete-item' ><label><input value="+item.fieldIdx+" type='radio' name='filterOnFields'>"+item.label+"</label></li>";
-                            return $("<li>")
+                            var html = "<label><span class='glyphicon glyphicon-unchecked'></span>"+item.label+"</label>";
+                            return $("<li class='autocomplete-item'>")
                                 .append($("<a>").append(html))
                                 .appendTo(ul);
                         }
                         else{
-                            var html = "<li class='autocomplete-item' >" + item.label + "<br><i>" + item.info + "</i></li>";
-                            return $("<li field="+item.fieldIdx+">")
-                                .append($("<a>").append(html))
+                            return $("<li field="+item.fieldIdx+" class='autocomplete-item'>")
+                                .append($("<a>").append(item.label+ "<br><i>" + item.info + "</i>"))
                                 .appendTo(ul);
                         }
 

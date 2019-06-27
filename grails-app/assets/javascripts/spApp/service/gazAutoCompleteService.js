@@ -42,7 +42,7 @@
                      }]
                  */
                 search: function (term) {
-                    return $http.get(LayersService.url() + "/search?q=" + term , _httpDescription('search')).then(function (response) {
+                    return $http.get(LayersService.url() + "/search?q=" + term +"&listLayers=true", _httpDescription('search')).then(function (response) {
                         return response.data;
                     });
                 }
