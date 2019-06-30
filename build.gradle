@@ -89,6 +89,9 @@ dependencies {
     assets "com.craigburke.angular:angular-template-asset-pipeline:2.4.0"
 
     compile 'com.github.ziplet:ziplet:2.0.0'
+
+    compile 'org.springframework.boot:spring-boot-starter-redis:1.4.6.RELEASE'
+    compile 'org.springframework.session:spring-session:1.3.5.RELEASE'
 }
 
 task _Events {
@@ -103,7 +106,7 @@ compileGroovy.dependsOn(_Events)
 //bootRun.dependsOn(_Events)
 
 bootRun {
-    jvmArgs('-Dspring.output.ansi.enabled=always')
+    jvmArgs('-Dspring.output.ansi.enabled=always', '-Xmx4G')
     addResources = true
 }
 
