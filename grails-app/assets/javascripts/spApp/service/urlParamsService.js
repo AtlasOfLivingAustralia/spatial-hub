@@ -189,7 +189,7 @@
                                     if (opacity !== undefined) newLayerResp.opacity = opacity;
                                     if (colour !== undefined) newLayerResp.color = colour;
 
-                                    MapService.add(newLayerResp);
+                                    return MapService.add(newLayerResp)
                                 });
                             }));
                         }
@@ -212,11 +212,14 @@
                             promises.push(it);
                         });
 
-                        if (tool !== null && tool !== undefined) {
-                            $q.all(promises).then(function (data) {
+                        $q.all(promises).then(function (data) {
+                            if (tool !== null && tool !== undefined) {
                                 _this.mapToolParams(tool, toolParameters)
-                            });
-                        }
+                            }
+                            if (bb === undefined) {
+                                MapService.zoomToAll()
+                            }
+                        })
                     },
                     mapToolParams: function (tool, toolParameters) {
                         var map = {};

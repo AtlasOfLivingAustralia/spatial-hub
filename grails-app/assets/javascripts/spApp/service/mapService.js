@@ -118,6 +118,27 @@
                         this.zoomToExtents([[-90, -180], [90, 180]]);
                     },
 
+                    zoomToAll: function () {
+                        var zoom = false
+                        var bbox = [[90, 180], [-90, -180]]
+                        for (var i = 0; i < layers.length; i++) {
+                            if (layers[i].bbox !== undefined && layers[i].area_km != 0) {
+                                zoom = true
+                                if (bbox[0][0] > layers[i].bbox[0][0]) bbox[0][0] = layers[i].bbox[0][0];
+                                if (bbox[0][1] > layers[i].bbox[0][1]) bbox[0][1] = layers[i].bbox[0][1];
+                                if (bbox[1][0] < layers[i].bbox[1][0]) bbox[1][0] = layers[i].bbox[1][0];
+                                if (bbox[1][1] < layers[i].bbox[1][1]) bbox[1][1] = layers[i].bbox[1][1];
+                            }
+                        }
+                        if (zoom) {
+                            if (bbox[0][0] == 90) bbox[0][0] = -90;
+                            if (bbox[0][1] == 180) bbox[0][1] = -180;
+                            if (bbox[1][0] == -90) bbox[1][0] = 90;
+                            if (bbox[1][1] == -180) bbox[1][1] = 180;
+                            this.zoomToExtents(bbox);
+                        }
+                    },
+
                     setVisible: function (uid, show) {
                         for (var i = 0; i < layers.length; i++) {
                             if (layers[i].uid === uid) {

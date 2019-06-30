@@ -121,6 +121,7 @@
                     });
                 };
 
+                $scope.zoomPrev = undefined
                 $scope.zoom = function (bounds) {
                     var b = bounds;
                     if ((bounds + '').match(/^POLYGON/g) != null) {
@@ -133,6 +134,8 @@
                     if (bounds && bounds.length === 4) {
                         b = [[bounds[1], bounds[0]], [bounds[3], bounds[2]]]
                     }
+
+                    $scope.zoomPrev = b
                     leafletData.getMap().then(function (map) {
                         map.fitBounds(b, {padding: new L.Point(20, 20)});
                     });
@@ -146,6 +149,17 @@
                         }, 0)
                     });
                 };
+
+                $scope.initialZoom = function () {
+                    if ($scope.zoomPrev !== undefined) {
+                        $scope.zoom($scope.zoomPrev)
+                    } else {
+                        $scope.resetZoom()
+                    }
+                    leafletData.getMap().then(function (map) {
+                        map.invalidateSize()
+                    });
+                }
 
                 $scope.resetZoom = function () {
                     $scope.zoomToPoint(L.latLng($SH.defaultLat, $SH.defaultLng), $SH.defaultZoom);
@@ -705,7 +719,7 @@
 
                             //all setup finished
                             if ($spMapLoaded !== undefined) {
-                                $spMapLoaded($scope.resetZoom);
+                                $spMapLoaded($scope.initialZoom);
                             }
                         })
                     });
