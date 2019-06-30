@@ -127,6 +127,7 @@
                                 scope.q = scope.selectedArea.q;
                                 if (scope.selectedArea.wkt !== undefined && scope.selectedArea.wkt.length > 0) {
                                     LayersService.createFromWkt(scope.selectedArea.wkt, scope.areaName, '').then(function (data) {
+                                        LoggerService.log("Create", scope.type, {pid: data.data.id, wkt: ''})
                                         LayersService.getObject(data.data.id).then(function (data) {
                                             data.data.layertype = 'area';
                                             data.data.wkt = scope.wkt;

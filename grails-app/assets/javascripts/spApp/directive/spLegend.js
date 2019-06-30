@@ -110,6 +110,11 @@
                                 var inFq = scope.selected.layer.scatterplotFq;
                                 var outFq = '-(' + scope.selected.layer.scatterplotFq + ')';
 
+                                LoggerService.log("Create", "scatterplotCreateInOut", JSON.stringify({
+                                    scatterplot: scope.selected.layer.scatterplotId,
+                                    scatterplotFq: scope.selected.layer.scatterplotFq
+                                }))
+
                                 BiocacheService.newLayerAddFq(scope.selected.layer, inFq,
                                     scope.selected.layer.name + " : " + $i18n(338, "in scatterplot selection")).then(function (data) {
                                     MapService.add(data)
@@ -124,6 +129,14 @@
 
                         scope.adhocCreateInOut = function () {
                             if (scope.selected.layer !== undefined) {
+
+                                LoggerService.log("Create", "adhocCreateInOut",
+                                    JSON.stringify({
+                                        query: scope.selected.layer.q, bs: scope.selected.layer.bs,
+                                        ws: scope.selected.layer.ws, inFq: scope.selected.layer.inAdhocQ,
+                                        outFq: scope.selected.layer.outAdhocQ
+                                    }))
+
                                 if (scope.selected.layer.inAdhocQ) {
                                     var inFq = scope.selected.layer.inAdhocQ
                                     BiocacheService.newLayerAddFq(scope.selected.layer, inFq,
@@ -326,6 +339,13 @@
                                 BiocacheService.newLayerAddFq(scope.selected.layer, decodeURIComponent(scope.selected.layer.sel),
                                     scope.selected.layer.name + " : " + $i18n(342, "from selected")).then(function (data) {
                                     data.species_list = scope.selected.layer.species_list;
+
+                                    LoggerService.log("Create", "facetNewLayer",
+                                        JSON.stringify({
+                                            query: scope.selected.layer.q, bs: scope.selected.layer.bs,
+                                            ws: scope.selected.layer.ws, facet: scope.selected.layer.sel
+                                        }))
+
                                     MapService.add(data)
                                 })
                             }
@@ -336,6 +356,13 @@
                                 BiocacheService.newLayerAddFq(scope.selected.layer, decodeURIComponent('-(' + scope.selected.layer.sel + ')'),
                                     scope.selected.layer.name + " : " + $i18n(343, "from unselected")).then(function (data) {
                                     data.species_list = scope.selected.layer.species_list;
+
+                                    LoggerService.log("Create", "facetNewLayerOut",
+                                        JSON.stringify({
+                                            query: scope.selected.layer.q, bs: scope.selected.layer.bs,
+                                            ws: scope.selected.layer.ws, facet: '-(' + scope.selected.layer.sel + ')'
+                                        }))
+
                                     MapService.add(data)
                                 })
                             }
