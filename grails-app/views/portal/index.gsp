@@ -124,6 +124,13 @@
         dateFacet: '${config.date.facet}',
         dateMin: '${config.date.min}',
         dateMax: '${config.date.max}'
+
+        <g:if test="${config.get('indexFields', null) != null}">
+        , indexFields: ${(config.indexFields as grails.converters.JSON).toString().encodeAsRaw()}
+        </g:if>
+        <g:if test="${config.get('fieldsIgnored', null) != null}">
+        , fieldsIgnored: ${(config.fieldsIgnored as grails.converters.JSON).toString().encodeAsRaw()}
+        </g:if>
     };
 
     BIE_VARS = {
