@@ -119,9 +119,9 @@ endpoints:
 security:
     cas:
         casServerName: 'https://auth.ala.org.au'
-        uriFilterPattern: '/portal.*,,/,/alaAdmin,/alaAdmin.*,/hub/[a-zA-Z0-9]+'
-        uriExclusionFilterPattern: '/portal/messages.*,/portal/sessionCache.*,/static.*,/assets.*'
-        authenticateOnlyIfLoggedInPattern: ''
+        uriFilterPattern: '/alaAdmin,/alaAdmin.*'
+        uriExclusionFilterPattern: '/portal/q.*,/portal/messages.*,/portal/sessionCache.*,/static.*,/assets.*'
+        authenticateOnlyIfLoggedInPattern: '/portal.*,/,,/portal/config.*,/portal/i18n.*,/hub/[a-zA-Z0-9]+'
         loginUrl: 'https://auth.ala.org.au/cas/login'
         logoutUrl: 'https://auth.ala.org.au/cas/logout'
         gateway: false
@@ -234,6 +234,12 @@ sessions:
     dir: '/data/spatial-hub/sessions'
 
 admin_role: 'ROLE_ADMIN'
+
+# List of valid user roles.
+# Use '*' for ANY role (login will be required).
+# Use an empty list for 'login is not required'
+user_roles:
+  - '*'
 
 # When using skin.layout='portal' enable google analytics by setting the googleAnalyticsId
 googleAnalyticsId:

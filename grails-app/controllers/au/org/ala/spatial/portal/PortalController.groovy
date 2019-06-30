@@ -141,20 +141,58 @@ class PortalController {
                 response.setStatus(HttpURLConnection.HTTP_NOT_FOUND)
                 render ''
             } else {
-                render(view: 'index',
-                        model: [config     : config,
-                                userId     : userId,
-                                sessionId  : sessionService.newId(userId),
-                                messagesAge: messageService.messagesAge,
-                                hub        : hub])
+                // test for user_role
+                def authDisabled = grailsApplication.config.security.cas.bypass || grailsApplication.config.security.cas.disableCAS
+                def userAllowed = userAllowed(config)
+
+                if (authDisabled || userAllowed) {
+                    // override config.spApp values with params
+                    def spApp = [:]
+                    config.spApp.each { k, v ->
+                        spApp.put(k, v.class.newInstance(params.get(k, v)))
+                    }
+                    config.spApp = spApp
+
+                    render(view: 'index',
+                            model: [config     : config,
+                                    userId     : userId,
+                                    sessionId  : sessionService.newId(userId),
+                                    messagesAge: messageService.messagesAge,
+                                    hub        : hub])
+                } else if (!authDisabled && userId == null) {
+                    // redirect to login page
+                    def queryParams = (request.queryString) ? '?' + request.queryString : ''
+                    redirect(url: grailsApplication.config.security.cas.loginUrl + "?service=" + URLEncoder.encode(request.getRequestURL() + queryParams, "UTF-8"))
+                } else {
+                    // not allowed
+                    response.setStatus(HttpURLConnection.HTTP_FORBIDDEN)
+                    render ''
+                }
             }
         }
     }
 
+    private def userAllowed(config) {
+        if (!config.user_roles || grailsApplication.config.security.cas.bypass || grailsApplication.config.security.cas.disableCAS) {
+            return true
+        }
+        for (role in config.user_roles) {
+            if (authService.userInRole(role) || ("*".equals(role) && authService.userId)) {
+                return true
+            }
+        }
+        return false
+    }
+
     def resetCache() {
-        def userId = getValidAdminUserId(params)
+        def adminUserId = getValidAdminUserId(params)
+        def userId = getValidUserId(params)
 
         if (!userId) {
+            // redirect to login page
+            def queryParams = (request.queryString) ? '?' + request.queryString : ''
+            redirect(url: grailsApplication.config.security.cas.loginUrl + "?service=" + URLEncoder.encode(request.getRequestURL() + queryParams, "UTF-8"))
+        } else if (!adminUserId) {
             response.setStatus(HttpURLConnection.HTTP_UNAUTHORIZED)
             def r = [error: 'not permitted']
             render r as JSON
@@ -164,6 +202,7 @@ class PortalController {
 
             grailsCacheManager.getCache(portalService.caches.QID).clear()
             grailsCacheManager.getCache(portalService.caches.PROXY).clear()
+            grailsCacheManager.getCache('configCache').clear()
 
             def r = [message: 'caches cleared']
             render r as JSON
@@ -278,7 +317,7 @@ class PortalController {
         }
     }
 
-    String getWkt(objectId) {
+    private String getWkt(objectId) {
         String wkt = null
 
         try {
@@ -410,59 +449,53 @@ class PortalController {
     }
 
     def q() {
-        def userId = getValidUserId(params)
+        def json = (Map) request.JSON
 
-        if (!userId) {
-            notAuthorised()
+        //caching
+        def value = grailsCacheManager.getCache(portalService.caches.QID).get(json)
+        if (value) {
+            render value.get()
         } else {
-            def json = (Map) request.JSON
-
-            //caching
-            def value = grailsCacheManager.getCache(portalService.caches.QID).get(json)
-            if (value) {
-                render value.get()
-            } else {
-                //remove null fqs
-                if (json?.fq) {
-                    def nFqs = json?.fq?.findAll()
-                    json.fq = nFqs
-                }
-                //move q with qid to fq
-                if (json.q?.contains("qid:")) {
-                    if (json?.fq?.size() > 0) {
-                        def tmp = json.fq[0]
-                        json.fq[0] = json.q
-                        json.q = tmp
-                    } else if (json?.wkt || json?.qc) {
-                        log.error (getWkt(json?.wkt ))
-                        json.fq = [json.q]
-                        json.q = '*:*'
-                    } else {
-                        value = [qid: json.q.replaceFirst("qid:", "")] as JSON
-                        render value
-                    }
-                }
-
-                // if wkt is a number, it's a pid
-                if (json?.wkt?.isNumber()) {
-                    json.wkt = getWkt(json?.wkt)
-                }
-
-                def r = hubWebService.postUrl("${json.bs}/webportal/params", json)
-
-                if (r.statusCode >= 400) {
-                    log.error("Couldn't post $json to ${json.bs}/webportal/params, status code ${r.statusCode}, body: ${new String(r.text ?: "")}")
-                    def result = ['error': "${r.statusCode} when calling ${json.bs}"]
-                    render result as JSON, status: 500
+            //remove null fqs
+            if (json?.fq) {
+                def nFqs = json?.fq?.findAll()
+                json.fq = nFqs
+            }
+            //move q with qid to fq
+            if (json.q?.contains("qid:")) {
+                if (json?.fq?.size() > 0) {
+                    def tmp = json.fq[0]
+                    json.fq[0] = json.q
+                    json.q = tmp
+                } else if (json?.wkt || json?.qc) {
+                    log.error(getWkt(json?.wkt))
+                    json.fq = [json.q]
+                    json.q = '*:*'
                 } else {
-                    value = [qid: new String(r.text)] as JSON
-
-                    if (r?.text) {
-                        grailsCacheManager.getCache(portalService.caches.QID).put(json, value.toString())
-                    }
-
+                    value = [qid: json.q.replaceFirst("qid:", "")] as JSON
                     render value
                 }
+            }
+
+            // if wkt is a number, it's a pid
+            if (json?.wkt?.isNumber()) {
+                json.wkt = getWkt(json?.wkt)
+            }
+
+            def r = hubWebService.postUrl("${json.bs}/webportal/params", json)
+
+            if (r.statusCode >= 400) {
+                log.error("Couldn't post $json to ${json.bs}/webportal/params, status code ${r.statusCode}, body: ${new String(r.text ?: "")}")
+                def result = ['error': "${r.statusCode} when calling ${json.bs}"]
+                render result as JSON, status: 500
+            } else {
+                value = [qid: new String(r.text)] as JSON
+
+                if (r?.text) {
+                    grailsCacheManager.getCache(portalService.caches.QID).put(json, value.toString())
+                }
+
+                render value
             }
         }
     }
@@ -539,7 +572,7 @@ class PortalController {
 
         def hub = params.hub
 
-        if (!userId) {
+        if (!userId && !userAllowed(portalService.getAppConfig(hub))) {
             notAuthorised()
         } else {
             def type = ["view", "menu"].contains(id) ? id : "view"
