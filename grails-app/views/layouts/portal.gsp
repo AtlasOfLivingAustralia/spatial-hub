@@ -26,7 +26,7 @@
 <body class="${pageProperty(name: 'body.class')}" id="${pageProperty(name: 'body.id')}"
       onload="${pageProperty(name: 'body.onload')}">
 
-<g:if test="config.header">
+<g:if test="${config.skin.header && config.spApp.header}">
     <nav class="navbar navbar-default navbar-fixed-top ::authStatusClass::">
         <div class="container container-navbar">
 

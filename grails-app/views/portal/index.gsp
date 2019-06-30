@@ -19,8 +19,10 @@
 <body>
 
 <script src="${config.grails.serverURL}/portal/messages.js?id=${messagesAge}" type="text/javascript" defer></script>
-<script src="https://maps.google.com/maps/api/js?language=en-US&libraries=places&key=${config.google.apikey}"
+<g:if test="${config.google.get('apikey', null) != null}">
+    <script src="https://maps.google.com/maps/api/js?language=en-US&libraries=places&key=${config.google.apikey}"
         type="text/javascript"></script>
+</g:if>
 
 <g:set var="sandboxUrl" value="${config.sandbox.uiUrl}"></g:set>
 
@@ -68,6 +70,7 @@
         defaultZoom: ${config.startup.zoom},
         baseLayers: ${(config.startup.baselayers as grails.converters.JSON).toString().encodeAsRaw()},
         defaultBaseLayer: '${config.startup.baselayer.default}',
+        <g:if test="${config.flickr.url}">
         flickrUrl: '${config.flickr.url}',
         flickrLicensesData: ${(config.flickr.licensesData as grails.converters.JSON).toString().encodeAsRaw()},
         flickrSearchPhotos: '${config.flickr.searchPhotos}',
@@ -78,6 +81,7 @@
         flickrGeoContext: '${config.flickr.geoContext}',
         flickrFilter: '${(config.flickr.filter?:'').toString().encodeAsRaw()}',
         flickrNbrOfPhotosToDisplay: '${config.flickr.nbrOfPhotosToDisplay}',
+        </g:if>
         menu: '${config.grails.serverURL}/portal/config/menu?hub=${hub}',
         defaultAreas: ${(config.defaultareas as grails.converters.JSON).toString().encodeAsRaw()},
         defaultSpeciesDotSize: ${config.speciesDotSize},

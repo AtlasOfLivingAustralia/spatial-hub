@@ -455,6 +455,9 @@ spApp:
     googleLocation: true
     # show the left panel by default
     leftPanel: true
+    # show the header by default
+    header: true
+
 
 #
 # portal.gsp layout options
