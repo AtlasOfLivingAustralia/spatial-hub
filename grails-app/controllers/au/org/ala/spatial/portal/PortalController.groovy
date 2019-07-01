@@ -32,13 +32,11 @@ class PortalController {
         }
     }
 
-    def editConfig (String id) {
+    def editConfig(String id) {
         def userId = getValidAdminUserId(params)
 
         if (!userId) {
-            response.setStatus(HttpURLConnection.HTTP_UNAUTHORIZED)
-            def r = [error: 'not permitted']
-            render r as JSON
+            notAuthorised()
         } else {
             def type = ["view", "menu"].contains(id) ? id : "view"
             def currentJSON = portalService.getConfig(type, false)
@@ -87,9 +85,9 @@ class PortalController {
 
     private boolean equals(a, b) {
         if (a instanceof Map && b instanceof Map) {
-            if (!((Map)a).keySet().containsAll(((Map)b).keySet()) ||
-                    !((Map)b).keySet().containsAll(((Map)a).keySet())) return false
-            ((Map)a).every { equals(it.value, ((Map)b)[it.key]) }
+            if (!((Map) a).keySet().containsAll(((Map) b).keySet()) ||
+                    !((Map) b).keySet().containsAll(((Map) a).keySet())) return false
+            ((Map) a).every { equals(it.value, ((Map) b)[it.key]) }
         } else if (a instanceof List && b instanceof List) {
             boolean eq = true
             a.eachWithIndex { def v, int i -> if (eq && !equals(v, b[i])) eq = false }
@@ -99,14 +97,14 @@ class PortalController {
         }
     }
 
-    static allowedMethods = [index          :['GET'],
+    static allowedMethods = [index          : ['GET'],
                              editConfig     : ['GET', 'POST'],
                              i18n           : ['GET', 'POST'],
-                             messages       :['GET'],
+                             messages       : ['GET'],
                              session        : ['POST', 'DELETE', 'GET'],
                              sessions       : 'GET',
                              sessionCache   : 'POST',
-                             resetCache     :['GET'],
+                             resetCache     : ['GET'],
                              postAreaWkt    : 'POST',
                              postAreaFile   : 'POST',
                              postArea       : 'POST',
@@ -138,8 +136,7 @@ class PortalController {
         } else {
             def config = portalService.getAppConfig(hub)
             if (!config && hub) {
-                response.setStatus(HttpURLConnection.HTTP_NOT_FOUND)
-                render ''
+                render status: HttpURLConnection.HTTP_NOT_FOUND, model: [config: config, hub: hub]
             } else {
                 // test for user_role
                 def authDisabled = grailsApplication.config.security.cas.bypass || grailsApplication.config.security.cas.disableCAS
@@ -160,13 +157,9 @@ class PortalController {
                                     messagesAge: messageService.messagesAge,
                                     hub        : hub])
                 } else if (!authDisabled && userId == null) {
-                    // redirect to login page
-                    def queryParams = (request.queryString) ? '?' + request.queryString : ''
-                    redirect(url: grailsApplication.config.security.cas.loginUrl + "?service=" + URLEncoder.encode(request.getRequestURL() + queryParams, "UTF-8"))
+                    login()
                 } else {
-                    // not allowed
-                    response.setStatus(HttpURLConnection.HTTP_FORBIDDEN)
-                    render ''
+                    render status: HttpURLConnection.HTTP_UNAUTHORIZED, model: [config: config, hub: hub]
                 }
             }
         }
@@ -184,18 +177,21 @@ class PortalController {
         return false
     }
 
+    private def login() {
+        // redirect to login page
+        def queryParams = (request.queryString) ? '?' + request.queryString : ''
+        redirect(url: grailsApplication.config.security.cas.loginUrl + "?service=" + URLEncoder.encode(grailsApplication.config.security.cas.appServerName + request.servletContext + queryParams, "UTF-8"))
+    }
+
     def resetCache() {
         def adminUserId = getValidAdminUserId(params)
         def userId = getValidUserId(params)
 
         if (!userId) {
             // redirect to login page
-            def queryParams = (request.queryString) ? '?' + request.queryString : ''
-            redirect(url: grailsApplication.config.security.cas.loginUrl + "?service=" + URLEncoder.encode(request.getRequestURL() + queryParams, "UTF-8"))
+            login()
         } else if (!adminUserId) {
-            response.setStatus(HttpURLConnection.HTTP_UNAUTHORIZED)
-            def r = [error: 'not permitted']
-            render r as JSON
+            render status: HttpURLConnection.HTTP_UNAUTHORIZED, model: [config: grailsApplication.config]
         } else {
             messageService.updateMessages()
             portalService.updateListQueries()
@@ -619,7 +615,7 @@ class PortalController {
                         //unzip the downloads file
                         //response.outputStream << zis
                         int size;
-                        while((size = zis.read(buff)) != -1) {
+                        while ((size = zis.read(buff)) != -1) {
                             response.outputStream.write(buff, 0, size);
                         }
                         response.contentType = 'text/csv'
@@ -627,15 +623,14 @@ class PortalController {
                         response.outputStream.close();
                     }
                 }
-            }catch (IOException e) {
+            } catch (IOException e) {
                 log.error('failed to get download: ' + url, e)
-                throw "Failed to download "+url +" (Error: " + e + " )";
-            }catch (Exception e){
+                throw "Failed to download " + url + " (Error: " + e + " )";
+            } catch (Exception e) {
                 log.error(e)
-                throw "Error occurs in getting samples :"+ e ;
+                throw "Error occurs in getting samples :" + e;
             }
-            finally
-            {
+            finally {
                 if (stream)
                     stream.close()
             }

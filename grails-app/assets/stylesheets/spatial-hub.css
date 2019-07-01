@@ -2244,3 +2244,7 @@ img.map-icon {
     display: block;
     font-size: 12px;
 }
+
+ul.errors {
+    padding-top: 150px
+}
