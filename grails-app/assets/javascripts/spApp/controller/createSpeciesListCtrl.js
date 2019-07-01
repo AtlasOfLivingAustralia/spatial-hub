@@ -129,6 +129,15 @@
                         if (resp.status === 200) {
                             var json = JSON.parse(resp.data.text);
                             var druid = json.druid;
+
+                            LoggerService.log("Create", "createSpeciesList", JSON.stringify({
+                                name: $scope.newListName,
+                                description: $scope.newListDescription,
+                                guids: $scope.matchedGuids(),
+                                makePrivate: $scope.makePrivate,
+                                druid: druid
+                            }))
+
                             ListsService.items(druid, {max: 1}).then(function (data) {
                                 if (data.length === 0) {
                                     bootbox.alert($i18n(334, "No matching species found."))

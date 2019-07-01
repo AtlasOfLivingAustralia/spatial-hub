@@ -166,7 +166,7 @@ class PortalService {
                 [:]
             }
         } else {
-            grailsApplication.config
+            [:] + grailsApplication.config
         }
     }
 }

@@ -14,7 +14,6 @@
             i18n="284">Include absent occurrences</span>
     </label>
 </div>
-<hr ng-show="_absentOption || _spatialValidity">
 <div ng-show="_areaIncludes">
     <div class="checkbox">
         <label><input type="checkbox" ng-model="includeExpertDistributions" ng-change="setQ()"><span i18n="240">Include Expert Distribution areas</span>
@@ -30,37 +29,39 @@
             <input type="checkbox" ng-model="includeChecklists" ng-change="setQ()"><span i18n="242">Include Checklist areas</span>
         </label>
     </div>
-    <hr>
 </div>
-
 <div ng-show="_dateRangeOption">
     <select-date-range selected-date-range="dateRange" on-custom="setQ()"></select-date-range>
-    <hr>
 </div>
 
-<div ng-show="_min == 0" class="radio">
+<div ng-if="_min == 0 && !multiselect" class="radio">
     <label>
         <input type="radio" ng-model="speciesOption" value="none" ng-change="changeOption('none')" name="{{_uniqueId}}"><span
             i18n="243">None</span></label>
 </div>
 
-<div ng-if="multiselect">
+<div ng-show="multiselect">
     <div ng-repeat="layer in speciesLayers">
-        <input type="checkbox" ng-model="layer.checked" ng-change="toggleQ($index)">{{layer.name}}<span
+        <input type="checkbox" ng-model="layer.checked" ng-change="updateMultiSelection()">{{layer.name}}<span
             ng-if="layer.species_list"
-            style="margin-left:10px;font-style: italic">(may include species traits)</span></input>
+            style="margin-left:10px;font-style: italic">(may include species traits)</span>
         <br/>
     </div>
     <br/>
 </div>
 
-<div ng-if="!multiselect">
-    <div ng-repeat="layer in speciesLayers" class="radio">
-        <label>
-            <input type="radio" ng-model="speciesOption" ng-value="layer.uid" value="{{layer.uid}}"
-                   ng-change="changeOption(layer.uid)" name="{{_uniqueId}}">{{layer.name}}</label>
-        <br/>
-    </div>
+<div ng-show="multiselect" class="radio">
+    <label>
+        <input type="radio" ng-model="speciesOption" value="none" ng-change="changeOption('none')" name="{{_uniqueId}}">
+        <span>No additional species</span></label>
+    <br/>
+</div>
+
+<div ng-show="!multiselect" ng-repeat="layer in speciesLayers" class="radio">
+    <label>
+        <input type="radio" ng-model="speciesOption" ng-value="layer.uid" value="{{layer.uid}}"
+               ng-change="changeOption(layer.uid)" name="{{_uniqueId}}">{{layer.name}}</label>
+    <br/>
 </div>
 
 <div ng-show="!_inputData.importList && !_inputData.importPoints" class="radio">
@@ -68,13 +69,12 @@
         <input type="radio" ng-model="speciesOption" value="lifeform" ng-change="changeOption('lifeform')"
                name="{{_uniqueId}}"><span>Lifeform</span></label>
     <br/>
-</div>
+    <div ng-show="speciesOption == 'lifeform'" style="margin-left:15px">
+        <lifeform-select style="width:400px" on-custom="setLifeformQ"></lifeform-select>
+        <hr>
+    </div>
 
-<div ng-show="speciesOption == 'lifeform'" style="margin-left:15px">
-    <lifeform-select style="width:400px" on-custom="setLifeformQ"></lifeform-select>
-    <hr>
 </div>
-
 
 <div ng-show="!_inputData.importList && !_inputData.importPoints" class="radio">
     <label>
@@ -89,16 +89,16 @@
                ng-change="changeOption('searchSpecies')" name="{{_uniqueId}}"><span i18n="245">Search for a species by scientific or common
     name</span></label>
     <br/>
-</div>
 
-<div ng-show="speciesOption == 'searchSpecies'" style="margin-left:15px">
-    <div>
-        <label>
-            <input style="width:400px" id="speciesAutoComplete" species-auto-complete on-custom="setQ">
-            <br/><span i18n="247">For example: "Heleioporus australiacus" or "Giant Burrowing Frog"</span>
-        </label>
+    <div ng-show="speciesOption == 'searchSpecies'" style="margin-left:15px">
+        <div>
+            <label>
+                <input style="width:400px" id="speciesAutoComplete" species-auto-complete on-custom="setQ">
+                <br/><span i18n="247">For example: "Heleioporus australiacus" or "Giant Burrowing Frog"</span>
+            </label>
+        </div>
+        <hr>
     </div>
-    <hr>
 </div>
 
 <div ng-show="listsEnabled()" class="radio"><label>
@@ -129,6 +129,7 @@
     <input type="radio" ng-model="speciesOption" value="sandboxPoints"
            ng-change="changeOption('sandboxPoints')" ng-disabled="isNotLoggedIn" name="{{_uniqueId}}"><span
         i18n="254">Use imported points</span>
+    <br/>
 </label>
     <div ng-show="speciesOption == 'sandboxPoints'" style="margin-left:15px">
         <div sandbox-list on-custom="setQ"></div>

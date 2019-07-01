@@ -119,9 +119,9 @@ endpoints:
 security:
     cas:
         casServerName: 'https://auth.ala.org.au'
-        uriFilterPattern: '/portal.*,,/,/alaAdmin,/alaAdmin.*,/hub/[a-zA-Z0-9]+'
-        uriExclusionFilterPattern: '/portal/messages.*,/portal/sessionCache.*,/static.*,/assets.*'
-        authenticateOnlyIfLoggedInPattern: ''
+        uriFilterPattern: '/alaAdmin,/alaAdmin.*'
+        uriExclusionFilterPattern: '/portal/q.*,/portal/messages.*,/portal/sessionCache.*,/static.*,/assets.*'
+        authenticateOnlyIfLoggedInPattern: '/portal.*,/,,/portal/config.*,/portal/i18n.*,/hub/[a-zA-Z0-9]+'
         loginUrl: 'https://auth.ala.org.au/cas/login'
         logoutUrl: 'https://auth.ala.org.au/cas/logout'
         gateway: false
@@ -130,7 +130,7 @@ security:
         disableCAS: false
 
 autocompleteUrl: 'https://bie.ala.org.au/ws/search/auto.jsonp'
-        
+
 auth:
     admin_role: ROLE_ADMIN
 
@@ -234,6 +234,12 @@ sessions:
     dir: '/data/spatial-hub/sessions'
 
 admin_role: 'ROLE_ADMIN'
+
+# List of valid user roles.
+# Use '*' for ANY role (login will be required).
+# Use an empty list for 'login is not required'
+user_roles:
+  - '*'
 
 # When using skin.layout='portal' enable google analytics by setting the googleAnalyticsId
 googleAnalyticsId:
@@ -449,6 +455,9 @@ spApp:
     googleLocation: true
     # show the left panel by default
     leftPanel: true
+    # show the header by default
+    header: true
+
 
 #
 # portal.gsp layout options
@@ -459,6 +468,15 @@ spApp:
 date.facet: 'occurrence_date'
 date.min: '1780-01-01'
 date.max: '2020-01-01'
+
+## spring-session config
+spring:
+  session:
+    store-type: "none" # "redis"
+#  redis:
+#    host: "localhost"
+#    port: 6379
+#    password: ""
 
 ---
 environments:

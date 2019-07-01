@@ -118,6 +118,27 @@
                         this.zoomToExtents([[-90, -180], [90, 180]]);
                     },
 
+                    zoomToAll: function () {
+                        var zoom = false
+                        var bbox = [[90, 180], [-90, -180]]
+                        for (var i = 0; i < layers.length; i++) {
+                            if (layers[i].bbox !== undefined && layers[i].area_km != 0) {
+                                zoom = true
+                                if (bbox[0][0] > layers[i].bbox[0][0]) bbox[0][0] = layers[i].bbox[0][0];
+                                if (bbox[0][1] > layers[i].bbox[0][1]) bbox[0][1] = layers[i].bbox[0][1];
+                                if (bbox[1][0] < layers[i].bbox[1][0]) bbox[1][0] = layers[i].bbox[1][0];
+                                if (bbox[1][1] < layers[i].bbox[1][1]) bbox[1][1] = layers[i].bbox[1][1];
+                            }
+                        }
+                        if (zoom) {
+                            if (bbox[0][0] == 90) bbox[0][0] = -90;
+                            if (bbox[0][1] == 180) bbox[0][1] = -180;
+                            if (bbox[1][0] == -90) bbox[1][0] = 90;
+                            if (bbox[1][1] == -180) bbox[1][1] = 180;
+                            this.zoomToExtents(bbox);
+                        }
+                    },
+
                     setVisible: function (uid, show) {
                         for (var i = 0; i < layers.length; i++) {
                             if (layers[i].uid === uid) {
@@ -516,74 +537,105 @@
                                 }
                             }));
                         } else {
-                            if (id.layertype === 'area') {
-                                var layerParams;
-                                var sld_body = undefined;
+                            var layerParams;
+                            var sld_body = undefined;
 
-                                if (id.type === 'envelope') {
+                            if (id.layertype === 'area') {
+                                if (id.id.includes(":")){
+                                    console.log('Parse id: ' + id.id +" -> id with ':' does not store in Objects. It should contains wmsurl, otherwise it will fail" )
+                                    //qs does not parse full url, it ignores the first param after ?
+                                    var wmsurl = id.wmsurl.split('?')[1]
+                                    var qs = new URLSearchParams(wmsurl)
+                                    if (!qs.has('service'))
+                                        console.log("Fatal error: " + wmsurl + " does not have 'wmsurl'")
+                                    sld_body = qs.get('sld_body');
                                     newLayer = {
                                         name: uid + ': ' + id.name,
-                                        type: 'wms',
+                                        type: qs.get('service').toLowerCase(),
                                         visible: true,
                                         opacity: id.opacity / 100.0,
                                         url: $SH.geoserverUrl + '/wms',
                                         layertype: 'area',
                                         layerParams: {
                                             opacity: id.opacity / 100.0,
-                                            layers: 'ALA:' + id.id,
-                                            format: 'image/png',
+                                            layers: qs.get('layers'),
+                                            format: qs.get('format'),
+                                            sld_body: sld_body,
                                             transparent: true
                                         }
-                                    };
-                                } else {
-                                    //backup sld_body
-                                    if (id && id.leaflet && id.leaflet.layerParams && id.leaflet.layerParams.sld_body) {
-                                        sld_body = id.leaflet.layerParams.sld_body
                                     }
 
-                                    if (id.layerParams) {
-                                        layerParams = id.layerParams;
-                                        if (id.transparent !== undefined) layerParams.transparent = true;
-                                        if (id.opacity !== undefined) layerParams.opacity = id.opacity / 100.0;
-                                        if (id.format !== undefined) layerParams.format = 'image/png';
+
+                                }else{
+
+                                    if (id.type === 'envelope') {
+                                        newLayer = {
+                                            name: uid + ': ' + id.name,
+                                            type: 'wms',
+                                            visible: true,
+                                            opacity: id.opacity / 100.0,
+                                            url: $SH.geoserverUrl + '/wms',
+                                            layertype: 'area',
+                                            layerParams: {
+                                                opacity: id.opacity / 100.0,
+                                                layers: 'ALA:' + id.id,
+                                                format: 'image/png',
+                                                transparent: true
+                                            }
+                                        };
                                     } else {
-                                        layerParams = {
-                                            opacity: id.area_km == 0 ? 0 : id.opacity / 100.0,
-                                            layers: id.area_km == 0 ? 'ALA:Points' : 'ALA:Objects',
-                                            format: 'image/png',
-                                            transparent: true,
-                                            viewparams: 's:' + id.pid
+                                        //backup sld_body
+                                        if (id && id.leaflet && id.leaflet.layerParams && id.leaflet.layerParams.sld_body) {
+                                            sld_body = id.leaflet.layerParams.sld_body
+                                        }
+
+                                        if (id.layerParams) {
+                                            layerParams = id.layerParams;
+                                            if (id.transparent !== undefined) layerParams.transparent = true;
+                                            if (id.opacity !== undefined) layerParams.opacity = id.opacity / 100.0;
+                                            if (id.format !== undefined) layerParams.format = 'image/png';
+                                        } else {
+                                            layerParams = {
+                                                opacity: id.area_km == 0 ? 0 : id.opacity / 100.0,
+                                                layers: id.area_km == 0 ? 'ALA:Points' : 'ALA:Objects',
+                                                format: 'image/png',
+                                                transparent: true,
+                                                viewparams: 's:' + id.pid
+                                            }
+                                        }
+
+                                        //user or layer object
+                                        newLayer = {
+                                            name: uid + ': ' + id.name,
+                                            type: 'wms',
+                                            visible: true,
+                                            opacity: id.opacity / 100.0,
+                                            url: $SH.geoserverUrl + '/wms',
+                                            layertype: 'area',
+                                            layerParams: layerParams
+                                        };
+
+                                        // do not add to log if it is a child layer or already logged
+                                        if ((id.log === undefined || id.log) && parentLayer === undefined) {
+                                            LoggerService.log('Map', 'Area', {
+                                                pid: id.pid,
+                                                geom_idx: id.geom_idx,
+                                                label: id.displayname,
+                                                query: id.query
+                                            });
                                         }
                                     }
 
-                                    //user or layer object
-                                    newLayer = {
-                                        name: uid + ': ' + id.name,
-                                        type: 'wms',
-                                        visible: true,
-                                        opacity: id.opacity / 100.0,
-                                        url: $SH.geoserverUrl + '/wms',
-                                        layertype: 'area',
-                                        layerParams: layerParams
-                                    };
-
-                                    // do not add to log if it is a child layer or already logged
-                                    if ((id.log === undefined || id.log) && parentLayer === undefined) {
-                                        LoggerService.log('Map', 'Area', {
-                                            pid: id.pid,
-                                            geom_idx: id.geom_idx,
-                                            label: id.displayname,
-                                            query: id.query
-                                        });
+                                    //restore sld_body
+                                    if (sld_body) {
+                                        newLayer.layerParams.sld_body = sld_body;
+                                    } else {
+                                        newLayer.layerParams.sld_body = this.objectSld(id)
                                     }
+
                                 }
 
-                                //restore sld_body
-                                if (sld_body) {
-                                    newLayer.layerParams.sld_body = sld_body;
-                                } else {
-                                    newLayer.layerParams.sld_body = this.objectSld(id)
-                                }
+
                             } else {
                                 var layer;
                                 if (id.displaypath !== undefined) layer = id;
@@ -728,7 +780,14 @@
                     },
                     objectSld: function (item) {
                         var sldBody = '';
-                        if (item.type === 'envelope') {
+                        if(item.pid.includes(":")){
+                            console.log('Warning: ' + id.id +" -> id with ':', its wmsurl should contain sld_body, otherwise the layer cannot be rendered properly!" )
+                            //qs does not parse full url, it ignores the first param after ?
+                            var wmsurl = id.wmsurl.split('?')[1]
+                            var qs = new URLSearchParams(wmsurl)
+                            sldBody = qs.get('sld_body')
+
+                        }else if (item.type === 'envelope') {
                             sldBody = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><StyledLayerDescriptor xmlns=\"http://www.opengis.net/sld\">"
                                 + "<NamedLayer><Name>ALA:" + item.id + "</Name>"
                                 + "<UserStyle><FeatureTypeStyle><Rule><RasterSymbolizer><Geometry></Geometry>"

@@ -71,7 +71,7 @@
 
                         scope.lifeformQ = {q: [], name: ''};
 
-                        scope.multiSelection = [];
+                        scope.multiNewQ = {q: [], name: ''};
 
                         scope.sandboxName = '';
                         scope.speciesListName = '';
@@ -127,13 +127,6 @@
                         scope.setQ = function (query) {
                             var selection = scope._selectedQ;
 
-                            // when this is species multiselect replace the selectedQ
-                            if (scope.multiselect) {
-                                scope._selectedQ.splice(0, scope._selectedQ.length);
-                                scope._selectedQ.push({});
-                                selection = scope._selectedQ[0];
-                            }
-
                             if (query && query.q && query.q.length === 0) {
                                 // clear the selection
                                 if (!scope.multiselect) {
@@ -145,19 +138,26 @@
                                     selection.qid = undefined;
                                     selection.species_list = undefined;
                                 } else {
-                                    scope._selectedQ.splice(0, scope._selectedQ.length);
+                                    scope.clearQ();
                                 }
                             } else if (selection) {
                                 // set the selection
 
                                 if (query === undefined || query.q === undefined) {
                                     // input query is missing, try with the _selectedQ
-                                    if (scope._selectedQ !== undefined) {
+                                    if (scope.multiselect) {
+                                        scope.clearQ();
+                                    } else if (scope._selectedQ !== undefined) {
                                         scope.setQ(scope._selectedQ)
                                     } else {
                                         scope.clearQ()
                                     }
                                     return
+                                }
+
+                                // only update multiNewQ when this is a multiselect
+                                if (scope.multiselect) {
+                                    selection = scope.multiNewQ;
                                 }
 
                                 // apply spatial validity options
@@ -214,6 +214,11 @@
                                 selection.ws = query.ws;
                                 if (selection.bs === undefined) scope._selectedQ.bs = $SH.biocacheServiceUrl;
                                 if (selection.ws === undefined) scope._selectedQ.ws = $SH.biocacheUrl
+
+                                // update the total selection when this is a multiselect
+                                if (scope.multiselect) {
+                                    scope.updateMultiSelection()
+                                }
                             }
                         };
 
@@ -224,9 +229,14 @@
                         };
 
                         scope.clearQ = function () {
-                            scope.setQ({q: [], name: ''});
-                            scope.sandboxName = '';
-                            scope.speciesListName = ''
+                            if (scope.multiselect) {
+                                scope.multiNewQ = {q: [], name: ''};
+                                scope.updateMultiSelection();
+                            } else {
+                                scope.setQ({q: [], name: ''});
+                                scope.sandboxName = '';
+                                scope.speciesListName = ''
+                            }
                         };
 
                         scope.changeOption = function (option) {
@@ -262,9 +272,13 @@
                             }
                         };
 
-                        scope.toggleQ = function () {
-                            // replace the selection with the selected species layers
-                            scope._selectedQ.splice(0, scope._selectedQ.length);
+                        /**
+                         * update _selectedQ to reflect any checked layer as well as the new species selection
+                         */
+                        scope.updateMultiSelection = function () {
+                            if (scope._selectedQ.length > 0) {
+                                scope._selectedQ.splice(0, scope._selectedQ.length)
+                            }
                             $.each(scope.speciesLayers, function (i, item) {
                                 if (item.checked) {
                                     var layer = MapService.getFullLayer(item.uid);
@@ -272,6 +286,9 @@
                                     scope._selectedQ.push(scope.layerToQuery(layer))
                                 }
                             });
+                            if (scope.multiNewQ.q.length > 0) {
+                                scope._selectedQ.push(scope.multiNewQ)
+                            }
                         };
 
                         scope.layerToQuery = function (layer) {

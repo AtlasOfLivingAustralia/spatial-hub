@@ -1,0 +1,51 @@
+<input style="width:200px" type="text" ng-model="_facet.filter"/>
+<button i18n="129" ng-click="_facet.filter=''" class="btn btn-xs btn-default"
+        ng-disabled="_facet.filter == ''">clear filter
+</button>
+<uib-progressbar ng-show="_facet.loading"
+                 class="progress-striped" ng-class="{ active: true }" value="100"
+                 type='info' title="Updating">{{ facet.progress || 'loading...'}}
+</uib-progressbar>
+<table class="table table-striped" style="width:370px;max-height:200px;overflow:auto;display:block">
+    <thead>
+    <tr>
+        <th style="width:20px"><input type="checkbox" ng-model="_facet.isAllFacetsSelected"
+                                      ng-change="checkAllFacets()"></th>
+        <th style="width:230px">
+            <a href="#" ng-click="_facet.sortType = 'displayname'; _facet.sortReverse = !_facet.sortReverse">
+                <span i18n="329">Facet Class</span>
+                <span ng-show="_facet.sortType == 'displayname' && !_facet.sortReverse"
+                      class="glyphicon glyphicon-chevron-down"></span>
+                <span ng-show="_facet.sortType == 'displayname' && _facet.sortReverse"
+                      class="glyphicon glyphicon-chevron-up"></span>
+            </a>
+        </th>
+        <th style="width:100px"><a href="#"
+                                   ng-click="_facet.sortType = 'count'; _facet.sortReverse = !_facet.sortReverse">
+            <span i18n="81">Count</span>
+            <span ng-show="_facet.sortType == 'count' && !_facet.sortReverse"
+                  class="glyphicon glyphicon-chevron-down"></span>
+            <span ng-show="_facet.sortType == 'count' && _facet.sortReverse"
+                  class="glyphicon glyphicon-chevron-up"></span>
+        </a></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="x in _facet.data | orderBy:_facet.sortType:_facet.sortReverse |filter:_facet.filter">
+        <td style="width:20px"><input type="checkbox" ng-model="x.selected" ng-change="updateSelection()"></td>
+        <td style="width:230px">{{x.displayname}}</td>
+        <td style="width:100px">{{x.count}}</td>
+        <td i18n="130" style="background-color:#{{formatColor(x)}};width:20px">&nbsp</td>
+    </tr>
+    </tbody>
+</table>
+
+<div style="width:100%;padding-right:30px" class="btn-group">
+    <label style="float:left;">{{_facet.selectionCount}} selected</label>
+    <button i18n="120" style="float:right;" class="btn btn-xs btn-default" ng-click="facetClearSelection()"
+            ng-disabled="!facetsSelected()">Clear selection
+    </button>
+    <button i18n="320" style="float:right;" class="btn btn-xs btn-default" ng-click="facetSelectAll()">
+        Select all
+    </button>
+</div>

@@ -19,6 +19,8 @@
                 return httpconfig;
             };
 
+            var indexFields;
+
             return {
                 /**
                  * Get the number of unique species (by facet names_and_lsid)
@@ -807,6 +809,19 @@
                             ws: ws,
                             name: name
                         })
+                    }
+                },
+                getIndexFields: function () {
+                    // use static index fields before biocache-service index fields
+                    if ($SH.indexFields) {
+                        return $q.when($SH.indexFields)
+                    } else if (scope.indexFields) {
+                        return $q.when(indexFields)
+                    } else {
+                        return $http.get($SH.baseUrl + "/index/fields", data, _httpDescription('getIndexFields')).then(function (response) {
+                            indexFields = response.data;
+                            return response.data
+                        });
                     }
                 }
             };

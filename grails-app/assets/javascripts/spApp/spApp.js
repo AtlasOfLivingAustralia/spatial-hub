@@ -49,7 +49,8 @@ spApp.value('existing', 1);
 
 spApp.config(['$routeProvider', function ($routeProvider) {
     $routeProvider.otherwise({
-        templateUrl: '/spApp/spApp.htm'
+        templateUrl: '/spApp/spApp.htm',
+        reloadOnSearch: false
     });
 
 }]);
@@ -187,7 +188,7 @@ function fetchData() {
         }
     }));
 
-    promises.push($http.get($SH.baseUrl + '/portal/config/view&hub=' + $SH.hub, _httpDescription('getViewConfig')).then(function (data) {
+    promises.push($http.get($SH.baseUrl + '/portal/config/view?hub=' + $SH.hub, _httpDescription('getViewConfig')).then(function (data) {
         $SH.viewConfig = data.data;
         var url = $SH.layersServiceUrl + '/capabilities';
         return $http.get(url, _httpDescription('getLayersCapabilities')).then(function (data) {
