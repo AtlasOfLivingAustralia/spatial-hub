@@ -18,6 +18,7 @@
                     var gaz_selected = false;
 
                     var a = iElement.autocomplete({
+                        minLength: 3,
                         source: function (searchTerm, response) {
                             GazAutoCompleteService.search(searchTerm.term).then(function (data) {
                                 var fields = new Set(data.map(function(item){return item.fieldname}))
@@ -47,9 +48,30 @@
                         },
 
                         select: function (event, ui) {
-                            //check on filter checkbox
-                            // click on radio button or label or outside label
-                            if (ui.item.isField){
+                            //click on category to show all fields or part
+                            if(ui.item.isCategory){
+                                if(ui.item.isExpanded){
+                                    $(event.currentTarget).first().find("li[isField]").hide().slice(0, 2).show();
+                                    $(event.currentTarget).first().find("li[expandedFieldFilter]").hide()
+                                    $(event.currentTarget).first().find("li[expandedFieldFilter=false]").show()
+
+                                }else{
+                                    $(event.currentTarget).first().find("li[isField]").show();
+                                    $(event.currentTarget).first().find("li[expandedFieldFilter]").show()
+                                    $(event.currentTarget).first().find("li[expandedFieldFilter=false]").hide()
+                                }
+
+                                // if ($(event.currentTarget).first().find("li[isField]").is(":hidden")) {
+                                //     $(event.currentTarget).first().find("li[isField]").show();
+                                //     $(event.currentTarget).first().find("li[showFieldFilter] a label span").removeClass('glyphicon-menu-down').addClass('glyphicon-menu-up')
+                                // }
+                                // else {
+                                //     $(event.currentTarget).first().find("li[isField]").hide().slice(0, 2).show();
+                                //     $(event.currentTarget).first().find("li[showFieldFilter] a label span").removeClass('glyphicon-menu-up').addClass('glyphicon-menu-down')
+                                // }
+
+                            }else if (ui.item.isField){  //check on filter checkbox
+                                // click on radio button or label or outside label
                                 event.stopPropagation();
                                 event.preventDefault();
                                 //Tried to use radio button, Strangely, click on radio button does not make it checked
@@ -130,17 +152,41 @@
                     a.data("ui-autocomplete")._renderItem = function (ul, item) {
                         if(item.isField){
                             var html = "<label><span class='glyphicon glyphicon-unchecked'></span>"+item.label+"</label>";
-                            return $("<li class='autocomplete-item'>")
+                            return $("<li class='autocomplete-item' isField >")
                                 .append($("<a>").append(html))
-                                .appendTo(ul);
+                                //.appendTo(ul);  //Let renderMenu to control
+                        }else if (item.isCategory){
+                            if (item.isExpanded)
+                                return $("<li class='autocomplete-item' expandedFieldFilter=true>")
+                                    .append($("<a>").append("<label><span class='glyphicon glyphicon-menu-up'></span>" + item.label +"</label>")).hide()
+                            else
+                                return $("<li class='autocomplete-item' expandedFieldFilter=false>")
+                                    .append($("<a>").append("<label><span class='glyphicon glyphicon-menu-down'></span>" + item.label +"</label>"))
                         }
                         else{
                             return $("<li field="+item.fieldIdx+" class='autocomplete-item'>")
                                 .append($("<a>").append(item.label+ "<br><i>" + item.info + "</i>"))
-                                .appendTo(ul);
+                                //.appendTo(ul);
                         }
 
                     };
+
+                    a.data("ui-autocomplete")._renderMenu = function( ul, items ) {
+                        var that = this;
+                        //ul.append( "<li class='ui-autocomplete-category' name='fields'><a href='#'>Filter on Fields </a></li>" );
+                        ul.append(that._renderItemData( ul, {label: 'Show all '+ items.filter(function(item){return item.isField}).length +' field filters', isCategory:true, isExpanded: false} ))
+                        ul.append(that._renderItemData( ul, {label: 'Show less field filters', isCategory:true, isExpanded: true} ))
+                        $.each( items, function( index, item ) {
+                            if ( item.isField) {
+                                if (index > 2)
+                                    ul.append(that._renderItemData( ul, item ).hide());
+                                else
+                                    ul.append(that._renderItemData( ul, item ));
+                            }else
+                                ul.append(that._renderItemData( ul, item ));
+                        });
+                    }
+
 
 
                 }
