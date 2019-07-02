@@ -410,49 +410,6 @@ class PortalController {
         }
     }
 
-    def postLog() {
-        def userId = getValidUserId(params)
-
-        if (!userId) {
-            notAuthorised()
-        } else {
-            def json = request.JSON as Map
-
-            json.api_key = grailsApplication.config.api_key
-
-            //$http.post($SH.layersServiceUrl + "/log" + params, data, _httpDescription('log', {ignoreErrors: true}))
-
-            def r = hubWebService.postUrl("${grailsApplication.config.layersService.url}/log?" +
-                    "userId=${userId}&sessionId=${params.sessionId}", json)
-
-            if (r == null) {
-                render [:] as JSON
-            } else {
-                render JSON.parse(new String(r?.text ?: "{}")) as JSON
-            }
-        }
-    }
-
-    def searchLog(params) {
-
-        try {
-            if (params != null) {
-                def qs = params.inject([]) { result, entry ->
-                    result << "${entry.key}=${URLEncoder.encode(entry.value.toString())}"
-                }.join('&')
-
-                String url = "${grailsApplication.config.layersService.url}/log/search/?"+qs
-
-                render hubWebService.getUrl(url, {Accept: "application/json"}, true) as JSON
-            }
-        } catch (err) {
-            log.error "failed to lookup object wkt: ${objectId}", err
-            render {error: err} as JSON
-        }
-
-    }
-
-
     def postSpeciesList() {
         def userId = getValidUserId(params)
 
