@@ -52,13 +52,27 @@
 
                                 child.$watch('preview.uploadStatus', function (newValue) {
                                     var closeLater = false;
+
+                                    var q = {
+                                        q: ['data_resource_uid:"' + dataResourceUid + '"'],
+                                        name: datasetName,
+                                        bs: $SH.sandboxServiceUrl,
+                                        ws: $SH.sandboxUrl
+                                    };
+
+                                    if (!$scope.logged) {
+                                        $scope.logged = true
+
+                                        // upload parameters from previewService.uploadToSandbox() - excludes file and text
+                                        var input = {
+                                            columnHeaders: preview.columnHeaders(),
+                                            firstLineIsData: preview.preview.firstLineIsData, text: '', fileId: '',
+                                            datasetName: preview.datasetName, existingUid: preview.existing.uid
+                                        }
+
+                                        LoggerService.log("Create", "Points", JSON.stringify({query: q, input: input}))
+                                    }
                                     if (newValue === 'COMPLETE') {
-                                        var q = {
-                                            q: ['data_resource_uid:"' + dataResourceUid + '"'],
-                                            name: datasetName,
-                                            bs: $SH.sandboxServiceUrl,
-                                            ws: $SH.sandboxUrl
-                                        };
                                         if (inputData !== undefined && inputData.setQ !== undefined) {
                                             inputData.setQ(q)
                                         } else {

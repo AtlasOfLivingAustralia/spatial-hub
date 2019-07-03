@@ -89,58 +89,10 @@
 
         <div class="form-group row" ng-show="selected.layer.layertype == 'species' && selected.layer.colorType=='-1' &&
                                         selected.layer.facet!='-1'">
-            <input style="width:200px" type="text" ng-model="facetFilter"/>
-            <button i18n="129" ng-click="facetFilter=''" class="btn btn-xs btn-default"
-                    ng-disabled="facetFilter == ''">clear filter
-            </button>
-            <uib-progressbar
-                    ng-show="selected.layer.facetList[selected.layer.facet] === undefined || selected.layer.facetList[selected.layer.facet] == null || selected.layer.facetList[selected.layer.facet] == 0"
-                    class="progress-striped" ng-class="{ active: true }" value="100"
-                    type='info' title="Updating">{{ facetProgress || 'loading...'}}
-            </uib-progressbar>
-            <table class="table table-striped" style="width:370px;max-height:200px;overflow:auto;display:block">
-                <thead>
-                <tr>
-                    <th style="width:20px"><input type="checkbox" ng-model="isAllFacetsSelected"
-                                                  ng-change="checkAllFacets()"></th>
-                    <th style="width:230px">
-                        <a href="#" ng-click="sortType = 'displayname'; sortReverse = !sortReverse">
-                            <span i18n="329">Facet Class</span>
-                            <span ng-show="sortType == 'displayname' && !sortReverse"
-                                  class="glyphicon glyphicon-chevron-down"></span>
-                            <span ng-show="sortType == 'displayname' && sortReverse"
-                                  class="glyphicon glyphicon-chevron-up"></span>
-                        </a>
-                    </th>
-                    <th style="width:100px"><a href="#" ng-click="sortType = 'count'; sortReverse = !sortReverse">
-                        <span i18n="81">Count</span>
-                        <span ng-show="sortType == 'count' && !sortReverse"
-                              class="glyphicon glyphicon-chevron-down"></span>
-                        <span ng-show="sortType == 'count' && sortReverse"
-                              class="glyphicon glyphicon-chevron-up"></span>
-                    </a></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="x in selected.layer.facetList[selected.layer.facet] | orderBy:sortType:sortReverse |filter:facetFilter">
-                    <td style="width:20px"><input type="checkbox" ng-model="x.selected"
-                                                  ng-change="updateSelection()"></td>
-                    <td style="width:230px">{{x.displayname}}</td>
-                    <td style="width:100px">{{x.count}}</td>
-                    <td i18n="130" style="background-color:#{{formatColor(x)}};width:20px">&nbsp</td>
-                </tr>
-                </tbody>
-            </table>
 
-            <div style="width:100%;padding-right:30px" class="btn-group">
-                <label style="float:left;">{{selected.layer.facetSelectionCount}} selected</label>
-                <button i18n="120" style="float:right;" class="btn btn-xs btn-default" ng-click="facetClearSelection()"
-                        ng-disabled="!facetsSelected()">Clear selection
-                </button>
-                <button i18n="320" style="float:right;" class="btn btn-xs btn-default" ng-click="facetSelectAll()">
-                    Select all
-                </button>
-            </div>
+            <facet-editor ng-if="selected.layer.activeFacet !== undefined"
+                          facet="selected.layer.activeFacet" on-custom="updateSelection(false)"></facet-editor>
+
             <div style="float:right;padding-right:30px" class="btn-group">
                 <button i18n="131" class="btn btn-xs btn-default" ng-click="facetNewLayer()"
                         ng-disabled="!facetsSelected()">Create layer with selection

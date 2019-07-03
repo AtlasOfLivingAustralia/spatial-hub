@@ -55,7 +55,7 @@
 
                     refresh: function (inputs, specs) {
                         if (specs) {
-                            for (k in specs.iinjectDateRangenput) {
+                            for (k in specs.injectDateRangeInput) {
                                 if (specs.input[k].name === "speciesOptions") {
                                     specs.input[k].constraints.disable = !this.checkAreaCompatible(inputs[0].q);
                                 }

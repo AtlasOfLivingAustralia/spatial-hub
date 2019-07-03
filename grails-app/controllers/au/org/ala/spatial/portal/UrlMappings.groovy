@@ -20,6 +20,7 @@ class UrlMappings {
 
         "/"(controller: "portal", action: "index")
         "500"(view: '/error')
+        "401"(view: '/accessDenied')
         "404"(view: '/error')
     }
 }
