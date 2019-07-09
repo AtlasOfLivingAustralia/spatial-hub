@@ -41,8 +41,18 @@
                      "id": "SA0016826"
                      }]
                  */
-                search: function (term) {
-                    return $http.get(LayersService.url() + "/search?q=" + term +"&listLayers=true", _httpDescription('search')).then(function (response) {
+
+                // search: function (term) {
+                //     return $http.get(LayersService.url() + "/search?q=" + term , _httpDescription('search')).then(function (response) {
+                //         return response.data;
+                //     });
+                // }
+
+                search: function (q) {
+                    var url = LayersService.url() + "/search?q=" + q.q +'&start='+q.start+'&limit='+q.limit ;
+                    if (q.include)
+                        url +='&include='+q.include;
+                    return $http.get(url, _httpDescription('search')).then(function (response) {
                         return response.data;
                     });
                 }
