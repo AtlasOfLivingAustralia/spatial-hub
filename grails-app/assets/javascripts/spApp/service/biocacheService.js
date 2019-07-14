@@ -381,7 +381,7 @@
                     offset = offset || 0;
                     var fqList = (fqs === undefined ? '' : '&fq=' + this.joinAndEncode(fqs));
                     return this.registerQuery(query).then(function (response) {
-                        return $http.get(query.bs + "/occurrences/search?facet=" + facet + "&pageSize=" + pageSize + "&startIndex=" + offset + "&q=" + response.qid + fqList + '&sort=_id', _httpDescription('searchForOccurrences')).then(function (response) {
+                        return $http.get(query.bs + "/occurrences/search?facet=" + facet + "&pageSize=" + pageSize + "&startIndex=" + offset + "&q=" + response.qid + fqList + '&sort=id', _httpDescription('searchForOccurrences')).then(function (response) {
                             if (response.data !== undefined) {
                                 return response.data;
                             }
