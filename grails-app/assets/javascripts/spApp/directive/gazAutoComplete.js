@@ -91,7 +91,8 @@
                                      return {label: item.fieldname, fid: item.fid, isField: true}});
 
                             }else{
-                                var fields = _.map(data[0].value.fields.split(','),function(field){
+
+                                var fields = _.map( JSON.parse(data[0].value.fields),function(field){
                                     var fs = field.split('|');
                                     return {label: fs[1], fid: fs[0], isField: true}});
                             }
