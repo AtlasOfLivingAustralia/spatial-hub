@@ -94,15 +94,15 @@ dependencies {
     compile 'org.springframework.session:spring-session:1.3.5.RELEASE'
 }
 
-task _Events {
-    doLast {
-        new GroovyScriptEngine([''] as String[]).run('_Events.groovy', new Binding())
-    }
-}
+//task _Events {
+//    doLast {
+//        new GroovyScriptEngine([''] as String[]).run('_Events.groovy', new Binding())
+//    }
+//}
 
 // the tasks used here for dependsOn may be incomplete/incorrect
-assetCompile.dependsOn(_Events)
-compileGroovy.dependsOn(_Events)
+//assetCompile.dependsOn(_Events)
+//compileGroovy.dependsOn(_Events)
 //bootRun.dependsOn(_Events)
 
 bootRun {

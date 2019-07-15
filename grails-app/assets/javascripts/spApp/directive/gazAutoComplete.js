@@ -19,7 +19,6 @@
                     var limit = 10;
                     var q = {};
                     var historicResults = [];
-                    var historicFields = [];
                     var hasMore = true;
                     var currentPos = 0; // Remember add more button position to let dropdown list scroll down to view
 
@@ -41,7 +40,6 @@
                                 q.q = searchTerm.term;
                                 q.limit = limit;
                                 q.include=undefined;
-                                historicFields = []
                             }
 
                             GazAutoCompleteService.search(q).then(function (data) {
@@ -80,15 +78,26 @@
                             //update historic result
                             historicResults = data.slice();
 
+                           //All related fields will be attached with result if query does not limit search on field
 
-                          //Get distinct field and fidx
-                          var fids = data.map(function(item){
-                                return item.fid;
-                          })
-                          var fields = data.filter(function(value,index,final){
-                               return fids.indexOf(value.fid) == index;
-                           }).map(function(item){
-                               return {label: item.fieldname, fid: item.fid, isField: true}});
+                            if(q.include){
+                               // Get distinct field and fidx
+                                var fids = data.map(function(item){
+                                      return item.fid;
+                                })
+                                var fields = data.filter(function(value,index,final){
+                                     return fids.indexOf(value.fid) == index;
+                                 }).map(function(item){
+                                     return {label: item.fieldname, fid: item.fid, isField: true}});
+
+                            }else{
+                                var fields = _.map(data[0].value.fields.split(','),function(field){
+                                    var fs = field.split('|');
+                                    return {label: fs[1], fid: fs[0], isField: true}});
+                            }
+
+
+
 
                            fields.forEach(function(item){
                                data.unshift(item);
@@ -171,6 +180,7 @@
 
                         open: function( event, ui ) {
                             $('.ui-autocomplete').css('height', 'auto');
+                            $('.ui-autocomplete').css('width','auto');
                             //Get some values needed to determine whether the widget is on
                             //the screen
                             var $input = $(event.target),
@@ -178,6 +188,7 @@
                                 inputHeight = $input.height(),
                                 autocompleteHeight = $('.ui-autocomplete').height(),
                                 windowHeight = $(window).height();
+
 
                             //The widget has left the screen if the input's height plus it's offset from the top of
                             //the screen, plus the height of the autocomplete are greater than the height of the
@@ -193,6 +204,7 @@
 
                                 $('.ui-autocomplete').css('overflow-y', 'auto');
                             }
+
 
                             //Scroll to last item if 'add more' clicked
                             // if(q.start > 0){
@@ -215,15 +227,15 @@
                                 //.appendTo(ul);  //Let renderMenu to control
                         }else if (item.isCategory){
                             if (item.isExpanded)
-                                return $("<li class='autocomplete-item' expandedFieldFilter=true>")
-                                    .append($("<a>").append("<label><span class='glyphicon glyphicon-menu-up'></span>" + item.label +"</label>"))
+                                return $("<li class='autocomplete-item' style='text-align:center' expandedFieldFilter=true>")
+                                    .append($("<a>").append("<label>" + item.label +"</label> <span class='glyphicon glyphicon-menu-up'></span>"))
                             else
-                                return $("<li class='autocomplete-item' expandedFieldFilter=false>")
-                                    .append($("<a>").append("<label><span class='glyphicon glyphicon-menu-down'></span>" + item.label +"</label>"))
+                                return $("<li class='autocomplete-item' style='text-align:center' expandedFieldFilter=false>")
+                                    .append($("<a>").append("<label>" + item.label +"</label> <span class='glyphicon glyphicon-menu-down'></span>"))
                         }
                         else if (item.showMore){
-                            return $("<li class='autocomplete-item' showMore>")
-                                .append($("<a>").append(" <button type='button' class='btn btn-default'><span class='glyphicon glyphicon-menu-down'></span>  " + item.label +"</button>"))
+                            return $("<li class='autocomplete-item' style='text-align:center'  showMore>")
+                                .append($("<a>").append(" <label>" + item.label +"</label>  <span class='glyphicon glyphicon-menu-down'></span></a>"))
                         }
                         else{
                             return $("<li field="+item.fid+" class='autocomplete-item'>")
@@ -236,15 +248,18 @@
                     a.data("ui-autocomplete")._renderMenu = function( ul, items ) {
                         var that = this;
                         var isExpanded = false;
+                        var numOfFilters = items.filter(function(item){return item.isField}).length;
                         if (q.include) // One field is checked, expand field files
                             isExpanded = true;
-                        if (isExpanded){
-                            ul.append(that._renderItemData( ul, {label: 'Show '+ items.filter(function(item){return item.isField}).length +' field filters', isCategory:true, isExpanded: false} ).hide())
-                            ul.append(that._renderItemData( ul, {label: 'Hide field filters', isCategory:true, isExpanded: true} ).show())
-                        }else{
-                            ul.append(that._renderItemData( ul, {label: 'Show '+ items.filter(function(item){return item.isField}).length +' field filters', isCategory:true, isExpanded: false} ).show())
-                            ul.append(that._renderItemData( ul, {label: 'Hide field filters', isCategory:true, isExpanded: true} ).hide())
-                        }
+
+                        if (numOfFilters > 1)
+                            if (isExpanded){
+                                ul.append(that._renderItemData( ul, {label: 'Show '+ numOfFilters +' filters', isCategory:true, isExpanded: false} ).hide())
+                                ul.append(that._renderItemData( ul, {label: 'Hide filters', isCategory:true, isExpanded: true} ).show())
+                            }else{
+                                ul.append(that._renderItemData( ul, {label: 'Show '+ numOfFilters +' filters', isCategory:true, isExpanded: false} ).show())
+                                ul.append(that._renderItemData( ul, {label: 'Hide filters', isCategory:true, isExpanded: true} ).hide())
+                            }
 
 
                         $.each( items, function( index, item ) {
