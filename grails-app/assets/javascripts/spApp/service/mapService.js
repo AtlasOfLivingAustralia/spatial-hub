@@ -50,7 +50,7 @@
                         }
                     }
                 };
-                var selected = {layer: null};
+                var selected = {layer: undefined};
                 var uid = 1;
                 var pidList = [];
 
@@ -477,6 +477,10 @@
                             }
 
                             id.layertype = 'species';
+
+                            // the display of species layers can be modified with 'facets' that hide items
+                            id.facets = []
+
                             var env = 'colormode%3Agrid%3Bname%3Acircle%3Bsize%3A3%3Bopacity%3A1';
                             var firstLayer = undefined;
                             if (id && id.layer && id.layer.leaflet && id.layer.leaflet.layerOptions &&
@@ -522,8 +526,14 @@
                                 promises.push(ListsService.getItemsQ(id.species_list));
                             }
 
-                            promises.push(FacetAutoCompleteService.search(id).then(function (data) {
-                                id.list = data;
+                            id.groupedFacets = []
+                            promises.push(FacetAutoCompleteService.search(id, false).then(function (data) {
+                                id.groupedFacets = data;
+                            }));
+
+                            id.indexFields = []
+                            promises.push(FacetAutoCompleteService.search(id, true).then(function (data) {
+                                id.indexFields = data;
                             }));
 
                             promises.push(BiocacheService.bbox(id).then(function (data) {

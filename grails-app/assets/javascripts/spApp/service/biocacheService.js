@@ -21,7 +21,7 @@
 
             var indexFields;
 
-            return {
+            var thiz = {
                 /**
                  * Get the number of unique species (by facet names_and_lsid)
                  * @memberof BiocacheService
@@ -381,7 +381,7 @@
                     offset = offset || 0;
                     var fqList = (fqs === undefined ? '' : '&fq=' + this.joinAndEncode(fqs));
                     return this.registerQuery(query).then(function (response) {
-                        return $http.get(query.bs + "/occurrences/search?facet=" + facet + "&pageSize=" + pageSize + "&startIndex=" + offset + "&q=" + response.qid + fqList + '&sort=_id', _httpDescription('searchForOccurrences')).then(function (response) {
+                        return $http.get(query.bs + "/occurrences/search?facet=" + facet + "&pageSize=" + pageSize + "&startIndex=" + offset + "&q=" + response.qid + fqList + '&sort=id', _httpDescription('searchForOccurrences')).then(function (response) {
                             if (response.data !== undefined) {
                                 return response.data;
                             }
@@ -813,17 +813,99 @@
                 },
                 getIndexFields: function () {
                     // use static index fields before biocache-service index fields
-                    if ($SH.indexFields) {
-                        return $q.when($SH.indexFields)
-                    } else if (scope.indexFields) {
+                    if (indexFields) {
                         return $q.when(indexFields)
                     } else {
-                        return $http.get($SH.baseUrl + "/index/fields", data, _httpDescription('getIndexFields')).then(function (response) {
+                        return $http.get($SH.biocacheServiceUrl + "/index/fields", _httpDescription('getIndexFields')).then(function (response) {
                             indexFields = response.data;
-                            return response.data
+                            for (var i = 0; i < indexFields.length; i++) {
+                                indexFields[i].displayName = indexFields[i].dwcTerm || indexFields[i].description || indexFields[i].name
+                                if (indexFields[i].classs === undefined) {
+                                    indexFields[i].classs = 'Other'
+                                }
+                                indexFields[i].url = thiz.parseUrl(indexFields[i].info)
+                                if (indexFields[i].url !== undefined) {
+                                    indexFields[i].info = indexFields[i].info.replace(indexFields[i].url, '')
+                                } else {
+                                    indexFields[i].url = ''
+                                }
+                                if (indexFields[i].description === undefined) {
+                                    indexFields[i].description = ''
+                                }
+                            }
+                            return indexFields
                         });
+                    }
+                },
+                parseUrl: function (info) {
+                    if (info !== undefined) {
+                        var match = info.match("\\bhttps?://[^\\b]+")
+                        if (match) {
+                            return match[0]
+                        }
+                    }
+                    return undefined
+                },
+                facetsToFq: function (facet, ignoreEnabledFlag) {
+                    var fqs = [];
+                    if (facet && facet.length > 0) {
+                        for (var i in facet) {
+                            var term = this.facetToFq(facet[i], ignoreEnabledFlag)
+                            if (term && term.fq) {
+                                fqs.push(term.fq)
+                            }
+                        }
+                    }
+                    return fqs;
+                },
+                facetToFq: function (facet, ignoreEnabledFlag) {
+                    if (facet.data === undefined || (!ignoreEnabledFlag && !facet.enabled)) {
+                        return {sum: 0, fq: undefined}
+                    }
+                    var sel = '';
+                    var invert = false;
+                    var count = 0;
+                    var sum = 0;
+                    // sum only applies to the single facet
+                    for (var i = 0; i < facet.data.length; i++) {
+                        if (facet.data[i].selected) {
+                            var fq = facet.data[i].fq;
+                            if (fq.match(/^-/g) != null && (fq.match(/:\*$/g) != null || fq.match(/\[\* TO \*\]$/g) != null)) {
+                                invert = true
+                            }
+                            count++;
+                            sum += facet.data[i].count;
+                        }
+                    }
+
+                    if (count == 0 /*|| count == facet.data.length*/) {
+                        return {sum: 0, fq: undefined}
+                    } else {
+                        if (count === 1) invert = false;
+                        for (i = 0; i < facet.data.length; i++) {
+                            if (facet.data[i].selected) {
+                                var fq = facet.data[i].fq;
+
+                                if (invert) {
+                                    if (sel.length > 0) sel += " AND ";
+                                    if (fq.match(/^-/g) != null && (fq.match(/:\*$/g) != null || fq.match(/\[\* TO \*\]$/g) != null)) {
+                                        sel += fq.substring(1)
+                                    } else {
+                                        sel += '-' + fq
+                                    }
+                                } else {
+                                    if (sel.length > 0) sel += " OR ";
+                                    sel += fq
+                                }
+                            }
+                        }
+                        if (invert) {
+                            sel = '-(' + sel + ')'
+                        }
+                        return {sum: sum, fq: sel}
                     }
                 }
             };
+            return thiz;
         }])
 }(angular));

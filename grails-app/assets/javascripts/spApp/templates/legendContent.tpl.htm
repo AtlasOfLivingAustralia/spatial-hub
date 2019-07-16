@@ -81,17 +81,32 @@
             <select style=";width:300px" id='facet' ng-model="selected.layer.facet"
                     ng-change="updateFacet()">
                 <option i18n="128" value="-1">User defined colour</option>
-                <option ng-repeat="x in selected.layer.list" value="{{x.facet}}" ng-disabled="x.separator">
+                <option value="search">Search facets...</option>
+
+                <option ng-show="filtersEnabled()" disabled>--- Active Filters ---</option>
+                <option ng-repeat="x in selected.layer.facets | filter:{enabled: true}" value="{{x.name}}"
+                        ng-if="showActiveFilter()">
+                    {{x.displayName}}
+                </option>
+
+                <option ng-repeat="x in selected.layer.groupedFacets" value="{{x.facet}}" ng-disabled="x.separator">
                     {{x.name}}
                 </option>
             </select>
+            <div ng-show="filtersEnabled() && isFilterSelected()" class="btn-group">
+                <button class="btn-xs btn btn-default" ng-click="removeFacet()">Remove filter</button>
+                <button class="btn-xs btn btn-default" ng-click="refreshFacetData(false)">Update with filters</button>
+                <button class="btn-xs btn btn-default" ng-click="refreshFacetData(true)">Update without filters</button>
+            </div>
         </div>
 
         <div class="form-group row" ng-show="selected.layer.layertype == 'species' && selected.layer.colorType=='-1' &&
                                         selected.layer.facet!='-1'">
 
-            <facet-editor ng-if="selected.layer.activeFacet !== undefined"
-                          facet="selected.layer.activeFacet" on-custom="updateSelection(false)"></facet-editor>
+            <div ng-show="selected.layer.facetProgress"><span>{{selected.layer.facetProgress}}</span></div>
+
+            <facet-editor ng-if="selected.layer.activeFacet !== undefined && !selected.layer.facetProgress"
+                          facet="selected.layer.activeFacet" on-custom="updateSelection()"></facet-editor>
 
             <div style="float:right;padding-right:30px" class="btn-group">
                 <button i18n="131" class="btn btn-xs btn-default" ng-click="facetNewLayer()"
@@ -101,6 +116,8 @@
                         ng-disabled="!facetsSelected()">Create layer without selection
                 </button>
             </div>
+            <br/>
+            <hr/>
         </div>
 
         <div ng-show="(selected.layer.layertype == 'species' && selected.layer.colorType=='-1' &&
@@ -251,8 +268,8 @@
                     &nbsp;
                 </div>
             </div>
+            <br/>
         </div>
-        <br/>
 
         <div class="form-group row" ng-show="selected.layer.showColourSliders">
             <label i18n="133" style="float:left;width:70px" for="size">Red</label>

@@ -2248,3 +2248,7 @@ img.map-icon {
 ul.errors {
     padding-top: 150px
 }
+
+.popover {
+    max-width: none;
+}
