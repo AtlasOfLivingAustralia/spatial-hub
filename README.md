@@ -7,7 +7,7 @@ Replacement for spatial-portal with Grails, AngularJS and Leaflet.
 ## menu-config.json
 * The main menu is overridden with `/data/spatial-hub/menu-config.json`.
 
-```json
+```$xslt
 /* Example */
 [
   {
@@ -37,7 +37,7 @@ Replacement for spatial-portal with Grails, AngularJS and Leaflet.
 ## view-config.json
 * Templated dialog appearance can be overridden with `/data/spatial-hub/view-config.json`.
 
-```json
+```$xslt
 /* Example */
 {
   "Maxent": { /* Name of tool in spatial-service capabilities */
