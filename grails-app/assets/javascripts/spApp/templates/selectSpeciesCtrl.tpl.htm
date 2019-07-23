@@ -83,6 +83,20 @@
     <br/>
 </div>
 
+<div class="radio">
+    <label>
+        <input type="radio" ng-model="speciesOption" value="searchDois" ng-change="changeOption('searchDois')" name="{{_uniqueId}}"><span i18n="435">Search for a species in a DOI dataset</label>
+    </label>
+</div>
+
+<div ng-show="speciesOption == 'searchDois'">
+    <div>
+        <label>
+            <input id="doiAutoComplete" doi-auto-complete on-select="doiSelected">
+        </label>
+    </div>
+</div>
+
 <div ng-show="!_inputData.importList && !_inputData.importPoints" class="radio">
     <label>
         <input type="radio" ng-model="speciesOption" value="searchSpecies"

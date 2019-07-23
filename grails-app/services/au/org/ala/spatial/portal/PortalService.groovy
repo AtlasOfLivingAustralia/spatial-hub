@@ -142,7 +142,8 @@ class PortalService {
     def canProxy(url) {
         def predefined = url.toString().startsWith(Holders.config.layersService.url) ||
                 url.toString().startsWith(Holders.config.phylolink.url) ||
-                url.toString().startsWith(Holders.config.sampling.url)
+                url.toString().startsWith(Holders.config.sampling.url) ||
+                url.toString().startsWith(Holders.config.doiService.url)
         //REGEXP: ^(https:|http:)\/\/data.auscover.org.au\/*
         def proxies = Holders.config.allowProxy.server? Holders.config.allowProxy.server.split(";|,"):[];
         //def proxies = (Holders.config.allowProxy as grails.converters.JSON).toString().encodeAsRaw()

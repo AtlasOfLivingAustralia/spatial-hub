@@ -57,6 +57,7 @@
         sessionId: '${sessionId}',
         loginUrl: '${config.loginUrl}?service=',
         phylolinkUrl: '${config.phylolink.url}',
+        doiServiceUrl: '${config.doiService.url}',
         threatenedQ: '${config.threatenedQ}',
         invasiveQ: '${config.invasiveQ}',
         migratoryDR: '${config.lists.migratoryDR}',
@@ -108,7 +109,8 @@
             '${config.sandboxService.url}/**',
             '${config.geoserver.url}/**',
             '${config.collections.url}/**',
-            '${config.phylolink.url}/**'
+            '${config.phylolink.url}/**',
+            '${config.doiService.url}/**'
         ],
         i18n: '${config.i18n?.region?:"default"}',
         editable: ${params.edit?:'false'},
