@@ -31,22 +31,7 @@
                             return error;
                     });
                 },
-                /**
-                 * Returns the workflow id associated with a DOI.
-                 * @param doi the selected DOI
-                 */
-                getWorkflowId: function(doi) {
-                    return doi.applicationMetadata.workflowId;
-                },
-                loadDataset: function(doi) {
-
-                    var url = doi.applicationMetadata && doi.applicationMetadata.searchUrl;
-                    if (url) {
-                        // Parse the parameters.
-                        var params = UrlParamsService.parseSearchParams(url);
-                        UrlParamsService.processUrlParams(params);
-                    }
-                },
+                /** Extracts the data from the supplied DOI relevant for producing a query to re-produce the data */
                 getDatasetQuery: function(doi) {
                     var params = null;
                     var url = doi.applicationMetadata && doi.applicationMetadata.searchUrl;
@@ -54,7 +39,40 @@
                         // Parse the parameters.
                         params = UrlParamsService.parseSearchParams(url);
                     }
+                    // The query is expected to be an array
+                    if (params.q) {
+                        params.q = [params.q];
+                    }
+                    params.name = doi.title;
                     return params;
+                },
+                /** Takes a DOI and contructs a string to display summary information about the DOI */
+                buildInfoString: function(doi) {
+
+                    var info = '';
+                    if (doi.providerMetadata && doi.providerMetadata.contributors) {
+                        for (var i=0; i<doi.providerMetadata.contributors.length; i++) {
+                            if (doi.providerMetadata.contributors[i].type == 'Distributor') {
+                                info += doi.providerMetadata.contributors[i].name;
+                            }
+                        }
+                    }
+                    if (doi.applicationMetadata) {
+                        if (doi.applicationMetadata.queryTitle) {
+                            if (info) {
+                                info += ', ';
+                            }
+                            info += doi.applicationMetadata.queryTitle
+                        }
+                        if (doi.applicationMetadata.recordCount) {
+                            if (info) {
+                                info += ' ';
+                            }
+                            info += '('+doi.applicationMetadata.recordCount+' records)';
+                        }
+                    }
+                    return info;
+
                 }
             };
         }])

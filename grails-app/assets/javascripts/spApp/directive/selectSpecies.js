@@ -313,10 +313,6 @@
 
                         scope.doiSelected = function(doi) {
                             var queryParams = DoiService.getDatasetQuery(doi);
-                            // setQ expects an array.
-                            if (queryParams.q) {
-                                queryParams.q = [queryParams.q]
-                            }
                             scope.setQ(queryParams);
                         };
 

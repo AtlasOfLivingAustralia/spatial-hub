@@ -20,6 +20,7 @@
                         scope.savedData = [undefined];
                         LayoutService.addToSave(scope);
                         var mostRecentSearchTerm = '';
+
                         var a = iElement.autocomplete({
                             source: function (searchTerm, response) {
                                 iElement.addClass(loadingClass);
@@ -36,7 +37,7 @@
                                     response($.map(data.searchResults, function (item, idx) {
                                         return {
                                             label: item.title,
-                                            info: "",
+                                            info: DoiService.buildInfoString(item),
                                             value: item
                                         }
                                     }));
