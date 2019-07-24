@@ -57,7 +57,6 @@
         sessionId: '${sessionId}',
         loginUrl: '${config.loginUrl}?service=',
         phylolinkUrl: '${config.phylolink.url}',
-        doiServiceUrl: '${config.doiService.url}',
         threatenedQ: '${config.threatenedQ}',
         invasiveQ: '${config.invasiveQ}',
         migratoryDR: '${config.lists.migratoryDR}',
@@ -90,6 +89,13 @@
         presetWMSServers: ${(config.presetWMSServers as grails.converters.JSON).toString().encodeAsRaw()},
         getMapExamples: ${(config.getMapExamples as grails.converters.JSON).toString().encodeAsRaw()},
 
+        <g:if test="${config.doiService?.url}">
+        doiServiceUrl: '${config.doiService.url}',
+        </g:if>
+        <g:if test="${config.doiService?.searchFilter}">
+        doiSearchFilter: '${config.doiService.searchFilter}',
+        </g:if>
+
         qc: '${config.qc}',
 
         validUrls: [
@@ -109,8 +115,10 @@
             '${config.sandboxService.url}/**',
             '${config.geoserver.url}/**',
             '${config.collections.url}/**',
-            '${config.phylolink.url}/**',
-            '${config.doiService.url}/**'
+            '${config.phylolink.url}/**'
+            <g:if test="${config.doiService?.url}">
+            , '${config.doiService.url}/**'
+            </g:if>
         ],
         i18n: '${config.i18n?.region?:"default"}',
         editable: ${params.edit?:'false'},

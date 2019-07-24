@@ -9,6 +9,11 @@
      */
     angular.module('doi-service', [])
         .factory("DoiService", ["$http", "$rootScope", "UrlParamsService", function ($http, $rootScope, UrlParamsService) {
+
+            var config = {
+                doiServiceUrl:$SH.doiServiceUrl,
+                doiSearchFilter:$SH.doiSearchFilter
+            };
             var _httpDescription = function (method, httpconfig) {
                 if (httpconfig === undefined) {
                     httpconfig = {};
@@ -20,19 +25,28 @@
             };
 
             return {
+                isEnabled: function() {
+                    return config.doiServiceUrl;
+                },
                 search: function (term) {
                     var url = $SH.proxyUrl+'?url=';
-                    var doiUrl = $SH.doiServiceUrl + "/doi/search?max=10&offset=0&sort=dateMinted&order=asc";
+                    var doiUrl = config.doiServiceUrl + "/doi/search?max=10&offset=0&sort=dateMinted&order=asc";
                     url += encodeURIComponent(doiUrl);
                     url += "&q="+encodeURIComponent(term);
+                    if (config.doiSearchFilter) {
+                        url += "&fq="+encodeURIComponent(config.doiSearchFilter);
+                    }
                     return $http.get(url, _httpDescription('search')).then(function (response) {
                         return response.data;
                         }, function(error) {
                             return error;
                     });
                 },
-                /** Extracts the data from the supplied DOI relevant for producing a query to re-produce the data */
-                getDatasetQuery: function(doi) {
+                /**
+                 * Extracts the data from the supplied DOI to produce a query that will replicate the
+                 * query used to create the DOI.
+                 */
+                buildQueryFromDoi: function(doi) {
                     var params = null;
                     var url = doi.applicationMetadata && doi.applicationMetadata.searchUrl;
                     if (url) {

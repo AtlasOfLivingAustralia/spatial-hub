@@ -75,6 +75,7 @@
 
                         scope.sandboxName = '';
                         scope.speciesListName = '';
+                        scope.doiEnabled = DoiService.isEnabled();
 
                         LayoutService.addToSave(scope);
 
@@ -312,7 +313,7 @@
                         };
 
                         scope.doiSelected = function(doi) {
-                            var queryParams = DoiService.getDatasetQuery(doi);
+                            var queryParams = DoiService.buildQueryFromDoi(doi);
                             scope.setQ(queryParams);
                         };
 
