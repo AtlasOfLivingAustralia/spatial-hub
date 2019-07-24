@@ -541,7 +541,7 @@
                             var sld_body = undefined;
 
                             if (id.layertype === 'area') {
-                                if (id.id.includes(":")){
+                                if (id.id && id.id.includes(":")){
                                     console.log('Parse id: ' + id.id +" -> id with ':' does not store in Objects. It should contains wmsurl, otherwise it will fail" )
                                     //qs does not parse full url, it ignores the first param after ?
                                     var wmsurl = id.wmsurl.split('?')[1]
@@ -780,7 +780,7 @@
                     },
                     objectSld: function (item) {
                         var sldBody = '';
-                        if(item.pid.includes(":")){
+                        if(item.pid && item.pid.includes(":")){
                             console.log('Warning: ' + id.id +" -> id with ':', its wmsurl should contain sld_body, otherwise the layer cannot be rendered properly!" )
                             //qs does not parse full url, it ignores the first param after ?
                             var wmsurl = id.wmsurl.split('?')[1]
