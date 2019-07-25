@@ -93,10 +93,9 @@
                     {{x.name}}
                 </option>
             </select>
-            <div ng-show="filtersEnabled() && isFilterSelected()" class="btn-group">
+            <div ng-show="filtersEnabled() && isFilterSelected()" class="btn-group"
+                 style="float: right;margin-right: 20px;">
                 <button class="btn-xs btn btn-default" ng-click="removeFacet()">Remove filter</button>
-                <button class="btn-xs btn btn-default" ng-click="refreshFacetData(false)">Update with filters</button>
-                <button class="btn-xs btn btn-default" ng-click="refreshFacetData(true)">Update without filters</button>
             </div>
         </div>
 
@@ -320,7 +319,7 @@
 
         <div class="form-group row" ng-show="wmsLegendVisible()">
             <div ng-show="selected.layer.layertype != 'grid'">
-                <input style="width:200px" type="text" ng-model="selected.layer.contextualFilter"/>
+                <input style="width:200px" type="text" placeholder="Filter" ng-model="selected.layer.contextualFilter"/>
                 <button i18n="141" ng-click="updateContextualList()" class="btn btn-xs btn-default">apply filter
                 </button>
                 <button i18n="129" ng-click="clearContextualFilter()" class="btn btn-xs btn-default">clear filter

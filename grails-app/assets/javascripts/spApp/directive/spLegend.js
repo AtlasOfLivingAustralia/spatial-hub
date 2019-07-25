@@ -702,20 +702,12 @@
                                 if (facet !== undefined) {
                                     selectedLayer.activeFacet = facet
 
-                                    // only update facet data when it is absent
-                                    if (facet.data === undefined) {
-                                        scope.refreshFacetData(false).then(function (data) {
-                                            if (selectedLayer.scatterplotUrl !== undefined) {
-                                                scope.scatterplotUpdate(selectedLayer);
-                                            }
-                                        })
-                                    } else {
-                                        scope.updateWMS();
-
-                                        if (scope.selected.layer.scatterplotUrl !== undefined) {
-                                            scope.scatterplotUpdate();
+                                    // always update facet data
+                                    scope.refreshFacetData(false).then(function (data) {
+                                        if (selectedLayer.scatterplotUrl !== undefined) {
+                                            scope.scatterplotUpdate(selectedLayer);
                                         }
-                                    }
+                                    })
                                 } else {
                                     scope.updateWMS();
                                     if (scope.selected.layer.scatterplotUrl !== undefined) {
@@ -777,6 +769,10 @@
                             // select a facet
                             if (newFacet) {
                                 scope.selected.layer.facet = newFacet
+                                scope.updateFacet()
+                            } else {
+                                // select user defined colour
+                                scope.selected.layer.facet = '-1'
                                 scope.updateFacet()
                             }
                         }

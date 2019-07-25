@@ -1,5 +1,5 @@
 <div class="modal-header">
-    <button i18n="1" type="button" class="close" ng-click="$close()">×</button>
+    <button i18n="1" type="button" class="close" ng-click="close()">×</button>
     <h3 class="modal-title">Select Facet</h3>
 </div>
 
@@ -10,7 +10,7 @@
                 {{x.name}}
             </option>
         </select>
-        <input ng-model="filter" type="text">
+        <input ng-model="filter" type="text" placeholder="Filter">
         <button class="btn btn-default btn-xs" ng-click="filter=''">Clear filter</button>
         <button class="btn btn-default btn-xs" ng-click="clearSelection()">Clear selection</button>
 

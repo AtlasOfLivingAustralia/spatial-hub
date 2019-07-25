@@ -68,7 +68,7 @@
                                 });
                             } else {
                                 if ($SH.groupedFacets) {
-                                    return scope.getGroupedFacets(dynamic, $SH.groupedFacets, query.species_list)
+                                    return scope.getGroupedFacets(dynamic, {data: $SH.groupedFacets}, query.species_list)
                                 } else {
                                     return $http.get(query.bs + "/search/grouped/facets", _httpDescription('search')).then(function (groups) {
                                         return scope.getGroupedFacets(dynamic, groups, query.species_list);
