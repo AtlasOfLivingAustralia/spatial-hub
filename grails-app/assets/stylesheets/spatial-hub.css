@@ -2249,6 +2249,10 @@ ul.errors {
     padding-top: 150px
 }
 
+#doiAutoComplete {
+    width: 400px;
+}
+
 .popover {
     max-width: none;
 }

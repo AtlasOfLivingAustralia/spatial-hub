@@ -8,8 +8,8 @@
      *    Species selection control
      */
     angular.module('select-species-directive', ['map-service', 'lists-service'])
-        .directive('selectSpecies', ['MapService', 'ListsService', '$timeout', 'LayoutService',
-            function (MapService, ListsService, $timeout, LayoutService) {
+        .directive('selectSpecies', ['MapService', 'ListsService', '$timeout', 'LayoutService', 'DoiService',
+            function (MapService, ListsService, $timeout, LayoutService, DoiService) {
 
                 return {
                     scope: {
@@ -75,6 +75,7 @@
 
                         scope.sandboxName = '';
                         scope.speciesListName = '';
+                        scope.doiEnabled = DoiService.isEnabled();
 
                         LayoutService.addToSave(scope);
 
@@ -309,7 +310,12 @@
                             if (query.ws === undefined) query.ws = $SH.biocacheUrl;
 
                             return query;
-                        }
+                        };
+
+                        scope.doiSelected = function(doi) {
+                            var queryParams = DoiService.buildQueryFromDoi(doi);
+                            scope.setQ(queryParams);
+                        };
 
                         scope.isLoggedIn = $SH.userId !== undefined && $SH.userId !== null && $SH.userId.length > 0;
                         scope.isNotLoggedIn = !scope.isLoggedIn;
