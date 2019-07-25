@@ -44,24 +44,6 @@
                             MapService.leafletScope.zoom(item.bbox)
                         };
 
-                        scope.facetsSelected = function () {
-                            return scope._facet !== undefined &&
-                                scope._facet !== null &&
-                                scope._facet.sel !== undefined &&
-                                scope._facet.sel.length > 0;
-                        };
-
-                        scope.facetsSelectedCount = function () {
-                            if (scope._facet !== undefined &&
-                                scope._facet !== null &&
-                                scope._facet.sel !== undefined &&
-                                scope._facet.length > 0) {
-                                return scope._facet.sel.length
-                            } else {
-                                return 0
-                            }
-                        };
-
                         scope.facetClearSelection = function () {
                             if (scope._facet !== undefined) {
                                 for (var i = 0; i < scope._facet.data.length; i++) {
@@ -102,7 +84,34 @@
 
                         scope.updateSelection = function () {
                             scope._onCustom();
+                            scope.updateCount()
                         };
+
+                        scope.updateCount = function () {
+                            if (scope._facet.data !== undefined) {
+                                var count = 0;
+                                for (var i = 0; i < scope._facet.data.length; i++) {
+                                    if (scope._facet.data[i].selected) {
+                                        count += scope._facet.data[i].count;
+                                    }
+                                }
+                                scope.selectionCount = count
+                            } else {
+                                scope.selectionCount = 0
+                            }
+                        }
+
+                        scope.formatColor = function (item) {
+                            var r = Number(item.red).toString(16);
+                            if (r.length === 1) r = '0' + r;
+                            var g = Number(item.green).toString(16);
+                            if (g.length === 1) g = '0' + g;
+                            var b = Number(item.blue).toString(16);
+                            if (b.length === 1) b = '0' + b;
+                            return r + g + b
+                        }
+
+                        scope.updateCount()
                     }
 
                 }

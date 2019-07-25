@@ -2252,3 +2252,7 @@ ul.errors {
 #doiAutoComplete {
     width: 400px;
 }
+
+.popover {
+    max-width: none;
+}

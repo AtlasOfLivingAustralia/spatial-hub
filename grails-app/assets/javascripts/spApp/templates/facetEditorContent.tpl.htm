@@ -1,7 +1,8 @@
-<input style="width:200px" type="text" ng-model="_facet.filter"/>
-<button i18n="129" ng-click="_facet.filter=''" class="btn btn-xs btn-default"
-        ng-disabled="_facet.filter == ''">clear filter
+<input style="width:200px" type="text" placeholder="Filter" ng-model="_facet.filter"/>
+<button i18n="129" ng-click="_facet.filter=''" class="btn btn-xs btn-default" ng-disabled="_facet.filter == ''">clear
+    filter
 </button>
+<button ng-click="facetClearSelection()" class="btn btn-xs btn-default">clear selection</button>
 <uib-progressbar ng-show="_facet.loading"
                  class="progress-striped" ng-class="{ active: true }" value="100"
                  type='info' title="Updating">{{ facet.progress || 'loading...'}}
@@ -41,11 +42,5 @@
 </table>
 
 <div style="width:100%;padding-right:30px" class="btn-group">
-    <label style="float:left;">{{_facet.selectionCount}} selected</label>
-    <button i18n="120" style="float:right;" class="btn btn-xs btn-default" ng-click="facetClearSelection()"
-            ng-disabled="!facetsSelected()">Clear selection
-    </button>
-    <button i18n="320" style="float:right;" class="btn btn-xs btn-default" ng-click="facetSelectAll()">
-        Select all
-    </button>
+    <label style="float:left;">{{selectionCount}} selected</label>
 </div>

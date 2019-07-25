@@ -20,7 +20,7 @@ if (L.Util.getParamString) {
     L.Util.getParamString = function (obj, existingUrl, uppercase) {
         var params = [];
         for (var i in obj) {
-            if (typeof obj[i] === 'array') {
+            if (typeof obj[i] === 'array' || obj[i] instanceof Array) {
                 for (var j = 0; j < obj[i].length; j++) {
                     if (i !== 'fq') {
                         params.push(encodeURIComponent(uppercase ? i.toUpperCase() : i) + '=' + encodeURIComponent(obj[i][j]));

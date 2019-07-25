@@ -470,6 +470,46 @@ date.facet: 'occurrence_date'
 date.min: '1780-01-01'
 date.max: '2020-01-01'
 
+#
+# Override the list of grouped facets from biocache-service (biocacheService.url/search/grouped/facets).
+# This is used in a drop down list within the 'Edit species layer' section that is used to  colour or facet
+# upon the species layer.
+#
+#groupedFacets:
+#  - title: 'group 1 title'
+#    facets:
+#      - field: "SOLR field name" (mandatory)
+#        sort: 'index' for non-numeric fields OR 'count' or numeric fields (optional, default is index)
+#        description: 'label for the field' (optional, default is the SOLR field name)
+#        dwcTerm: 'Darwin Core term' (optional)
+#        i18nValues: true to translate facet values using biocache-service /facets/i18n OR false (optional, default is false)
+
+#
+# Remove fields that are retrieved from biocache-service (biocacheService.url/search/grouped/facets) and
+# (biocacheService.url/index/fields)
+#
+#fieldsIgnored:
+#  - field1
+#  - field2
+
+#
+# Include or Exclude the 'Search facets...' option. This is used in a drop down list within the 'Edit species layer'
+# section that is used to colour or facet upon the species layer.
+#
+facet.search: true
+
+#
+# Include or Exclude the grouped facet listing. These grouped facets appear at the end of the drop down list
+# within the 'Edit species layer' section that is used to colour or facet upon the species layer.
+#
+facet.list: true
+
+#
+# Enabled multiple species layer filters within the 'Edit species layer' section.
+#
+filters.enabled: true
+
+
 ## spring-session config
 spring:
   session:
