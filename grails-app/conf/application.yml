@@ -285,6 +285,7 @@ bccvl:
         url: 'https://app.bccvl.org.au/bccvl/oauth2/authorize?client_id=F031d7ce-abb0-11e6-a678-0242ac120005&response_type=token&redirect_uri='
     post:
         url: 'https://app.bccvl.org.au/API/dm/v1/import_ala_data'
+
 keep:
     alive:
         timeout:
@@ -370,7 +371,7 @@ presetWMSServers:
       url: "http://geofabric.bom.gov.au/simplefeatures/ows?service=WMS&request=GetCapabilities"
 
 allowProxy:
-    server: 'data.auscover.org.au,data.auscover.org.au:80,geoserver.imos.org.au,www.ga.gov.au/gis,geofabric.bom.gov.au'
+    server: 'data.auscover.org.au,data.auscover.org.au:80,geoserver.imos.org.au,www.ga.gov.au/gis,geofabric.bom.gov.au,doi.ala.org.au,doi-test.ala.org.au'
 
 getMapExamples:
     - name: "Fractional Cover CLW - Non-PS Veg - 2012.297"

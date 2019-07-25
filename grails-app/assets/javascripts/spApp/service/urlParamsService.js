@@ -221,6 +221,21 @@
                             }
                         })
                     },
+                    parseSearchParams: function(url) {
+                        var parser = document.createElement('a');
+                        parser.href = url;
+                        var query = parser.search.substr(1); // Remove the '?' from the query string
+                        var result = {};
+                        var paramList = query.split("&");
+                        for (var i=0; i<paramList.length; i++) {
+                            var param = paramList[i].split("=");
+                            if (param[0]) { // bie search queries sometimes start with ?& so an empty parameter is possible
+                                result[param[0]] = decodeURIComponent(param[1]);
+                            }
+                        }
+                        return result;
+
+                    },
                     mapToolParams: function (tool, toolParameters) {
                         var map = {};
                         if (tool) {
