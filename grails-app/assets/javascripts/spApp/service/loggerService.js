@@ -34,6 +34,8 @@
                  * @returns {Promise}
                  */
                 log: function (category1, category2, data) {
+                    history.push({category1: category1, category2: category2, data: data})
+
                     var params = '?category1=' + encodeURIComponent(category1) +
                         '&category2=' + encodeURIComponent(category2) +
                         '&sessionId=' + encodeURIComponent($SH.sessionId) +
@@ -60,6 +62,10 @@
                         ignoreErrors: true,
                         headers: {Accept: "application/json"}
                     }))
+                },
+
+                localHistory: function () {
+                    return history
                 }
             }
         }])

@@ -132,7 +132,8 @@ class PortalController {
             render html: '<html>' + (authService.userId != null ? 'isLoggedIn' : 'isLoggedOut') + '</html>'
         } else if (request.forwardURI.contains(';jsessionid=')) {
             //clean forwards from CAS
-            redirect(url: grailsApplication.config.grails.serverURL + (hub != null ? "/hub/" + hub : ""), params: params)
+            def queryParams = (request.queryString) ? '?' + request.queryString : ''
+            redirect(url: grailsApplication.config.grails.serverURL + (hub != null ? "/hub/" + hub : "") + queryParams)
         } else {
             def config = portalService.getAppConfig(hub)
             if (!config && hub) {
@@ -180,7 +181,7 @@ class PortalController {
     private def login() {
         // redirect to login page
         def queryParams = (request.queryString) ? '?' + request.queryString : ''
-        redirect(url: grailsApplication.config.security.cas.loginUrl + "?service=" + URLEncoder.encode(grailsApplication.config.security.cas.appServerName + request.servletContext + queryParams, "UTF-8"))
+        redirect(url: grailsApplication.config.security.cas.loginUrl + "?service=" + URLEncoder.encode(request.requestURL + queryParams, "UTF-8"))
     }
 
     def resetCache() {

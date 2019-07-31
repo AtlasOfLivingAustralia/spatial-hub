@@ -363,6 +363,10 @@
                         }, 0);
                     },
 
+                    getNextUid: function () {
+                        return uid + 1;
+                    },
+
                     removeHighlight: function () {
                         for (var name in leafletLayers) {
                             if (name.match(/highlight.*/) != null) {
@@ -466,10 +470,15 @@
                                 });
                             }
 
-                        } else if (id.q && id.layertype !== 'area') {
+                        } else if ((id.q || id.qid) && id.layertype !== 'area') {
+                            if (!id.bs) id.bs = $SH.biocacheServiceUrl
+                            if (!id.ws) id.ws = $SH.biocacheUrl
+
                             // do not add to log if it is a child layer or already logged
                             if ((id.log === undefined || id.log) && parentLayer === undefined) {
                                 LoggerService.log('Map', 'Species', {
+                                    bs: id.bs,
+                                    ws: id.ws,
                                     qid: id.qid,
                                     label: id.displayname,
                                     species_list: id.species_list
