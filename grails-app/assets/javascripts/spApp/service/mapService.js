@@ -691,8 +691,9 @@
                                 } else if (id.sld_body) {
                                     newLayer.layerParams.sld_body = id.sld_body
                                     newLayer.url = newLayer.url.replace("gwc/service/", "")
-                                } else {
-                                    //id.leaflet.layerParams.styles = layer.id
+                                } else if (layer.id.startsWith("cl")) {
+                                    // contextual layers may have more than one style
+                                    newLayer.layerParams.styles = layer.id
                                 }
                                 newLayer.legendurl = newLayer.url
                                     .replace("gwc/service/", "")
@@ -702,7 +703,13 @@
                                     .replace("&style=", "&ignore=");
 
                                 if (!newLayer.legendurl.indexOf("GetLegendGraphic") >= 0) {
-                                    newLayer.legendurl += "&service=WMS&version=1.1.0&request=GetLegendGraphic&format=image/png"
+                                    if (id.sldBody) {
+                                        newLayer.legendurl += "&service=WMS&version=1.1.0&request=GetLegendGraphic&format=image/png&sld_body=" + encodeURIComponent(id.sldBody)
+                                    } else if (id.sld_body) {
+                                        newLayer.legendurl += "&service=WMS&version=1.1.0&request=GetLegendGraphic&format=image/png&sld_body=" + encodeURIComponent(id.sld_body)
+                                    } else {
+                                        newLayer.legendurl += "&service=WMS&version=1.1.0&request=GetLegendGraphic&format=image/png&style=" + encodeURIComponent(layer.id)
+                                    }
                                 }
                             }
                         }
