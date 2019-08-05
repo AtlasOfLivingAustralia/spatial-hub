@@ -707,7 +707,7 @@
                                         newLayer.legendurl += "&service=WMS&version=1.1.0&request=GetLegendGraphic&format=image/png&sld_body=" + encodeURIComponent(id.sldBody)
                                     } else if (id.sld_body) {
                                         newLayer.legendurl += "&service=WMS&version=1.1.0&request=GetLegendGraphic&format=image/png&sld_body=" + encodeURIComponent(id.sld_body)
-                                    } else {
+                                    } else if (layer.id.startsWith("cl")) {
                                         newLayer.legendurl += "&service=WMS&version=1.1.0&request=GetLegendGraphic&format=image/png&style=" + encodeURIComponent(layer.id)
                                     }
                                 }
