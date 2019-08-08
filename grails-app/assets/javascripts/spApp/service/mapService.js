@@ -489,6 +489,7 @@
                                 env = 'colormode%3A-1%3Bname%3Acircle%3Bsize%3A3%3Bopacity%3A1%3Bcolor%3A' + id.color;
                             }
 
+
                             //backup selection fq
                             var fq = undefined;
                             if (firstLayer && firstLayer.layerParams.fq) {
@@ -511,6 +512,8 @@
                                     transparent: true,
                                     continuousWorld: true
                                 }
+                                // temporarily use the same legend as colorType == 'grid'
+                                , legendurl: $SH.baseUrl + "/assets/gridlegend.png"
                             };
 
                             //restore selection fq
