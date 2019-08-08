@@ -140,7 +140,8 @@ app:
             userId: "X-ALA-userId"
 
 headerAndFooter:
-    baseURL: 'https://www2.ala.org.au/commonui-bs3'
+    baseURL: 'https://www.ala.org.au/commonui-bs3-2019'
+    version: '2'
 
 ala:
     baseURL: 'https://www.ala.org.au'

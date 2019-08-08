@@ -1,0 +1,67 @@
+/* Make commonui-bs3-2019/css/ala-styles.css compatible with spatial-hub */
+
+.hidden-lg {
+    display: block !important;
+}
+
+.hidden-md {
+    display: block !important;
+}
+
+.hidden-xs {
+    display: none !important;
+}
+
+.hidden-sm {
+    display: none !important;
+}
+
+#wrapper-navbar > nav .loginBtn {
+    display: none !important;
+}
+
+#wrapper-navbar .navbar > .header-logo-menu .navbar-brand {
+    height: 35px;
+}
+
+.navbar-header {
+    width: 100%;
+}
+
+.navbar-inverse .collapse:not(.in) {
+    display: none !important;
+}
+
+.account-icon {
+    fill: white !important;
+}
+
+#wrapper-navbar .collapse-trigger-button:not(.collapsed) .visible-on-show {
+    display: flex !important;
+}
+
+#wrapper-navbar .navbar > .header-logo-menu {
+    display: block !important;
+}
+
+#wrapper-navbar .navbar {
+    padding: .3rem 1rem .1rem 1rem;
+    min-height: 45px;
+}
+
+.navbar-collapse.collapse {
+    overflow-x: auto !important;
+    height: 340px !important;
+}
+
+#wrapper-navbar .navbar > .header-logo-menu .main-nav-wrapper {
+    display: block;
+}
+
+.navbar-nav > li {
+    float: none;
+}
+
+#autocompleteSearchALA {
+    width: 100%;
+}
