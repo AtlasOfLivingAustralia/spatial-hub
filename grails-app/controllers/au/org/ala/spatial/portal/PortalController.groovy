@@ -130,9 +130,10 @@ class PortalController {
 
         if (params?.silent) {
             render html: '<html>' + (authService.userId != null ? 'isLoggedIn' : 'isLoggedOut') + '</html>'
-        } else if (request.forwardURI.contains(';jsessionid=')) {
+        } else if (request.requestURL.contains(';jsessionid=')) {
             //clean forwards from CAS
-            redirect(url: grailsApplication.config.grails.serverURL + (hub != null ? "/hub/" + hub : ""), params: params)
+            def queryParams = (request.queryString) ? '?' + request.queryString : ''
+            redirect(url: request.requestURL.toString().replaceAll(';jsessionid=.*', '') + queryParams)
         } else {
             def config = portalService.getAppConfig(hub)
             if (!config && hub) {
@@ -180,7 +181,7 @@ class PortalController {
     private def login() {
         // redirect to login page
         def queryParams = (request.queryString) ? '?' + request.queryString : ''
-        redirect(url: grailsApplication.config.security.cas.loginUrl + "?service=" + URLEncoder.encode(grailsApplication.config.security.cas.appServerName + request.servletContext + queryParams, "UTF-8"))
+        redirect(url: grailsApplication.config.security.cas.loginUrl + "?service=" + URLEncoder.encode(request.requestURL + queryParams, "UTF-8"))
     }
 
     def resetCache() {
@@ -235,6 +236,13 @@ class PortalController {
         render sessionService.list(getValidUserId(params)) as JSON
     }
 
+    /**
+     * Get the userId
+     *
+     * @param params
+     * @return DEFAULT_USER_ID when CAS is disabled, params.userId whend params.apiKey is valid, logged in userId or
+     * null when not logged in
+     */
     private def getValidUserId(params) {
         //apiKey + userId (non-numeric) OR authenticated user
         def userId
