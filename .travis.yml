@@ -5,6 +5,10 @@ sudo: false
 branches:
   only:
   - master
+  - develop
+  - /^release\/.*$/
+  - /^feature\/.*$/
+  - /^hotfix\/.*$/
 addons:
   apt:
     packages:
