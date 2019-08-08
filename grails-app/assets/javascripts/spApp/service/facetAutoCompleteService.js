@@ -78,6 +78,11 @@
                         })
                     }
 
+                    var custom_facets = {};
+                    $.map($SH.custom_facets, function (v, k) {
+                        custom_facets[k] = $.merge([], v)
+                    })
+
                     var expanded = [];
                     for (i = 0; i < list.length; i++) {
                         var o = {
@@ -100,7 +105,7 @@
                         }
 
                         // insert custom facets
-                        var custom = $SH.custom_facets[list[i].title];
+                        var custom = custom_facets[list[i].title];
                         if (custom) {
                             for (j = 0; j < custom.length; j++) {
                                 var nameField = custom[j].split(';');
@@ -113,12 +118,12 @@
                                 })
                             }
                         }
-                        $SH.custom_facets[list[i].title] = undefined;
+                        custom_facets[list[i].title] = undefined;
                     }
 
                     // add remaining custom facets
-                    for (var key in $SH.custom_facets) {
-                        var custom = $SH.custom_facets[key];
+                    for (var key in custom_facets) {
+                        var custom = custom_facets[key];
                         if (custom) {
                             expanded.push({
                                 name: '--- ' + key + ' ---',
