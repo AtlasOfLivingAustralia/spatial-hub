@@ -103,7 +103,7 @@ task _Events {
 // the tasks used here for dependsOn may be incomplete/incorrect
 assetCompile.dependsOn(_Events)
 compileGroovy.dependsOn(_Events)
-//bootRun.dependsOn(_Events)
+bootRun.dependsOn(_Events)
 
 bootRun {
     jvmArgs('-Dspring.output.ansi.enabled=always', '-Xmx4G')
