@@ -10,7 +10,8 @@
             <thead>
             <th>Type</th>
             <th>Action</th>
-            <th>Data</th>
+            <th>Description</th>
+            <th></th>
             <th></th>
             </thead>
             <tbody>
@@ -18,7 +19,11 @@
                 <td style="vertical-align: top">{{item.category1}}</td>
                 <td style="vertical-align: top">{{item.category2}}</td>
                 <td>
-                    <textarea style="width:400px;height:100px" ng-model="item.data"></textarea>
+                    <textarea style="width:400px;height:50px" ng-model="item.description"></textarea>
+                    <!--<textarea style="width:400px;height:100px" ng-model="item.data" readonly></textarea>-->
+                </td>
+                <td style="vertical-align: top">
+                    <button class="btn btn-default btn-xs" ng-click="edit(item)">edit</button>
                 </td>
                 <td style="vertical-align: top"><i class="glyphicon glyphicon-trash" ng-click="delete(item)"></i></td>
             </tr>

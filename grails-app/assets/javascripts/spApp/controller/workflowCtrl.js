@@ -8,8 +8,8 @@
      */
     angular.module('workflow-ctrl', [])
         .controller('WorkflowCtrl', ['$scope', 'MapService', '$timeout', 'LayoutService', '$uibModalInstance',
-            'BiocacheService', '$http', 'LayersService', 'LoggerService',
-            function ($scope, MapService, $timeout, LayoutService, $uibModalInstance, BiocacheService, $http, LayersService, LoggerService) {
+            'BiocacheService', '$http', 'LayersService', 'LoggerService', 'WorkflowService',
+            function ($scope, MapService, $timeout, LayoutService, $uibModalInstance, BiocacheService, $http, LayersService, LoggerService, WorkflowService) {
 
                 // During playback and editing the current dialog may close. Keep track of playback and edit position.
                 $scope.playStep = -1
@@ -124,6 +124,10 @@
                     console.log(ov)
 
                     return ov;
+                }
+
+                $scope.edit = function (item) {
+                    $scope.play(item, true);
                 }
 
                 $scope.play = function (item, editOnly) {
