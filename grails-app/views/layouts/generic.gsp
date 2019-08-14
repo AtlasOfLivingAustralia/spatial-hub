@@ -50,6 +50,7 @@
 <!-- End footer -->
 
 <!-- JS resources-->
+<asset:javascript src="generic.js"/>
 <asset:deferredScripts />
 
 </body>

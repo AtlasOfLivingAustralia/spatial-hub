@@ -11,6 +11,7 @@ import org.apache.commons.io.FileUtils
 import org.apache.commons.lang.StringUtils
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.client.methods.HttpPost
+import org.jasig.cas.client.util.CommonUtils
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.multipart.MultipartHttpServletRequest
 
@@ -130,9 +131,10 @@ class PortalController {
 
         if (params?.silent) {
             render html: '<html>' + (authService.userId != null ? 'isLoggedIn' : 'isLoggedOut') + '</html>'
-        } else if (request.forwardURI.contains(';jsessionid=')) {
+        } else if (request.requestURL.contains(';jsessionid=')) {
             //clean forwards from CAS
-            redirect(url: grailsApplication.config.grails.serverURL + (hub != null ? "/hub/" + hub : ""), params: params)
+            def queryParams = (request.queryString) ? '?' + request.queryString : ''
+            redirect(url: request.requestURL.toString().replaceAll(';jsessionid=.*', '') + queryParams)
         } else {
             def config = portalService.getAppConfig(hub)
             if (!config && hub) {
@@ -179,8 +181,13 @@ class PortalController {
 
     private def login() {
         // redirect to login page
-        def queryParams = (request.queryString) ? '?' + request.queryString : ''
-        redirect(url: grailsApplication.config.security.cas.loginUrl + "?service=" + URLEncoder.encode(grailsApplication.config.security.cas.appServerName + request.servletContext + queryParams, "UTF-8"))
+        String serverName = grailsApplication.config.security.cas.appServerName
+        def protocol = org.jasig.cas.client.Protocol.CAS2
+        String service = null
+
+        def requestURL = CommonUtils.constructServiceUrl(request, response, service, serverName, protocol.getServiceParameterName(), protocol.getArtifactParameterName(), true);
+
+        redirect(url: grailsApplication.config.security.cas.loginUrl + "?service=" + URLEncoder.encode(requestURL, "UTF-8"))
     }
 
     def resetCache() {
@@ -235,6 +242,13 @@ class PortalController {
         render sessionService.list(getValidUserId(params)) as JSON
     }
 
+    /**
+     * Get the userId
+     *
+     * @param params
+     * @return DEFAULT_USER_ID when CAS is disabled, params.userId whend params.apiKey is valid, logged in userId or
+     * null when not logged in
+     */
     private def getValidUserId(params) {
         //apiKey + userId (non-numeric) OR authenticated user
         def userId

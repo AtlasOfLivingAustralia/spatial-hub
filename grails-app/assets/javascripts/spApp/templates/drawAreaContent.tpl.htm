@@ -7,7 +7,7 @@
             </h3>
         </div>
         <div class="panel-body">
-            <div class="alert alert-ala-success" role="alert">
+            <div class="alert alert-ala-success alert-success" role="alert">
                 <div class="container">
                     <p style="display:inline;">
                     <div ng-show="type == 'pointOnLayer'">
@@ -17,7 +17,8 @@
                         <span i18n="74"
                               ng-hide="selectedArea.wkt.length > 0">Draw on the map to create the new area.</span>
                         <div class="btn-group btn-group-sm" ng-show="selectedArea.wkt.length > 0">
-                            <button i18n="77" class="btn" ng-click="enableDrawing()" ng-show="type != 'pointOnLayer'"
+                            <button i18n="77" class="btn btn-default" ng-click="enableDrawing()"
+                                    ng-show="type != 'pointOnLayer'"
                             >Delete and redraw
                             </button>
                         </div>
