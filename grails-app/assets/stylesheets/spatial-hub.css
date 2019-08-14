@@ -1061,3 +1061,8 @@ ul.errors {
 .ui-autocomplete .ui-menu-item-wrapper {
     display: block;
 }
+
+.save-load {
+    color: white;
+    padding-right: 20px;
+}

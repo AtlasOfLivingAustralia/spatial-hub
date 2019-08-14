@@ -46,6 +46,16 @@
                 </div>
 
                 <div class="display-flex ${loginStatus}">
+                    <g:if test="${request.userPrincipal != null}">
+                        <a href="#" class="save-load"
+                           onclick="$('#saveSessionButton')[0].click()"
+                           data-toggle="dropdown" role="button"
+                           aria-expanded="false">Save</a>
+                        <a href="#" class="save-load"
+                           onclick="$('#sessionsButton')[0].click()"
+                           data-toggle="dropdown" role="button"
+                           aria-expanded="false">Load</a>
+                    </g:if>
                     <button class="display-flex search-trigger hidden-md hidden-lg collapsed collapse-trigger-button"
                             title="Open search dialog"
                             data-toggle="collapse" data-target="#autocompleteSearchALA"
