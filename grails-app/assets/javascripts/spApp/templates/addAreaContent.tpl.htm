@@ -82,7 +82,7 @@
                                     Shapefile</label></div>
                                 <div class="well-lg" ng-show="fileName.length > 0 && area == 'importShapefile'"
                                      style="">
-                                    <div class="alert alert-ala-success"><p><span
+                                    <div class="alert alert-ala-success alert-success"><p><span
                                             i18n="19">Imported shapefile:&nbsp;</span>{{
                                         fileName }}</p></div>
                                 </div>
@@ -92,7 +92,7 @@
                                                                     ng-disabled="isNotLoggedIn || selectionDone">Import
                                     KML</label></div>
                                 <div class="well-lg" ng-show="fileName.length > 0 && area == 'importKML'">
-                                    <div class="alert alert-ala-success"><p><span
+                                    <div class="alert alert-ala-success alert-success"><p><span
                                             i18n="21">"Imported KML file:&nbsp;</span>{{
                                         fileName }}</p></div>
                                 </div>
@@ -282,7 +282,6 @@
 </div>
 
 <div class="modal-footer">
-
     <button i18n="45" class="btn btn-default" type="button" ng-click="$close()">Cancel</button>
     <button i18n="39" class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="isDisabled()">Next &gt;
     </button>

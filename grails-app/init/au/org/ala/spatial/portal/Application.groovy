@@ -26,9 +26,7 @@ class Application extends GrailsAutoConfiguration implements EnvironmentAware {
                 result.append(url.authority)
             }
 
-            if (url.file != null) {
-                result.append(url.file)
-            }
+            // ala-cas-client in ala-auth:3.1.1 needs appServerName to exclude url.file
 
             Properties properties = new Properties()
             properties.put('security.cas.appServerName', result.toString())

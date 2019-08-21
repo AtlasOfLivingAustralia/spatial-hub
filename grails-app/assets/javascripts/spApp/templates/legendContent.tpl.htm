@@ -408,6 +408,11 @@
             </button>
         </div>
 
+        <div ng-if="selected.layer.layertype == 'species' && selected.layer.colorType == 'grid' && selected.layer.leaflet.layerOptions.layers[0].legendurl">
+            <img ng-src="{{selected.layer.leaflet.layerOptions.layers[0].legendurl}}">
+            <br/>
+        </div>
+
         <div class="form-group row"
              ng-if="selected.layer.layertype == 'species'">
             <playback selected-layer="selected"></playback>
