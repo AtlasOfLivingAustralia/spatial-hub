@@ -1074,3 +1074,7 @@ ul.errors {
     color: white;
     padding-right: 20px;
 }
+
+.workflow-annotation .form-group {
+    margin-bottom: 5px;
+}

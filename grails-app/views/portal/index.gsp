@@ -51,6 +51,8 @@
         collectionsUrl: '${config.collections.url}',
         userObjectsField: '${config.userObjectsField}',
         userId: '${userId}',
+        userDisplayName: '${userDetails?.displayName ?: ""}', // Used to pre-populate DOI metadata for CSDM
+        userOrganisation: '${userDetails?.organisation ?: ""}', // Used to pre-populate DOI metadata for CSDM
         hoverLayers: [],
         proxyUrl: '${createLink(controller: 'portal', action: 'proxy', absolute: true)}',
         url: '${createLink(controller: 'portal', action: 'index')}',
@@ -95,7 +97,7 @@
         <g:if test="${config.doiService?.searchFilter}">
         doiSearchFilter: '${config.doiService.searchFilter}',
         </g:if>
-
+        annotateDatasetOnExport: ${Boolean.valueOf(config.annotateDatasetOnExport)},
         qc: '${config.qc}',
 
         validUrls: [
