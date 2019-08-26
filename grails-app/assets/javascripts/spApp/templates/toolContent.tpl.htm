@@ -125,6 +125,9 @@
                                 <div ng-if="v.type == 'facet'">
                                     <div select-facet selected-facet="values[i]"></div>
                                 </div>
+                                <div ng-if="v.type == 'annotation'">
+                                    <div workflow-annotation value="values[i]"></div>
+                                </div>
                             </div>
                         </div>
                         <span ng-repeat-end ng-init="stepCount[idx] = stepCount[idx - 1] + sv.inputArr.length"></span>

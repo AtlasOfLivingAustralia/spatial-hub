@@ -16,6 +16,7 @@
                     species: undefined,
                     area: undefined,
                     layers: undefined,
+                    annotation: undefined,
 
                     // Override text with view-config.json
                     spec: {
@@ -60,6 +61,10 @@
                         _this.area = inputs[0];
                         _this.species = inputs[1];
                         _this.layers = inputs[2];
+
+                        if (annotateDatasetOnExport) {
+                            _this.annotation = inputs[3];
+                        }
 
                         return BiocacheService.newLayer(_this.species, _this.area, '').then(function (query) {
                             //include redirect to biocache-service/occurrences/search page
