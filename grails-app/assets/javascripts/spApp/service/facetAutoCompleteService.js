@@ -221,6 +221,7 @@
                             expanded.push({
                                 displayName: label,
                                 class: list[i].classs,
+                                dataType: list[i].dataType,
                                 description: list[i].description,
                                 info: list[i].info,
                                 url: list[i].url,

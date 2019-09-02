@@ -448,7 +448,7 @@
                                 function (data) {
                                     results.push(data);
                                     if (queue.length > 0) {
-                                        return scope.asyncFacetCounts(queue, results);
+                                        return scope.asyncFacetCounts(queue, results, selectedLayer);
                                     } else {
                                         return $q.when();
                                     }
@@ -483,7 +483,7 @@
                             var results = [];
                             var selectedLayer = scope.selected.layer;
                             selectedLayer.facetProgress = results.length + " of " + queue.length;
-                            promises.push(scope.asyncFacetCounts(queue, results));
+                            promises.push(scope.asyncFacetCounts(queue, results, selectedLayer));
 
                             $q.all(promises).then(function (result) {
                                 result = results;
@@ -657,6 +657,7 @@
                                     var facet = {
                                         id: nextId,
                                         name: selectedLayer.indexFields[i].facet,
+                                        dataType: selectedLayer.indexFields[i].dataType,
                                         displayName: selectedLayer.indexFields[i].displayName,
                                         info: selectedLayer.indexFields[i].info,
                                         description: selectedLayer.indexFields[i].description,

@@ -2256,3 +2256,8 @@ ul.errors {
 .popover {
     max-width: none;
 }
+
+.inactive .ui-widget-header {
+    background-color: #999999;
+    background-image: none;
+}

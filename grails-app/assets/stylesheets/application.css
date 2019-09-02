@@ -9,6 +9,7 @@
 *= require Leaflet.zoomslider-0.7.1/src/L.Control.Zoomslider.css
 *= require angular/angular-csp.css
 *= require angular-ui-bootstrap/dist/ui-bootstrap-csp.css
+*= require ALAChart.css
 *= require sandbox.css
 *= require angular-loading-bar/build/loading-bar.min.css
 *= require jquery-layout/jquery.layout.css
