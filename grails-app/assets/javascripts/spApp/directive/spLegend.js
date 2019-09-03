@@ -8,8 +8,8 @@
      *    Panel displaying selected map layer information and controls
      */
     angular.module('sp-legend-directive', ['map-service', 'biocache-service', 'layers-service', 'popup-service'])
-        .directive('spLegend', ['$timeout', '$q', 'MapService', 'BiocacheService', 'LayersService', 'ColourService', '$http', 'LayoutService', 'PopupService', 'LoggerService',
-            function ($timeout, $q, MapService, BiocacheService, LayersService, ColourService, $http, LayoutService, PopupService, LoggerService) {
+        .directive('spLegend', ['$timeout', '$q', 'MapService', 'BiocacheService', 'LayersService', 'ColourService', '$http', 'LayoutService', 'PopupService', 'EventService',
+            function ($timeout, $q, MapService, BiocacheService, LayersService, ColourService, $http, LayoutService, PopupService, EventService) {
 
                 var _httpDescription = function (method, httpconfig) {
                     if (httpconfig === undefined) {
@@ -114,49 +114,14 @@
                                 var inFq = selectedLayer.scatterplotFq;
                                 var outFq = '-(' + selectedLayer.scatterplotFq + ')';
 
-                                LoggerService.log("Create", "scatterplotCreateInOut", JSON.stringify({
-                                    scatterplot: selectedLayer.scatterplotId,
-                                    scatterplotFq: selectedLayer.scatterplotFq
-                                }))
-
-                                BiocacheService.newLayerAddFq(selectedLayer, inFq,
-                                    selectedLayer.name + " : " + $i18n(338, "in scatterplot selection")).then(function (data) {
-                                    MapService.add(data)
-                                });
-
-                                BiocacheService.newLayerAddFq(selectedLayer, outFq,
-                                    selectedLayer.name + " : " + $i18n(339, "out scatterplot selection")).then(function (data) {
-                                    MapService.add(data)
-                                })
+                                EventService.scatterplotCreateInOut(selectedLayer, inFq, outFq)
                             }
                         };
 
                         scope.adhocCreateInOut = function () {
                             var selectedLayer = scope.selected.layer;
                             if (selectedLayer !== undefined) {
-
-                                LoggerService.log("Create", "adhocCreateInOut",
-                                    JSON.stringify({
-                                        query: selectedLayer.q, bs: selectedLayer.bs,
-                                        ws: selectedLayer.ws, inFq: selectedLayer.inAdhocQ,
-                                        outFq: selectedLayer.outAdhocQ
-                                    }))
-
-                                if (selectedLayer.inAdhocQ) {
-                                    var inFq = selectedLayer.inAdhocQ
-                                    BiocacheService.newLayerAddFq(selectedLayer, inFq,
-                                        selectedLayer.name + " : " + $i18n(340, "in adhoc")).then(function (data) {
-                                        MapService.add(data)
-                                    });
-                                }
-
-                                if (selectedLayer.outAdhocQ) {
-                                    var outFq = selectedLayer.outAdhocQ;
-                                    BiocacheService.newLayerAddFq(selectedLayer, outFq,
-                                        scope.selected.layer.name + " : " + $i18n(341, "out adhoc")).then(function (data) {
-                                        MapService.add(data)
-                                    })
-                                }
+                                EventService.adhocCreateInOut(selectedLayer, selectedLayer.inAdhocQ, selectedLayer.outAdhocQ)
                             }
                         };
 
@@ -353,19 +318,7 @@
                         scope.facetNewLayer = function () {
                             var selectedLayer = scope.selected.layer;
                             if (selectedLayer !== undefined) {
-                                var newFqs = scope.getFacetFqs(true, selectedLayer);
-                                BiocacheService.newLayerAddFq(selectedLayer, newFqs,
-                                    selectedLayer.name + " : " + $i18n(342, "from selected")).then(function (data) {
-                                    data.species_list = selectedLayer.species_list;
-
-                                    LoggerService.log("Create", "facetNewLayer",
-                                        JSON.stringify({
-                                            query: selectedLayer.q, bs: selectedLayer.bs,
-                                            ws: selectedLayer.ws, facet: newFqs
-                                        }))
-
-                                    MapService.add(data)
-                                })
+                                EventService.facetNewLayer(selectedLayer, scope.getFacetFqs(true, selectedLayer))
                             }
                         };
 
@@ -392,23 +345,7 @@
                         scope.facetNewLayerOut = function () {
                             var selectedLayer = scope.selected.layer;
                             if (selectedLayer !== undefined) {
-                                var newFqs = scope.getFacetFqs(true, selectedLayer);
-                                var fq = ''
-                                if (newFqs.length > 0) {
-                                    fq = "-((" + newFqs.join(") AND (") + "))"
-                                }
-                                BiocacheService.newLayerAddFq(selectedLayer, fq,
-                                    selectedLayer.name + " : " + $i18n(343, "from unselected")).then(function (data) {
-                                    data.species_list = selectedLayer.species_list;
-
-                                    LoggerService.log("Create", "facetNewLayerOut",
-                                        JSON.stringify({
-                                            query: selectedLayer.q, bs: selectedLayer.bs,
-                                            ws: selectedLayer.ws, facet: fq
-                                        }))
-
-                                    MapService.add(data)
-                                })
+                                EventService.facetNewLayerOut(selectedLayer, scope.getFacetFqs(true, selectedLayer))
                             }
                         };
 

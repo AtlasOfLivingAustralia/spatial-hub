@@ -8,7 +8,7 @@
         <div class="col-md-12">
             <form class="form-horizontal" ng-init="stepCount = []">
 
-                <div ng-show="stepView && stage == 'input'">
+                <div ng-show="stepView && (stage == 'input' || stage == 'edit')">
                     <div id="tool-items" ng-repeat="(key, sv) in stepView" ng-init="idx = $index"
                          class="panel panel-default">
                         <div ng-repeat="i in sv.inputArr"
@@ -156,7 +156,7 @@
 <div class="modal-footer">
     <button i18n="45" class="btn btn-default" type="button" ng-click="close()">Cancel</button>
     <button i18n="39" class="btn btn-primary" type="button" ng-click="finish()" ng-hide="finished"
-            ng-disabled="isDisabled() || stage != 'input'">Next &gt;
+            ng-disabled="isDisabled() || (stage != 'input' && stage != 'edit')">Next &gt;
     </button>
 
     <a download ng-href="{{downloadUrl}}" style="float:left" ng-show="finished && downloadUrl">

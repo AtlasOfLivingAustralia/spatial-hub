@@ -277,7 +277,7 @@
                             _executeResult(uiScope);
 
                             // Create log entry for a local tool when the task is finished with the input data
-                            LoggerService.log('Tool', uiScope.toolName, JSON.stringify(inputs))
+                            LoggerService.log('Tool', uiScope.toolName, inputs)
 
                             uiScope.$close();
                         })
