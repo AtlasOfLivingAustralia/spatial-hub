@@ -43,11 +43,11 @@
                         if (scope._facet.sortType === undefined) scope._facet.sortType = 'count';
                         if (scope._facet.sortReverse === undefined) scope._facet.sortReverse = true;
                         if (scope._facet.isAllFacetsSelected === undefined) scope._facet.isAllFacetsSelected = false;
-                        if (scope.chart === undefined) scope.chart = {colours: [], data: [], labels:[], datasets: {}};
-                        if (scope.slider === undefined) scope.slider = {values: [0,1], min: 0, max: 1, active: false};
+                        if (scope.chart === undefined) scope.chart = {colours: [], data: [], labels: [], datasets: {}};
+                        if (scope.slider === undefined) scope.slider = {values: [0, 1], min: 0, max: 1, active: false};
                         if (scope.height === undefined) scope.height = 50;
 
-                        scope.showTableOrChart = function() {
+                        scope.showTableOrChart = function () {
                             if (showChartForDataTypes.indexOf(scope._facet.dataType) >= 0)
                                 scope.facetDisplay = chartFacetDisplay;
                             else
@@ -78,12 +78,12 @@
                             }
                         };
 
-                        scope.updateChartColour = function() {
+                        scope.updateChartColour = function () {
                             Util.getBorderColour(chartData, scope.datasetOverride.borderColor);
                             Util.getBarColour(chartData, scope.chart.colours, scope.formatColor);
                         };
 
-                        scope.chartClick = function(elements, event, element) {
+                        scope.chartClick = function (elements, event, element) {
                             scope.setSliderInactive();
 
                             elements && elements.forEach(function (elem) {
@@ -108,9 +108,9 @@
                         scope.updateSliderConfig = function () {
                             var data = chartData || scope._facet.data;
                             if (data && data.length) {
-                                scope.slider.values[1] = scope.slider.max =  data.length - 1;
+                                scope.slider.values[1] = scope.slider.max = data.length - 1;
                                 scope.slider.values[0] = scope.slider.max - 1;
-                                if ( scope.slider.values[0] < 0 )
+                                if (scope.slider.values[0] < 0)
                                     scope.slider.values[0] = 0;
                             } else {
                                 scope.slider.values[1] = scope.slider.max = 1;
@@ -118,7 +118,7 @@
                             }
                         };
 
-                        scope.setSliderState = function(state) {
+                        scope.setSliderState = function (state) {
                             scope.slider.active = !!state;
                         };
 
@@ -136,7 +136,7 @@
                         };
 
                         scope.info = function (item) {
-                            bootbox.alert($i18n(397) + ': <a href="' + item.url + '">' + item.url + '</a>')
+                            bootbox.alert($i18n(397, "Metadata url") + ': <a href="' + item.url + '">' + item.url + '</a>')
                         };
 
                         scope.zoom = function (item) {
@@ -226,7 +226,7 @@
                             scales: {
                                 yAxes: [{
                                     ticks: {
-                                        callback: function(value) {
+                                        callback: function (value) {
                                             return value ? value.substr(0, labelLength) : '';
                                         }
                                     }
@@ -239,7 +239,7 @@
                                 enabled: true,
                                 mode: 'label',
                                 callbacks: {
-                                    title: function(tooltipItems, data) {
+                                    title: function (tooltipItems, data) {
                                         var idx = tooltipItems[0].index;
                                         return data.labels[idx];
                                     },
@@ -247,7 +247,7 @@
                                         var idx = tooltipItem.index,
                                             label = data.datasets[0].data[idx];
 
-                                        if(chartData[idx].selected)
+                                        if (chartData[idx].selected)
                                             label += " " + $i18n(450);
 
                                         return label;

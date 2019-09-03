@@ -31,7 +31,7 @@
                         biocacheServiceUrl: $SH.biocacheServiceUrl,
                         biocacheWebappUrl: $SH.biocacheUrl,
                         query: scope.qid,
-                        queryContext:"",
+                        queryContext: "",
                         charts: $SH.config.charts,
                         chartControls: false,
                         $i18n: $i18n

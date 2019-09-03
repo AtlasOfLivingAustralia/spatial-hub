@@ -2,7 +2,7 @@
     <label>Display facet class in</label>
     <div class="btn-group">
         <button class="btn btn-default btn-xs" uib-btn-radio="'table'" ng-model="facetDisplay">
-             table
+            table
         </button>
         <button class="btn btn-default btn-xs" uib-btn-radio="'chart'" ng-model="facetDisplay">
             chart
@@ -24,7 +24,8 @@
         <th style="width:20px"><input type="checkbox" ng-model="_facet.isAllFacetsSelected"
                                       ng-change="checkAllFacets()"></th>
         <th style="width:230px">
-            <a href="#" ng-click="_facet.sortType = 'displayname'; _facet.sortReverse = !_facet.sortReverse;setSliderInactiveAndRedrawChart();">
+            <a href="#"
+               ng-click="_facet.sortType = 'displayname'; _facet.sortReverse = !_facet.sortReverse;setSliderInactiveAndRedrawChart();">
                 <span i18n="329">Facet Class</span>
                 <span ng-show="_facet.sortType == 'displayname' && !_facet.sortReverse"
                       class="glyphicon glyphicon-chevron-down"></span>
@@ -43,15 +44,17 @@
     </tr>
     </thead>
     <tbody>
-    <tr ng-repeat="x in _facet.data | orderBy:_facet.sortType:_facet.sortReverse |filter:_facet.filter" ng-if="facetDisplay === 'table'">
+    <tr ng-repeat="x in _facet.data | orderBy:_facet.sortType:_facet.sortReverse |filter:_facet.filter"
+        ng-if="facetDisplay === 'table'">
         <td style="width:20px"><input type="checkbox" ng-model="x.selected" ng-change="updateSelection()"></td>
         <td style="width:230px">{{x.displayname}}</td>
         <td style="width:100px">{{x.count}}</td>
         <td i18n="130" style="background-color:#{{formatColor(x)}};width:20px">&nbsp</td>
     </tr>
-    <tr ng-if="facetDisplay === 'chart'" >
+    <tr ng-if="facetDisplay === 'chart'">
         <td>
-            <div uib-popover="{{$i18n(452)}}" popover-title="{{$i18n(451)}}" popover-trigger="'mouseenter'" popover-placement="right" style="height: 30px">
+            <div uib-popover="{{$i18n(452)}}" popover-title="{{$i18n(451)}}" popover-trigger="'mouseenter'"
+                 popover-placement="right" style="height: 30px">
                 <i class="glyphicon glyphicon-info-sign"></i>
             </div>
             <div ui-slider="sliderOptions" orientation="vertical" min="{{slider.min}}" max="{{slider.max}}"
@@ -61,8 +64,9 @@
         </td>
         <td colspan="2">
             <div class="chart-container" style="position: relative;" ng-style="{'height': (height + 30) + 'px'}">
-                <canvas id="test" class="chart-horizontal-bar"  chart-labels="chart.labels" chart-data="chart.data"
-                        chart-options="chartOptions" chart-colors="chart.colours" chart-click="chartClick" chart-dataset-override="datasetOverride"> </canvas>
+                <canvas id="test" class="chart-horizontal-bar" chart-labels="chart.labels" chart-data="chart.data"
+                        chart-options="chartOptions" chart-colors="chart.colours" chart-click="chartClick"
+                        chart-dataset-override="datasetOverride"></canvas>
             </div>
         </td>
     </tr>

@@ -269,12 +269,12 @@ var Util = {
         return copyTo;
     },
 
-    getBarColour: function(chartData, copyTo, getColour) {
+    getBarColour: function (chartData, copyTo, getColour) {
         copyTo = copyTo || [];
         copyTo.length = 0;
         chartData && chartData.forEach(function (point) {
             var colour = '#' + getColour(point);
-            copyTo.push ({
+            copyTo.push({
                 backgroundColor: colour,
                 pointBackgroundColor: colour
             });
@@ -282,13 +282,13 @@ var Util = {
 
         return copyTo;
     },
-    getBorderColour: function(chartData, copyTo) {
+    getBorderColour: function (chartData, copyTo) {
         copyTo = copyTo || [];
         copyTo.length = 0;
         chartData && chartData.forEach(function (point) {
             var selectedColour = "rgba(246, 235, 40, 1)",
                 defaultColour = "rgba(0, 0, 0, 0.1)";
-            copyTo.push ( point.selected ? selectedColour : defaultColour );
+            copyTo.push(point.selected ? selectedColour : defaultColour);
         });
 
         return copyTo;
