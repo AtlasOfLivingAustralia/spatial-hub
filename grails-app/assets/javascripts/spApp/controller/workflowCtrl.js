@@ -8,8 +8,8 @@
      */
     angular.module('workflow-ctrl', [])
         .controller('WorkflowCtrl', ['$scope', 'MapService', '$timeout', 'LayoutService', '$uibModalInstance',
-            'BiocacheService', '$http', 'LayersService', 'LoggerService', 'WorkflowService',
-            function ($scope, MapService, $timeout, LayoutService, $uibModalInstance, BiocacheService, $http, LayersService, LoggerService, WorkflowService) {
+            'BiocacheService', '$http', 'LayersService', 'LoggerService', 'WorkflowService', '$q',
+            function ($scope, MapService, $timeout, LayoutService, $uibModalInstance, BiocacheService, $http, LayersService, LoggerService, WorkflowService, $q) {
 
                 // During playback and editing the current dialog may close. Keep track of playback and edit position.
                 $scope.playStep = -1
@@ -21,13 +21,59 @@
                 $scope.speciesLayerId = -1; //$scope.getSpeciesLayer()
                 $scope.areaLayerId = -1; //$scope.getAreaLayer()
 
-                $scope.workflow = $.merge([], LoggerService.localHistory())
-                $scope.workflowEdit = JSON.stringify($scope.workflow)
+                $scope.workflow = undefined
+                $scope.workflowName = undefined
 
                 $scope.speciesLayers = $.merge([{name: 'none', uid: -1}], MapService.speciesLayers())
                 $scope.areaLayers = $.merge([{name: 'none', uid: -1}], MapService.areaLayers())
 
+                $scope.workflows = undefined
+
                 LayoutService.addToSave($scope);
+
+                if (!$scope.workflows) {
+                    WorkflowService.search('', 0, 5000).then(function (response) {
+                        $scope.workflows = $.merge([{description: 'Current session'}], response.data)
+                    })
+                }
+
+                $scope.loadWorkflow = function (id) {
+                    if (id === undefined) {
+                        // load current workflow
+                        $scope.workflow = $.merge([], LoggerService.localHistory())
+                        $scope.workflowName = $i18n(436, "My workflow") + " " + new Date().toLocaleString()
+                    } else {
+                        WorkflowService.get(id).then(function (response) {
+                            $scope.workflow = JSON.parse(response.data.metadata)
+                            $scope.workflowName = response.data.description
+
+                            $.map($scope.workflow, function (v) {
+                                if (typeof(v.data) == 'string') {
+                                    v.data = JSON.parse(v.data)
+
+                                    if ($.isArray(v.data.data)) {
+                                        $.map(v.data.data, function (subv) {
+                                            subv.raw = JSON.stringify(subv.facet)
+                                            if (!subv.description) {
+                                                subv.description = subv.raw
+                                            }
+                                        })
+                                    }
+                                }
+                            })
+                        })
+                    }
+                }
+
+                $scope.deleteWorkflow = function (id) {
+                    WorkflowService.delete(id).then(function (response) {
+                        for (var i = 0; i < $scope.workflows.length; i++) {
+                            if ($scope.workflows[i].ud_header_id == id) {
+                                $scope.workflows.splice(i, 1)
+                            }
+                        }
+                    })
+                }
 
                 $scope.delete = function (item) {
                     for (var i in $scope.workflow) {
@@ -110,18 +156,15 @@
                 }
 
                 $scope.dataToOverrideValues = function (item) {
-                    var data = JSON.parse(item.data)
 
                     var input = []
 
-                    $.map(data, function (v, k) {
+                    $.map(item.data, function (v, k) {
                         input[k] = {constraints: {default: v}}
                     })
 
                     var ov = {};
                     ov[item.category2] = {input: input}
-
-                    console.log(ov)
 
                     return ov;
                 }
@@ -131,9 +174,6 @@
                 }
 
                 $scope.play = function (item, editOnly) {
-                    console.log('editOnly:' + editOnly)
-                    console.log(item)
-
                     var stage = editOnly ? 'edit' : 'execute'
 
                     $scope.processData = {}
@@ -144,10 +184,11 @@
                         $scope.offsetLayerUid(item.data)
                     }
 
+                    // All executions produce a promise, unless workflowCtrl is closed at the end of the step.
+                    var promises = []
+
                     if ($scope.isTool(item)) {
-                        // execute tool
-                        console.log('istool')
-                        // execute tool
+                        // Execute tool. This will close workflowCtrl and reopen to continue after the tool is finished.
                         var processData = {
                             processName: item.category2,
                             stage: stage,
@@ -157,13 +198,53 @@
                             LayoutService.openModal('tool', processData, true)
                         }, 0)
                     } else if ($scope.isMap(item)) {
-                        // add to map
-                        console.log('ismap')
-                        MapService.add(item.data)
+                        // Add to map.
+                        if ("WMS" == item.category2) {
+                            promises.push(MapService.add(item.data))
+                        } else if ("Area" == item.category2) {
+                            promises.push(MapService.mapFromPid(item.data))
+                        }
                     } else if ($scope.isView(item)) {
-                        // open view
-                        console.log('isview')
-                        LayoutService.openModal(item.category2, item.data, true)
+                        if ("tabulation" == item.category2) {
+                            LayoutService.openModal('tabulate', item.data, true)
+                        } else if ("speciesInfo" == item.category2) {
+                            var layer = MapService.getFullLayer(item.data.layerId)
+                            LayoutService.openModal('speciesInfo', layer, true)
+                        } else if ("timeSeriesPlayback" == item.category2) {
+                            var layer = MapService.getFullLayer(item.data.layerId)
+                            layer.playback = {
+                                yearStepSize: item.data.yearStepSize,
+                                monthStepSize: item.data.monthStepSize,
+                                timeout: item.data.timeout,
+                                type: item.data.type,
+                                play: true,
+                                pause: false,
+                                stop: false
+                            }
+                            // time series playback is initiated by changing the selected layer
+                            MapService.select(undefined)
+
+                            $timeout(function () {
+                                MapService.select(layer)
+                            }, 0)
+                        } else if (LayoutService.isPanel(item.category2)) {
+                            LayoutService.openPanel(item.category2, item.data, true)
+                        } else {
+                            // Open view. This will close workflowCtrl and reopen to continue after the view is closed.
+                            LayoutService.openModal(item.category2, item.data, true)
+                        }
+                    } else if ($scope.isCreate(item)) {
+                        promises.push(EventService.execute(item.category2, item.data))
+                    }
+
+                    if (promises.length > 0) {
+                        return $q.all(promises).then(function () {
+                            return true
+                        })
+                    } else {
+                        return $q.when(true).then(function () {
+                            return false
+                        })
                     }
                 }
 
@@ -171,11 +252,12 @@
                     if ($scope.playStep < 0) {
                         $scope.playStep = 0;
                     }
-                    $.each($scope.workflow, function (idx, item) {
-                        if ($scope.playStep == idx) {
-                            $scope.play(item)
-                        }
+
+                    $scope.play($scope.workflow[$scope.playStep]).then(function (loop) {
                         $scope.playStep++;
+                        if (loop) {
+                            $scope.playback();
+                        }
                     })
                 }
 
@@ -189,6 +271,10 @@
 
                 $scope.isView = function (item) {
                     return item.category1 === 'View'
+                }
+
+                $scope.isCreate = function (item) {
+                    return item.category1 === 'Create'
                 }
 
                 $scope.setWorkflow = function (workflow) {
@@ -212,12 +298,25 @@
                     }).trigger('resize');
                 };
 
-                console.log($scope)
+                $scope.save = function () {
+                    return WorkflowService.save($scope.workflowName, true, $scope.workflow).then(function (response) {
+                        bootbox.alert('<h3>' + $i18n(437, "Workflow Saved") + '</h3>')
+                    });
+                }
+
+                $scope.hasSubitems = function (item) {
+                    return $.isArray(!item.data || item.data.data)
+                }
+
+                $scope.back = function () {
+                    $scope.workflow = undefined
+                    $scope.playStep = 0
+                }
+
                 $scope.makeModeless()
 
                 // restore playback step
                 if ($scope.playStep >= 0) {
-                    $scope.playStep++;
                     $scope.playback();
                 }
 

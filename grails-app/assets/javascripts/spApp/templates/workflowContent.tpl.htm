@@ -4,13 +4,35 @@
 </div>
 
 <div class="modal-body">
-    <div style="overflow:scroll">
-
-        <table class="table table-striped">
+    <div style="overflow:scroll" ng-if="workflow == undefined">
+        <table class="table table-striped table-condensed">
+            <thead>
+            <th></th>
+            <th>Created</th>
+            <th>Name</th>
+            <th></th>
+            </thead>
+            <tbody>
+            <tr ng-repeat="workflow in workflows">
+                <td>
+                    <button class="button btn-xs" ng-click="loadWorkflow(workflow.ud_header_id)">Load</button>
+                </td>
+                <td>{{workflow.upload_dt}}</td>
+                <td>{{workflow.description}}</td>
+                <td><i ng-show="workflow.ud_header_id != undefined" class="glyphicon glyphicon-trash"
+                       ng-click="deleteWorkflow(workflow.ud_header_id)"></i></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div style="overflow:scroll" ng-if="workflow != undefined">
+        <input type="text" ng-model="workflowName" style="width:100%">
+        <table class="table table-striped table-condensed">
             <thead>
             <th>Type</th>
             <th>Action</th>
             <th>Description</th>
+            <th></th>
             <th></th>
             <th></th>
             </thead>
@@ -20,7 +42,21 @@
                 <td style="vertical-align: top">{{item.category2}}</td>
                 <td>
                     <textarea style="width:400px;height:50px" ng-model="item.description"></textarea>
-                    <!--<textarea style="width:400px;height:100px" ng-model="item.data" readonly></textarea>-->
+                    <div ng-if="hasSubitems(item)">
+                        <table class="table table-condensed">
+                            <thead>
+                            <th>Skip</th>
+                            <th>Description</th>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="subitem in item.data.data">
+                                <td><input type="checkbox" ng-model="subitem.ignore"></td>
+                                <td><textarea style="width:400px;height:25px" ng-model="subitem.description"></textarea>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </td>
                 <td style="vertical-align: top">
                     <button class="btn btn-default btn-xs" ng-click="edit(item)">edit</button>
@@ -29,15 +65,12 @@
             </tr>
             </tbody>
         </table>
-
-        <!--<div>-->
-        <!--<textarea ng-model="workflowEdit"></textarea>-->
-        <!--<button ng-click="workflow=workflowEdit">save workflow</button>-->
-        <!--</div>-->
     </div>
 </div>
 
 <div class="modal-footer">
-    <button class="btn btn-default" type="button" ng-click="$close()">Close</button>
-    <button class="btn btn-primary" type="button" ng-click="playback()">Run workflow</button>
+    <button class="btn btn-default" type="button" ng-if="workflow != undefined" ng-click="back()">Back</button>
+    <button class="btn btn-default" type="button" ng-if="workflow == undefined" ng-click="$close()">Close</button>
+    <button class="btn btn-default" type="button" ng-click="save()">Save</button>
+    <button class="btn btn-default" type="button" ng-click="playback()">Run</button>
 </div>

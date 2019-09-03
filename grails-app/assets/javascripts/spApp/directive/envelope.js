@@ -9,8 +9,8 @@
      */
     angular.module('envelope-directive', ['biocache-service', 'map-service', 'layers-service', 'facet-auto-complete-service'])
         .directive('envelope', ['LayoutService', 'MapService', '$timeout', 'LayersService', 'BiocacheService', 'PredefinedAreasService',
-            'FacetAutoCompleteService', '$q',
-            function (LayoutService, MapService, $timeout, LayersService, BiocacheService, PredefinedAreasService, FacetAutoCompleteService, $q) {
+            'FacetAutoCompleteService', '$q', 'LoggerService',
+            function (LayoutService, MapService, $timeout, LayersService, BiocacheService, PredefinedAreasService, FacetAutoCompleteService, $q, LoggerService) {
 
                 return {
                     scope: {
@@ -27,6 +27,8 @@
                         scope.countRequests = [];
 
                         scope.refreshTimeout = null;
+
+                        LoggerService.pause()
 
                         scope.save = function () {
                             //create new layer
@@ -46,10 +48,14 @@
                             //delete template layers
                             scope.cancel();
 
+                            LoggerService.resume();
+
                             LayoutService.openModal('tool', data, false);
                         };
 
                         scope.cancel = function () {
+                            LoggerService.resume();
+
                             scope.cancelCountRequests();
 
                             if (scope.refreshTimeout != null) {

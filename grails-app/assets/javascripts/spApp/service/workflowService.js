@@ -15,6 +15,8 @@
                 if (httpconfig === undefined) {
                     httpconfig = {};
                 }
+                httpconfig.withCredentials = true;
+                httpconfig.ignoreErrors = true;
                 httpconfig.service = 'WorkflowService';
                 httpconfig.method = method;
 
@@ -22,8 +24,12 @@
             };
 
             var thiz = {
-                save: function (data) {
-                    return $http.post($SH.layersServiceUrl + "/workflow/save", data, _httpDescription("save"))
+                save: function (name, isPublic, data) {
+                    return $http.post($SH.layersServiceUrl + "/workflow/save", {
+                        description: name,
+                        isPublic: isPublic,
+                        metadata: data
+                    }, _httpDescription("save"))
                 },
 
                 search: function (searchTerm, start, limit) {
@@ -32,6 +38,10 @@
 
                 get: function (id) {
                     return $http.get($SH.layersServiceUrl + "/workflow/show/" + id + "?workflow=true", _httpDescription("get"))
+                },
+
+                delete: function (id) {
+                    return $http.get($SH.layersServiceUrl + "/workflow/delete/" + id, _httpDescription("get"))
                 }
             }
 
