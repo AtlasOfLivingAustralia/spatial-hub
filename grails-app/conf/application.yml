@@ -459,7 +459,50 @@ spApp:
     leftPanel: true
     # show the header by default
     header: true
-
+    # list charts to show on species info page
+    charts:
+      genus:
+        title: "By genus"
+        chartType: "doughnut"
+        emptyValueMsg: "Genus not specified"
+        hideEmptyValues: true
+        disableBiocacheQueryOnClick: true
+      collection_uid:
+        title: "By collection"
+        chartType: "doughnut"
+        emptyValueMsg: "Collection not specified"
+        hideEmptyValues: true
+        disableBiocacheQueryOnClick: true
+      assertions:
+        title: "By data assertion"
+        chartType: "horizontal-bar"
+        emptyValueMsg: "Assertion not specified"
+        hideEmptyValues: true
+        disableBiocacheQueryOnClick: true
+      type_status:
+        title: "By type status (as % of all type specimens)"
+        chartType: "doughnut"
+        emptyValueMsg: "Type status not specified"
+        hideEmptyValues: true
+        disableBiocacheQueryOnClick: true
+      state_conservation:
+        title: "By state conservation status"
+        chartType: "bar"
+        emptyValueMsg: "State conservation not specified"
+        hideEmptyValues: true
+        disableBiocacheQueryOnClick: true
+      month:
+        title: "By month"
+        chartType: "bar"
+        emptyValueMsg: "Month not specified"
+        hideEmptyValues: true
+        disableBiocacheQueryOnClick: true
+      decade:
+        title: "By decade"
+        chartType: "bar"
+        emptyValueMsg: "Year not specified"
+        hideEmptyValues: true
+        disableBiocacheQueryOnClick: true
 
 #
 # portal.gsp layout options

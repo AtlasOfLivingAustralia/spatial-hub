@@ -21,6 +21,7 @@
                 $scope.dataProviderList = [{name: $i18n("searching...")}];
                 $scope.lsids = [{name: $i18n("searching..."), list: [{scientificName: $i18n("searching...")}]}];
                 $scope.collectoryLinkPrefix = $SH.collectionsUrl + "/public/showDataProvider/";
+                $scope.chart = $SH.config.charts;
 
                 $scope.init = function (species) {
                     $scope.speciesOrig = {
@@ -34,6 +35,8 @@
                     };
 
                     LoggerService.log("View", "speciesInfo", $scope.speciesOrig)
+
+                    $scope.qid = species.qid;
 
                     //remove geospatial_kosher
                     var fq = [species.q];

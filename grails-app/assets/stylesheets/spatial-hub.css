@@ -18,6 +18,7 @@ div#statusInfo {
     display: none
 }
 
+
 .species-spinner {
     background: url(../images/spinner.gif);
     background-repeat: no-repeat;
@@ -1073,4 +1074,11 @@ ul.errors {
 .save-load {
     color: white;
     padding-right: 20px;
+}
+
+
+
+.inactive .ui-widget-header {
+    background-color: #999999;
+    background-image: none;
 }
