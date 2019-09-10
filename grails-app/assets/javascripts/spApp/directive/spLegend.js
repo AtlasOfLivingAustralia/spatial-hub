@@ -35,6 +35,7 @@
                         scope.selected = MapService.selected;
                         scope.selectedWatch = [MapService.selected];
 
+                        scope.workflowFilters = $SH.workflowFilters;
 
                         scope.sortType = 'count';
                         scope.sortReverse = true;
@@ -618,6 +619,18 @@
                                 if (selectedLayer.facet === 'search') {
                                     scope.searchFacets()
                                     return;
+                                }
+
+                                // is a workflow filter selected?
+                                for (var i = 0; i < scope.workflowFilters.length; i++) {
+                                    if (scope.workflowFilters[i].workflowId == selectedLayer.facet) {
+                                        selectedLayer.facet = '-1'
+                                        LayoutService.openModal('workflow', {
+                                            speciesLayerId: selectedLayer.uid,
+                                            workflowId: scope.workflowFilters[i].workflowId
+                                        });
+                                        return;
+                                    }
                                 }
 
                                 var facet

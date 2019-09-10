@@ -81,6 +81,7 @@
                     ng-change="updateFacet()">
                 <option i18n="128" value="-1">User defined colour</option>
                 <option value="search">Search facets...</option>
+                <option ng-repeat="filter in workflowFilters" value="{{filter.workflowId}}">{{filter.name}}</option>
 
                 <option ng-show="filtersEnabled()" disabled>--- Active Filters ---</option>
                 <option ng-repeat="x in selected.layer.facets | filter:{enabled: true}" value="{{x.name}}"

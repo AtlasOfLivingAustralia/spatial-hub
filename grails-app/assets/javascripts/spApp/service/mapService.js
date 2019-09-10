@@ -371,7 +371,7 @@
                     },
 
                     getNextUid: function () {
-                        return uid + 1;
+                        return uid;
                     },
 
                     removeHighlight: function () {
@@ -471,11 +471,10 @@
                             // do not add to log if it is a child layer or already logged
                             if ((id.log === undefined || id.log) && parentLayer === undefined) {
                                 LoggerService.log('Map', 'WMS', {
-                                    layerId: id.uid,
                                     url: id.url,
                                     label: id.displayname,
                                     legendurl: id.legendurl
-                                });
+                                }, id.uid);
                             } else {
                                 LoggerService.addLayerId(id.uid)
                             }
@@ -487,13 +486,12 @@
                             // do not add to log if it is a child layer or already logged
                             if ((id.log === undefined || id.log) && parentLayer === undefined) {
                                 LoggerService.log('Map', 'Species', {
-                                    layerId: id.uid,
                                     bs: id.bs,
                                     ws: id.ws,
                                     qid: id.qid,
                                     label: id.displayname,
                                     species_list: id.species_list
-                                });
+                                }, id.uid);
                             } else {
                                 LoggerService.addLayerId(id.uid)
                             }
@@ -650,13 +648,12 @@
                                         // do not add to log if it is a child layer or already logged
                                         if ((id.log === undefined || id.log) && parentLayer === undefined) {
                                             LoggerService.log('Map', 'Area', {
-                                                layerId: id.uid,
                                                 pid: id.pid,
                                                 geom_idx: id.geom_idx,
                                                 label: id.displayname,
                                                 query: id.query,
                                                 taskId: id.taskId
-                                            });
+                                            }, id.uid);
                                         } else {
                                             LoggerService.addLayerId(id.uid)
                                         }
@@ -680,10 +677,9 @@
                                 // do not add to log if it is a child layer or already logged
                                 if ((id.log === undefined || id.log) && parentLayer === undefined) {
                                     LoggerService.log('Map', 'Layer', {
-                                        layerId: id.uid,
                                         id: id.id,
                                         label: layer.layer.displayname
-                                    });
+                                    }, id.uid);
                                 } else {
                                     LoggerService.addLayerId(id.uid)
                                 }

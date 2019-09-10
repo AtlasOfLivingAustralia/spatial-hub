@@ -75,6 +75,12 @@
                                 <li class="dropdown font-xsmall"><a href="#" onclick="$('#sessionsButton')[0].click()"
                                                                     data-toggle="dropdown" role="button"
                                                                     aria-expanded="false">Load</a></li>
+                                <g:if test="config.workflow.enabled">
+                                    <li class="dropdown font-xsmall"><a href="#"
+                                                                        onclick="$('#workflowsButton')[0].click()"
+                                                                        data-toggle="dropdown" role="button"
+                                                                        aria-expanded="false">Workflows</a></li>
+                                </g:if>
 
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
