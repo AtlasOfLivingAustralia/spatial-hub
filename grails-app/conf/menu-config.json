@@ -35,10 +35,6 @@
     "width": 70,
     "items": [
       {
-        "name": "Workflow - interactive",
-        "open": "workflow"
-      },
-      {
         "name": "Area Report - interactive",
         "open": "ToolAreaReportService"
       },

@@ -269,15 +269,15 @@
                 }
 
                 function executeLocal(uiScope, toolName, inputs) {
+                    // Create log entry for a local tool when the task is finished with the input data
+                    LoggerService.log('Tool', uiScope.toolName, inputs)
+
                     var result = localToolServices[toolName].execute(inputs)
 
                     if (result && result.then) {
                         result.then(function (response) {
                             uiScope.finishedData = response;
                             _executeResult(uiScope);
-
-                            // Create log entry for a local tool when the task is finished with the input data
-                            LoggerService.log('Tool', uiScope.toolName, inputs)
 
                             uiScope.$close();
                         })

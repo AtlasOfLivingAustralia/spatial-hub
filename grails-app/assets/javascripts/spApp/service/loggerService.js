@@ -34,10 +34,16 @@
                  * @param {map} data data to log
                  * @returns {Promise}
                  */
-                log: function (category1, category2, data) {
+                log: function (category1, category2, data, layerId) {
                     if (paused) return $q.when()
 
-                    history.push({category1: category1, category2: category2, data: data})
+
+                    var outputs = []
+                    if (layerId) {
+                        outputs.push(layerId)
+                    }
+
+                    history.push({category1: category1, category2: category2, data: data, outputs: outputs})
 
                     var params = '?category1=' + encodeURIComponent(category1) +
                         '&category2=' + encodeURIComponent(category2) +
@@ -84,7 +90,7 @@
                     for (var i = history.length - 1; i >= 0; i--) {
                         for (var j = targetIds.length; j >= 0; j--) {
                             if (history[i].outputs.indexOf(targetIds[j]) >= 0) {
-                                events.push(history[i])
+                                events = $.merge([history[i]], events)
 
                                 // find any input layerIds
                                 $.merge(targetIds, thiz._findLayerIds(history[i].data))
@@ -105,7 +111,7 @@
                     } else if (item instanceof Object) {
                         $.each(item, function (idx, i) {
                                 if (idx === 'layerId') {
-                                    found.push(item[idx].layerId)
+                                    found.push(item[idx])
                                 }
                                 $.merge(found, thiz._findLayerIds(i))
                             }

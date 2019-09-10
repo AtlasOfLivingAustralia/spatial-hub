@@ -41,7 +41,7 @@
                 },
 
                 delete: function (id) {
-                    return $http.get($SH.layersServiceUrl + "/workflow/delete/" + id, _httpDescription("get"))
+                    return $http.get($SH.layersServiceUrl + "/workflow/delete/" + id, _httpDescription("delete"))
                 }
             }
 

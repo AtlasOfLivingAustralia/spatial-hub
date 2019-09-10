@@ -8,67 +8,87 @@
      */
     angular.module('workflow-ctrl', [])
         .controller('WorkflowCtrl', ['$scope', 'MapService', '$timeout', 'LayoutService', '$uibModalInstance',
-            'BiocacheService', '$http', 'LayersService', 'LoggerService', 'WorkflowService', '$q',
-            function ($scope, MapService, $timeout, LayoutService, $uibModalInstance, BiocacheService, $http, LayersService, LoggerService, WorkflowService, $q) {
+            'BiocacheService', '$http', 'LayersService', 'LoggerService', 'WorkflowService', '$q', 'EventService',
+            'data',
+            function ($scope, MapService, $timeout, LayoutService, $uibModalInstance, BiocacheService, $http,
+                      LayersService, LoggerService, WorkflowService, $q, EventService, config) {
 
                 // During playback and editing the current dialog may close. Keep track of playback and edit position.
-                $scope.playStep = -1
+                $scope.playStep = -1;
                 $scope.editing = -1;
 
                 // Workflow can generate layers. Layers mapped are used to offset the workflow self-referencial layerUid
-                $scope.layerUidOffset = MapService.getNextUid()
+                $scope.layerUidOffset = MapService.getNextUid() - 1
 
                 $scope.speciesLayerId = -1; //$scope.getSpeciesLayer()
+                if (config && config.speciesLayerId) {
+                    $scope.speciesLayerId = config.speciesLayerId
+                }
+
                 $scope.areaLayerId = -1; //$scope.getAreaLayer()
 
-                $scope.workflow = undefined
-                $scope.workflowName = undefined
+                $scope.workflow = []
+                $scope.workflowProperties = {name: '', private: true}
 
                 $scope.speciesLayers = $.merge([{name: 'none', uid: -1}], MapService.speciesLayers())
                 $scope.areaLayers = $.merge([{name: 'none', uid: -1}], MapService.areaLayers())
 
-                $scope.workflows = undefined
+                $scope.workflows = []
+
+                $scope.sortType = 'created'
+
+                $scope.sortReverse = true
 
                 LayoutService.addToSave($scope);
-
-                if (!$scope.workflows) {
-                    WorkflowService.search('', 0, 5000).then(function (response) {
-                        $scope.workflows = $.merge([{description: 'Current session'}], response.data)
-                    })
-                }
 
                 $scope.loadWorkflow = function (id) {
                     if (id === undefined) {
                         // load current workflow
-                        $scope.workflow = $.merge([], LoggerService.localHistory())
-                        $scope.workflowName = $i18n(436, "My workflow") + " " + new Date().toLocaleString()
+                        $scope.workflow = []
+                        $.map(LoggerService.localHistory(), function (v) {
+                            if (v.category1 != 'Create' ||
+                                v.category2 == 'scatterplotCreateInOut' ||
+                                v.category2 == 'adhocCreateInOut' ||
+                                v.category2 == 'facetNewLayer' ||
+                                v.category2 == 'facetNewLayerOut') {
+                                $scope.workflow.push(v)
+                            }
+                        })
+
+                        $scope.initDescriptions()
+
+                        $scope.workflowProperties.name = $i18n(436, "My workflow") + " " + new Date().toLocaleString()
                     } else {
                         WorkflowService.get(id).then(function (response) {
                             $scope.workflow = JSON.parse(response.data.metadata)
-                            $scope.workflowName = response.data.description
+                            $scope.workflowProperties.name = response.data.name
+                            $scope.workflowId = id
 
-                            $.map($scope.workflow, function (v) {
-                                if (typeof(v.data) == 'string') {
-                                    v.data = JSON.parse(v.data)
-
-                                    if ($.isArray(v.data.data)) {
-                                        $.map(v.data.data, function (subv) {
-                                            subv.raw = JSON.stringify(subv.facet)
-                                            if (!subv.description) {
-                                                subv.description = subv.raw
-                                            }
-                                        })
-                                    }
-                                }
-                            })
+                            $scope.initDescriptions()
                         })
                     }
+                }
+
+                $scope.initDescriptions = function () {
+                    $.map($scope.workflow, function (v) {
+                        if (typeof(v.data) == 'string') {
+                            v.data = JSON.parse(v.data)
+                        }
+
+                        v.raw = JSON.stringify(v.data)
+
+                        if ($.isArray(v.data.data)) {
+                            $.map(v.data.data, function (subv) {
+                                subv.raw = JSON.stringify(subv.facet)
+                            })
+                        }
+                    })
                 }
 
                 $scope.deleteWorkflow = function (id) {
                     WorkflowService.delete(id).then(function (response) {
                         for (var i = 0; i < $scope.workflows.length; i++) {
-                            if ($scope.workflows[i].ud_header_id == id) {
+                            if ($scope.workflows[i].id == id) {
                                 $scope.workflows.splice(i, 1)
                             }
                         }
@@ -121,18 +141,19 @@
                     return layerId
                 }
 
-                $scope.setLayerUid = function (item) {
+                $scope.setLayerUid = function (item, newId) {
                     if (item instanceof Array) {
                         $.each(item, function (idx, i) {
-                                $scope.setLayerUid(i)
+                            $scope.setLayerUid(i, newId)
                             }
                         )
                     } else if (item instanceof Object) {
                         $.each(item, function (idx, i) {
                                 if (idx === 'layerId') {
-                                    item[idx].layerId = speciesLayerId
+                                    item[idx] = newId
+                                } else {
+                                    $scope.setLayerUid(i, newId)
                                 }
-                                $scope.setLayerUid(i)
                             }
                         )
                     }
@@ -141,15 +162,21 @@
                 $scope.offsetLayerUid = function (item) {
                     if (item instanceof Array) {
                         $.each(item, function (idx, i) {
-                                $scope.setLayerUid(i)
+                            $scope.offsetLayerUid(i)
                             }
                         )
                     } else if (item instanceof Object) {
                         $.each(item, function (idx, i) {
                                 if (idx === 'layerId') {
-                                    item[idx].layerId = layerUidOffset + speciesLayerId
+                                    var newId = $scope.layerUidOffset + item[idx]
+                                    while (newId >= 0 && MapService.getFullLayer(newId) == null) {
+                                        $scope.layerUidOffset--
+                                        newId = $scope.layerUidOffset + item[idx]
+                                    }
+                                    item[idx] = $scope.layerUidOffset + item[idx]
+                                } else {
+                                    $scope.offsetLayerUid(item[idx])
                                 }
-                                $scope.setLayerUid(i)
                             }
                         )
                     }
@@ -178,8 +205,10 @@
 
                     $scope.processData = {}
 
-                    if (item.useSelectedLayer) {
-                        $scope.setLayerUid(item.data)
+                    if (item.speciesLayerId >= 0) {
+                        $scope.setLayerUid(item.data, item.speciesLayerId)
+                    } else if ($scope.speciesLayerId >= 0) {
+                        $scope.setLayerUid(item.data, $scope.speciesLayerId)
                     } else {
                         $scope.offsetLayerUid(item.data)
                     }
@@ -253,12 +282,22 @@
                         $scope.playStep = 0;
                     }
 
-                    $scope.play($scope.workflow[$scope.playStep]).then(function (loop) {
-                        $scope.playStep++;
-                        if (loop) {
-                            $scope.playback();
-                        }
-                    })
+                    if ($scope.workflow.length <= $scope.playStep) {
+                        $timeout(function () {
+                            $scope.$close()
+                        }, 0)
+                    } else {
+                        $scope.play($scope.workflow[$scope.playStep]).then(function (loop) {
+                            $scope.playStep++;
+                            if (loop) {
+                                $scope.playback();
+                            } else {
+                                $timeout(function () {
+                                    $scope.$close()
+                                }, 0)
+                            }
+                        })
+                    }
                 }
 
                 $scope.isTool = function (item) {
@@ -299,8 +338,9 @@
                 };
 
                 $scope.save = function () {
-                    return WorkflowService.save($scope.workflowName, true, $scope.workflow).then(function (response) {
+                    return WorkflowService.save($scope.workflowProperties.name, !$scope.workflowProperties.private, $scope.workflow).then(function (response) {
                         bootbox.alert('<h3>' + $i18n(437, "Workflow Saved") + '</h3>')
+                        $scope.$close()
                     });
                 }
 
@@ -309,11 +349,21 @@
                 }
 
                 $scope.back = function () {
-                    $scope.workflow = undefined
+                    $scope.workflow = []
                     $scope.playStep = 0
                 }
 
                 $scope.makeModeless()
+
+                if (config && config.workflowId) {
+                    $scope.loadWorkflow(config.workflowId)
+                } else {
+                    if ($scope.workflows.length == 0) {
+                        WorkflowService.search('', 0, 5000).then(function (response) {
+                            $scope.workflows = $.merge([{name: 'Current session'}], response.data)
+                        })
+                    }
+                }
 
                 // restore playback step
                 if ($scope.playStep >= 0) {

@@ -553,6 +553,19 @@ facet.list: true
 #
 filters.enabled: true
 
+#
+# Enable workflow header button
+#
+workflow.enabled: true
+
+#
+# List of workflowIds that operate on a species layer. These appear when clicking on the 'default filter' 'filter'
+# in the `Edit species layer` section.
+#
+# These workflows will be forced to operate on the selected layer and should be public.
+#
+#workflow.speciesFilters: [ { name: 'CSDM default filter', workflowId: 52 } ]
+workflow.speciesFilters: []
 
 ## spring-session config
 spring:

@@ -188,9 +188,12 @@
                                 if (value.constraints['default'] !== undefined) {
                                     // getInputs returns the .area array which is inconsistent with the value
                                     if (value.constraints['default'] instanceof Array) {
-                                        v = {layers: value.constraints['default']};
+                                        v = {layers: []};
+                                        $.map(value.constraints['default'], function (layer) {
+                                            v.layers.push(LayersService.getLayer(layer))
+                                        })
                                     } else {
-                                        v = value.constraints['default'];
+                                        v = LayersService.getLayer(value.constraints['default']);
                                     }
                                 }
                                 else v = {layers: []}
