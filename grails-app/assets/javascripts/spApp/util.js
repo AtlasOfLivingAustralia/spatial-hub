@@ -286,11 +286,14 @@ var Util = {
         copyTo = copyTo || [];
         copyTo.length = 0;
         chartData && chartData.forEach(function (point) {
-            var selectedColour = "rgba(246, 235, 40, 1)",
-                defaultColour = "rgba(0, 0, 0, 0.1)";
-            copyTo.push ( point.selected ? selectedColour : defaultColour );
+            copyTo.push ( Util.geBorderColourForDataPoint(point) );
         });
 
         return copyTo;
+    },
+    geBorderColourForDataPoint: function (point) {
+        var selectedColour = "rgba(0, 0, 0, 1)",
+            defaultColour = "rgba(0, 0, 0, 0.1)";
+        return point.selected ? selectedColour : defaultColour
     }
 };

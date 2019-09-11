@@ -24,7 +24,8 @@
                 return {
                     scope: {
                         _onCustom: "&onCustom",
-                        _facet: "=facet"
+                        _facet: "=facet",
+                        _settings: "=?settings"
                     },
                     templateUrl: '/spApp/facetEditorContent.htm',
                     link: function (scope, element, attrs) {
@@ -43,9 +44,12 @@
                         if (scope._facet.sortType === undefined) scope._facet.sortType = 'count';
                         if (scope._facet.sortReverse === undefined) scope._facet.sortReverse = true;
                         if (scope._facet.isAllFacetsSelected === undefined) scope._facet.isAllFacetsSelected = false;
-                        if (scope.chart === undefined) scope.chart = {colours: [], data: [], labels:[], datasets: {}};
-                        if (scope.slider === undefined) scope.slider = {values: [0,1], min: 0, max: 1, active: false};
-                        if (scope.height === undefined) scope.height = 50;
+                        if (scope._facet.loading === undefined) scope._facet.loading = false;
+                        if (scope._settings === undefined) scope._settings = {};
+                        if (scope._settings.chart === undefined) scope._settings.chart = {colours: [], data: [], labels:[], datasets: {}};
+                        if (scope._settings.slider === undefined) scope._settings.slider = {values: [0,1], min: 0, max: 1, active: false};
+                        if (scope._settings.height === undefined) scope._settings.height = 50;
+                        if (scope._settings.showFacetOnModal === undefined) scope._settings.showFacetOnModal = false;
 
                         scope.showTableOrChart = function() {
                             if (showChartForDataTypes.indexOf(scope._facet.dataType) >= 0)
@@ -54,9 +58,20 @@
                                 scope.facetDisplay = defaultFacetDisplay;
                         };
 
+                        scope.setLoading = function () {
+                            if ( scope._facet.data == undefined )
+                                scope._facet.loading = true;
+                            else
+                                scope._facet.loading = false;
+                        };
+
+                        scope.switchOffLoading = function (status) {
+                            scope._facet.loading = false;
+                        };
+
                         scope.updateChartData = function () {
-                            scope.chart.data.length = 0;
-                            scope.chart.labels.length = 0;
+                            scope._settings.chart.data.length = 0;
+                            scope._settings.chart.labels.length = 0;
                             chartData = $filter('filter')(scope._facet.data, scope._facet.filter, null, filterFieldName);
                             chartData = $filter('orderBy')(chartData, scope._facet.sortType, scope._facet.sortReverse);
                         };
@@ -64,7 +79,7 @@
                         scope.updateChartHeight = function () {
                             if (chartData && chartData.length) {
                                 var height = chartData.length * lineHeight;
-                                scope.height = height;
+                                scope._settings.height = height;
                             }
                         };
 
@@ -72,7 +87,7 @@
                             if (scope._facet.data) {
                                 scope.updateChartData();
                                 scope.updateChartColour();
-                                Util.convertFacetDataToChartJSFormat(chartData, scope.chart);
+                                Util.convertFacetDataToChartJSFormat(chartData, scope._settings.chart);
                                 scope.updateSliderConfig();
                                 scope.updateChartHeight();
                             }
@@ -80,23 +95,25 @@
 
                         scope.updateChartColour = function() {
                             Util.getBorderColour(chartData, scope.datasetOverride.borderColor);
-                            Util.getBarColour(chartData, scope.chart.colours, scope.formatColor);
+                            Util.getBarColour(chartData, scope._settings.chart.colours, scope.formatColor);
                         };
 
                         scope.chartClick = function(elements, event, element) {
-                            scope.setSliderInactive();
+                            scope.$apply(function () {
+                                scope.setSliderInactive();
 
-                            elements && elements.forEach(function (elem) {
-                                chartData[elem._index].selected = !chartData[elem._index].selected
-                            });
+                                elements && elements.forEach(function (elem) {
+                                    chartData[elem._index].selected = !chartData[elem._index].selected
+                                });
 
-                            scope.updateSelection();
+                                scope.updateSelection();
+                            })
                         };
 
                         scope.selectClassesInRange = function () {
                             scope.facetClearSelection();
-                            var max = scope.slider.max - scope.slider.values[0],
-                                min = scope.slider.max - scope.slider.values[1];
+                            var max = scope._settings.slider.max - scope._settings.slider.values[0],
+                                min = scope._settings.slider.max - scope._settings.slider.values[1];
 
                             for (var i = min; i <= max; i++) {
                                 chartData[i].selected = true;
@@ -108,18 +125,18 @@
                         scope.updateSliderConfig = function () {
                             var data = chartData || scope._facet.data;
                             if (data && data.length) {
-                                scope.slider.values[1] = scope.slider.max =  data.length - 1;
-                                scope.slider.values[0] = scope.slider.max - 1;
-                                if ( scope.slider.values[0] < 0 )
-                                    scope.slider.values[0] = 0;
+                                scope._settings.slider.values[1] = scope._settings.slider.max =  data.length - 1;
+                                scope._settings.slider.values[0] = scope._settings.slider.max - 1;
+                                if ( scope._settings.slider.values[0] < 0 )
+                                    scope._settings.slider.values[0] = 0;
                             } else {
-                                scope.slider.values[1] = scope.slider.max = 1;
-                                scope.slider.values[0] = scope.slider.min = 0;
+                                scope._settings.slider.values[1] = scope._settings.slider.max = 1;
+                                scope._settings.slider.values[0] = scope._settings.slider.min = 0;
                             }
                         };
 
                         scope.setSliderState = function(state) {
-                            scope.slider.active = !!state;
+                            scope._settings.slider.active = !!state;
                         };
 
                         scope.setSliderActive = function () {
@@ -158,7 +175,17 @@
                             } else {
                                 scope.facetClearSelection()
                             }
-                        }
+                        };
+
+                        scope.isAllFacetsSelectedStateValid = function () {
+                            var validState = scope.ifAllFacetsSelected();
+                            if (validState !== scope._facet.isAllFacetsSelected)
+                                scope._facet.isAllFacetsSelected = validState;
+                        };
+
+                        scope.validateState = function () {
+                            scope.isAllFacetsSelectedStateValid();
+                        };
 
                         scope.facetSelectAll = function () {
                             if (scope._facet !== undefined) {
@@ -185,6 +212,7 @@
                             scope._onCustom();
                             scope.updateChartColour();
                             scope.updateCount();
+                            scope.validateState();
                         };
 
                         scope.updateCount = function () {
@@ -209,14 +237,39 @@
                             var b = Number(item.blue).toString(16);
                             if (b.length === 1) b = '0' + b;
                             return r + g + b
-                        }
+                        };
+
+                        scope.showFacetOnModalButton = function () {
+                            return !scope._facet.loading && !scope._settings.showFacetOnModal;
+
+                        };
+                        scope.updateChart = function(){
+                            scope.drawChart();
+                            scope.updateSelection();
+                        };
+
+                        scope.openFacetInModal = function() {
+                            LayoutService._closeOpen();
+
+                            if (scope._settings.showFacetOnModal) {
+                                LayoutService.openModal('facetEditorModal', {
+                                    facet: scope._facet,
+                                    settings: scope._settings,
+                                    onUpdate: scope.updateChart
+                                }, true);
+                            }
+                        };
 
                         // slider configuration
                         scope.sliderOptions = {
                             orientation: 'vertical',
                             range: true,
-                            stop: scope.selectClassesInRange,
-                            start: scope.setSliderActive
+                            stop: function() {
+                                scope.$apply(function () {
+                                    scope.setSliderActive();
+                                    scope.selectClassesInRange();
+                                });
+                            }
                         };
 
                         // chart configuration
@@ -261,12 +314,19 @@
                             borderColor: []
                         };
 
-                        scope.$watch('_facet.data', function () {
-                            scope.setSliderInactiveAndRedrawChart();
-                            scope.showTableOrChart();
+                        scope.$watch('_facet.data', function (newValue, oldValue) {
+                            if (newValue !== oldValue) {
+                                scope.setLoading();
+                                scope.setSliderInactiveAndRedrawChart();
+                                scope.showTableOrChart();
+                            }
                         });
-                        scope.$watch('_facet.filter', scope.setSliderInactiveAndRedrawChart);
+                        scope.$watch('_facet.filter', function (newVal, oldVal) {
+                            if (newVal !== oldVal)
+                                scope.setSliderInactiveAndRedrawChart();
+                        });
 
+                        scope.setLoading();
                         scope.showTableOrChart();
                         scope.updateCount()
                     }

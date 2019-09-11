@@ -1,0 +1,97 @@
+(function (angular) {
+    'use strict';
+    /**
+     * @memberof spApp
+     * @ngdoc controller
+     * @name FacetEditorModalCtrl
+     * @description
+     *   Display facet classes (list and chart view) on a modal dialog
+     */
+    angular.module('facet-ctrl', [])
+        .controller('FacetEditorModalCtrl', ['LayoutService', '$scope', '$timeout', 'data',
+            function (LayoutService, $scope, $timeout, data) {
+                var originalFacet = data.facet,
+                    originalSettings = data.settings,
+                    defaultTableStyle = 'table';
+                $scope.facet = $scope.settings = undefined;
+
+                if (originalFacet) {
+                    $scope.facet = {};
+                    angular.copy(originalFacet, $scope.facet);
+                }
+
+                if (originalSettings) {
+                    $scope.settings = {};
+                    angular.copy(originalSettings, $scope.settings);
+                }
+
+                function init() {
+                    $scope.settings.tableStyle = defaultTableStyle;
+                    hideLegendPanel()
+                }
+
+                function hideLegendPanel() {
+                    // hide legend panel so that facet classes show only on modal
+                    LayoutService.showLegend[0] = false;
+                }
+
+                function showLegendPanel() {
+                    // show legend panel
+                    LayoutService.showLegend[0] = true;
+                }
+
+
+                function synchronize() {
+                    for ( var index = 0; index < $scope.facet.data.length; index++ ) {
+                        originalFacet.data[index].selected = $scope.facet.data[index].selected;
+                    }
+
+                    originalSettings.slider = $scope.settings.slider;
+                    originalFacet.sortType = $scope.facet.sortType;
+                    originalFacet.sortReverse = $scope.facet.sortReverse;
+                    originalFacet.filter = $scope.facet.filter;
+                    originalFacet.isAllFacetsSelected = $scope.facet.isAllFacetsSelected;
+                }
+
+                $scope.updateSelection = angular.noop;
+
+                $scope.close = function () {
+                    $scope.$close();
+                    $scope.setModalStatus(false);
+                    showLegendPanel();
+                };
+
+                $scope.update = function () {
+                    $scope.$close();
+                    $scope.setModalStatus(false);
+                    synchronize();
+                    showLegendPanel();
+                    data.onUpdate && data.onUpdate();
+                };
+
+                $scope.setModalStatus = function (flag) {
+                    originalSettings.showFacetOnModal = !!flag;
+                };
+
+                $scope.makeModeless = function () {
+                    $('.modal').addClass('modeless');
+
+                    $('.modal-dialog').draggable({
+                        handle: ".modal-header"
+                    });
+
+                    $('.modal-content').resizable({
+                        minHeight: 180,
+                        minWidth: 350
+                    });
+
+                    $('.modal-content').on("resize", function () {
+                        $('.modal-body').height($('.modal-dialog').height() - $('.modal-header').outerHeight() - $('.modal-footer').outerHeight() - ($('.modal-body').outerHeight() - $('.modal-body').height()))
+                    }).trigger('resize');
+                };
+
+                init();
+                $timeout($scope.makeModeless, 0);
+            }
+        ])
+}(angular));
