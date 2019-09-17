@@ -72,8 +72,8 @@
                         scope.updateChartData = function () {
                             scope._settings.chart.data.length = 0;
                             scope._settings.chart.labels.length = 0;
-                            chartData = $filter('filter')(scope._facet.data, scope._facet.filter, null, filterFieldName);
                             chartData = $filter('orderBy')(chartData, scope._facet.sortType, scope._facet.sortReverse);
+                            chartData = $filter('filter')(scope._facet.data, scope._facet.filter);
                         };
 
                         scope.updateChartHeight = function () {
@@ -328,6 +328,7 @@
 
                         scope.setLoading();
                         scope.showTableOrChart();
+                        scope.setSliderInactiveAndRedrawChart();
                         scope.updateCount()
                     }
 

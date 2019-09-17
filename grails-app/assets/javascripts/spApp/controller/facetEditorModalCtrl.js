@@ -7,7 +7,7 @@
      * @description
      *   Display facet classes (list and chart view) on a modal dialog
      */
-    angular.module('facet-ctrl', [])
+    angular.module('facet-editor-modal-ctrl', [])
         .controller('FacetEditorModalCtrl', ['LayoutService', '$scope', '$timeout', 'data',
             function (LayoutService, $scope, $timeout, data) {
                 var originalFacet = data.facet,
