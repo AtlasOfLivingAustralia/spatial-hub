@@ -14,6 +14,7 @@
                     originalSettings = data.settings,
                     defaultTableStyle = 'table';
                 $scope.facet = $scope.settings = undefined;
+                $scope.$i18n = $i18n;
 
                 if (originalFacet) {
                     $scope.facet = {};
@@ -53,19 +54,15 @@
                     originalFacet.isAllFacetsSelected = $scope.facet.isAllFacetsSelected;
                 }
 
-                $scope.updateSelection = angular.noop;
-
                 $scope.close = function () {
-                    $scope.$close();
                     $scope.setModalStatus(false);
                     showLegendPanel();
+                    $scope.updateSelection();
+                    $scope.$close();
                 };
 
-                $scope.update = function () {
-                    $scope.$close();
-                    $scope.setModalStatus(false);
+                $scope.updateSelection = function () {
                     synchronize();
-                    showLegendPanel();
                     data.onUpdate && data.onUpdate();
                 };
 
