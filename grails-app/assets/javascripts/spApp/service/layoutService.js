@@ -158,7 +158,7 @@
                         });
 
                         if (openingFromStack === undefined || !openingFromStack) {
-                            layoutStack.push(["openModal", {}, [], type, data]);
+                            layoutStack.push(["openModal", [{$close: modalInstance.close}], [], type, data]);
                             this.createCheckpoint()
                         }
 

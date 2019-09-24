@@ -48,6 +48,7 @@
                         };
 
                         scope.$watch('selected.layer.uid', function (oldValue, newValue) {
+                            LayoutService._closeOpen(false);
                             scope.setAreaLayers();
                             scope.updateFacet();
                         });
