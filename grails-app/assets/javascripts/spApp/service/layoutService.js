@@ -14,6 +14,7 @@
                 var showLegend = [false];
                 var showOptions = [false];
                 var layoutStack = [];
+                var modelessStack = [];
                 var toOpenStack = [];
                 var panelMode = ['default'];
                 var panels = ['default', 'area', 'envelope', 'nearestLocality', 'pointComparison'];
@@ -73,7 +74,7 @@
                             this.createCheckpoint();
                         }
                     },
-                    /* Save the state of a controller. Call after initialising controller vars. */
+                    /* Save the state of a modal controller. Call after initialising controller vars. */
                     addToSave: function (scopeToSave) {
                         if (layoutStack.length > 0) {
                             var top = layoutStack[layoutStack.length - 1];
@@ -95,6 +96,14 @@
 
                             top[1][scopeToSave.componentName] = scopeToSave
                         }
+                    },
+                    /* adds popup to modeless stack */
+                    addToModeless: function (scope) {
+                        // remove from modal stack
+                        layoutStack.pop()
+
+                        // add to modeless stack
+                        modelessStack.push(scope)
                     },
                     saveScope: function (scopeToSave) {
                         if (layoutStack.length > 0) {
@@ -158,7 +167,7 @@
                         });
 
                         if (openingFromStack === undefined || !openingFromStack) {
-                            layoutStack.push(["openModal", [{$close: modalInstance.close}], [], type, data]);
+                            layoutStack.push(["openModal", {}, [], type, data]);
                             this.createCheckpoint()
                         }
 
@@ -205,7 +214,26 @@
                             }
                         }
                     },
-                    /* close top window */
+                    /* close one or all modeless windows */
+                    closeModeless: function (nameOrId) {
+                        for (var k in modelessStack) {
+                            if (modelessStack.hasOwnProperty(k)) {
+                                if (!nameOrId ||
+                                    modelessStack[k].componentName == nameOrId ||
+                                    modelessStack[k].$id == nameOrId) {
+                                    if (modelessStack[k].close) {
+                                        // custom close method
+                                        modelessStack[k].close()
+                                    } else if (modelessStack[k].$close) {
+                                        // default close method
+                                        modelessStack[k].$close()
+                                    }
+                                    modelessStack.splice(k, 1)
+                                }
+                            }
+                        }
+                    },
+                    /* close top modal window */
                     _closeOpen: function (reopen) {
                         if (layoutStack.length > 0) {
                             _this.saveValues();

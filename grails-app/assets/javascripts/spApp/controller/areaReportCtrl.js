@@ -12,7 +12,7 @@
             'BiocacheService', 'data', '$http', 'ListsService', 'LayersService',
             function ($scope, MapService, $timeout, LayoutService, $uibModalInstance, BiocacheService, data, $http,
                       ListsService, LayersService) {
-                LayoutService.addToSave($scope);
+                LayoutService.addToModeless($scope);
 
                 $scope._httpDescription = function (method, httpconfig) {
                     if (httpconfig === undefined) {

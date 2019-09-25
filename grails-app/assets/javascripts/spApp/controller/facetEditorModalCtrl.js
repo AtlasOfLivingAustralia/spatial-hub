@@ -16,6 +16,8 @@
                 $scope.facet = $scope.settings = undefined;
                 $scope.$i18n = $i18n;
 
+                LayoutService.addToModeless($scope);
+
                 if (originalFacet) {
                     $scope.facet = {};
                     angular.copy(originalFacet, $scope.facet);
@@ -37,8 +39,10 @@
                 }
 
                 function showLegendPanel() {
-                    // show legend panel
-                    LayoutService.showLegend[0] = true;
+                    // show legend panel if options panel is not visible
+                    if (!LayoutService.showOptions[0]) {
+                        LayoutService.showLegend[0] = true;
+                    }
                 }
 
 
