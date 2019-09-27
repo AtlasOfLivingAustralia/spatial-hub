@@ -70,7 +70,7 @@
                                             datasetName: preview.datasetName, existingUid: preview.existing.uid
                                         }
 
-                                        LoggerService.log("Create", "Points", JSON.stringify({query: q, input: input}))
+                                        LoggerService.log("Create", "Points", {query: q, input: input})
                                     }
                                     if (newValue === 'COMPLETE') {
                                         if (inputData !== undefined && inputData.setQ !== undefined) {

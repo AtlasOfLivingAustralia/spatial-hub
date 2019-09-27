@@ -9,9 +9,9 @@
      */
     angular.module('area-report-ctrl', ['map-service', 'biocache-service', 'lists-service', 'layers-service'])
         .controller('AreaReportCtrl', ['$scope', 'MapService', '$timeout', 'LayoutService', '$uibModalInstance',
-            'BiocacheService', 'data', '$http', 'ListsService', 'LayersService',
+            'BiocacheService', 'data', '$http', 'ListsService', 'LayersService', 'EventService',
             function ($scope, MapService, $timeout, LayoutService, $uibModalInstance, BiocacheService, data, $http,
-                      ListsService, LayersService) {
+                      ListsService, LayersService, EventService) {
                 LayoutService.addToSave($scope);
 
                 $scope._httpDescription = function (method, httpconfig) {
@@ -399,12 +399,8 @@
                 $scope.map = function (event, item) {
                     event.currentTarget.classList.add('disabled');
                     if (item.extraQ === undefined) item.extraQ = [];
-                    var q = {q: areaQ.q.concat(item.extraQ), ws: areaQ.ws, bs: areaQ.bs, wkt: areaQ.wkt};
-                    BiocacheService.registerQuery(q).then(function (response) {
-                        BiocacheService.newLayer(response, undefined, item.name).then(function (data) {
-                            MapService.add(data)
-                        })
-                    })
+                    var q = {q: areaQ.q, ws: areaQ.ws, bs: areaQ.bs, wkt: areaQ.wkt, name: item.name};
+                    EventService.facetNewLayer(areaQ, item.extraQ)
                 };
 
                 $scope.sample = function (item) {

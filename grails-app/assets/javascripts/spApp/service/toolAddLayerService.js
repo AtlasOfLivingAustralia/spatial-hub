@@ -28,7 +28,9 @@
                 execute: function (inputs) {
                     var promises = [];
                     for (var i = 0; i < inputs[0].length; i++) {
-                        promises.push(MapService.add(LayersService.convertFieldIdToMapLayer(inputs[0][i])))
+                        var item = LayersService.convertFieldIdToMapLayer(inputs[0][i])
+                        item.log = false
+                        promises.push(MapService.add(item))
                     }
                     return $q.all(promises)
                 }

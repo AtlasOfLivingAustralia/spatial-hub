@@ -1,6 +1,10 @@
 /*
 *= require jquery-ui/jquery-ui.min.css
-*= require bootstrap/dist/css/bootstrap.min.css
+*= require commonui-bs3-2019/css/bootstrap.min.css
+*= require commonui-bs3-2019/css/bootstrap-theme.min.css
+*= require commonui-bs3-2019/css/autocomplete.min.css
+*= require commonui-bs3-2019/css/autocomplete-extra.min.css
+*= require commonui-bs3-2019/css/font-awesome.min.css
 *= require leaflet/dist/leaflet.css
 *= require leaflet-draw/dist/leaflet.draw.css
 *= require leaflet-control-window/L.Control.Window.css
@@ -9,10 +13,11 @@
 *= require Leaflet.zoomslider-0.7.1/src/L.Control.Zoomslider.css
 *= require angular/angular-csp.css
 *= require angular-ui-bootstrap/dist/ui-bootstrap-csp.css
+*= require ALAChart.css
 *= require sandbox.css
 *= require angular-loading-bar/build/loading-bar.min.css
 *= require jquery-layout/jquery.layout.css
-*= require ala/ala-styles.css
+*= require commonui-bs3-2019/css/ala-styles.css
 *= require spatial-hub.css
-*= require bootstrap-theme.css
+*= require commonui-bs3-2019.css
 */

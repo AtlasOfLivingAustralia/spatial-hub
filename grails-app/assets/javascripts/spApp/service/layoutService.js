@@ -8,8 +8,8 @@
      *   Management of spatial-hub dialogs and panels
      */
     angular.module('layout-service', [])
-        .factory("LayoutService", ['$uibModal', '$timeout', '$rootScope', 'SessionsService', 'HttpService',
-            function ($uibModal, $timeout, $rootScope, sessionsService, httpService) {
+        .factory("LayoutService", ['$uibModal', '$timeout', '$rootScope', 'SessionsService', 'HttpService', 'WorkflowService', 'LoggerService',
+            function ($uibModal, $timeout, $rootScope, sessionsService, httpService, WorkflowService, LoggerService) {
 
                 var showLegend = [false];
                 var showOptions = [false];
@@ -300,6 +300,11 @@
                     info: function (item) {
                         if (item.layertype === 'species') {
                             item.display = {size: 'full'};
+
+                            return WorkflowService.save(item.name, true, LoggerService.get(item.uid), true).then(function (response) {
+                                bootbox.alert(JSON.stringify(response.data))
+                            });
+
                             this.openModal('speciesInfo', item, false)
                         } else if (item.layertype === 'area' && item.metadataUrl === undefined) {
                             var b = item.bbox;

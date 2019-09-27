@@ -253,11 +253,11 @@
                  */
                 load: function (sessionId) {
                     return this.get(sessionId).then(function (data) {
-                        _this._load(data);
+                        _this._load(data, sessionId);
                     })
                 },
 
-                _load: function (sessionData) {
+                _load: function (sessionData, sessionId) {
                     if (sessionData && sessionData.extents) {
                         MapService.removeAll();
 
@@ -268,6 +268,8 @@
 
                         MapService.setBaseMap(sessionData.basemap);
 
+                        LoggerService.log('Map', 'Session', {sessionId: sessionId})
+
                         //add in index order
                         sessionData.layers.sort(function (a, b) {
                             return a.index - b.index
@@ -276,6 +278,7 @@
                         for (var i = 0; i < sessionData.layers.length; i++) {
                             sessionData.layers[i].fromSave = true;
                             sessionData.layers[i].uid += uidOffset;
+                            sessionData.layers[i].log = false
                             MapService.add(sessionData.layers[i])
                         }
                     }

@@ -5,7 +5,6 @@
 
 //ala-bootstrap3
 //= require html5.js
-//= require ala/ala-bootstrap3.js
 
 //bootstrap
 //= require bootstrap/dist/js/bootstrap.min.js
@@ -44,6 +43,14 @@
 //= require underscore/underscore-min.js
 //= require components.js
 //= require sandbox-hub/preview.js
+
+//ala-charts-plugin
+//= require bootstrap-multiselect.js
+//require bootstrap-slider.js
+//= require bootstrap-toggle.min.js
+//= require Chart.min.js
+//= require ALAChart.js
+//= require angular-chart.js
 
 //spatial-hub
 //= require jquery-csv/jquery.csv.js

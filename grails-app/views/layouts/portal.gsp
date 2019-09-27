@@ -6,264 +6,384 @@
     </g:if>
 
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <meta name="app.version" content="${g.meta(name: 'app.version')}"/>
-    <meta name="app.build" content="${g.meta(name: 'app.build')}"/>
-    <meta name="description" content="Atlas of Living Australia"/>
-    <meta name="author" content="Atlas of Living Australia">
+    <meta name="app.version" content="${g.meta(name: 'info.app.version')}"/>
+    <meta name="app.build" content="${g.meta(name: 'info.app.build')}"/>
+    <meta name="description" content="${config.skin?.orgNameLong ?: 'Atlas of Living Australia'}"/>
+    <meta name="author" content="${config.skin?.orgNameLong ?: 'Atlas of Living Australia'}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="${config.favicon.url}" rel="shortcut icon"
-          type="image/x-icon"/>
+    <!-- Favicon -->
+    <link href="${config.skin.favicon}" rel="shortcut icon" type="image/x-icon"/>
 
     <title><g:layoutTitle/></title>
     <g:layoutHead/>
     <asset:stylesheet href="application.css" />
 
-    <g:if test="${hub != null}">
-        <asset:stylesheet href="css/${hub}.css"/>
-    </g:if>
 </head>
 
 <body class="${pageProperty(name: 'body.class')}" id="${pageProperty(name: 'body.id')}"
       onload="${pageProperty(name: 'body.onload')}">
+<g:set var="fluidLayout" value="${pageProperty(name: 'meta.fluidLayout') ?: config.skin.fluidLayout}"/>
+<g:set var="loginStatus" value="${request.userPrincipal ? 'signedIn' : 'signedOut'}"/>
+<g:set var="hideLoggedOut" value="${request.userPrincipal ? '' : 'hidden'}"/>
 
-<g:if test="${config.skin.header && config.spApp.header}">
-    <nav class="navbar navbar-default navbar-fixed-top ::authStatusClass::">
-        <div class="container container-navbar">
+<!-- Header -->
+<g:set var="headerVisiblity" value="${(config.skin.header && config.spApp.header) ? '' : 'hidden'}"/>
 
-            <div style="position:absolute; float:right; width:100px; right: -20px" id="expand-div">
-                <button type="button" id="expand-button" class="navbar-toggle collapsed" data-toggle="collapse"
-                        data-target="#bs-example-navbar-collapse-2">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-            </div>
+<div id="wrapper-navbar" itemscope="" itemtype="http://schema.org/WebSite" class="${headerVisiblity}">
+    <a class="skip-link sr-only sr-only-focusable" href="#INSERT_CONTENT_ID_HERE">Skip to content</a>
 
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <div class="row row-search">
-                    <div>
-                        <a class="navbar-brand" href="https://www.ala.org.au/">
-                            <img alt="Brand" src="${config.headerAndFooter.baseURL}/img/ala-logo-2016-inline.png">
-                        </a>
-                    </div>
-
-                    <div class="col-md-4" id="biesearch-top">
-                        <form id="global-search" class="banner" action="${config.bie.baseURL}${config.bie.searchPath}"
-                              method="get" name="search-form">
-                            <div class="icon-addon addon-lg">
-                                <input type="text" placeholder="Search the Atlas ..."
-                                       class="form-control autocomplete ac_input" id="biesearch1" name="q"
-                                       autocomplete="off">
-                                <label for="biesearch1" class="glyphicon glyphicon-search" rel="tooltip"
-                                       title="search"></label>
-                            </div>
-                        </form>
-                    </div>
-
-                    <div class="hidden-xs" id="login-buttons">
-                        <g:if test="userId != null">
-                            <ul class="nav navbar-nav navbar-right nav-logged-in">
-                                <g:if test="config.extraLinkUrl != null">
-                                    <li class="dropdown font-xsmall"><a
-                                            href="${config.extraLinkUrl}">${config.extraLinkText}</a></li>
-                                </g:if>
-                                <li class="dropdown font-xsmall"><a href="#"
-                                                                    onclick="$('#saveSessionButton')[0].click()"
-                                                                    data-toggle="dropdown" role="button"
-                                                                    aria-expanded="false">Save</a></li>
-                                <li class="dropdown font-xsmall"><a href="#" onclick="$('#sessionsButton')[0].click()"
-                                                                    data-toggle="dropdown" role="button"
-                                                                    aria-expanded="false">Load</a></li>
-
-                                <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                                       aria-expanded="false">
-                                        <g:if test="${cookie(name: 'ALA-Auth')}">
-                                            ${cookie(name: 'ALA-Auth')}
-                                        </g:if>
-                                        <g:else>
-                                            My profile
-                                        </g:else>
-                                        <span class="caret"></span>
-                                    </a>
-                                    <ul class="dropdown-menu" role="menu">
-                                        <li><a href="${config.userdetails.baseUrl}/myprofile/">View profile</a></li>
-                                        <li><a href="${config.userdetails.baseUrl}/registration/editAccount">Account settings</a>
-                                        </li>
-                                        <li class="divider"></li>
-                                        <li><a href="${config.security.cas.logoutUrl}?service=${config.grails.serverURL}"
-                                               class="null"><span>Log out</span></a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </g:if>
-                        <g:else>
-                            <ul class="nav navbar-nav navbar-right nav-login" class>
-                                <li><a href="${config.security.cas.loginUrl}?service=${config.grails.serverURL}"
-                                       class="null"><span>Log in</span></a></li>
-                            </ul>
-                        </g:else>
-
-                    </div>
-                </div><!-- End row -->
-            </div>
-
-            <div id="logo-dropdown" style="display:none">
-                <a class="navbar-brand-drop" href="https://www.ala.org.au/">
-                    <img alt="Brand" src="${config.headerAndFooter.baseURL}/img/ala-logo-2016-inline.png">
-                </a>
-            </div>
-
-            <div class="collapse" id="bs-example-navbar-collapse-2">
-                <div class="header-collapse">
-
-                    <div id="biesearch-dropdown">
-                        <form id="global-dropdown" class="banner" action="${config.bie.baseURL}${config.bie.searchPath}"
-                              method="get" name="search-form">
-                            <div class="icon-addon addon-lg">
-                                <input type="text" placeholder="Search the Atlas ...2"
-                                       class="form-control autocomplete ac_input" id="biesearch2" name="q"
-                                       autocomplete="off">
-                                <label for="biesearch2" class="glyphicon glyphicon-search" rel="tooltip"
-                                       title="search"></label>
-                            </div>
-                        </form>
-                    </div>
-
-                    <div>
-                        <ul class="nav navbar-nav ">
-                            <!-- <li class="active"><a href="#">Home</a></li> -->
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                                   aria-expanded="false">
-                                    Start exploring
-                                    <span class="caret"></span>
-                                </a>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a href="https://lists.ala.org.au/iconic-species">Australian iconic species</a>
-                                    </li>
-                                    <li><a href="https://biocache.ala.org.au/explore/your-area">Explore your area</a>
-                                    </li>
-                                    <li><a href="https://regions.ala.org.au/">Explore regions</a></li>
-                                    <li><a href="https://biocache.ala.org.au/search">Search occurrence records</a></li>
-                                    <li class="divider"></li>
-                                    <li><a href="https://www.ala.org.au/sites-and-services/">Sites &amp; services</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                                   aria-expanded="false">
-                                    Search &amp; analyse
-                                    <span class="caret"></span>
-                                </a>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a href="https://collections.ala.org.au/">Browse natural history collections</a>
-                                    </li>
-                                    <li><a href="https://collections.ala.org.au/datasets">Search datasets</a></li>
-                                    <li><a href="https://downloads.ala.org.au">Download datasets</a>
-                                    </li><li><a href="https://spatial.ala.org.au/">Spatial portal</a></li>
-                                    <li class="divider"></li>
-                                    <li><a href="https://dashboard.ala.org.au/">ALA dashboard</a></li>
-                                </ul>
-                            </li>
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                                   aria-expanded="false">
-                                    Participate
-                                    <span class="caret"></span>
-                                </a>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a href="https://biocollect.ala.org.au/acsa">Join a Citizen Science project</a>
-                                    </li>
-                                    <li><a href="https://sightings.ala.org.au/">Record a sighting in the ALA</a></li>
-                                    <li><a href="https://www.ala.org.au/submit-dataset-to-ala/">Submit a dataset to the ALA</a>
-                                    </li>
-                                    <li><a href="https://digivol.ala.org.au/">Digitise a record in DigiVol</a></li>
-                                </ul>
-                            </li>
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                                   aria-expanded="false">
-                                    Learn about the ALA
-                                    <span class="caret"></span>
-                                </a>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a href="https://www.ala.org.au/who-we-are/">Who we are</a></li>
-                                    <li class="divider"></li>
-                                    <li><a href="https://www.ala.org.au/how-to-use-ala/">How to use the ALA</a></li>
-                                    <li><a href="https://www.ala.org.au/how-to-work-with-data/">How to work with data</a>
-                                    </li>
-                                    <li><a href="https://www.ala.org.au/how-to-cite-ala/">How to cite the ALA</a></li>
-                                    <li class="divider"></li>
-                                    <li><a href="https://www.ala.org.au/education-resources/">Education resources</a>
-                                    </li>
-                                    <li><a href="https://www.ala.org.au/ala-and-indigenous-ecological-knowledge-iek/">Indigenous Ecological Knowledge</a>
-                                    </li>
-                                    <li class="divider"></li>
-                                    <li><a href="https://www.ala.org.au/blogs-news/">ALA News</a></li>
-                                    <li class="divider"></li>
-                                    <li><a href="https://www.ala.org.au/about-the-atlas/contact-us/">Contact us</a></li>
-                                    <li><a href="https://www.ala.org.au/about-the-atlas/feedback-form/">Feedback form</a>
-                                    </li>
-                                </ul>
-                            </li>
-
-                        </ul>
-                    </div>
-
-                    <div id="login-buttons-dropdown">
-                        <ul class="nav navbar-nav ">
-                            <li class="divider"></li>
-                            <g:if test="userId != null">
-                                <g:if test="config.extraLinkUrl != null">
-                                    <li class="dropdown font-xsmall"><a
-                                            href="${config.extraLinkUrl}">${config.extraLinkText}</a></li>
-                                </g:if>
-                                <li class="dropdown font-xsmall"><a href="#"
-                                                                    onclick="$('#saveSessionButton')[0].click()"
-                                                                    data-toggle="dropdown" role="button"
-                                                                    aria-expanded="false">Save</a></li>
-                                <li class="dropdown font-xsmall"><a href="#" onclick="$('#sessionsButton')[0].click()"
-                                                                    data-toggle="dropdown" role="button"
-                                                                    aria-expanded="false">Load</a></li>
-
-                                <li><a href="${config.userdetails.baseUrl}/myprofile/"><span>View profile</span></a>
-                                </li>
-                                <li><a href="${config.userdetails.baseUrl}/registration/editAccount"><span>Account settings</span>
-                                </a></li>
-                                <li><a href="${config.security.cas.logoutUrl}?service=${config.grails.serverURL}"><span>Log out</span>
-                                </a></li>
-                            </g:if>
-                            <g:else>
-                                <li><a href="${config.security.cas.loginUrl}?service=${config.grails.serverURL}"><span>Log in</span>
-                                </a></li>
-                            </g:else>
-                        </ul>
-                    </div>
-
-
-                    <!-- Footer -->
-                    <g:if test="${config.footer}">
-                        <hf:footer/>
-                    </g:if>
-                    <!-- End footer -->
+    <nav class="navbar navbar-inverse navbar-expand-md">
+        <div class="container-fluid header-logo-menu">
+            <!-- Your site title as branding in the menu -->
+            <div class="navbar-header">
+                <div>
+                    <a href="https://www.ala.org.au/" class="custom-logo-link navbar-brand" itemprop="url">
+                        <img width="1005" height="150" src="https://www.ala.org.au/app/uploads/2019/01/logo.png"
+                             class="custom-logo" alt="Atlas of Living Australia" itemprop="image"
+                             srcset="https://www.ala.org.au/app/uploads/2019/01/logo.png 1005w, https://www.ala.org.au/app/uploads/2019/01/logo-300x45.png 300w, https://www.ala.org.au/app/uploads/2019/01/logo-768x115.png 768w"
+                             sizes="(max-width: 1005px) 100vw, 1005px"></a>
+                    <!-- end custom logo -->
                 </div>
 
-            </div><!-- /.navbar-collapse -->
-        </div><!-- /.container -->
-    </nav>
-</g:if>
+                <div class="display-flex ${loginStatus}">
+                    <g:if test="${request.userPrincipal != null}">
+                        <a href="#" class="save-load"
+                           onclick="$('#saveSessionButton')[0].click()"
+                           data-toggle="dropdown" role="button"
+                           aria-expanded="false">Save</a>
+                        <a href="#" class="save-load"
+                           onclick="$('#sessionsButton')[0].click()"
+                           data-toggle="dropdown" role="button"
+                           aria-expanded="false">Load</a>
+                        <g:if test="config.workflow.enabled">
+                            <a href="#" class="save-load"
+                               onclick="$('#workflowsButton')[0].click()"
+                               data-toggle="dropdown" role="button"
+                               aria-expanded="false">Workflows</a>
+                        </g:if>
+                    </g:if>
+                    <button class="display-flex search-trigger hidden-md hidden-lg collapsed collapse-trigger-button"
+                            title="Open search dialog"
+                            data-toggle="collapse" data-target="#autocompleteSearchALA"
+                            onclick="focusOnClickSearchButton()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="18" viewBox="0 0 22 22">
+                            <defs>
+                                <style>
+                                .search-icon {
+                                    fill: #fff;
+                                    fill-rule: evenodd;
+                                }
+                                </style>
+                            </defs>
+                            <path class="search-icon"
+                                  d="M1524.33,60v1.151a7.183,7.183,0,1,1-2.69.523,7.213,7.213,0,0,1,2.69-.523V60m0,0a8.333,8.333,0,1,0,7.72,5.217A8.323,8.323,0,0,0,1524.33,60h0Zm6.25,13.772-0.82.813,7.25,7.254a0.583,0.583,0,0,0,.82,0,0.583,0.583,0,0,0,0-.812l-7.25-7.254h0Zm-0.69-7.684,0.01,0c0-.006-0.01-0.012-0.01-0.018s-0.01-.015-0.01-0.024a6,6,0,0,0-7.75-3.3l-0.03.009-0.02.006v0a0.6,0.6,0,0,0-.29.293,0.585,0.585,0,0,0,.31.756,0.566,0.566,0,0,0,.41.01V63.83a4.858,4.858,0,0,1,6.32,2.688l0.01,0a0.559,0.559,0,0,0,.29.29,0.57,0.57,0,0,0,.75-0.305A0.534,0.534,0,0,0,1529.89,66.089Z"
+                                  transform="translate(-1516 -60)"></path>
+                        </svg>
+                        <span class="collapse visible-on-show" aria-hidden="true">&times;</span>
+                    </button>
+                    <g:if test="${request.userPrincipal == null}">
+                        <hf:loginLogout role="button"
+                                        class="account-mobile hidden-md hidden-lg loginBtn mobile-login-btn"/>
+                    </g:if>
+                    <g:if test="${request.userPrincipal != null}">
+                        <a href="https://auth.ala.org.au/userdetails/myprofile/" role="button"
+                           class="account-mobile hidden-md hidden-lg myProfileBtn hideLoggedOut" title="My Account">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="18" viewBox="0 0 37 41">
+                                <defs>
+                                    <style>
+                                    .account-icon {
+                                        fill: #212121;
+                                        fill-rule: evenodd;
+                                    }
+                                    </style>
+                                </defs>
+                                <path id="Account" class="account-icon"
+                                      d="M614.5,107.1a11.549,11.549,0,1,0-11.459-11.549A11.516,11.516,0,0,0,614.5,107.1Zm0-21.288a9.739,9.739,0,1,1-9.664,9.739A9.711,9.711,0,0,1,614.5,85.81Zm9.621,23.452H604.874a8.927,8.927,0,0,0-8.881,8.949V125h37v-6.785A8.925,8.925,0,0,0,624.118,109.262Zm7.084,13.924H597.789v-4.975a7.12,7.12,0,0,1,7.085-7.139h19.244a7.119,7.119,0,0,1,7.084,7.139v4.975Z"
+                                      transform="translate(-596 -84)"></path>
+                            </svg>
+                        </a>
+                        <a href="${g.createLink(controller: "logout", action: "logout", absolute: true, params: [appUrl: request.requestURL])}"
+                           role="button"
+                           class="account-mobile hidden-md hidden-lg logoutBtn mobile-logout-btn" title="Logout link">
+                            <i class="fas fa-sign-out"></i>
+                        </a>
+                    </g:if>
+                    <button class="navbar-toggle collapsed collapse-trigger-button" type="button"
+                            data-toggle="collapse" data-target="#navbarOuterWrapper" aria-controls="navbarOuterWrapper"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <div class="horizontal-line"></div>
 
-<g:set var="fluidLayout" value="${pageProperty(name: 'meta.fluidLayout') ?: config.skin?.fluidLayout}"/>
+                        <div class="horizontal-line"></div>
 
+                        <div class="horizontal-line"></div>
+                        <span class="collapse visible-on-show" aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="navbarOuterWrapper" class="outer-nav-wrapper navbar-collapse collapse">
+                <div class="main-nav-wrapper">
+                    <!-- The WordPress Menu goes here -->
+                    <div id="navbarNavDropdown">
+                        <ul id="main-menu" class="nav navbar-nav" role="menubar">
+                            <li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement"
+                                id="menu-item-22"
+                                class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children dropdown menu-item-22 nav-item show">
+                                <a title="Search &amp; analyse" href="#" data-toggle="dropdown" aria-haspopup="true"
+                                   aria-expanded="true" class="dropdown-toggle nav-link"
+                                   id="menu-item-dropdown-22">Search
+                                &amp; analyse <span class="caret"></span></a>
+                                <ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-22" role="menu">
+                                    <li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement"
+                                        id="menu-item-41958"
+                                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-41958 nav-item">
+                                        <a title="Search species" href="https://bie.ala.org.au/"
+                                           class="dropdown-item">Search
+                                        species</a></li>
+                                    <li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement"
+                                        id="menu-item-23"
+                                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-23 nav-item">
+                                        <a title="Search &amp; download records"
+                                           href="https://biocache.ala.org.au/search#tab_simpleSearch"
+                                           class="dropdown-item">Search &amp; download records</a></li>
+                                    <li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement"
+                                        id="menu-item-28"
+                                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-28 nav-item">
+                                        <a title="Search datasets" href="https://collections.ala.org.au/datasets"
+                                           class="dropdown-item">Search datasets</a></li>
+                                    <li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement"
+                                        id="menu-item-41967" role="separator" class="divider"></li>
+                                    <li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement"
+                                        id="menu-item-24"
+                                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-24 nav-item">
+                                        <a title="Spatial analysis (Spatial Portal)" href="https://spatial.ala.org.au/"
+                                           class="dropdown-item">Spatial analysis (Spatial Portal)</a></li>
+                                    <li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement"
+                                        id="menu-item-26"
+                                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-26 nav-item">
+                                        <a title="Explore your area"
+                                           href="https://biocache.ala.org.au/explore/your-area"
+                                           class="dropdown-item">Explore
+                                        your area</a></li>
+                                    <li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement"
+                                        id="menu-item-31"
+                                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-31 nav-item">
+                                        <a title="Explore natural history collections"
+                                           href="https://collections.ala.org.au/" class="dropdown-item">Explore natural
+                                        history collections</a></li>
+                                </ul>
+                            </li>
+                            <li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement"
+                                id="menu-item-32"
+                                class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children dropdown menu-item-32 nav-item">
+                                <a title="Contribute" href="#" data-toggle="dropdown" aria-haspopup="true"
+                                   aria-expanded="false" class="dropdown-toggle nav-link"
+                                   id="menu-item-dropdown-32">Contribute
+                                    <span class="caret"></span></a>
+                                <ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-32" role="menu">
+                                    <li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement"
+                                        id="menu-item-40773"
+                                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-40773 nav-item">
+                                        <a title="Share your dataset"
+                                           href="https://support.ala.org.au/support/solutions/articles/6000195493-how-to-submit-a-data-set"
+                                           class="dropdown-item">Share your dataset</a></li>
+                                    <li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement"
+                                        id="menu-item-40728"
+                                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-40728 nav-item">
+                                        <a title="Upload species list"
+                                           href="https://lists.ala.org.au/public/speciesLists"
+                                           class="dropdown-item">Upload
+                                        species list</a></li>
+                                    <li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement"
+                                        id="menu-item-41968" role="separator" class="divider"></li>
+                                    <li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement"
+                                        id="menu-item-33"
+                                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-33 nav-item">
+                                        <a title="Record a sighting"
+                                           href="https://biocollect.ala.org.au/bioActivity/create/e61eb018-02a9-4e3b-a4b3-9d6be33d9cbb?returnTo=%2Fsightings%2FbioActivity%2FprojectRecords%2Ff813c99c-1a1d-4096-8eeb-cbc40e321101&amp;hub=sightings"
+                                           class="dropdown-item">Record a sighting</a></li>
+                                    <li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement"
+                                        id="menu-item-35"
+                                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-35 nav-item">
+                                        <a title="Transcribe &amp; digitise (DigiVol)"
+                                           href="https://volunteer.ala.org.au/" class="dropdown-item">Transcribe &amp;
+                                        digitise (DigiVol)</a></li>
+                                    <li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement"
+                                        id="menu-item-37"
+                                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-37 nav-item">
+                                        <a title="Discover citizen science projects"
+                                           href="https://biocollect.ala.org.au/acsa?hub=ala-cs#isCitizenScience%3Dtrue%26isWorldWide%3Dfalse%26max%3D20%26sort%3DdateCreatedSort"
+                                           class="dropdown-item">Discover citizen science projects</a></li>
+                                </ul>
+                            </li>
+                            <li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement"
+                                id="menu-item-178"
+                                class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children dropdown menu-item-178 nav-item">
+                                <a title="About" href="#" data-toggle="dropdown" aria-haspopup="true"
+                                   aria-expanded="false" class="dropdown-toggle nav-link"
+                                   id="menu-item-dropdown-178">About
+                                    <span class="caret"></span></a>
+                                <ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-178" role="menu">
+                                    <li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement"
+                                        id="menu-item-179"
+                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-179 nav-item">
+                                        <a title="About us" href="https://www.ala.org.au/about-ala/"
+                                           class="dropdown-item">About us</a></li>
+                                    <li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement"
+                                        id="menu-item-40734"
+                                        class="menu-item menu-item-type-post_type menu-item-object-page current_page_parent menu-item-40734 nav-item">
+                                        <a title="News &amp; media" href="https://www.ala.org.au/blog/"
+                                           class="dropdown-item">News &amp; media</a></li>
+                                    <li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement"
+                                        id="menu-item-175"
+                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-175 nav-item">
+                                        <a title="Contact us" href="https://www.ala.org.au/contact-us/"
+                                           class="dropdown-item">Contact us</a></li>
+                                    <li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement"
+                                        id="menu-item-41969" role="separator" class="divider"></li>
+                                    <li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement"
+                                        id="menu-item-40731"
+                                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-40731 nav-item">
+                                        <a title="International Living Atlases" href="https://living-atlases.gbif.org/"
+                                           class="dropdown-item">International Living Atlases</a></li>
+                                    <li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement"
+                                        id="menu-item-40730"
+                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-40730 nav-item">
+                                        <a title="Education resources"
+                                           href="https://www.ala.org.au/education-resources/"
+                                           class="dropdown-item">Education
+                                        resources</a></li>
+                                    <li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement"
+                                        id="menu-item-177"
+                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-177 nav-item">
+                                        <a title="Indigenous ecological knowledge"
+                                           href="https://www.ala.org.au/indigenous-ecological-knowledge/"
+                                           class="dropdown-item">Indigenous ecological knowledge</a></li>
+                                    <li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement"
+                                        id="menu-item-41970" role="separator" class="divider"></li>
+                                    <li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement"
+                                        id="menu-item-41796"
+                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-41796 nav-item">
+                                        <a title="All sites, services &amp; tools"
+                                           href="https://www.ala.org.au/sites-and-services/" class="dropdown-item">All
+                                        sites, services &amp; tools</a></li>
+                                </ul>
+                            </li>
+                            <li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement"
+                                id="menu-item-41391"
+                                class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children dropdown menu-item-41391 nav-item">
+                                <a title="Help" href="#" data-toggle="dropdown" aria-haspopup="true"
+                                   aria-expanded="false" class="dropdown-toggle nav-link"
+                                   id="menu-item-dropdown-41391">Help
+                                    <span class="caret"></span></a>
+                                <ul class="dropdown-menu" aria-labelledby="menu-item-dropdown-41391" role="menu">
+                                    <li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement"
+                                        id="menu-item-41959"
+                                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-41959 nav-item">
+                                        <a title="Browse all articles (FAQs)"
+                                           href="https://support.ala.org.au/support/home" class="dropdown-item">Browse
+                                        all articles (FAQs)</a></li>
+                                    <li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement"
+                                        id="menu-item-41960"
+                                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-41960 nav-item">
+                                        <a title="ALA Data help"
+                                           href="https://support.ala.org.au/support/solutions/6000137994"
+                                           class="dropdown-item">ALA Data help</a></li>
+                                    <li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement"
+                                        id="menu-item-41961"
+                                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-41961 nav-item">
+                                        <a title="ALA Tools &amp; Apps help"
+                                           href="https://support.ala.org.au/support/solutions/6000138053"
+                                           class="dropdown-item">ALA Tools &amp; Apps help</a></li>
+                                    <li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement"
+                                        id="menu-item-41962"
+                                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-41962 nav-item">
+                                        <a title="ALA Spatial Portal help"
+                                           href="https://support.ala.org.au/support/solutions/6000138349"
+                                           class="dropdown-item">ALA Spatial Portal help</a></li>
+                                    <li itemscope="itemscope" itemtype="https://www.schema.org/SiteNavigationElement"
+                                        id="menu-item-41963"
+                                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-41963 nav-item">
+                                        <a title="Contact us" href="https://www.ala.org.au/contact-us/"
+                                           class="dropdown-item">Contact us</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <button class="search-trigger hidden-xs hidden-sm collapsed collapse-trigger-button"
+                            data-toggle="collapse"
+                            data-target="#autocompleteSearchALA" onclick="focusOnClickSearchButton()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 22 22"
+                             title="Open search control">
+                            <defs>
+                                <style>
+                                .search-icon {
+                                    fill: #fff;
+                                    fill-rule: evenodd;
+                                }
+                                </style>
+                            </defs>
+                            <path class="search-icon"
+                                  d="M1524.33,60v1.151a7.183,7.183,0,1,1-2.69.523,7.213,7.213,0,0,1,2.69-.523V60m0,0a8.333,8.333,0,1,0,7.72,5.217A8.323,8.323,0,0,0,1524.33,60h0Zm6.25,13.772-0.82.813,7.25,7.254a0.583,0.583,0,0,0,.82,0,0.583,0.583,0,0,0,0-.812l-7.25-7.254h0Zm-0.69-7.684,0.01,0c0-.006-0.01-0.012-0.01-0.018s-0.01-.015-0.01-0.024a6,6,0,0,0-7.75-3.3l-0.03.009-0.02.006v0a0.6,0.6,0,0,0-.29.293,0.585,0.585,0,0,0,.31.756,0.566,0.566,0,0,0,.41.01V63.83a4.858,4.858,0,0,1,6.32,2.688l0.01,0a0.559,0.559,0,0,0,.29.29,0.57,0.57,0,0,0,.75-0.305A0.534,0.534,0,0,0,1529.89,66.089Z"
+                                  transform="translate(-1516 -60)"></path>
+                        </svg>
+                        <span class="collapse visible-on-show" aria-hidden="true" title="Close">&times;</span>
+                    </button>
+                </div>
+
+            </div>
+        </div><!-- .container -->
+        <div class="container-fluid">
+            <div id="autocompleteSearchALA" class="collapse">
+                <form method="get" action="${config.bie.baseURL}${config.bie.searchPath}" class="search-form">
+                    <div class="space-between">
+                        <input id="autocompleteHeader" type="text" name="q"
+                               placeholder="Search species, datasets, and more..." class="search-input"
+                               autocomplete="off"/>
+                        <button class="search-submit" title="submit">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 22 22">
+                                <defs>
+                                    <style>
+                                    .search-icon {
+                                        fill: #fff;
+                                        fill-rule: evenodd;
+                                    }
+                                    </style>
+                                </defs>
+                                <path class="search-icon"
+                                      d="M1524.33,60v1.151a7.183,7.183,0,1,1-2.69.523,7.213,7.213,0,0,1,2.69-.523V60m0,0a8.333,8.333,0,1,0,7.72,5.217A8.323,8.323,0,0,0,1524.33,60h0Zm6.25,13.772-0.82.813,7.25,7.254a0.583,0.583,0,0,0,.82,0,0.583,0.583,0,0,0,0-.812l-7.25-7.254h0Zm-0.69-7.684,0.01,0c0-.006-0.01-0.012-0.01-0.018s-0.01-.015-0.01-0.024a6,6,0,0,0-7.75-3.3l-0.03.009-0.02.006v0a0.6,0.6,0,0,0-.29.293,0.585,0.585,0,0,0,.31.756,0.566,0.566,0,0,0,.41.01V63.83a4.858,4.858,0,0,1,6.32,2.688l0.01,0a0.559,0.559,0,0,0,.29.29,0.57,0.57,0,0,0,.75-0.305A0.534,0.534,0,0,0,1529.89,66.089Z"
+                                      transform="translate(-1516 -60)"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </nav><!-- .site-navigation -->
+
+</div>
+<script type="text/html" id="autoCompleteTemplate">
+<li class="autocomplete-item striped">
+    <div class="content-spacing">
+        <div class="autocomplete-heading">
+            ${'<% if (commonNameMatches.length > 0) { %><%=commonNameMatches[0]%><% } else if (scientificNameMatches.length > 0) { %><%=scientificNameMatches[0]%><% } else { %><%=matchedNames[0]%><% } %>'.encodeAsRaw()}
+        </div>
+    </div>
+</li>
+</script>
+
+<!-- End header -->
+<!-- end banner message -->
 <!-- Container -->
 <div class="${fluidLayout ? 'container-fluid' : 'container'}" id="main">
     <g:layoutBody/>
 </div><!-- End container #main col -->
 
-<asset:deferredScripts />
+<asset:deferredScripts/>
+
+<asset:javascript src="commonui-bs3-2019/js/application.min.js"/>
+<asset:javascript src="commonui-bs3-2019.js"/>
 
 <!-- Google Analytics -->
 <g:if test="${config.googleAnalyticsId != null}">

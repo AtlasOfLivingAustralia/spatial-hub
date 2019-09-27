@@ -51,6 +51,11 @@
                                         if (input[name]) {
                                             $scope.spec.input[i] = angular.merge($scope.spec.input[i], input[name])
                                         }
+
+                                        // needed when 'name' is numeric
+                                        if (input[i]) {
+                                            $scope.spec.input[i] = angular.merge($scope.spec.input[i], input[i])
+                                        }
                                     }
                                 }
                             } else {
@@ -68,7 +73,9 @@
                         $scope.initValues();
                         $scope.buildViews();
 
-                        if ($scope.stage === 'execute') {
+                        if ($scope.stage === 'edit') {
+                            inputData.newValue = $scope.getInputs()
+                        } else if ($scope.stage === 'execute') {
                             $scope.finish();
                         } else if ($scope.stage === 'output') {
                             $scope.statusUrl = $SH.layersServiceUrl + '/tasks/status/' + $scope.taskId;
@@ -108,6 +115,10 @@
                 $scope.initValues = function () {
                     //no need for initValues when $scope.values is populated from LayoutService.addToSave
                     if ($scope.values.length > 0) return;
+                    if (inputData.values) {
+                        $scope.values = inputData.values;
+                        return;
+                    }
 
                     //check for previously entered value in LayoutService
                     $scope.values = LayoutService.getValue($scope.componentName, 'values', $scope.values);
@@ -140,8 +151,17 @@
                                 if (value.constraints['defaultToWorld'] === undefined) value.constraints['defaultToWorld'] = false;
                                 if (value.constraints['max'] === undefined) value.constraints['max'] = 1000;
 
-                                if (value.constraints['default'] !== undefined) v = value.constraints['default'];
-                                else v = {area: []}
+                                if (value.constraints['default'] !== undefined) {
+                                    // getInputs returns the .area array which is inconsistent with the value
+                                    if (value.constraints['default'] instanceof Array) {
+                                        v = {area: value.constraints['default']}
+                                    } else {
+                                        v = value.constraints['default']
+                                    }
+                                } else {
+                                    v = {area: []}
+                                }
+
                             } else if (value.type === 'species') {
                                 if (value.constraints['areaIncludes'] === undefined) value.constraints['areaIncludes'] = false;
                                 if (value.constraints['spatialValidity'] === undefined) value.constraints['spatialValidity'] = true;
@@ -165,7 +185,17 @@
                             } else if (value.type === 'date') {
                                 v = {fq: []}
                             } else if (value.type === 'layer') {
-                                if (value.constraints['default'] !== undefined) v = value.constraints['default'];
+                                if (value.constraints['default'] !== undefined) {
+                                    // getInputs returns the .area array which is inconsistent with the value
+                                    if (value.constraints['default'] instanceof Array) {
+                                        v = {layers: []};
+                                        $.map(value.constraints['default'], function (layer) {
+                                            v.layers.push(LayersService.getLayer(layer))
+                                        })
+                                    } else {
+                                        v = LayersService.getLayer(value.constraints['default']);
+                                    }
+                                }
                                 else v = {layers: []}
                             } else if (value.type === 'boolean') {
                                 v = value.constraints['default']
@@ -218,8 +248,13 @@
                 };
 
                 $scope.finish = function () {
-                    $scope.stage = 'execute';
-                    var response = $scope.execute();
+                    if ($scope.stage === 'edit') {
+                        inputData.newValue = $scope.getInputs()
+                        $scope.close()
+                    } else {
+                        $scope.stage = 'execute';
+                        var response = $scope.execute();
+                    }
                 };
 
                 $scope.finished = false;
