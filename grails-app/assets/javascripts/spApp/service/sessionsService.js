@@ -8,8 +8,8 @@
      *   Access to spatial-hub sessions
      */
     angular.module('sessions-service', [])
-        .factory('SessionsService', ['$http', '$rootScope', 'MapService', 'BiocacheService',
-            function ($http, $rootScope, MapService, BiocacheService) {
+        .factory('SessionsService', ['$http', '$rootScope', 'MapService', 'BiocacheService','LoggerService',
+            function ($http, $rootScope, MapService, BiocacheService, LoggerService) {
 
             var _httpDescription = function (method, httpconfig) {
                 if (httpconfig === undefined) {

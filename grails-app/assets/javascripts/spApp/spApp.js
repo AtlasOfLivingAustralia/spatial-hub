@@ -156,8 +156,11 @@ function fetchData() {
 
     var gLayerDistances = {};
     var gMessages = {};
+    var gLayers = []
+
     spApp.constant("gLayerDistances", gLayerDistances);
     spApp.constant("gMessages", gMessages);
+    spApp.constant("gLayers", gLayers);
 
     var distancesUrl = $SH.layersServiceUrl + "/layerDistances/layerdistancesJSON";
 
@@ -172,6 +175,11 @@ function fetchData() {
             }
         });
     }
+
+    promises.push(  $http.get($SH.layersServiceUrl + "/fields/search?q=", _httpDescription('getLayers')).then(function (data) {
+        gLayers = data.data;
+    }))
+
 
     promises.push($http.get($SH.baseUrl + "/portal/i18n?lang=" + $SH.i18n, _httpDescription('geti18n')).then(function (result) {
         for (k in result.data) {
@@ -212,6 +220,10 @@ function fetchData() {
             return $q.when(cap)
         });
     }));
+
+
+
+
 
     // add to promises list if waiting is required before making the page visible
     return $q.all(promises).then(function (results) {
