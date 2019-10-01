@@ -750,6 +750,8 @@
                                         newLayer.legendurl += "&service=WMS&version=1.1.0&request=GetLegendGraphic&format=image/png&sld_body=" + encodeURIComponent(id.sld_body)
                                     } else if (layer.id.startsWith("cl")) {
                                         newLayer.legendurl += "&service=WMS&version=1.1.0&request=GetLegendGraphic&format=image/png&style=" + encodeURIComponent(layer.id)
+                                    } else {
+                                        newLayer.legendurl += "&REQUEST=GetLegendGraphic&FORMAT=image/png"
                                     }
                                 }
                             }
