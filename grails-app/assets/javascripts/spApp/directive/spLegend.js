@@ -49,6 +49,7 @@
                         };
 
                         scope.$watch('selected.layer.uid', function (oldValue, newValue) {
+                            LayoutService.closeModeless('FacetEditorModalCtrl')
                             scope.setAreaLayers();
                             scope.updateFacet();
                         });
