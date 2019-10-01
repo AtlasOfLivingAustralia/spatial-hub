@@ -286,7 +286,7 @@ var Util = {
         copyTo = copyTo || [];
         copyTo.length = 0;
         chartData && chartData.forEach(function (point) {
-            copyTo.push ( Util.geBorderColourForDataPoint(point) );
+            copyTo.push(Util.geBorderColourForDataPoint(point));
         });
 
         return copyTo;

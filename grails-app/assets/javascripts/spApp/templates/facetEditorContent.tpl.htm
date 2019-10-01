@@ -2,13 +2,15 @@
     <label>Display facet class in</label>
     <div class="btn-group">
         <button class="btn btn-default btn-xs" uib-btn-radio="'table'" ng-model="facetDisplay" i18n="456">
-             table
+            table
         </button>
         <button class="btn btn-default btn-xs" uib-btn-radio="'chart'" ng-model="facetDisplay" i18n="455">
             chart
         </button>
     </div>
-    <button class="btn btn-xs btn-default" ng-click="openFacetInModal()" i18n="454" uib-btn-checkbox ng-show="showFacetOnModalButton()" ng-model="_settings.showFacetOnModal">fullscreen</button>
+    <button class="btn btn-xs btn-default" ng-click="openFacetInModal()" i18n="454" uib-btn-checkbox
+            ng-show="showFacetOnModalButton()" ng-model="_settings.showFacetOnModal">fullscreen
+    </button>
 </div>
 <input style="width:200px" type="text" placeholder="Filter" ng-model="_facet.filter"/>
 <button i18n="129" ng-click="_facet.filter=''" class="btn btn-xs btn-default" ng-disabled="_facet.filter == ''">clear
@@ -19,13 +21,15 @@
                  class="progress-striped" ng-class="{ active: true }" value="100"
                  type='info' title="Updating">{{ facet.progress || 'loading...'}}
 </uib-progressbar>
-<table class="table table-striped" style="min-width:370px;max-height:200px;overflow:auto;display:none" ng-style="{display: _settings.tableStyle || 'block'}" ng-show="!_facet.loading">
+<table class="table table-striped" style="min-width:370px;max-height:200px;overflow:auto;display:none"
+       ng-style="{display: _settings.tableStyle || 'block'}" ng-show="!_facet.loading">
     <thead>
     <tr>
         <th style="min-width:20px; width: 5%;"><input type="checkbox" ng-model="_facet.isAllFacetsSelected"
-                                      ng-change="checkAllFacets()"></th>
+                                                      ng-change="checkAllFacets()"></th>
         <th style="min-width:230px; width: 62%;">
-            <a href="#" ng-click="_facet.sortType = 'displayname'; _facet.sortReverse = !_facet.sortReverse;setSliderInactiveAndRedrawChart();">
+            <a href="#"
+               ng-click="_facet.sortType = 'displayname'; _facet.sortReverse = !_facet.sortReverse;setSliderInactiveAndRedrawChart();">
                 <span i18n="329">Facet Class</span>
                 <span ng-show="_facet.sortType == 'displayname' && !_facet.sortReverse"
                       class="glyphicon glyphicon-chevron-down"></span>
@@ -34,7 +38,7 @@
             </a>
         </th>
         <th style="min-width:100px; width: 27%;"><a href="#"
-                                   ng-click="_facet.sortType = 'count'; _facet.sortReverse = !_facet.sortReverse;setSliderInactiveAndRedrawChart();">
+                                                    ng-click="_facet.sortType = 'count'; _facet.sortReverse = !_facet.sortReverse;setSliderInactiveAndRedrawChart();">
             <span i18n="81">Count</span>
             <span ng-show="_facet.sortType == 'count' && !_facet.sortReverse"
                   class="glyphicon glyphicon-chevron-down"></span>
@@ -44,8 +48,10 @@
     </tr>
     </thead>
     <tbody>
-    <tr ng-repeat="x in _facet.data | orderBy:_facet.sortType:_facet.sortReverse |filter:_facet.filter" ng-if="facetDisplay === 'table'">
-        <td style="min-width:20px; width: 5%;"><input type="checkbox" ng-model="x.selected" ng-change="updateSelection()"></td>
+    <tr ng-repeat="x in _facet.data | orderBy:_facet.sortType:_facet.sortReverse |filter:_facet.filter"
+        ng-if="facetDisplay === 'table'">
+        <td style="min-width:20px; width: 5%;"><input type="checkbox" ng-model="x.selected"
+                                                      ng-change="updateSelection()"></td>
         <td style="min-width:230px; width: 62%;">{{x.displayname}}</td>
         <td style="min-width:100px; width: 27%;">{{x.count}}</td>
         <td i18n="130" style="background-color:#{{formatColor(x)}};min-width:20px; width: 5%;">&nbsp</td>
@@ -56,15 +62,19 @@
                  popover-placement="right" style="height: 30px">
                 <i class="glyphicon glyphicon-info-sign"></i>
             </div>
-            <div ui-slider="sliderOptions" orientation="vertical" min="{{_settings.slider.min}}" max="{{_settings.slider.max}}"
+            <div ui-slider="sliderOptions" orientation="vertical" min="{{_settings.slider.min}}"
+                 max="{{_settings.slider.max}}"
                  ng-model="_settings.slider.values" ng-style="{'height': _settings.height + 'px'}"
                  ng-class="{inactive: !_settings.slider.active}">
             </div>
         </td>
         <td colspan="2">
-            <div class="chart-container" style="position: relative;" ng-style="{'height': (_settings.height + 30) + 'px'}">
-                <canvas id="test" class="chart-horizontal-bar"  chart-labels="_settings.chart.labels" chart-data="_settings.chart.data"
-                        chart-options="chartOptions" chart-colors="_settings.chart.colours" chart-click="chartClick" chart-dataset-override="datasetOverride"> </canvas>
+            <div class="chart-container" style="position: relative;"
+                 ng-style="{'height': (_settings.height + 30) + 'px'}">
+                <canvas id="test" class="chart-horizontal-bar" chart-labels="_settings.chart.labels"
+                        chart-data="_settings.chart.data"
+                        chart-options="chartOptions" chart-colors="_settings.chart.colours" chart-click="chartClick"
+                        chart-dataset-override="datasetOverride"></canvas>
             </div>
         </td>
     </tr>

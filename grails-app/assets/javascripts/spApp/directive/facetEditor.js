@@ -46,8 +46,18 @@
                         if (scope._facet.isAllFacetsSelected === undefined) scope._facet.isAllFacetsSelected = false;
                         if (scope._facet.loading === undefined) scope._facet.loading = false;
                         if (scope._settings === undefined) scope._settings = {};
-                        if (scope._settings.chart === undefined) scope._settings.chart = {colours: [], data: [], labels:[], datasets: {}};
-                        if (scope._settings.slider === undefined) scope._settings.slider = {values: [0,1], min: 0, max: 1, active: false};
+                        if (scope._settings.chart === undefined) scope._settings.chart = {
+                            colours: [],
+                            data: [],
+                            labels: [],
+                            datasets: {}
+                        };
+                        if (scope._settings.slider === undefined) scope._settings.slider = {
+                            values: [0, 1],
+                            min: 0,
+                            max: 1,
+                            active: false
+                        };
                         if (scope._settings.height === undefined) scope._settings.height = 50;
                         if (scope._settings.showFacetOnModal === undefined) scope._settings.showFacetOnModal = false;
 
@@ -59,7 +69,7 @@
                         };
 
                         scope.setLoading = function () {
-                            if ( scope._facet.data == undefined )
+                            if (scope._facet.data == undefined)
                                 scope._facet.loading = true;
                             else
                                 scope._facet.loading = false;
@@ -98,7 +108,7 @@
                             Util.getBarColour(chartData, scope._settings.chart.colours, scope.formatColor);
                         };
 
-                        scope.chartClick = function(elements, event, element) {
+                        scope.chartClick = function (elements, event, element) {
                             scope.$apply(function () {
                                 scope.setSliderInactive();
 
@@ -125,9 +135,9 @@
                         scope.updateSliderConfig = function () {
                             var data = chartData || scope._facet.data;
                             if (data && data.length) {
-                                scope._settings.slider.values[1] = scope._settings.slider.max =  data.length - 1;
+                                scope._settings.slider.values[1] = scope._settings.slider.max = data.length - 1;
                                 scope._settings.slider.values[0] = scope._settings.slider.max - 1;
-                                if ( scope._settings.slider.values[0] < 0 )
+                                if (scope._settings.slider.values[0] < 0)
                                     scope._settings.slider.values[0] = 0;
                             } else {
                                 scope._settings.slider.values[1] = scope._settings.slider.max = 1;
@@ -135,7 +145,7 @@
                             }
                         };
 
-                        scope.setSliderState = function(state) {
+                        scope.setSliderState = function (state) {
                             scope._settings.slider.active = !!state;
                         };
 
@@ -243,12 +253,12 @@
                             return !scope._facet.loading && !scope._settings.showFacetOnModal;
 
                         };
-                        scope.updateChart = function(){
+                        scope.updateChart = function () {
                             scope.drawChart();
                             scope.updateSelection();
                         };
 
-                        scope.openFacetInModal = function() {
+                        scope.openFacetInModal = function () {
                             LayoutService._closeOpen();
 
                             if (scope._settings.showFacetOnModal) {
@@ -264,7 +274,7 @@
                         scope.sliderOptions = {
                             orientation: 'vertical',
                             range: true,
-                            stop: function() {
+                            stop: function () {
                                 scope.$apply(function () {
                                     scope.setSliderActive();
                                     scope.selectClassesInRange();

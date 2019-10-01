@@ -47,7 +47,7 @@
 
 
                 function synchronize() {
-                    for ( var index = 0; index < $scope.facet.data.length; index++ ) {
+                    for (var index = 0; index < $scope.facet.data.length; index++) {
                         originalFacet.data[index].selected = $scope.facet.data[index].selected;
                     }
 
