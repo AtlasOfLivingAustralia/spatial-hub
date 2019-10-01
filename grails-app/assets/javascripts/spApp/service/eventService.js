@@ -48,7 +48,7 @@
                         return $q.when(true)
                     },
 
-                    facetNewLayoutOut: function (layer, newFqs) {
+                    facetNewLayerOut: function (layer, newFqs) {
                         var fq = ''
                         if (newFqs.length > 0) {
                             fq = "-((" + newFqs.join(") AND (") + "))"
