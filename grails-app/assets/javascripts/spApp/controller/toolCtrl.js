@@ -205,7 +205,10 @@
                                 v = value.constraints['default']
                             } else if (value.type === 'list') {
                                 if (value.constraints.selection !== 'single') {
-                                    v = [value.constraints['default']];
+                                    v = value.constraints['default'];
+                                    if (v == undefined) {
+                                        v = [];
+                                    }
                                 } else {
                                     v = value.constraints['default'];
                                 }
@@ -215,9 +218,14 @@
                                     value.constraints.labels = value.constraints.content;
                                 }
                                 for (var i in value.constraints.content) {
+                                    var label = value.constraints.content[i]
+                                    if (value.constraints.labels) {
+                                        label = value.constraints.labels[i]
+                                    }
                                     value.constraints._list.push({
                                         value: value.constraints.content[i],
-                                        label: value.constraints.labels[i]
+                                        label: label,
+                                        selected: false
                                     })
                                 }
                             } else if (value.constraints !== undefined && value.constraints['default'] !== undefined) {
@@ -369,7 +377,7 @@
                 };
 
                 $scope.getInputs = function () {
-                    var c = ToolsService.getCap($scope.toolName).input;
+                    var c = $scope.spec.input;
                     var inputs = {};
                     var k;
                     var j;
@@ -383,7 +391,15 @@
                         }
                         if (c.hasOwnProperty(kvalue)) {
                             if ($scope.values[k] !== undefined && $scope.values[k] !== null) {
-                                if ($scope.values[k].area !== undefined) {
+                                if (c[kvalue].type == 'list' && c[kvalue].constraints.selection !== 'single') {
+                                    inputs[kvalue] = []
+                                    var list = c[kvalue].constraints._list
+                                    for (var idx in list) {
+                                        if (list[idx].selected) {
+                                            inputs[kvalue].push(list[idx].value)
+                                        }
+                                    }
+                                } else if ($scope.values[k].area !== undefined) {
                                     inputs[kvalue] = [];
                                     for (j in $scope.values[k].area) {
                                         if ($scope.values[k].area.hasOwnProperty(j)) {

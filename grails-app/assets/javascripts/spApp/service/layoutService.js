@@ -329,10 +329,6 @@
                         if (item.layertype === 'species') {
                             item.display = {size: 'full'};
 
-                            return WorkflowService.save(item.name, true, LoggerService.get(item.uid), true).then(function (response) {
-                                bootbox.alert(JSON.stringify(response.data))
-                            });
-
                             this.openModal('speciesInfo', item, false)
                         } else if (item.layertype === 'area' && item.metadataUrl === undefined) {
                             var b = item.bbox;

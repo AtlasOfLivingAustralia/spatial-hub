@@ -177,7 +177,9 @@ function fetchData() {
     }
 
     promises.push(  $http.get($SH.layersServiceUrl + "/fields/search?q=", _httpDescription('getLayers')).then(function (data) {
-        gLayers = data.data;
+        $.map(data.data, function (v) {
+            gLayers.push(v);
+        })
     }))
 
 
