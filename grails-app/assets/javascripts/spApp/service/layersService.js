@@ -5,11 +5,12 @@
      * @ngdoc service
      * @name LayersService
      * @description
-     *   Access to layer services of spatial-service
+     *   Access to layer services of spatial-service    *
+     *
      */
     angular.module('layers-service', ['ngFileUpload'])
-        .factory('LayersService', ['$http', '$timeout', '$q', 'Upload', function ($http, $timeout, $q, Upload) {
-            var layers = [];
+        .factory('LayersService', ['$http', '$timeout', '$q', 'Upload','gLayers', function ($http, $timeout, $q, Upload, gLayers) {
+            var layers = gLayers;
 
             var _httpDescription = function (method, httpconfig) {
                 if (httpconfig === undefined) {
@@ -21,10 +22,10 @@
                 return httpconfig;
             };
 
-            var url = $SH.layersServiceUrl + "/fields/search?q=";
-            $http.get(url, _httpDescription('getLayers')).then(function (data) {
-                layers = data.data;
-            });
+            // var url = $SH.layersServiceUrl + "/fields/search?q=";
+            // $http.get(url, _httpDescription('getLayers')).then(function (data) {
+            //     layers = data.data;
+            // });
 
             var thiz = {
                 /**

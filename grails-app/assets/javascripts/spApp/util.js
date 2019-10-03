@@ -252,5 +252,48 @@ var Util = {
             }
         }
         return copy
+    },
+
+    /**
+     * Get data to draw chart
+     */
+    convertFacetDataToChartJSFormat: function (data, copyTo) {
+        copyTo = copyTo || {labels: [], data: []};
+        if (copyTo != undefined && data != undefined) {
+            data.forEach(function (item) {
+                copyTo.labels.push(item.displayname);
+                copyTo.data.push(item.count);
+            });
+        }
+
+        return copyTo;
+    },
+
+    getBarColour: function (chartData, copyTo, getColour) {
+        copyTo = copyTo || [];
+        copyTo.length = 0;
+        chartData && chartData.forEach(function (point) {
+            var colour = '#' + getColour(point);
+            copyTo.push({
+                backgroundColor: colour,
+                pointBackgroundColor: colour
+            });
+        });
+
+        return copyTo;
+    },
+    getBorderColour: function (chartData, copyTo) {
+        copyTo = copyTo || [];
+        copyTo.length = 0;
+        chartData && chartData.forEach(function (point) {
+            copyTo.push(Util.geBorderColourForDataPoint(point));
+        });
+
+        return copyTo;
+    },
+    geBorderColourForDataPoint: function (point) {
+        var selectedColour = "rgba(0, 0, 0, 1)",
+            defaultColour = "rgba(0, 0, 0, 0.1)";
+        return point.selected ? selectedColour : defaultColour
     }
 };

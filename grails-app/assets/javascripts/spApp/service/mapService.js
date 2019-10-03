@@ -311,6 +311,7 @@
                                         pidList.push(data[i]);
                                     } else {
                                         MapService.add({
+                                            log: query.log,
                                             query: query,
                                             geom_idx: item.geom_idx,
                                             layertype: "area",
@@ -329,20 +330,26 @@
                         })
                     },
 
+                    mapFromPid: function (next) {
+                        return LayersService.getObject(next.pid).then(function (data) {
+                            data.data.layertype = 'area';
+                            if (next.query) data.data.query = next.query;
+                            if (next.metadataUrl) data.data.metadataUrl = next.metadataUrl;
+                            if (next.name) data.data.name = next.name;
+                            if (next.name) data.data.displayname = next.name;
+                            if (next.label) data.data.displayname = next.label;
+                            if (next.geom_idx) data.data.geom_idx = next.geom_idx;
+                            if (next.metadata) data.data.metadata = next.metadata;
+                            if (next.log) data.data.log = next.log;
+
+                            return MapService.add(data.data);
+                        })
+                    },
+
                     mapFromPidList: function () {
                         if (pidList.length > 0) {
                             var next = pidList.pop();
-                            LayersService.getObject(next.pid).then(function (data) {
-                                data.data.layertype = 'area';
-                                if (next.query) data.data.query = next.query;
-                                if (next.metadataUrl) data.data.metadataUrl = next.metadataUrl;
-                                if (next.name) data.data.name = next.name;
-                                if (next.name) data.data.displayname = next.name;
-                                if (next.geom_idx) data.data.geom_idx = next.geom_idx;
-                                if (next.metadata) data.data.metadata = next.metadata;
-
-                                MapService.add(data.data);
-
+                            MapService.mapFromPid(next).then(function () {
                                 MapService.mapFromPidList();
                             })
                         }
@@ -361,6 +368,10 @@
                                 MapService.setHighlightVisible(true)
                             })
                         }, 0);
+                    },
+
+                    getNextUid: function () {
+                        return uid;
                     },
 
                     removeHighlight: function () {
@@ -463,17 +474,26 @@
                                     url: id.url,
                                     label: id.displayname,
                                     legendurl: id.legendurl
-                                });
+                                }, id.uid);
+                            } else {
+                                LoggerService.addLayerId(id.uid)
                             }
 
-                        } else if (id.q && id.layertype !== 'area') {
+                        } else if ((id.q || id.qid) && id.layertype !== 'area') {
+                            if (!id.bs) id.bs = $SH.biocacheServiceUrl
+                            if (!id.ws) id.ws = $SH.biocacheUrl
+
                             // do not add to log if it is a child layer or already logged
                             if ((id.log === undefined || id.log) && parentLayer === undefined) {
                                 LoggerService.log('Map', 'Species', {
+                                    bs: id.bs,
+                                    ws: id.ws,
                                     qid: id.qid,
                                     label: id.displayname,
                                     species_list: id.species_list
-                                });
+                                }, id.uid);
+                            } else {
+                                LoggerService.addLayerId(id.uid)
                             }
 
                             id.layertype = 'species';
@@ -634,8 +654,11 @@
                                                 pid: id.pid,
                                                 geom_idx: id.geom_idx,
                                                 label: id.displayname,
-                                                query: id.query
-                                            });
+                                                query: id.query,
+                                                taskId: id.taskId
+                                            }, id.uid);
+                                        } else {
+                                            LoggerService.addLayerId(id.uid)
                                         }
                                     }
 
@@ -656,7 +679,12 @@
 
                                 // do not add to log if it is a child layer or already logged
                                 if ((id.log === undefined || id.log) && parentLayer === undefined) {
-                                    LoggerService.log('Map', 'Layer', {id: id.id, label: layer.layer.displayname});
+                                    LoggerService.log('Map', 'Layer', {
+                                        id: id.id,
+                                        label: layer.layer.displayname
+                                    }, id.uid);
+                                } else {
+                                    LoggerService.addLayerId(id.uid)
                                 }
 
                                 if (layer.type !== 'e') {
@@ -722,6 +750,8 @@
                                         newLayer.legendurl += "&service=WMS&version=1.1.0&request=GetLegendGraphic&format=image/png&sld_body=" + encodeURIComponent(id.sld_body)
                                     } else if (layer.id.startsWith("cl")) {
                                         newLayer.legendurl += "&service=WMS&version=1.1.0&request=GetLegendGraphic&format=image/png&style=" + encodeURIComponent(layer.id)
+                                    } else {
+                                        newLayer.legendurl += "&REQUEST=GetLegendGraphic&FORMAT=image/png"
                                     }
                                 }
                             }

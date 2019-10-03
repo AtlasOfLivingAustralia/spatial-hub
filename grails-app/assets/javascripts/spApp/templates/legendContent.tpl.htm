@@ -13,9 +13,8 @@
                 <label><span i18n="116">Records selected:&nbsp;</span>{{ selected.layer.scatterplotSelectionCount
                     }}<span
                             i18n="117">&nbsp;record/s</span></label>
-                <button i18n="118" class="btn btn-xs btn-default" ng-click="scatterplotCreateInOut()">add in/out
-                    layers to
-                    map
+                <button i18n="118" class="btn btn-xs btn-default" ng-click="scatterplotCreateInOut()">
+                    add in/out layers to map
                 </button>
             </div>
 
@@ -82,6 +81,7 @@
                     ng-change="updateFacet()">
                 <option i18n="128" value="-1">User defined colour</option>
                 <option value="search">Search facets...</option>
+                <option ng-repeat="filter in workflowFilters" value="{{filter.workflowId}}">{{filter.name}}</option>
 
                 <option ng-show="filtersEnabled()" disabled>--- Active Filters ---</option>
                 <option ng-repeat="x in selected.layer.facets | filter:{enabled: true}" value="{{x.name}}"

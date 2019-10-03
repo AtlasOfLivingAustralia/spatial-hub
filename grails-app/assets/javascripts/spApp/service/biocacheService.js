@@ -746,7 +746,11 @@
                         $.merge(fqs, [newFq])
                     }
 
-                    return this.registerLayer(query.bs, query.ws, fqs, query.wkt, newName)
+                    return this.registerLayer(query.bs, query.ws, fqs, query.wkt, newName).then(function (data) {
+                        data.species_list = query.species_list
+
+                        return data
+                    })
                 },
                 /**
                  * Create a layer and register for qid

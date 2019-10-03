@@ -1078,3 +1078,14 @@ ul.errors {
 .workflow-annotation .form-group {
     margin-bottom: 5px;
 }
+
+.inactive .ui-widget-header {
+    background-color: #999999;
+    background-image: none;
+}
+
+.list-multiple {
+    display: inline-flex;
+    width: 200px;
+    padding: 5px;
+}

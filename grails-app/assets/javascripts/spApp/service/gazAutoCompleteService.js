@@ -42,16 +42,12 @@
                      }]
                  */
 
-                // search: function (term) {
-                //     return $http.get(LayersService.url() + "/search?q=" + term , _httpDescription('search')).then(function (response) {
-                //         return response.data;
-                //     });
-                // }
-
                 search: function (q) {
-                    var url = LayersService.url() + "/search?q=" + q.q +'&start='+q.start+'&limit='+q.limit ;
+                    var url = LayersService.url() + "/search?q=" + q.q + '&start=' + q.start + '&limit=' + q.limit;
                     if (q.include)
-                        url +='&include='+q.include;
+                        url += '&include=' + q.include;
+                    if (q.exclude)
+                        url += '&exclude=' + q.exclude;
                     return $http.get(url, _httpDescription('search')).then(function (response) {
                         return response.data;
                     });

@@ -97,6 +97,7 @@
                             if (inputs[0].species_list) {
                                 data.species_list = inputs[0].species_list;
                             }
+                            data.log = false
                             return MapService.add(data).then(function () {
                                 return true;
                             })

@@ -130,13 +130,13 @@
                             var json = JSON.parse(resp.data.text);
                             var druid = json.druid;
 
-                            LoggerService.log("Create", "createSpeciesList", JSON.stringify({
+                            LoggerService.log("Create", "createSpeciesList", {
                                 name: $scope.newListName,
                                 description: $scope.newListDescription,
                                 guids: $scope.matchedGuids(),
                                 makePrivate: $scope.makePrivate,
                                 druid: druid
-                            }))
+                            })
 
                             ListsService.items(druid, {max: 1}).then(function (data) {
                                 if (data.length === 0) {

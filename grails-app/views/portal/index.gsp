@@ -170,7 +170,17 @@
         /**
          * Enabled multiple species layer filters within the 'Edit species layer' section.
          */
-        , filtersEnabled: ${config.filters.enabled},
+        , filtersEnabled: ${config.filters.enabled}
+
+        /**
+         * Enable workflow button in the header
+         */
+        , workflowEnabled: ${config.workflow.enabled}
+
+        /**
+         * List of public workflow Ids for the species filter
+         */
+        , workflowFilters: ${(config.workflow.speciesFilters as grails.converters.JSON).toString().encodeAsRaw()}
     };
 
     BIE_VARS = {
