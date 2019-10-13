@@ -503,6 +503,14 @@ spApp:
         hideEmptyValues: true
         disableBiocacheQueryOnClick: true
 
+rangeDataTypes:
+  - 'tint'
+  - 'int'
+  - 'tdouble'
+  - 'tfloat'
+  - 'tdate'
+
+numberOfIntervalsForRangeData: 7
 #
 # portal.gsp layout options
 #

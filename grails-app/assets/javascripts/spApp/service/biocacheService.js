@@ -427,9 +427,11 @@
                   "green": 57
                   }]
                  */
-                facet: function (facet, query) {
+                facet: function (facet, query, ranges) {
                     return this.registerQuery(query).then(function (response) {
-                        return $http.get(query.bs + "/webportal/legend?cm=" + facet + "&q=" + response.qid + "&type=application/json", _httpDescription('facet',
+                        ranges = (ranges || []).join(",");
+                        ranges = ranges.length > 0 ? "," + ranges : "";
+                        return $http.get(query.bs + "/webportal/legend?cm=" + facet + ranges + "&q=" + response.qid + "&type=application/json", _httpDescription('facet',
                             {headers: {Accept: "application/json"}})).then(function (response) {
                             $.map(response.data, function (v, k) {
                                 v.displayname = Messages.get(facet + '.' + v.name, v.name ? v.name : "")
@@ -845,6 +847,43 @@
                         }
                     }
                     return undefined
+                },
+                /**
+                 * Get the minimum and maxium value for a facet in a given query.
+                 * @param query
+                 * @param facet
+                 * @returns {Promise(Object)}
+                 * Input:
+                 * - facet
+                 *  {
+                 *      name: "year"
+                 *      ...
+                 *  }
+                 * - query
+                 *  {
+                 *      "q": "frog",
+                 *      "bs": "https://biocache-ws.ala.org.au/ws",
+                 *      "ws": "https://biocache.ala.org.au"
+                 *  }
+                 *
+                 * Output:
+                 * {
+                 *      "min":1896.0,
+                 *      "max":2019.0,
+                 *      "label":"year"
+                 * }
+                 */
+                getFacetMinMax: function(query, facet) {
+                    var defaultValue = {min: undefined, max: undefined, label: facet.name};
+                    if (Util.isFacetOfRangeDataType(facet.dataType)) {
+                        return this.registerQuery(query).then(function (response) {
+                            return $http.get(query.bs + "/chart?q=" + response.qid + "&statType=min,max&stats=" + facet.name).then(function (response) {
+                                return response.data.data && response.data.data[0] && response.data.data[0].data && response.data.data[0].data[0] || defaultValue;
+                            });
+                        });
+                    } else {
+                        return $q.when(defaultValue);
+                    }
                 },
                 facetsToFq: function (facet, ignoreEnabledFlag) {
                     var fqs = [];

@@ -35,8 +35,9 @@
                             tableFacetDisplay = 'table',
                             chartFacetDisplay = 'chart',
                             defaultFacetDisplay = tableFacetDisplay,
-                            showChartForDataTypes = ['tint', 'int', 'tdouble', 'tfloat', 'tdate'],
-                            filterFieldName = 'displayname';
+                            showChartForDataTypes = $SH.rangeDataTypes,
+                            sortByDisplayName = 'displayname',
+                            sortByCount = 'count';
                         scope.baseUrl = $SH.baseUrl; // for image icons
                         scope.$i18n = $i18n;
                         if (scope._facet.filter === undefined) scope._facet.filter = '';
@@ -58,6 +59,16 @@
                                 scope.facetDisplay = defaultFacetDisplay;
                         };
 
+                        scope.inferSortOrder = function() {
+                          if (Util.isFacetOfRangeDataType(scope._facet.dataType)) {
+                              scope._facet.sortType = sortByDisplayName;
+                              scope._facet.sortReverse = false;
+                          } else {
+                              scope._facet.sortType = sortByCount;
+                              scope._facet.sortReverse = true;
+                          }
+                        };
+
                         scope.setLoading = function () {
                             if ( scope._facet.data == undefined )
                                 scope._facet.loading = true;
@@ -72,8 +83,17 @@
                         scope.updateChartData = function () {
                             scope._settings.chart.data.length = 0;
                             scope._settings.chart.labels.length = 0;
-                            chartData = $filter('orderBy')(chartData, scope._facet.sortType, scope._facet.sortReverse);
-                            chartData = $filter('filter')(scope._facet.data, scope._facet.filter);
+                            chartData = $filter('orderBy')(scope._facet.data, scope.getPredicateField(), scope._facet.sortReverse, scope.compareFacetClasses);
+                            chartData = $filter('filter')(chartData, scope._facet.filter);
+                        };
+
+                        scope.getPredicateField = function (){
+                            if (scope._facet.sortType === 'displayname') {
+                                 var aMin = scope._facet.data && scope._facet.data[0].min;
+                                 return aMin != undefined ? 'min' : 'displayname';
+                            }
+
+                            return  scope._facet.sortType
                         };
 
                         scope.updateChartHeight = function () {
@@ -227,7 +247,7 @@
                             } else {
                                 scope.selectionCount = 0
                             }
-                        }
+                        };
 
                         scope.formatColor = function (item) {
                             var r = Number(item.red).toString(16);
@@ -319,6 +339,7 @@
                                 scope.setLoading();
                                 scope.setSliderInactiveAndRedrawChart();
                                 scope.showTableOrChart();
+                                scope.inferSortOrder();
                             }
                         });
                         scope.$watch('_facet.filter', function (newVal, oldVal) {
@@ -328,6 +349,7 @@
 
                         scope.setLoading();
                         scope.showTableOrChart();
+                        scope.inferSortOrder();
                         scope.setSliderInactiveAndRedrawChart();
                         scope.updateCount()
                     }

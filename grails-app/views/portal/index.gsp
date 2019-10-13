@@ -131,6 +131,9 @@
 
         config: ${(config.spApp as grails.converters.JSON).toString().encodeAsRaw()},
 
+        rangeDataTypes: ${(config.rangeDataTypes as grails.converters.JSON).toString().encodeAsRaw()},
+        numberOfIntervalsForRangeData: ${(config.numberOfIntervalsForRangeData).toString().encodeAsRaw()},
+
         dateFacet: '${config.date.facet}',
         dateMin: '${config.date.min}',
         dateMax: '${config.date.max}'

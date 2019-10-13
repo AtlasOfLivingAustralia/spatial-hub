@@ -179,11 +179,17 @@ function fetchData() {
         }
         $SH.gMessages = gMessages;
         $i18n = function (k) {
-            var key = ("" + k).replace(" ", "_");
+            var key = ("" + k).replace(" ", "_"), match;
             if ($SH.gMessages[key] !== undefined) {
                 return $SH.gMessages[key]
             } else {
-                return k
+                // turn pattern like "year:[1980 TO 1989]" to a more human readable format
+                // The above example return "1980 TO 1989"
+                match = (""+k).match(/\[(.* TO .*)\]/);
+                if(match && match.length === 2)
+                    return match[1];
+                else
+                    return k;
             }
         }
     }));

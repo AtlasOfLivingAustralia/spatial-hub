@@ -295,5 +295,109 @@ var Util = {
         var selectedColour = "rgba(0, 0, 0, 1)",
             defaultColour = "rgba(0, 0, 0, 0.1)";
         return point.selected ? selectedColour : defaultColour
+    },
+    getRanges: function(dataType, min, max){
+        switch (dataType) {
+            case "int":
+                return this.getRangeBetweenTwoInteger(min, max);
+            case "tfloat":
+                return this.getRangeBetweenTwoFloat(min, max);
+            case "tdate":
+                return this.getRangeBetweenTwoInteger(min.getFullYear(), max.getFullYear());
+            default:
+                return [];
+        }
+    },
+    getRangeBetweenTwoNumber: function (min, max, numberOfIntervals, precision) {
+        if(Number.isInteger(min) && Number.isInteger(max)) {
+            return Util.getRangeBetweenTwoInteger(min, max, numberOfIntervals);
+        } else if(Number.isFinite(min) && Number.isFinite(max)) {
+            return  Util.getRangeBetweenTwoFloat(min, max, numberOfIntervals, precision);
+        }
+    },
+    getRangeBetweenTwoFloat: function (min, max, numberOfIntervals, precision) {
+        var result = [],
+            interval,
+            upper,
+            lower,
+            decimalBuffer;
+
+        numberOfIntervals = $SH.numberOfIntervalsForRangeData || 7;
+        precision = precision || 6;
+        decimalBuffer = Math.pow(10, -1*precision);
+
+        if((Number.isFinite(min) && Number.isFinite(max)) && (max > min)){
+            interval = (max - min) / numberOfIntervals;
+            lower = upper = min;
+            for(var i = 1; (i < numberOfIntervals) && (max > upper); i ++ ){
+                upper =  parseFloat((lower + interval).toFixed(precision));
+                result.push([lower, upper]);
+                lower = parseFloat((upper + decimalBuffer).toFixed(precision));
+            }
+
+            result.push([lower, max]);
+        }
+
+        return result;
+    },
+
+    getRangeBetweenTwoInteger: function (min, max, numberOfIntervals) {
+        var result = [],
+            interval,
+            upper,
+            lower,
+            intBuffer = 1;
+
+        numberOfIntervals = $SH.numberOfIntervalsForRangeData || 7;
+
+        if((Number.isFinite(min) && Number.isFinite(max)) && (max > min)){
+            interval = parseInt((max - min) / numberOfIntervals);
+            lower = upper = min;
+
+            for(var i = 1; (i < numberOfIntervals) && (max > upper ); i ++ ){
+                upper =  lower + interval;
+                result.push([lower, upper - intBuffer]);
+                lower = upper;
+            }
+
+            result.push([lower, max - intBuffer]);
+        }
+
+        return result;
+    },
+
+    isFacetOfRangeDataType: function (dataType) {
+        return $SH.rangeDataTypes.indexOf(dataType) >= 0;
+    },
+
+    inferDataTypeFromValue: function (value) {
+        var number;
+        if (!isNaN(value)) {
+            number = parseFloat(value);
+            if (Number.isInteger(number))
+                return 'int';
+            else
+                return 'tfloat';
+        } else if (!isNaN(Date.parse(value))) {
+            return 'tdate';
+        }
+        else if (value && value.length > 0) {
+            return "string";
+        }
+    },
+
+    castValue: function (value, dataType) {
+        switch (dataType) {
+            case "int":
+                return parseInt(value);
+            case "tfloat":
+                return parseFloat(value);
+            case "tdate":
+                return new Date(value);
+            case "string":
+            default:
+                    return value === undefined || value === null? "" : value.toString();
+        }
     }
+
 };
