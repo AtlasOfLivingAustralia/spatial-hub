@@ -26,8 +26,8 @@
     <thead>
     <tr>
         <th style="min-width:20px; width: 5%;"><input type="checkbox" ng-model="_facet.isAllFacetsSelected"
-                                      ng-change="checkAllFacets()" ng-click="setSliderInactiveAndRedrawChart();"></th>
-        <th style="min-width:230px; width: 62%;">
+                                      ng-change="checkAllFacets()"></th>
+        <th style="min-width:215px; width: 62%;">
             <a href="#" ng-click="_facet.sortType = 'displayname'; _facet.sortReverse = !_facet.sortReverse;setSliderInactiveAndRedrawChart();">
                 <span i18n="329">Facet Class</span>
                 <span ng-show="_facet.sortType == 'displayname' && !_facet.sortReverse"
@@ -50,7 +50,7 @@
     <tbody>
     <tr ng-repeat="x in _facet.data | orderBy:getPredicateField():_facet.sortReverse |filter:_facet.filter" ng-if="facetDisplay === 'table'">
         <td style="min-width:20px; width: 5%;"><input type="checkbox" ng-model="x.selected" ng-change="updateSelection()"></td>
-        <td style="min-width:230px; width: 62%;">{{x.displayname}}</td>
+        <td style="min-width:215px; width: 62%;">{{x.displayname}}</td>
         <td style="min-width:100px; width: 27%;">{{x.count}}</td>
         <td i18n="130" style="background-color:#{{formatColor(x)}};min-width:35px; width: 5%;">&nbsp;</td>
     </tr>
