@@ -1016,11 +1016,11 @@
                         };
 
                         scope.scatterplotDownloadData = function () {
-                            Util.download(scope.selected.layer.scatterplotDataUrl);
+                            Util.download(scope.selected.layer.scatterplotDataUrl, "scatterplotData.csv");
                         };
 
                         scope.scatterplotDownloadImage = function () {
-                            Util.download(scope.selected.layer.scatterplotUrl);
+                            Util.download(scope.selected.layer.scatterplotUrl, "scatterplotImage.png");
                         };
 
                         scope.scatterplotUpdate = function (value, layer) {
