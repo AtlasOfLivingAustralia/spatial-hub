@@ -410,7 +410,7 @@
                                 item.count = 0; // TODO: check if this needs to be an object
                                 var c = ColourService.getColour(ci);
                                 var listItem = {
-                                    name: key, displayname: key, count: item.count,
+                                    name: key, displayname: key, count: item.count, min: item.min, max: item.max, isRangeDataType: item.isRangeDataType,
                                     fq: item.fq, red: c.red, green: c.green, blue: c.blue
                                 };
                                 //populate count
@@ -427,14 +427,18 @@
                             $q.all(promises).then(function (result) {
                                 result = results;
                                 result.sort(function (a, b) {
-                                    return b.count - a.count
+                                    if (a.isRangeDataType) {
+                                        return a.min - b.min
+                                    } else {
+                                        return b.count - a.count
+                                    }
                                 });
                                 def.resolve(result);
-                                //sort and aggregate the rest of layers after the top 5
-                                var maxMappedFacets = 5;
+                                //sort and aggregate the rest of layers after the top x number
+                                var maxMappedFacets = $SH.numberOfIntervalsForRangeData || 5;
                                 if (result.length < maxMappedFacets) {
                                     for (var i in result) {
-                                        var c = ColourService.getColour(i);
+                                        var c = result[i].isRangeDataType? ColourService.getLinearColour(i) : ColourService.getColour(i);
                                         scope.createSubLayer(c, selectedLayer, result[i].fq)
                                         result[i].red = c.red;
                                         result[i].green = c.green;
@@ -442,7 +446,7 @@
                                     }
                                 } else {
                                     for (var i = 0; i < maxMappedFacets; i++) {
-                                        var c = ColourService.getColour(i);
+                                        var c = result[i].isRangeDataType? ColourService.getLinearColour(i) : ColourService.getColour(i);
                                         scope.createSubLayer(c, selectedLayer, result[i].fq)
                                         result[i].red = c.red;
                                         result[i].green = c.green;
@@ -450,14 +454,16 @@
                                     }
                                     //agregate the rest
                                     var aggreatedfq = [];
-                                    var c = ColourService.getColour(maxMappedFacets);
+                                    var c = result[0] && result[0].isRangeDataType? ColourService.getLinearColour(maxMappedFacets) : ColourService.getColour(i);
                                     for (var i = maxMappedFacets; i < result.length; i++) {
                                         aggreatedfq.push(result[i].fq);
                                         result[i].red = c.red;
                                         result[i].green = c.green;
                                         result[i].blue = c.blue;
                                     }
-                                    scope.createSubLayer(c, selectedLayer, "(" + aggreatedfq.join(' OR ') + ")")
+
+                                    if (aggreatedfq.length > 0)
+                                        scope.createSubLayer(c, selectedLayer, "(" + aggreatedfq.join(' OR ') + ")")
                                 }
                                 selectedLayer.facetProgress = undefined;
 
@@ -540,6 +546,12 @@
                             }
                         }
 
+                        scope.updateFacetDisplayName = function(data){
+                            for(var i = 0; data && (i < data.length); i++){
+                                data[i].displayname = $i18n(data[i].i18nCode || data[i].displayname || data[i].name);
+                            }
+                        };
+
                         /**
                          * Set facet.data using newLayer query
                          *
@@ -556,15 +568,29 @@
                                     return data
                                 })
                             } else {
-                                return BiocacheService.facet(facet.name, newLayer).then(function (data) {
-                                    scope.setFacetData(facet, data)
+                                if (Util.isFacetOfRangeDataType(facet.dataType)) {
 
-                                    return data
-                                })
+                                    return BiocacheService.getFacetMinMax(newLayer, facet).then(function (data) {
+                                        facet.ranges = Util.getRangeBetweenTwoNumber(data.min, data.max);
+                                        BiocacheService.facet(facet.name, newLayer, facet.ranges).then(function (data) {
+                                            scope.setFacetData(facet, data)
+
+                                            return data
+                                        })
+                                    })
+                                } else {
+                                    return BiocacheService.facet(facet.name, newLayer).then(function (data) {
+                                        scope.setFacetData(facet, data)
+
+                                        return data
+                                    })
+                                }
                             }
                         }
 
                         scope.setFacetData = function (facet, data) {
+                            scope.updateFacetDisplayName(data);
+
                             // Existing facets that do not have facet.data may have a copy of the selection as facet._fq
                             // Delete _fq after updating the facet.data with the active selection.
                             if (facet._fq) {
@@ -872,7 +898,12 @@
                                                 selectedLayer.size + '%3Bopacity%3A1' +
                                                 (selectedLayer.uncertainty ? "%3Buncertainty%3A1" : "")
                                         } else {
-                                            firstLayer.layerParams.ENV = 'colormode%3A' + selectedLayer.facet + '%3Bname%3Acircle%3Bsize%3A' +
+                                            var ranges = "";
+                                            if (Util.isFacetOfRangeDataType(selectedLayer.activeFacet.dataType) && selectedLayer.activeFacet.ranges && selectedLayer.activeFacet.ranges.length > 0) {
+                                                ranges = encodeURIComponent( "," + selectedLayer.activeFacet.ranges.join(","));
+                                            }
+
+                                            firstLayer.layerParams.ENV = 'colormode%3A' + selectedLayer.facet + ranges + '%3Bname%3Acircle%3Bsize%3A' +
                                                 selectedLayer.size + '%3Bopacity%3A1' +
                                                 (selectedLayer.uncertainty ? "%3Buncertainty%3A1" : "")
                                         }
