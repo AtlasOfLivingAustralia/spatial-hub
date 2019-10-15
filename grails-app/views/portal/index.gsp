@@ -19,9 +19,9 @@
 <body>
 
 <script src="${config.grails.serverURL}/portal/messages.js?id=${messagesAge}" type="text/javascript" defer></script>
-<g:if test="${config.google.get('apikey', null) != null}">
+<g:if test="${config.google?.apikey != null}">
     <script src="https://maps.google.com/maps/api/js?language=en-US&libraries=places&key=${config.google.apikey}"
-        type="text/javascript"></script>
+    type="text/javascript"></script>
 </g:if>
 
 <g:set var="sandboxUrl" value="${config.sandbox.uiUrl}"></g:set>
