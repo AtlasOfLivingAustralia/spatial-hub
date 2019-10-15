@@ -57,7 +57,7 @@
 
                         $scope.initDescriptions()
 
-                        $scope.workflowProperties.name = $i18n(436, "My workflow") + " " + new Date().toLocaleString()
+                        $scope.workflowProperties.name = $i18n(459, "My workflow") + " " + new Date().toLocaleString()
                     } else {
                         WorkflowService.get(id).then(function (response) {
                             $scope.workflow = JSON.parse(response.data.metadata)
@@ -342,7 +342,7 @@
 
                 $scope.save = function () {
                     return WorkflowService.save($scope.workflowProperties.name, !$scope.workflowProperties.private, $scope.workflow).then(function (response) {
-                        bootbox.alert('<h3>' + $i18n(437, "Workflow Saved") + '</h3>')
+                        bootbox.alert('<h3>' + $i18n(460, "Workflow Saved") + '</h3>')
                         $scope.$close()
                     });
                 }
