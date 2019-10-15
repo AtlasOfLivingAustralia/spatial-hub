@@ -31,10 +31,22 @@
 
                 $scope.step = '1';
 
+                $scope.listTypes = [
+                    {id: 'OTHER', label: "Other"},
+                    {id: 'SPECIES_CHARACTERS', label: "Species characters list"},
+                    {id: 'CONSERVATION_LIST', label: "Conservation list"},
+                    {id: 'SENSITIVE_LIST', label: "Sensitive list of species"},
+                    {id: 'LOCAL_LIST', label: "Local checklist"},
+                    {id: 'COMMON_TRAIT', label: "Common trait of species"},
+                    {id: 'COMMON_HABITAT', label: "Common habitat of species"},
+                    {id: 'TEST', label: "Test list"}
+                ]
+
                 $scope.newListName = $i18n(375, "My species list");
                 $scope.newListDescription = '';
                 $scope.newItems = '';
                 $scope.makePrivate = true;
+                $scope.newListType = $scope.listTypes[0]
 
                 $scope.selectedQ = {
                     q: []
@@ -125,7 +137,7 @@
                 };
 
                 $scope.addNewSpecies = function () {
-                    ListsService.createList($scope.newListName, $scope.newListDescription, $scope.matchedGuids(), $scope.makePrivate).then(function (resp) {
+                    ListsService.createList($scope.newListName, $scope.newListDescription, $scope.matchedGuids(), $scope.makePrivate, $scope.newListType.id).then(function (resp) {
                         if (resp.status === 200) {
                             var json = JSON.parse(resp.data.text);
                             var druid = json.druid;
