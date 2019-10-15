@@ -2256,3 +2256,15 @@ ul.errors {
 .popover {
     max-width: none;
 }
+
+::-webkit-input-placeholder {
+    color: #aaa;
+}
+
+:-ms-input-placeholder {
+    color: #aaa;
+}
+
+::placeholder {
+    color: #aaa;
+}

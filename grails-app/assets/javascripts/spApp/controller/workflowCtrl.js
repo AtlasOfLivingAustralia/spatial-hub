@@ -63,6 +63,9 @@
                             $scope.workflow = JSON.parse(response.data.metadata)
                             $scope.workflowProperties.name = response.data.name
                             $scope.workflowId = id
+                            $scope.workflowProperties.id = id
+                            $scope.workflowProperties.created = response.data.created
+                            $scope.workflowProperties.private = response.data.isPrivate
 
                             $scope.initDescriptions()
                         })
@@ -353,6 +356,15 @@
                     $scope.playStep = 0
                 }
 
+                $scope.toDate = function (str) {
+                    if (str == null) {
+                        return ''
+                    } else {
+                        var date = new Date(str)
+
+                        return date
+                    }
+                }
                 $scope.makeModeless()
 
                 if (config && config.workflowId) {
