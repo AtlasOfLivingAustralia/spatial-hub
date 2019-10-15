@@ -475,6 +475,33 @@
                             });
                         };
 
+                        scope.createSubLayerScatterplotEnvelope = function (parentLayer, layer1, min1, max1, layer2, min2, max2) {
+                            var sld_body = decodeURIComponent(
+                                '%3CStyledLayerDescriptor%20version%3D%221.0.0%22%20xmlns%3D%22http%3A%2F%2Fhttp://www.opengis.net%2Fsld%22%3E' +
+                                '%3CNamedLayer%3E%3CName%3EALA%3A' + LayersService.getLayer(layer1).layer.name + '%3C%2FName%3E%3CUserStyle%3E%3CFeatureTypeStyle%3E%3CRule%3E%3CRasterSymbolizer%3E' +
+                                '%3CColorMap%20type=%22intervals%22%20extended=%22true%22%3E' +
+                                '%3CColorMapEntry%20color%3D%220x00FF00%22%20opacity%3D%220%22%20quantity%3D%22' + min1 + '%22%2F%3E' +
+                                '%3CColorMapEntry%20color%3D%220x00FF00%22%20opacity%3D%221%22%20quantity%3D%22' + max1 + '%22%2F%3E' +
+                                '%3C%2FColorMap%3E%3C%2FRasterSymbolizer%3E%3C%2FRule%3E%3C%2FFeatureTypeStyle%3E%3C%2FUserStyle%3E%3C%2FNamedLayer%3E' +
+                                '%3CNamedLayer%3E%3CName%3EALA%3A' + LayersService.getLayer(layer2).layer.name + '%3C%2FName%3E%3CUserStyle%3E%3CFeatureTypeStyle%3E%3CRule%3E%3CRasterSymbolizer%3E' +
+                                '%3CColorMap%20type=%22intervals%22%20extended=%22true%22%3E' +
+                                '%3CColorMapEntry%20color%3D%220x00FF00%22%20opacity%3D%220%22%20quantity%3D%22' + min2 + '%22%2F%3E' +
+                                '%3CColorMapEntry%20color%3D%220x00FF00%22%20opacity%3D%221%22%20quantity%3D%22' + max2 + '%22%2F%3E' +
+                                '%3C%2FColorMap%3E%3C%2FRasterSymbolizer%3E%3C%2FRule%3E' +
+                                '%3CVendorOption%20name%3D%22composite%22%3Edestination-in%3C%2FVendorOption%3E' +
+                                '%3C%2FFeatureTypeStyle%3E%3C%2FUserStyle%3E%3C%2FNamedLayer%3E' +
+                                '%3C%2FStyledLayerDescriptor%3E')
+
+                            var subLayer = {
+                                layertype: 'scatterplotEnvelope',
+                                id: layer1,
+                                sld_body: sld_body,
+                                layer1: layer1,
+                                layer2: layer2
+                            }
+                            return MapService.add(subLayer, parentLayer);
+                        };
+
                         scope.isSpeciesListFacet = function (facet) {
                             return facet.indexOf('species_list') === 0;
                         };
@@ -1030,12 +1057,20 @@
                                                         species.scatterplotLayers[1] + ":[" + species.scatterplotSelectionExtents[0] + " TO " + species.scatterplotSelectionExtents[2] + "]";
                                                     var fqs = [fq];
                                                     layer.scatterplotFq = fq;
+
+                                                    for (var i = layer.leaflet.layerOptions.layers.length - 1; i > 0; i--) {
+                                                        delete layer.leaflet.layerOptions.layers[i]
+                                                    }
                                                     if (species.scatterplotSelectionExtents.length === 0) {
                                                         fqs = [];
                                                         layer.scatterplotSelectionCount = 0;
 
                                                         scope.updateWMS(layer);
                                                     } else {
+                                                        scope.createSubLayerScatterplotEnvelope(layer,
+                                                            species.scatterplotLayers[0], species.scatterplotSelectionExtents[1], species.scatterplotSelectionExtents[3],
+                                                            species.scatterplotLayers[1], species.scatterplotSelectionExtents[0], species.scatterplotSelectionExtents[2])
+
                                                         scope.updateWMS(layer);
                                                         updateNow = false;
                                                         layer.scatterplotSelectionCount = $i18n(377, "counting...");

@@ -706,11 +706,13 @@
                                         }
                                         id.contextualMaxPage = Math.ceil(data.data.number_of_objects / id.contextualPageSize);
                                     }));
-                                } else {
+                                } else if (id.layertype === undefined) {
                                     id.layertype = 'grid'
                                 }
 
                                 var url = layer.layer.displaypath.replace("&style=", "&ignore=");
+                                url = url.replace("&styles=", "&ignore=");
+                                url = url.replace("&layers=", "&ignore=");
 
                                 newLayer = {
                                     name: uid + ': ' + layer.layer.displayname,
@@ -726,6 +728,14 @@
                                         transparent: true
                                     }
                                 };
+
+                                if (id.layertype === 'scatterplotEnvelope') {
+                                    var layer2 = LayersService.getLayer(id.layer2);
+                                    newLayer.layerParams.layers = "ALA:" + layer.layer.name + ",ALA:" + layer2.layer.name
+
+                                    parentLayer.parentVisible = true
+                                }
+
                                 if (id.sldBody) {
                                     newLayer.layerParams.sld_body = id.sldBody
                                     newLayer.url = newLayer.url.replace("gwc/service/", "")
