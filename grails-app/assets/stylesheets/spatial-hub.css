@@ -1085,3 +1085,16 @@ ul.errors {
     width: 200px;
     padding: 5px;
 }
+
+
+::-webkit-input-placeholder {
+    color: #aaa;
+}
+
+:-ms-input-placeholder {
+    color: #aaa;
+}
+
+::placeholder {
+    color: #aaa;
+}
