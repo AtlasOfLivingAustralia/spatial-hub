@@ -55,7 +55,7 @@
                         });
 
                         scope.showLegend = function () {
-                            scope.selected.hidelegend = false
+                            scope.selected.layer.hidelegend = false
                         };
 
                         scope.areaLayers = [];
@@ -275,15 +275,15 @@
                         scope.externalWmsLegendVisible = function () {
                             var selected = scope.selected;
                             return selected.layer !== undefined &&
-                                selected.layertype === 'wms' &&
-                                (selected.hidelegend === undefined || !selected.hidelegend)
+                                selected.layer.layertype === 'wms' &&
+                                (selected.layer.hidelegend === undefined || !selected.layer.hidelegend)
                         };
 
                         scope.wmsLegendVisible = function () {
                             var selected = scope.selected;
                             return selected.layer !== undefined &&
-                                (selected.layertype === 'grid' || selected.layertype === 'contextual') &&
-                                (selected.hidelegend === undefined || !selected.hidelegend)
+                                (selected.layer.layertype === 'grid' || selected.layer.layertype === 'contextual') &&
+                                (selected.layer.hidelegend === undefined || !selected.layer.hidelegend)
                         };
 
                         scope.hideLegend = function () {
