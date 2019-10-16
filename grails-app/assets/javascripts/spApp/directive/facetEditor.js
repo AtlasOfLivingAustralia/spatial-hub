@@ -48,7 +48,7 @@
                         if (scope._facet.loading === undefined) scope._facet.loading = false;
                         if (scope._settings === undefined) scope._settings = {};
                         if (scope._settings.chart === undefined) scope._settings.chart = {colours: [], data: [], labels:[], datasets: {}};
-                        if (scope._settings.slider === undefined) scope._settings.slider = {values: [0,1], min: 0, max: 1, active: false};
+                        if (scope._settings.slider === undefined) scope._settings.slider = {values: [0,1], min: 0, max: 1, active: false, initialiseSlider: true};
                         if (scope._settings.height === undefined) scope._settings.height = 50;
                         if (scope._settings.showFacetOnModal === undefined) scope._settings.showFacetOnModal = false;
 
@@ -108,7 +108,6 @@
                                 scope.updateChartData();
                                 scope.updateChartColour();
                                 Util.convertFacetDataToChartJSFormat(chartData, scope._settings.chart);
-                                scope.updateSliderConfig();
                                 scope.updateChartHeight();
                             }
                         };
@@ -119,15 +118,27 @@
                         };
 
                         scope.chartClick = function(elements, event, element) {
-                            scope.$apply(function () {
-                                scope.setSliderInactive();
+                            if (elements && elements.length > 0) {
+                                scope.$apply(function () {
+                                    scope.setSliderInactive();
 
-                                elements && elements.forEach(function (elem) {
-                                    chartData[elem._index].selected = !chartData[elem._index].selected
-                                });
+                                    elements && elements.forEach(function (elem) {
+                                        chartData[elem._index].selected = !chartData[elem._index].selected
+                                    });
 
-                                scope.updateSelection();
-                            })
+                                    scope.updateSelection();
+                                })
+                            } else {
+                                // check if user clicked on y-axis label
+                                var chart = getChartInstance(event.toElement);
+                                element = chartElementCloseToMouseClick(chart, event);
+                                if (element)
+                                    scope.$apply(function (){
+                                        scope.setSliderInactive();
+                                        chartData[element._index].selected = !chartData[element._index].selected;
+                                        scope.updateSelection();
+                                    });
+                            }
                         };
 
                         scope.selectClassesInRange = function () {
@@ -142,7 +153,7 @@
                             scope.updateSelection();
                         };
 
-                        scope.updateSliderConfig = function () {
+                        scope.initialiseSliderMinMaxRange = function () {
                             var data = chartData || scope._facet.data;
                             if (data && data.length) {
                                 scope._settings.slider.values[1] = scope._settings.slider.max =  data.length - 1;
@@ -272,12 +283,49 @@
                             LayoutService._closeOpen();
 
                             if (scope._settings.showFacetOnModal) {
+                                scope._settings.slider.initialiseSlider = false;
                                 LayoutService.openModal('facetEditorModal', {
                                     facet: scope._facet,
                                     settings: scope._settings,
                                     onUpdate: scope.updateChart
                                 }, true);
                             }
+                        };
+
+                        function getChartInstance (element) {
+                            var chartScope = angular.element(element).scope(),
+                                childScope = chartScope.$$childHead;
+                            while (!childScope.chart) {
+                                childScope = childScope.$$nextSibling;
+                            }
+
+                            return childScope.chart;
+                        };
+
+                        function chartElementCloseToMouseClick (chart, event) {
+                            var helpers = Chart.helpers,
+                                eventPosition = helpers.getRelativePosition(event, chart.chart);
+                            if (chart.data.datasets) {
+                                for (var i = 0; i < chart.data.datasets.length; i++) {
+                                    var meta = chart.getDatasetMeta(i);
+                                    if (chart.isDatasetVisible(i)) {
+                                        for (var j = 0; j < meta.data.length; j++) {
+                                            if (isClickOnYAxisLabel(eventPosition.y, meta.data[j])) {
+                                                return meta.data[j];
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        function isClickOnYAxisLabel (mouseY, chartElement) {
+                            var vm = chartElement._view;
+                            var inRange = false;
+
+                            if (vm)
+                                inRange = (mouseY >= vm.y - vm.height / 2 && mouseY <= vm.y + vm.height / 2);
+                            return inRange;
                         };
 
                         // slider configuration
@@ -299,7 +347,12 @@
                             scales: {
                                 yAxes: [{
                                     ticks: {
-                                        callback: function(value) {
+                                        callback: function(value, index, values) {
+                                            var data = chartData[index];
+                                            if (data.selected)
+                                                value = "■ " + value;
+                                            else
+                                                value = "□ " + value;
                                             return value ? value.substr(0, labelLength) : '';
                                         }
                                     }
@@ -322,7 +375,8 @@
 
                                         if(chartData[idx].selected)
                                             label += " " + $i18n(450);
-
+                                        else
+                                            label += " " + $i18n(459);
                                         return label;
                                     }
                                 }
@@ -337,20 +391,28 @@
                         scope.$watch('_facet.data', function (newValue, oldValue) {
                             if (newValue !== oldValue) {
                                 scope.setLoading();
-                                scope.setSliderInactiveAndRedrawChart();
-                                scope.showTableOrChart();
                                 scope.inferSortOrder();
+                                scope.setSliderInactiveAndRedrawChart();
+                                scope.initialiseSliderMinMaxRange();
+                                scope.showTableOrChart();
                             }
                         });
                         scope.$watch('_facet.filter', function (newVal, oldVal) {
-                            if (newVal !== oldVal)
+                            if (newVal !== oldVal) {
                                 scope.setSliderInactiveAndRedrawChart();
+                                scope.initialiseSliderMinMaxRange();
+                            }
                         });
 
                         scope.setLoading();
                         scope.showTableOrChart();
                         scope.inferSortOrder();
-                        scope.setSliderInactiveAndRedrawChart();
+                        if (scope._settings.slider.initialiseSlider) {
+                            scope.setSliderInactiveAndRedrawChart();
+                            scope.initialiseSliderMinMaxRange();
+                        } else {
+                            scope.drawChart();
+                        }
                         scope.updateCount()
                     }
 

@@ -922,7 +922,7 @@
                                                 (selectedLayer.uncertainty ? "%3Buncertainty%3A1" : "")
                                         } else {
                                             var ranges = "";
-                                            if (Util.isFacetOfRangeDataType(selectedLayer.activeFacet.dataType) && selectedLayer.activeFacet.ranges && selectedLayer.activeFacet.ranges.length > 0) {
+                                            if (selectedLayer.activeFacet && Util.isFacetOfRangeDataType(selectedLayer.activeFacet.dataType) && selectedLayer.activeFacet.ranges && selectedLayer.activeFacet.ranges.length > 0) {
                                                 ranges = encodeURIComponent( "," + selectedLayer.activeFacet.ranges.join(","));
                                             }
 

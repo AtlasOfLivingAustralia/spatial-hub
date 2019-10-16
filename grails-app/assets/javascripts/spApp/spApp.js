@@ -185,9 +185,14 @@ function fetchData() {
             } else {
                 // turn pattern like "year:[1980 TO 1989]" to a more human readable format
                 // The above example return "1980 TO 1989"
-                match = (""+k).match(/\[(.* TO .*)\]/);
-                if(match && match.length === 2)
-                    return match[1];
+                match = (""+k).match(/[^-]*(-)*.*\[(.* TO .*)\]/);
+                if(match && match.length === 3) {
+                    match[1] = match[1] || "";
+                    if(match[1] === '-') {
+                        match[1] = $i18n(460)
+                    }
+                    return match[1] + match[2];
+                }
                 else
                     return k;
             }
