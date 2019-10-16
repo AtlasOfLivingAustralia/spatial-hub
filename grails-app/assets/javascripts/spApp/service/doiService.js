@@ -8,11 +8,13 @@
      *   List species
      */
     angular.module('doi-service', [])
-        .factory("DoiService", ["$http", "$rootScope", "UrlParamsService", function ($http, $rootScope, UrlParamsService) {
+        .factory("DoiService", ["$http", "$rootScope", "$q", "BiocacheService", function ($http, $rootScope, $q, BiocacheService) {
 
             var config = {
                 doiServiceUrl:$SH.doiServiceUrl,
-                doiSearchFilter:$SH.doiSearchFilter
+                doiSearchFilter:$SH.doiSearchFilter,
+                applicationName:$SH.applicationName,
+                bieServiceUrl:$SH.bieServiceUrl
             };
             var _httpDescription = function (method, httpconfig) {
                 if (httpconfig === undefined) {
@@ -24,7 +26,7 @@
                 return httpconfig;
             };
 
-            return {
+            var thiz = {
                 isEnabled: function() {
                     return config.doiServiceUrl;
                 },
@@ -43,22 +45,23 @@
                     });
                 },
                 /**
+                 * Extracts the query URL used to create the DOI from the DOI metadata.
+                 */
+                getQueryUrl: function(doiMetadata) {
+                    return doiMetadata.applicationMetadata && doiMetadata.applicationMetadata.searchUrl;
+                },
+                /**
                  * Extracts the data from the supplied DOI to produce a query that will replicate the
                  * query used to create the DOI.
                  */
-                buildQueryFromDoi: function(doi) {
-                    var params = null;
-                    var url = doi.applicationMetadata && doi.applicationMetadata.searchUrl;
-                    if (url) {
-                        // Parse the parameters.
-                        params = UrlParamsService.parseSearchParams(url);
-                    }
+                buildQueryFromDoi: function(doi, queryParams) {
+                    queryParams = queryParams || {};
                     // The query is expected to be an array
-                    if (params.q) {
-                        params.q = [params.q];
+                    if (queryParams.q) {
+                        queryParams.q = [queryParams.q];
                     }
-                    params.name = doi.title;
-                    return params;
+                    queryParams.name = doi.title;
+                    return queryParams;
                 },
                 /** Takes a DOI and contructs a string to display summary information about the DOI */
                 buildInfoString: function(doi) {
@@ -87,7 +90,70 @@
                     }
                     return info;
 
+                },
+                lsidLookup:function(lsid) {
+                    var speciesUrl = config.bieServiceUrl+'/species/'+lsid+'.json';
+
+                    return $http.get(speciesUrl).then(function(result) {
+                        result = result && result.data;
+                        var speciesInfo = {};
+
+                        speciesInfo.name = result.taxonConcept && result.taxonConcept.nameString;
+                        if (result.classification && result.classification.scientificName) {
+                            speciesInfo.scientificName = result.classification.scientificName;
+                        }
+
+                        if (result.commonNames) {
+                            var commonNames = [];
+                            for (var i=0; i<result.commonNames.length; i++) {
+                                commonNames.push(result.commonNames[i].nameString);
+                            }
+                            speciesInfo.commonNames = commonNames;
+                        }
+                        return speciesInfo;
+                    });
+                },
+                assembleDoiMetadata: function(species, area, workflowData) {
+                    var deferred = $q.defer();
+                    var doiApplicationData = {
+                        applicationName:config.applicationName || "CSDM",
+                        organisation:workflowData.userOrganisation,
+                        modeller:workflowData.userDisplayName,
+                        workflowAnnotation: workflowData.workflowAnnotation,
+                        dataSetAnnotation: workflowData.dataSetAnnotation
+                    };
+
+                    var q = species.q;
+                    for (var i=0; i<q.length; i++) {
+                        if (q[i].indexOf('lsid:') == 0) {
+                            doiApplicationData.lsid = q[i].substring(5);
+                        }
+                    }
+                    if (doiApplicationData.lsid) {
+                        thiz.lsidLookup(doiApplicationData.lsid).then(function(names) {
+                            for (var key in names) {
+                                if (names.hasOwnProperty(key)) {
+                                    doiApplicationData[key] = names[key];
+                                }
+                            }
+                            deferred.resolve(doiApplicationData);
+                        }, function(error) {
+                            // This isn't fatal, we just won't have names to attach to the DOI.
+                            deferred.resolve(doiApplicationData);
+                        });
+                    }
+                    else {
+                        deferred.resolve(doiApplicationData);
+                    }
+                    return deferred.promise;
+                },
+                mintDoi: function(species, area, workflowAnnotation) {
+                    return this.assembleDoiMetadata(species, area, workflowAnnotation).then(function(doiMetadata) {
+                        // Delegate to the BiocacheService to initiate the download and mint the DOI.
+                        return BiocacheService.downloadAsync(species, area, doiMetadata);
+                    });
                 }
             };
+            return thiz;
         }])
 }(angular));

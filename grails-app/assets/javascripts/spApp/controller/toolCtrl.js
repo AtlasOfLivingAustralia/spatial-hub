@@ -307,6 +307,9 @@
                         return false
                     } else if (value.type === 'facet') {
                         return $scope.values[i].length === 0
+                    } else if (value.type === 'annotation') {
+                        var value = $scope.values[i];
+                        return !value || value.invalid();
                     } else {
                         return false
                     }

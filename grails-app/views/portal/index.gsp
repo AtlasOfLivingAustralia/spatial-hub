@@ -53,6 +53,7 @@
         userId: '${userId}',
         userDisplayName: '${userDetails?.displayName ?: ""}', // Used to pre-populate DOI metadata for CSDM
         userOrganisation: '${userDetails?.organisation ?: ""}', // Used to pre-populate DOI metadata for CSDM
+        userEmail: '${raw(userDetails?.email ?: "")}',
         hoverLayers: [],
         proxyUrl: '${createLink(controller: 'portal', action: 'proxy', absolute: true)}',
         url: '${createLink(controller: 'portal', action: 'index')}',
