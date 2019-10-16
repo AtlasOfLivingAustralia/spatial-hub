@@ -367,12 +367,12 @@ presetWMSServers:
     - name: "Geoserver IMOS"
       url: "http://geoserver.imos.org.au/geoserver/wms?REQUEST=GetCapabilities"
     - name: "GA"
-      url: "http://www.ga.gov.au/gis/services/earth_science/GA_Surface_Geology_of_Australia/MapServer/WMSServer?request=GetCapabilities"
+      url: "http://services.ga.gov.au/gis/services/GA_Surface_Geology/MapServer/WMSServer?request=GetCapabilities&service=WMS"
     - name: "Geofabric BOM"
       url: "http://geofabric.bom.gov.au/simplefeatures/ows?service=WMS&request=GetCapabilities"
 
 allowProxy:
-    server: 'data.auscover.org.au,data.auscover.org.au:80,geoserver.imos.org.au,www.ga.gov.au/gis,geofabric.bom.gov.au,doi.ala.org.au,doi-test.ala.org.au'
+    server: 'data.auscover.org.au,data.auscover.org.au:80,geoserver.imos.org.au,www.ga.gov.au/gis,geofabric.bom.gov.au,doi.ala.org.au,doi-test.ala.org.au,ga.gov.au,aodn.org.au'
 
 getMapExamples:
     - name: "Fractional Cover CLW - Non-PS Veg - 2012.297"
