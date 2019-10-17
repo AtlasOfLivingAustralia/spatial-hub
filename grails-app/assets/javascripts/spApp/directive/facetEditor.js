@@ -118,7 +118,7 @@
                             Util.getBarColour(chartData, scope._settings.chart.colours, scope.formatColor);
                         };
 
-                        scope.chartClick = function(event, elements) {
+                        scope.chartClick = function(elements, event) {
                             if (elements && elements.length > 0) {
                                 scope.$apply(function () {
                                     scope.setSliderInactive();
@@ -130,8 +130,8 @@
                                     scope.updateSelection();
                                 })
                             } else {
-                                // check if user clicked on y-axis label
-                                var chart = this;
+                                // get the closest data point from y position of click
+                                var chart = this.chart;
                                 var element = Util.chartElementCloseToMouseClick(chart, event);
                                 if (element)
                                     scope.$apply(function (){
@@ -335,7 +335,6 @@
                                     position: 'top'
                                 }]
                             },
-                            onClick: scope.chartClick,
                             tooltips: {
                                 enabled: true,
                                 mode: 'label',
@@ -347,11 +346,16 @@
                                     label: function (tooltipItem, data) {
                                         var idx = tooltipItem.index,
                                             label = data.datasets[0].data[idx];
+                                        return label;
+                                    },
+                                    afterLabel: function (tooltipItem, data) {
+                                        var idx = tooltipItem.index,
+                                            label;
 
                                         if(chartData[idx].selected)
-                                            label += " " + $i18n(450);
+                                            label =  $i18n(450);
                                         else
-                                            label += " " + $i18n(459);
+                                            label = $i18n(459);
                                         return label;
                                     }
                                 }
