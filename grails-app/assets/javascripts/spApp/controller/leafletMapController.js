@@ -526,7 +526,7 @@
                                     if (layer.setParams) {
                                         var envs = params.ENV;
                                         var p = layer.wmsParams;
-                                        if (pos > 0) {
+                                        if (pos > 0 && p.ENV) {
                                             // only apply colour to the first layer in the group
                                             var currentColour = p.ENV.replace(/.*(color%3A......).*/g, function (a, b) {
                                                 return b;
@@ -571,19 +571,27 @@
 
                             if (map.hasLayer(ly)) {
                                 // all layers are groups
+                                var pos = 0
+                                var len = 0
+                                for (i in ly._layers) {
+                                    len = len + 1;
+                                }
                                 for (var i in ly._layers) {
                                     var layer = ly._layers[i];
-                                    if (layer.setOpacity) {
-                                        layer.setOpacity(opacity);
-                                    }
+                                    if (pos > 0 || len === 1 || layerIn.parentVisible) {
+                                        if (layer.setOpacity) {
+                                            layer.setOpacity(opacity);
+                                        }
 
-                                    if (layer.getLayers && layer.eachLayer) {
-                                        layer.eachLayer(function (lay) {
-                                            if (lay.setOpacity) {
-                                                lay.setOpacity(opacity);
-                                            }
-                                        });
+                                        if (layer.getLayers && layer.eachLayer) {
+                                            layer.eachLayer(function (lay) {
+                                                if (lay.setOpacity) {
+                                                    lay.setOpacity(opacity);
+                                                }
+                                            });
+                                        }
                                     }
+                                    pos = pos + 1
                                 }
                             }
                             $timeout(function () {
@@ -638,7 +646,9 @@
 
                 $scope.setupTriggers = function () {
                     leafletData.getMap().then(function (map) {
+                        $SH._map = map
                         leafletData.getLayers().then(function (baselayers) {
+                            $SH._layers = baselayers
 
                             var drawnItems = baselayers.overlays.draw;
 

@@ -330,7 +330,7 @@
                         })
                     },
 
-                    mapFromPid: function (next) {
+                    mapFromPid: function (next, parentLayer, color) {
                         return LayersService.getObject(next.pid).then(function (data) {
                             data.data.layertype = 'area';
                             if (next.query) data.data.query = next.query;
@@ -341,8 +341,9 @@
                             if (next.geom_idx) data.data.geom_idx = next.geom_idx;
                             if (next.metadata) data.data.metadata = next.metadata;
                             if (next.log) data.data.log = next.log;
+                            if (color) data.data.color = color;
 
-                            return MapService.add(data.data);
+                            return MapService.add(data.data, parentLayer);
                         })
                     },
 
@@ -355,20 +356,15 @@
                         }
                     },
 
-                    addHighlight: function (id) {
-                        // wrap in timeout in case we need to wait for a prior removeHighlight()
-                        $timeout(function () {
-                            var template = highlightTemplate;
-                            template.layerOptions.layers = [];
-
-                            MapService.add(id, {leaflet: template});
-                            leafletLayers["highlight" + uid] = template;
-                            uid = uid + 1;
-                            $timeout(function () {
-                                MapService.setHighlightVisible(true)
-                            })
-                        }, 0);
-                    },
+                    // addHighlight: function (pid, parentLayer) {
+                    //
+                    //     // wrap in timeout in case we need to wait for a prior removeHighlight()
+                    //
+                    //     $timeout(function () {
+                    //
+                    //         MapService.add(id, {leaflet: template});
+                    //     }, 0);
+                    // },
 
                     getNextUid: function () {
                         return uid;
@@ -669,6 +665,7 @@
                                         newLayer.layerParams.sld_body = this.objectSld(id)
                                     }
 
+                                    if (id.pid) newLayer.pid = id.pid;
                                 }
 
 
@@ -890,12 +887,29 @@
                             return layer.leaflet.layerOptions.layers[0];
                         }
                     },
+                    reloadLayer: function (layer) {
+                        leafletLayers[layer.uid] = layer.leaflet;
+                        delete leafletLayers[layer.uid];
+                        $timeout(function () {
+                            leafletLayers[layer.uid] = layer.leaflet;
+                        })
+                    },
                     reMap: function (layer) {
                         if (layer.layer.layertype === 'area') {
                             this._firstLayer(layer).layerParams.sld_body = this.objectSld(layer.layer)
                         }
 
-                        this.leafletScope.changeParams(this.getLayer(layer.layer.uid), this._firstLayer(layer).layerParams)
+                        var len = 0
+                        if (layer.layer.leaflet !== undefined && layer.layer.leaflet.layerOptions !== undefined && layer.layer.leaflet.layerOptions.layers !== undefined) {
+                            len = layer.layer.leaflet.layerOptions.layers.length
+                        } else {
+                            len = layer.leaflet.layerOptions.layers.length
+                        }
+
+                        // do not apply layer parameters when there are sublayers
+                        if (len == 1) {
+                            this.leafletScope.changeParams(this.getLayer(layer.layer.uid), this._firstLayer(layer).layerParams)
+                        }
                     },
                     newArea: function (name, q, wkt, area_km, bbox, pid, wms, legend, metadata) {
                         return {

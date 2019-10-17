@@ -331,7 +331,7 @@
                 </uib-progressbar>
                 <table class="table table-striped" style="width:370px;overflow:auto;display:block">
                     <tr ng-repeat="x in selected.layer.contextualList"
-                        ng-click="contextualHighlight(x.name, x.pid)">
+                        ng-click="contextualHighlight(x.name, x.pid, x)">
                         <td style="width:20px">
                             <input type="checkbox"
                                    ng-model="x.selected"
@@ -362,9 +362,6 @@
                 </div>
 
                 <div style="float:right;padding-right:30px" class="btn-group">
-                    <button i18n="144" class="btn btn-xs btn-default"
-                            ng-click="contextualClearHighlight()">Clear highlight
-                    </button>
                     <button i18n="120" class="btn btn-xs btn-default"
                             ng-click="contextualClearSelection()">Clear selection
                     </button>
