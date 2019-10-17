@@ -178,24 +178,27 @@ function fetchData() {
             gMessages[k + ""] = result.data[k]
         }
         $SH.gMessages = gMessages;
-        $i18n = function (k) {
+        $i18n = function (k, parseFq) {
             var key = ("" + k).replace(" ", "_"), match;
             if ($SH.gMessages[key] !== undefined) {
                 return $SH.gMessages[key]
-            } else {
+            } else if (parseFq) {
                 // turn pattern like "year:[1980 TO 1989]" to a more human readable format
                 // The above example return "1980 TO 1989"
                 match = (""+k).match(/[^-]*(-)*.*\[(.* TO .*)\]/);
                 if(match && match.length === 3) {
                     match[1] = match[1] || "";
-                    if(match[1] === '-') {
-                        match[1] = $i18n(460)
+                    // add "exclude" to label for facets with '-'
+                    if (match[1] === '-' && match[2] === "* TO *") {
+                        match[1] = "";
+                        match[2] = $i18n(460)
                     }
+
                     return match[1] + match[2];
-                }
-                else
+                } else
                     return k;
-            }
+            } else
+                return k
         }
     }));
 

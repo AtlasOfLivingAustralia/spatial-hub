@@ -37,7 +37,8 @@
                             defaultFacetDisplay = tableFacetDisplay,
                             showChartForDataTypes = $SH.rangeDataTypes,
                             sortByDisplayName = 'displayname',
-                            sortByCount = 'count';
+                            sortByCount = 'count',
+                            lastChartInstance;
                         scope.baseUrl = $SH.baseUrl; // for image icons
                         scope.$i18n = $i18n;
                         if (scope._facet.filter === undefined) scope._facet.filter = '';
@@ -117,7 +118,7 @@
                             Util.getBarColour(chartData, scope._settings.chart.colours, scope.formatColor);
                         };
 
-                        scope.chartClick = function(elements, event, element) {
+                        scope.chartClick = function(event, elements) {
                             if (elements && elements.length > 0) {
                                 scope.$apply(function () {
                                     scope.setSliderInactive();
@@ -130,8 +131,8 @@
                                 })
                             } else {
                                 // check if user clicked on y-axis label
-                                var chart = getChartInstance(event.toElement);
-                                element = chartElementCloseToMouseClick(chart, event);
+                                var chart = this;
+                                var element = Util.chartElementCloseToMouseClick(chart, event);
                                 if (element)
                                     scope.$apply(function (){
                                         scope.setSliderInactive();
@@ -292,40 +293,13 @@
                             }
                         };
 
-                        function getChartInstance (element) {
-                            var chartScope = angular.element(element).scope(),
-                                childScope = chartScope.$$childHead;
-                            while (!childScope.chart) {
-                                childScope = childScope.$$nextSibling;
-                            }
-
-                            return childScope.chart;
-                        };
-
-                        function chartElementCloseToMouseClick (chart, event) {
-                            var helpers = Chart.helpers,
-                                eventPosition = helpers.getRelativePosition(event, chart.chart);
-                            if (chart.data.datasets) {
-                                for (var i = 0; i < chart.data.datasets.length; i++) {
-                                    var meta = chart.getDatasetMeta(i);
-                                    if (chart.isDatasetVisible(i)) {
-                                        for (var j = 0; j < meta.data.length; j++) {
-                                            if (isClickOnYAxisLabel(eventPosition.y, meta.data[j])) {
-                                                return meta.data[j];
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        function isClickOnYAxisLabel (mouseY, chartElement) {
-                            var vm = chartElement._view;
-                            var inRange = false;
-
-                            if (vm)
-                                inRange = (mouseY >= vm.y - vm.height / 2 && mouseY <= vm.y + vm.height / 2);
-                            return inRange;
+                        scope.interceptChartEvents = function(instance){
+                            var oldEventHandler = instance.eventHandler,
+                                newEventHandler = function (event) {
+                                    oldEventHandler.call(instance, event);
+                                    Util.activateTooltip.call(instance, event);
+                                };
+                                instance.eventHandler = newEventHandler;
                         };
 
                         // slider configuration
@@ -361,6 +335,7 @@
                                     position: 'top'
                                 }]
                             },
+                            onClick: scope.chartClick,
                             tooltips: {
                                 enabled: true,
                                 mode: 'label',
@@ -378,6 +353,15 @@
                                         else
                                             label += " " + $i18n(459);
                                         return label;
+                                    }
+                                }
+                            },
+                            hover: {
+                                mode: "label",
+                                onHover: function (chartElements) {
+                                    if (lastChartInstance != this) {
+                                        scope.interceptChartEvents(this);
+                                        lastChartInstance = this;
                                     }
                                 }
                             }

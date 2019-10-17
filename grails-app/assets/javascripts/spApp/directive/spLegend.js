@@ -582,8 +582,12 @@
                         }
 
                         scope.updateFacetDisplayName = function(data){
+                            var displayname;
                             for(var i = 0; data && (i < data.length); i++){
-                                data[i].displayname = $i18n(data[i].i18nCode || data[i].displayname || data[i].name);
+                                displayname = $i18n(data[i].i18nCode, true);
+                                if ( displayname === data[i].i18nCode )
+                                    displayname = undefined;
+                                data[i].displayname = displayname || data[i].name || data[i].displayname;
                             }
                         };
 
