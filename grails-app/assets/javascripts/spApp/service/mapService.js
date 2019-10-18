@@ -139,6 +139,16 @@
                         }
                     },
 
+                    defaultLayerSelection: function () {
+                        var selection = undefined; // map options
+                        for (var i = 0; selection === undefined && i < layers.length; i++) {
+                            if (layers[i].visible) {
+                                selection = layers[i];
+                            }
+                        }
+                        this.select(selection)
+                    },
+
                     setVisible: function (uid, show) {
                         for (var i = 0; i < layers.length; i++) {
                             if (layers[i].uid === uid) {
@@ -804,7 +814,7 @@
                             // do not select this layer if it is a child layer
                             if (!parentLeafletGroup) {
                                 $timeout(function () {
-                                    $rootScope.$broadcast('showLegend');
+                                    $rootScope.$broadcast('showLegend', id);
                                     MapService.select(id);
                                 }, 0);
                             }

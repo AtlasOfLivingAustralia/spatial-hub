@@ -15,6 +15,7 @@
                     defaultTableStyle = 'table';
                 $scope.facet = $scope.settings = undefined;
                 $scope.$i18n = $i18n;
+                $scope.selectedLayer = false;
 
                 LayoutService.addToModeless($scope);
 
@@ -34,14 +35,17 @@
                 }
 
                 function hideLegendPanel() {
+                    if (LayoutService.showLegend[0] !== false) {
+                        $scope.selectedLayer = LayoutService.showLegend[0]
+                    }
                     // hide legend panel so that facet classes show only on modal
                     LayoutService.showLegend[0] = false;
                 }
 
                 function showLegendPanel() {
                     // show legend panel if options panel is not visible
-                    if (!LayoutService.showOptions[0]) {
-                        LayoutService.showLegend[0] = true;
+                    if (!LayoutService.showOptions[0] && LayoutService.showLegend[0] == false) {
+                        LayoutService.showLegend[0] = $scope.selectedLayer;
                     }
                 }
 
