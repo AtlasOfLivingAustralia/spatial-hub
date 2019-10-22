@@ -34,6 +34,22 @@ class PropertiesService {
             properties.load(new StringReader(text))
         }
 
+        // This get method is done in other services with:
+        // https://github.com/AtlasOfLivingAustralia/ala-collectory/blob/master/grails-app/conf/spring/resources.groovy
+        // and
+        // https://github.com/AtlasOfLivingAustralia/collectory-plugin/blob/master/src/groovy/au/org/ala/collectory/ExtendedPluginAwareResourceBundleMessageSource.groovy
+        // Pros: cache, and other location functionalities of grails
+        // Cons: no set method (for what this set method is used?)
+        def fileOpt = new File("/opt/atlas/i18n/spatial-hub/" + defaultFile)
+        if (fileOpt.exists()) {
+            properties.load(new FileReader(fileOpt))
+        }
+
+        def fileVarOpt = new File("/var/opt/atlas/i18n/spatial-hub/" + defaultFile)
+        if (fileVarOpt.exists()) {
+            properties.load(new FileReader(fileVarOpt))
+        }
+
         def file = new File("/data/spatial-hub/config/i18n/" + defaultFile)
         if (file.exists()) {
             properties.load(new FileReader(file))
