@@ -30,9 +30,15 @@
                 isEnabled: function() {
                     return config.doiServiceUrl;
                 },
-                search: function (term) {
+                search: function (term, paginationParams) {
+                    var params = angular.merge({
+                        offset: 0,
+                        max: 10,
+                        sort: 'dateMinted',
+                        order: 'asc'
+                    }, paginationParams);
                     var url = $SH.proxyUrl+'?url=';
-                    var doiUrl = config.doiServiceUrl + "/doi/search?max=10&offset=0&sort=dateMinted&order=asc";
+                    var doiUrl = config.doiServiceUrl + "/api/doi/search?max=" + params.max+ "&offset=" + params.offset + "&sort=" + params.sort + "&order=" + params.order;
                     url += encodeURIComponent(doiUrl);
                     url += "&q="+encodeURIComponent(term);
                     if (config.doiSearchFilter) {
@@ -63,7 +69,7 @@
                     queryParams.name = doi.title;
                     return queryParams;
                 },
-                /** Takes a DOI and contructs a string to display summary information about the DOI */
+                /** Takes a DOI and constructs a string to display summary information about the DOI */
                 buildInfoString: function(doi) {
 
                     var info = '';
@@ -90,6 +96,25 @@
                     }
                     return info;
 
+                },
+                /** Takes a DOI and constructs a string to display a short summary information about the DOI */
+                buildShortInfo: function (doi) {
+                    var limit = 20;
+                    var info = this.buildInfoString(doi);
+                    if(info && info.length > limit)
+                        return info.substr(0, limit) + '...';
+                    else
+                        return info;
+                },
+                /**
+                 * Generate URL to view metadata on DOI server
+                 * @param doi
+                 * @returns https://doi-test.ala.org.au/doi/xxxxxx
+                 */
+                getDOIURL: function(doi){
+                    if (doi && doi.uuid && config.doiServiceUrl) {
+                        return  config.doiServiceUrl + '/doi/' + doi.uuid;
+                    }
                 },
                 lsidLookup:function(lsid) {
                     var speciesUrl = config.bieServiceUrl+'/species/'+lsid+'.json';
