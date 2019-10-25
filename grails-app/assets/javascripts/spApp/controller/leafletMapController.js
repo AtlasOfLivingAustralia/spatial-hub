@@ -690,6 +690,8 @@
                                     $scope.$emit('setWkt', [wkt]);
                                 } else if (type === "marker") {
                                     $scope.$emit('setWkt', ['point', geoJSON.geometry.coordinates[0], geoJSON.geometry.coordinates[1]]);
+                                } else if (type === 'polyline') {
+                                    $scope.$emit('setWkt', ['polyline', geoJSON.geometry.coordinates]);
                                 } else {
                                     var wkt = Util.wrappedToWkt(Util.wrap(geoJSON.geometry.coordinates[0]));
 
