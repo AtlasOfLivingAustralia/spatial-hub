@@ -125,7 +125,7 @@
                                             });
 
                                             for (var i = 2; i < csv[0].length; i++) {
-                                                var row = [Messages.get('facet.' + csv[0][i], csv[0][i])];
+                                                var row = [BiocacheI18n.get('facet.' + csv[0][i], csv[0][i])];
                                                 for (var j = 1; j < csv.length; j++) {
                                                     row.push(csv[j][i]);
                                                 }
