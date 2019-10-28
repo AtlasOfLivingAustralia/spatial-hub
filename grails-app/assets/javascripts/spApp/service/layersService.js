@@ -372,7 +372,7 @@
                  * @returns {Promise}
                  */
                 findOtherArea: function (type, lsid, area) {
-                    return $http.get(this.url() + '/' + type + '/lsid/' + lsid + '?nowkt=true', _httpDescription('findOtherArea', {ignoreErrors: true}))
+                    return $http.get(this.url() + '/' + type + '/lsids/' + lsid + '?nowkt=true', _httpDescription('findOtherArea', {ignoreErrors: true}))
                 },
                 /**
                  * Create Layer for mapping using field data
