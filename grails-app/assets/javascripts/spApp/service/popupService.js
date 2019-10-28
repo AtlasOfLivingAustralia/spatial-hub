@@ -125,7 +125,14 @@
                             if (layer.isSelectedFacetsOnly) {
                                 fq = facetFq.fq;
                             } else if (layer.isWithoutSelectedFacetsOnly) {
-                                fq = ["-((" + fqcetFq.fq.join(") AND (") + "))"];
+                                var fqs = facetFq.fq.splice()
+                                for (var i = 0; i < fqs.length; i++) {
+                                    // Use (*:* AND -facet:*) instead of (-facet:*)
+                                    if (fqs[i].match(/^-[^\s]*:\*$/) != null) {
+                                        fqs[i] = '*:* AND ' + fqs[i]
+                                    }
+                                }
+                                fq = ["-((" + fqs.join(") AND (") + "))"];
                             }
                         }
 
@@ -510,7 +517,13 @@
                                 })
                                 // sel ends
                                 var outFq = fq.slice()
-                                outFq.push('-(' + decodeURIComponent(layer.sel) + ')')
+                                var fq = decodeURIComponent(layer.sel)
+                                // Use -(*:* AND -facet:*) instead of -(-facet:*)
+                                if (fq.matches(/^-[^\s]*:\*$/) != null) {
+                                    outFq.push('-(*:* AND ' + fq + ')')
+                                } else {
+                                    outFq.push('-(' + fq + ')')
+                                }
                                 biocacheService.count(layer, outFq).then(function (count) {
                                     layer.withoutSelCount = count;
                                 })
