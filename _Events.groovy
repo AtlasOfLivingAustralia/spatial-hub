@@ -106,6 +106,13 @@ def build(String baseDir) {
         idx = Math.max(idx, findLastIndex(baseDir + '/grails-app/assets/javascripts/spApp/' + jsDir, "\$i18n(", ", \""))
     }
 
+    // get max prop id
+    for (def kv : prop) {
+        try {
+            idx = Math.max(idx, Integer.parseInt(kv.key))
+        } catch (e) {}
+    }
+
     idx++
 
     println 'i18n next available idx: ' + idx

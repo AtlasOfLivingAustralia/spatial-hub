@@ -8,7 +8,7 @@
      *   Logger for client side tools
      */
     angular.module('logger-service', [])
-        .factory('LoggerService', ['$http', function ($http) {
+        .factory('LoggerService', ['$http', '$q', function ($http, $q) {
 
             //TODO: current session history for retrieval of client side tool outputs (stored) and spatial-service outputs
             var history = [];

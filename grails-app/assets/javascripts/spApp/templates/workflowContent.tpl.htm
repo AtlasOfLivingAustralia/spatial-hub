@@ -1,6 +1,9 @@
 <div class="modal-header">
     <button i18n="1" type="button" class="close" ng-click="$close()">×</button>
-    <h3 class="modal-title">Workflow</h3>
+    <h3 class="modal-title" ng-show="workflow.length <= 0">Available Workflows</h3>
+    <h3 class="modal-title" ng-show="playStep < 0 && !workflowId && workflow.length > 0">Create Workflow</h3>
+    <h3 class="modal-title" ng-show="playStep < 0 && !!workflowId && workflow.length > 0">Run Workflow</h3>
+    <h3 class="modal-title" ng-show="playStep >= 0 && workflow.length > 0">Running Workflow</h3>
 </div>
 
 <div class="modal-body">
@@ -11,6 +14,15 @@
         <table class="table table-striped table-condensed">
             <thead>
             <th></th>
+            <th>
+                <div href="#" ng-click="sortType = 'id'; sortReverse = !sortReverse">
+                    <span>Id</span>
+                    <span ng-show="sortType == 'id' && !sortReverse"
+                          class="glyphicon glyphicon-chevron-down"></span>
+                    <span ng-show="sortType == 'id' && sortReverse"
+                          class="glyphicon glyphicon-chevron-up"></span>
+                </div>
+            </th>
             <th>
                 <div href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
                     <span>Name</span>
@@ -36,8 +48,11 @@
                 <td>
                     <button class="button btn-xs" ng-click="loadWorkflow(workflow.id)">Load</button>
                 </td>
+                <td>{{workflow.id}}</td>
                 <td>{{workflow.name}}</td>
-                <td>{{workflow.created}}</td>
+                <td>{{ (toDate(workflow.created) | date : 'yyyy-MM-ddThh:mm:ss' : 'UTC') +
+                    (toDate(workflow.created)?'Z':'')}}
+                </td>
                 <td><i ng-show="workflow.id != undefined" class="glyphicon glyphicon-trash"
                        ng-click="deleteWorkflow(workflow.id)"></i></td>
             </tr>
@@ -45,13 +60,25 @@
         </table>
     </div>
     <div style="overflow:scroll" ng-if="workflow.length > 0 && playStep < 0">
-        <span ng-if="workflowId">{{workflowProperties.name}}</span>
+
         <div ng-if="!workflowId">
-            <input type="text" ng-model="workflowProperties.name" style="width:80%">
-            <input type="checkbox" ng-model="workflowProperties.private" style="margin-left:20px"><span
+            <label><span>Name</span></label>
+            <input type="text" ng-model="workflowProperties.name" style="margin-left:20px;width:50%">
+            <input type="checkbox" ng-model="workflowProperties.private" style="margin-left:40px"><span
                 style="margin-left:10px">is Private</span>
         </div>
-        <table style="margin-top:10px" class="table table-striped table-condensed">
+        <div ng-if="!!workflowId">
+            <label style="width:150px"><span>Id</span></label><span class="small">{{workflowProperties.id}}</span>
+            <br/>
+            <label style="width:150px"><span>Name</span></label><span class="small">{{workflowProperties.name}}</span>
+            <br/>
+            <label style="width:150px"><span>Created</span></label><span class="small">{{ (toDate(workflowProperties.created) | date : 'yyyy-MM-ddThh:mm:ss' : 'UTC') + (toDate(workflowProperties.created)?'Z':'')}}</span>
+            <br/>
+            <label style="width:150px"><span>Is Private</span></label><input style="width:50%" type="checkbox"
+                                                                             ng-model="workflowProperties.private"
+                                                                             disabled>
+        </div>
+        <table style="margin-top:30px" class="table table-striped table-condensed">
             <thead>
             <th></th>
             <th>Type</th>
@@ -68,18 +95,18 @@
                 <td style="vertical-align: top">{{item.category2}}</td>
                 <td>
                     <textarea style="width:400px;height:50px" ng-model="item.description"
-                              placeholder="{{item.raw}}"></textarea>
+                              placeholder="{{'Add annotation. Parameters: ' + item.raw}}"></textarea>
                     <div ng-if="hasSubitems(item)">
                         <table class="table table-condensed">
                             <thead>
-                            <th>Skip</th>
+                            <th ng-show="!!workflowId">Tick to Skip</th>
                             <th>Annotation</th>
                             </thead>
                             <tbody>
                             <tr ng-repeat="subitem in item.data.data">
-                                <td><input type="checkbox" ng-model="subitem.ignore"></td>
+                                <td ng-show="!!workflowId"><input type="checkbox" ng-model="subitem.ignore"></td>
                                 <td><textarea style="width:400px;height:25px" ng-model="subitem.description"
-                                              placeholder="{{subitem.raw}}"></textarea>
+                                              placeholder="{{'Add annotation. Parameters: ' + subitem.raw}}"></textarea>
                                 </td>
                             </tr>
                             </tbody>
@@ -87,7 +114,7 @@
                     </div>
                 </td>
                 <td style="vertical-align: top">
-                    <button class="btn btn-default btn-xs" ng-if="isTool(item)" ng-click="edit(item)">edit</button>
+                    <!--<button class="btn btn-default btn-xs" ng-if="isTool(item)" ng-click="edit(item)">edit</button>-->
                 </td>
                 <td style="vertical-align: top"><i class="glyphicon glyphicon-trash" ng-click="delete(item)"></i></td>
             </tr>
@@ -105,6 +132,10 @@
 <div class="modal-footer">
     <button class="btn btn-default" type="button" ng-click="$close()" ng-show="playStep >= 0">Cancel</button>
     <button class="btn btn-default" type="button" ng-click="$close()" ng-show="playStep < 0">Close</button>
-    <button class="btn btn-default" type="button" ng-click="save()" ng-show="playStep < 0 && !workflowId">Save</button>
-    <button class="btn btn-default" type="button" ng-click="playback()" ng-show="playStep < 0">Run</button>
+    <button class="btn btn-default" type="button" ng-click="save()"
+            ng-show="playStep < 0 && !workflowId && workflow.length > 0">Save
+    </button>
+    <button class="btn btn-default" type="button" ng-click="playback()"
+            ng-show="playStep < 0 && !!workflowId && workflow.length > 0">Run
+    </button>
 </div>

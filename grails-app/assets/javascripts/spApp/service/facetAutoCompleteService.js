@@ -214,7 +214,7 @@
                 },
 
                 getAllFacets: function (dynamic, list, species_list) {
-                    var i;
+                    var i, name, properties, property, ranges, rangeString, min, max;
 
                     var expanded = [];
                     for (i = 0; i < list.length; i++) {
@@ -258,7 +258,7 @@
                             })
                         } else {
                             if (data.length > 0 && data[0].kvpValues && data[0].kvpValues.length > 0) {
-
+                                properties = {};
                                 // convert kvp to usable map
                                 var map = {};
                                 for (var k in data) {
@@ -271,8 +271,51 @@
                                             if (!map[kvp[i].key].values[kvp[i].value]) {
                                                 map[kvp[i].key].values[kvp[i].value] = {listOfSpecies: []};
                                             }
-                                            map[kvp[i].key].values[kvp[i].value].listOfSpecies.push(data[k])
+                                            map[kvp[i].key].values[kvp[i].value].listOfSpecies.push(data[k]);
+                                            if (!properties[kvp[i].key]) {
+                                                property = Util.inferDataTypeFromValue(kvp[i].value);
+                                                kvp[i].value = Util.castValue(kvp[i].value, property);
+                                                properties[kvp[i].key] = property = {dataType: property, min:kvp[i].value, max: kvp[i].value};
+                                            }
+
+                                            kvp[i].value = Util.castValue(kvp[i].value, properties[kvp[i].key].dataType);
+                                            if (Util.isFacetOfRangeDataType(properties[kvp[i].key].dataType)) {
+                                                if (properties[kvp[i].key].min > kvp[i].value)
+                                                    properties[kvp[i].key].min = kvp[i].value;
+                                                if (properties[kvp[i].key].max < kvp[i].value)
+                                                    properties[kvp[i].key].max = kvp[i].value;
+                                            }
                                         }
+                                    }
+                                }
+
+                                for( var propertyName in properties){
+                                    property = properties[propertyName];
+                                    if (Util.isFacetOfRangeDataType(property.dataType)) {
+                                        ranges = Util.getRanges(property.dataType, property.min, property.max);
+                                        var values = map[propertyName].values, value,
+                                            groupedValues = {}, rangeCounter =0, individualCounter = 0;
+                                        for(var propertyValue in values) {
+                                            value = Util.castValue(propertyValue, property.dataType);
+                                            individualCounter += values[propertyValue].listOfSpecies.length;
+                                            for (var j in ranges) {
+                                                min = ranges[j][0];
+                                                max = ranges[j][1];
+                                                rangeString = min + " TO " + max;
+                                                if (!groupedValues[rangeString]){
+                                                    groupedValues[rangeString] = {listOfSpecies: [], max: max, min: min, isRangeDataType: true};
+                                                }
+
+                                                if (min <= value && max >= value) {
+                                                    rangeCounter += values[propertyValue].listOfSpecies.length;
+                                                    groupedValues[rangeString].listOfSpecies.push.apply(groupedValues[rangeString].listOfSpecies, values[propertyValue].listOfSpecies);
+                                                    values[propertyValue] = undefined;
+                                                    break;
+                                                }
+                                            }
+                                        }
+
+                                        map[propertyName].values = groupedValues;
                                     }
                                 }
 
@@ -285,6 +328,7 @@
                                         displayName: k,
                                         facet: 'species_list' + k,
                                         species_list_facet: map[k].values,
+                                        dataType: properties[k].dataType,
                                         class: 'Traits',
                                         description: '',
                                         info: ''

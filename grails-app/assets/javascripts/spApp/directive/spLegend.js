@@ -410,7 +410,7 @@
                                 item.count = 0; // TODO: check if this needs to be an object
                                 var c = ColourService.getColour(ci);
                                 var listItem = {
-                                    name: key, displayname: key, count: item.count,
+                                    name: key, displayname: key, count: item.count, min: item.min, max: item.max, isRangeDataType: item.isRangeDataType,
                                     fq: item.fq, red: c.red, green: c.green, blue: c.blue
                                 };
                                 //populate count
@@ -427,14 +427,18 @@
                             $q.all(promises).then(function (result) {
                                 result = results;
                                 result.sort(function (a, b) {
-                                    return b.count - a.count
+                                    if (a.isRangeDataType) {
+                                        return a.min - b.min
+                                    } else {
+                                        return b.count - a.count
+                                    }
                                 });
                                 def.resolve(result);
-                                //sort and aggregate the rest of layers after the top 5
-                                var maxMappedFacets = 5;
+                                //sort and aggregate the rest of layers after the top x number
+                                var maxMappedFacets = $SH.numberOfIntervalsForRangeData || 5;
                                 if (result.length < maxMappedFacets) {
                                     for (var i in result) {
-                                        var c = ColourService.getColour(i);
+                                        var c = result[i].isRangeDataType? ColourService.getLinearColour(i) : ColourService.getColour(i);
                                         scope.createSubLayer(c, selectedLayer, result[i].fq)
                                         result[i].red = c.red;
                                         result[i].green = c.green;
@@ -442,7 +446,7 @@
                                     }
                                 } else {
                                     for (var i = 0; i < maxMappedFacets; i++) {
-                                        var c = ColourService.getColour(i);
+                                        var c = result[i].isRangeDataType? ColourService.getLinearColour(i) : ColourService.getColour(i);
                                         scope.createSubLayer(c, selectedLayer, result[i].fq)
                                         result[i].red = c.red;
                                         result[i].green = c.green;
@@ -450,14 +454,16 @@
                                     }
                                     //agregate the rest
                                     var aggreatedfq = [];
-                                    var c = ColourService.getColour(maxMappedFacets);
+                                    var c = result[0] && result[0].isRangeDataType? ColourService.getLinearColour(maxMappedFacets) : ColourService.getColour(i);
                                     for (var i = maxMappedFacets; i < result.length; i++) {
                                         aggreatedfq.push(result[i].fq);
                                         result[i].red = c.red;
                                         result[i].green = c.green;
                                         result[i].blue = c.blue;
                                     }
-                                    scope.createSubLayer(c, selectedLayer, "(" + aggreatedfq.join(' OR ') + ")")
+
+                                    if (aggreatedfq.length > 0)
+                                        scope.createSubLayer(c, selectedLayer, "(" + aggreatedfq.join(' OR ') + ")")
                                 }
                                 selectedLayer.facetProgress = undefined;
 
@@ -473,6 +479,33 @@
                                 subLayer.blue = colour.blue;
                                 MapService.add(subLayer, layer);
                             });
+                        };
+
+                        scope.createSubLayerScatterplotEnvelope = function (parentLayer, layer1, min1, max1, layer2, min2, max2) {
+                            var sld_body = decodeURIComponent(
+                                '%3CStyledLayerDescriptor%20version%3D%221.0.0%22%20xmlns%3D%22http%3A%2F%2Fhttp://www.opengis.net%2Fsld%22%3E' +
+                                '%3CNamedLayer%3E%3CName%3EALA%3A' + LayersService.getLayer(layer1).layer.name + '%3C%2FName%3E%3CUserStyle%3E%3CFeatureTypeStyle%3E%3CRule%3E%3CRasterSymbolizer%3E' +
+                                '%3CColorMap%20type=%22intervals%22%20extended=%22true%22%3E' +
+                                '%3CColorMapEntry%20color%3D%220x00FF00%22%20opacity%3D%220%22%20quantity%3D%22' + min1 + '%22%2F%3E' +
+                                '%3CColorMapEntry%20color%3D%220x00FF00%22%20opacity%3D%221%22%20quantity%3D%22' + max1 + '%22%2F%3E' +
+                                '%3C%2FColorMap%3E%3C%2FRasterSymbolizer%3E%3C%2FRule%3E%3C%2FFeatureTypeStyle%3E%3C%2FUserStyle%3E%3C%2FNamedLayer%3E' +
+                                '%3CNamedLayer%3E%3CName%3EALA%3A' + LayersService.getLayer(layer2).layer.name + '%3C%2FName%3E%3CUserStyle%3E%3CFeatureTypeStyle%3E%3CRule%3E%3CRasterSymbolizer%3E' +
+                                '%3CColorMap%20type=%22intervals%22%20extended=%22true%22%3E' +
+                                '%3CColorMapEntry%20color%3D%220x00FF00%22%20opacity%3D%220%22%20quantity%3D%22' + min2 + '%22%2F%3E' +
+                                '%3CColorMapEntry%20color%3D%220x00FF00%22%20opacity%3D%221%22%20quantity%3D%22' + max2 + '%22%2F%3E' +
+                                '%3C%2FColorMap%3E%3C%2FRasterSymbolizer%3E%3C%2FRule%3E' +
+                                '%3CVendorOption%20name%3D%22composite%22%3Edestination-in%3C%2FVendorOption%3E' +
+                                '%3C%2FFeatureTypeStyle%3E%3C%2FUserStyle%3E%3C%2FNamedLayer%3E' +
+                                '%3C%2FStyledLayerDescriptor%3E')
+
+                            var subLayer = {
+                                layertype: 'scatterplotEnvelope',
+                                id: layer1,
+                                sld_body: sld_body,
+                                layer1: layer1,
+                                layer2: layer2
+                            }
+                            return MapService.add(subLayer, parentLayer);
                         };
 
                         scope.isSpeciesListFacet = function (facet) {
@@ -513,6 +546,12 @@
                             }
                         }
 
+                        scope.updateFacetDisplayName = function(data){
+                            for(var i = 0; data && (i < data.length); i++){
+                                data[i].displayname = $i18n(data[i].i18nCode || data[i].displayname || data[i].name);
+                            }
+                        };
+
                         /**
                          * Set facet.data using newLayer query
                          *
@@ -529,15 +568,29 @@
                                     return data
                                 })
                             } else {
-                                return BiocacheService.facet(facet.name, newLayer).then(function (data) {
-                                    scope.setFacetData(facet, data)
+                                if (Util.isFacetOfRangeDataType(facet.dataType)) {
 
-                                    return data
-                                })
+                                    return BiocacheService.getFacetMinMax(newLayer, facet).then(function (data) {
+                                        facet.ranges = Util.getRangeBetweenTwoNumber(data.min, data.max);
+                                        BiocacheService.facet(facet.name, newLayer, facet.ranges).then(function (data) {
+                                            scope.setFacetData(facet, data)
+
+                                            return data
+                                        })
+                                    })
+                                } else {
+                                    return BiocacheService.facet(facet.name, newLayer).then(function (data) {
+                                        scope.setFacetData(facet, data)
+
+                                        return data
+                                    })
+                                }
                             }
                         }
 
                         scope.setFacetData = function (facet, data) {
+                            scope.updateFacetDisplayName(data);
+
                             // Existing facets that do not have facet.data may have a copy of the selection as facet._fq
                             // Delete _fq after updating the facet.data with the active selection.
                             if (facet._fq) {
@@ -845,7 +898,12 @@
                                                 selectedLayer.size + '%3Bopacity%3A1' +
                                                 (selectedLayer.uncertainty ? "%3Buncertainty%3A1" : "")
                                         } else {
-                                            firstLayer.layerParams.ENV = 'colormode%3A' + selectedLayer.facet + '%3Bname%3Acircle%3Bsize%3A' +
+                                            var ranges = "";
+                                            if (Util.isFacetOfRangeDataType(selectedLayer.activeFacet.dataType) && selectedLayer.activeFacet.ranges && selectedLayer.activeFacet.ranges.length > 0) {
+                                                ranges = encodeURIComponent( "," + selectedLayer.activeFacet.ranges.join(","));
+                                            }
+
+                                            firstLayer.layerParams.ENV = 'colormode%3A' + selectedLayer.facet + ranges + '%3Bname%3Acircle%3Bsize%3A' +
                                                 selectedLayer.size + '%3Bopacity%3A1' +
                                                 (selectedLayer.uncertainty ? "%3Buncertainty%3A1" : "")
                                         }
@@ -1030,12 +1088,20 @@
                                                         species.scatterplotLayers[1] + ":[" + species.scatterplotSelectionExtents[0] + " TO " + species.scatterplotSelectionExtents[2] + "]";
                                                     var fqs = [fq];
                                                     layer.scatterplotFq = fq;
+
+                                                    for (var i = layer.leaflet.layerOptions.layers.length - 1; i > 0; i--) {
+                                                        delete layer.leaflet.layerOptions.layers[i]
+                                                    }
                                                     if (species.scatterplotSelectionExtents.length === 0) {
                                                         fqs = [];
                                                         layer.scatterplotSelectionCount = 0;
 
                                                         scope.updateWMS(layer);
                                                     } else {
+                                                        scope.createSubLayerScatterplotEnvelope(layer,
+                                                            species.scatterplotLayers[0], species.scatterplotSelectionExtents[1], species.scatterplotSelectionExtents[3],
+                                                            species.scatterplotLayers[1], species.scatterplotSelectionExtents[0], species.scatterplotSelectionExtents[2])
+
                                                         scope.updateWMS(layer);
                                                         updateNow = false;
                                                         layer.scatterplotSelectionCount = $i18n(377, "counting...");
