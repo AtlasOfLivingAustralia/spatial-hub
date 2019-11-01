@@ -914,10 +914,10 @@
                         hubName:"CSDM",
                         file:species.name,
                         mintDoi:true,
-                        reasonTypeId:10,
+                        reasonTypeId:13,
                         fileType:'csv',
                         qa:'none',
-                        sourceTypeId:0,
+                        sourceTypeId:10002,
                         email: $SH.userEmail,
                         emailTemplate: 'csdm'
                     };
