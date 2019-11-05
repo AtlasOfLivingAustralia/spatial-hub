@@ -1075,6 +1075,10 @@ ul.errors {
     padding-right: 20px;
 }
 
+.workflow-annotation .form-group {
+    margin-bottom: 5px;
+}
+
 .inactive .ui-widget-header {
     background-color: #999999;
     background-image: none;

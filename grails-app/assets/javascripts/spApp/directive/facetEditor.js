@@ -37,7 +37,8 @@
                             defaultFacetDisplay = tableFacetDisplay,
                             showChartForDataTypes = $SH.rangeDataTypes,
                             sortByDisplayName = 'displayname',
-                            sortByCount = 'count';
+                            sortByCount = 'count',
+                            lastChartInstance;
                         scope.baseUrl = $SH.baseUrl; // for image icons
                         scope.$i18n = $i18n;
                         if (scope._facet.filter === undefined) scope._facet.filter = '';
@@ -47,18 +48,8 @@
                         if (scope._facet.isAllFacetsSelected === undefined) scope._facet.isAllFacetsSelected = false;
                         if (scope._facet.loading === undefined) scope._facet.loading = false;
                         if (scope._settings === undefined) scope._settings = {};
-                        if (scope._settings.chart === undefined) scope._settings.chart = {
-                            colours: [],
-                            data: [],
-                            labels: [],
-                            datasets: {}
-                        };
-                        if (scope._settings.slider === undefined) scope._settings.slider = {
-                            values: [0, 1],
-                            min: 0,
-                            max: 1,
-                            active: false
-                        };
+                        if (scope._settings.chart === undefined) scope._settings.chart = {colours: [], data: [], labels:[], datasets: {}};
+                        if (scope._settings.slider === undefined) scope._settings.slider = {values: [0,1], min: 0, max: 1, active: false, initialiseSlider: true};
                         if (scope._settings.height === undefined) scope._settings.height = 50;
                         if (scope._settings.showFacetOnModal === undefined) scope._settings.showFacetOnModal = false;
 
@@ -118,7 +109,6 @@
                                 scope.updateChartData();
                                 scope.updateChartColour();
                                 Util.convertFacetDataToChartJSFormat(chartData, scope._settings.chart);
-                                scope.updateSliderConfig();
                                 scope.updateChartHeight();
                             }
                         };
@@ -128,16 +118,27 @@
                             Util.getBarColour(chartData, scope._settings.chart.colours, scope.formatColor);
                         };
 
-                        scope.chartClick = function (elements, event, element) {
-                            scope.$apply(function () {
-                                scope.setSliderInactive();
+                        scope.chartClick = function(elements, event) {
+                            if (elements && elements.length > 0) {
+                                scope.$apply(function () {
+                                    scope.setSliderInactive();
+                                    elements && elements.forEach(function (elem) {
+                                        chartData[elem._index].selected = !chartData[elem._index].selected
+                                    });
 
-                                elements && elements.forEach(function (elem) {
-                                    chartData[elem._index].selected = !chartData[elem._index].selected
-                                });
-
-                                scope.updateSelection();
-                            })
+                                    scope.updateSelection();
+                                })
+                            } else {
+                                // get the closest data point from y position of click
+                                var chart = this.chart;
+                                var element = Util.chartElementCloseToMouseClick(chart, event);
+                                if (element)
+                                    scope.$apply(function (){
+                                        scope.setSliderInactive();
+                                        chartData[element._index].selected = !chartData[element._index].selected;
+                                        scope.updateSelection();
+                                    });
+                            }
                         };
 
                         scope.selectClassesInRange = function () {
@@ -152,7 +153,7 @@
                             scope.updateSelection();
                         };
 
-                        scope.updateSliderConfig = function () {
+                        scope.initialiseSliderMinMaxRange = function () {
                             var data = chartData || scope._facet.data;
                             if (data && data.length) {
                                 scope._settings.slider.values[1] = scope._settings.slider.max = data.length - 1;
@@ -282,12 +283,22 @@
                             LayoutService._closeOpen();
 
                             if (scope._settings.showFacetOnModal) {
+                                scope._settings.slider.initialiseSlider = false;
                                 LayoutService.openModal('facetEditorModal', {
                                     facet: scope._facet,
                                     settings: scope._settings,
                                     onUpdate: scope.updateChart
                                 }, true);
                             }
+                        };
+
+                        scope.interceptChartEvents = function(instance){
+                            var oldEventHandler = instance.eventHandler,
+                                newEventHandler = function (event) {
+                                    oldEventHandler.call(instance, event);
+                                    Util.activateTooltip.call(instance, event);
+                                };
+                                instance.eventHandler = newEventHandler;
                         };
 
                         // slider configuration
@@ -309,7 +320,12 @@
                             scales: {
                                 yAxes: [{
                                     ticks: {
-                                        callback: function (value) {
+                                        callback: function(value, index, values) {
+                                            var data = chartData[index];
+                                            if (data.selected)
+                                                value = "■ " + value;
+                                            else
+                                                value = "□ " + value;
                                             return value ? value.substr(0, labelLength) : '';
                                         }
                                     }
@@ -329,11 +345,27 @@
                                     label: function (tooltipItem, data) {
                                         var idx = tooltipItem.index,
                                             label = data.datasets[0].data[idx];
+                                        return label;
+                                    },
+                                    afterLabel: function (tooltipItem, data) {
+                                        var idx = tooltipItem.index,
+                                            label;
 
-                                        if (chartData[idx].selected)
-                                            label += " " + $i18n(450);
+                                        if(chartData[idx].selected)
+                                            label =  $i18n(450);
+                                        else
+                                            label = $i18n(473);
 
                                         return label;
+                                    }
+                                }
+                            },
+                            hover: {
+                                mode: "label",
+                                onHover: function (chartElements) {
+                                    if (lastChartInstance != this) {
+                                        scope.interceptChartEvents(this);
+                                        lastChartInstance = this;
                                     }
                                 }
                             }
@@ -347,20 +379,28 @@
                         scope.$watch('_facet.data', function (newValue, oldValue) {
                             if (newValue !== oldValue) {
                                 scope.setLoading();
-                                scope.setSliderInactiveAndRedrawChart();
-                                scope.showTableOrChart();
                                 scope.inferSortOrder();
+                                scope.setSliderInactiveAndRedrawChart();
+                                scope.initialiseSliderMinMaxRange();
+                                scope.showTableOrChart();
                             }
                         });
                         scope.$watch('_facet.filter', function (newVal, oldVal) {
-                            if (newVal !== oldVal)
+                            if (newVal !== oldVal) {
                                 scope.setSliderInactiveAndRedrawChart();
+                                scope.initialiseSliderMinMaxRange();
+                            }
                         });
 
                         scope.setLoading();
                         scope.showTableOrChart();
                         scope.inferSortOrder();
-                        scope.setSliderInactiveAndRedrawChart();
+                        if (scope._settings.slider.initialiseSlider) {
+                            scope.setSliderInactiveAndRedrawChart();
+                            scope.initialiseSliderMinMaxRange();
+                        } else {
+                            scope.drawChart();
+                        }
                         scope.updateCount()
                     }
 

@@ -1,0 +1,96 @@
+<div class="modal-header">
+    <button i18n="1" type="button" class="close" ng-click="$close()">×</button>
+    <h4 i18n="461" class="modal-title">Add from DOI</h4>
+</div>
+
+<div class="modal-body">
+    <div class="row">
+        <div class="col-sm-12">
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <label for="searchText" class="col-sm-5">Search CSDM dataset by species, department or
+                        modeller</label>
+                    <div class="input-group input-group-sm col-sm-6">
+                        <input type="text" class="form-control" id="searchText" placeholder="Enter search term"
+                               ng-model="searchText">
+                        <span class="input-group-btn">
+                            <button class="btn btn-primary btn-sm" ng-click="searchForTerm()">Submit</button>
+                        </span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th i18n="464">View metadata</th>
+                    <th i18n="465">DOI</th>
+                    <th i18n="466">Species</th>
+                    <th i18n="467">Record count</th>
+                    <th i18n="468">Department</th>
+                    <th i18n="469">Modeller</th>
+                    <th i18n="470">Date</th>
+                    <th i18n="471">SDM available</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="result in results.searchResults">
+                    <td><input type="radio" name="dOISelectionRadio" ng-model="$parent.selectedDOI"
+                               ng-value="result.id" ng-click="$parent.selectedDOIData = result"></td>
+                    <td><a ng-href="{{$parent.getDOIURL(result)}}" target="_blank"><i
+                            class="glyphicon glyphicon-question-sign"></i> </a></td>
+                    <td>{{result.doi}}</td>
+                    <td ng-bind-html="trustAsHtml(result.applicationMetadata.queryTitle)"></td>
+                    <td>{{result.applicationMetadata.recordCount}}</td>
+                    <td>{{result.applicationMetadata.userOrganisation}}</td>
+                    <td>{{result.applicationMetadata.userDisplayName}}</td>
+                    <td>{{result.applicationMetadata.requestedOn}}</td>
+                    <td></td>
+                </tr>
+                <tr ng-if="(!results || !results.total) && !loading">
+                    <td colspan="9" i18n="463">
+                        Search returned with no results
+                    </td>
+                </tr>
+                <tr ng-if="loading">
+                    <td colspan="9">
+                        <uib-progressbar class="progress-striped active"
+                                         value="100" type='info' title="Updating"><span i18n="47">Loading...</span>
+                        </uib-progressbar>
+                    </td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="9">
+                        <ul uib-pagination total-items="pagination.total" ng-model="pagination.page"
+                            items-per-page="pagination.max" ng-change="fetchResultsForPage()"
+                            class="pagination-sm"></ul>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <form class="form-inline">
+                <div class="form-group">
+                    <label><strong>DOI selected:</strong> </label>
+                    <span ng-bind="getDOIInfoString(selectedDOIData)"></span>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button i18n="45" class="btn btn-default" type="button" ng-click="$close()">Cancel</button>
+    <button i18n="39" class="btn btn-primary" type="button" ng-click="addDOIToMap()" ng-disabled="isDisabled()">Next
+    </button>
+</div>

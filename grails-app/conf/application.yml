@@ -587,8 +587,10 @@ spring:
 ---
 environments:
     development:
+        server:
+          port: 8087
         grails:
-          serverURL: http://devt.ala.org.au
+          serverURL: http://devt.ala.org.au:8087
     test:
     production:
         assets:

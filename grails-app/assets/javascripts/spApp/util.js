@@ -350,8 +350,10 @@ var Util = {
 
         numberOfIntervals = $SH.numberOfIntervalsForRangeData || 7;
 
-        if((Number.isFinite(min) && Number.isFinite(max)) && (max > min)){
-            interval = parseInt((max - min) / numberOfIntervals);
+        if((Number.isFinite(min) && Number.isFinite(max)) && (max >= min)){
+            interval = parseInt((max - min + 1) / numberOfIntervals);
+            if (interval < intBuffer)
+                interval = intBuffer;
             lower = upper = min;
 
             for(var i = 1; (i < numberOfIntervals) && (max > upper ); i ++ ){
@@ -360,7 +362,8 @@ var Util = {
                 lower = upper;
             }
 
-            result.push([lower, max - intBuffer]);
+            if (lower <= max)
+                result.push([lower, max]);
         }
 
         return result;
@@ -398,6 +401,70 @@ var Util = {
             default:
                     return value === undefined || value === null? "" : value.toString();
         }
-    }
+    },
+    chartElementCloseToMouseClick: function (chart, event) {
+        var helpers = Chart.helpers,
+            eventPosition = helpers.getRelativePosition(event, chart.chart);
+        if (chart.data.datasets) {
+            for (var i = 0; i < chart.data.datasets.length; i++) {
+                var meta = chart.getDatasetMeta(i);
+                if (chart.isDatasetVisible(i)) {
+                    for (var j = 0; j < meta.data.length; j++) {
+                        if (this.isClickOnYAxisLabel(eventPosition.y, meta.data[j])) {
+                            return meta.data[j];
+                        }
+                    }
+                }
+            }
+        }
+    },
+    isClickOnYAxisLabel: function (mouseY, chartElement) {
+        var vm = chartElement._view;
+        var inRange = false;
 
+        if (vm)
+            inRange = (mouseY >= vm.y - vm.height / 2 && mouseY <= vm.y + vm.height / 2);
+        return inRange;
+    },
+    activateTooltip: function (event) {
+        var options = this.options || {},
+            tooltip = this.tooltip,
+            tooltipsOptions = options.tooltips,
+            hoverOptions = options.hover,
+            element = Util.chartElementCloseToMouseClick(this, event),
+            helpers = Chart.helpers;
+
+        if (element){
+            this.tooltipActive = this.active = [element];
+
+            if (tooltipsOptions.enabled || tooltipsOptions.custom) {
+                tooltip.initialize();
+                tooltip._active = this.tooltipActive;
+                tooltip.update(true);
+            }
+
+            tooltip.pivot();
+            if (!this.animating) {
+                // If entering, leaving, or changing elements, animate the change via pivot
+                if (!helpers.arrayEquals(this.active, this.lastActive) ||
+                    !helpers.arrayEquals(this.tooltipActive, this.lastTooltipActive)) {
+
+                    this.stop();
+
+                    if (tooltipsOptions.enabled || tooltipsOptions.custom) {
+                        tooltip.update(true);
+                    }
+
+                    // We only need to render at this point. Updating will cause scales to be
+                    // recomputed generating flicker & using more memory than necessary.
+                    this.render(hoverOptions.animationDuration, true);
+                }
+            }
+
+            // Remember Last Actives
+            this.lastActive = this.active;
+            this.lastTooltipActive = this.tooltipActive;
+            return this;
+        }
+    }
 };

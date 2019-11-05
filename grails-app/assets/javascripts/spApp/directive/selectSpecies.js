@@ -8,8 +8,8 @@
      *    Species selection control
      */
     angular.module('select-species-directive', ['map-service', 'lists-service'])
-        .directive('selectSpecies', ['MapService', 'ListsService', '$timeout', 'LayoutService', 'DoiService',
-            function (MapService, ListsService, $timeout, LayoutService, DoiService) {
+        .directive('selectSpecies', ['MapService', 'ListsService', '$timeout', 'LayoutService', 'DoiService', 'UrlParamsService',
+            function (MapService, ListsService, $timeout, LayoutService, DoiService, UrlParamsService) {
 
                 return {
                     scope: {
@@ -317,8 +317,16 @@
                         };
 
                         scope.doiSelected = function(doi) {
-                            var queryParams = DoiService.buildQueryFromDoi(doi);
-                            scope.setQ(queryParams);
+                            var url = DoiService.getQueryUrl(doi);
+                            if (url) {
+                                var searchParams = UrlParamsService.parseSearchParams(url);
+                                var queryParams = DoiService.buildQueryFromDoi(doi, searchParams);
+                                scope.setQ(queryParams);
+                            }
+                            else {
+                                // This shouldn't happen as dois without a URL will be filtered out by the search process.
+                                bootbox.alert("No data was able to be extracted from the selected DOI");
+                            }
                         };
 
                         scope.isLoggedIn = $SH.userId !== undefined && $SH.userId !== null && $SH.userId.length > 0;

@@ -52,6 +52,7 @@
                     }
 
                     originalSettings.slider = $scope.settings.slider;
+                    originalSettings.slider.initialiseSlider = true;
                     originalFacet.sortType = $scope.facet.sortType;
                     originalFacet.sortReverse = $scope.facet.sortReverse;
                     originalFacet.filter = $scope.facet.filter;
