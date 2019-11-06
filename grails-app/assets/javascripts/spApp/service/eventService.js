@@ -51,7 +51,14 @@
                     facetNewLayerOut: function (layer, newFqs) {
                         var fq = ''
                         if (newFqs.length > 0) {
-                            fq = "-((" + newFqs.join(") AND (") + "))"
+                            var fqs = newFqs.splice()
+                            for (var i = 0; i < fqs.length; i++) {
+                                // Use (*:* AND -facet:*) instead of (-facet:*)
+                                if (fqs[i].match(/^-[^\s]*:\*$/) != null) {
+                                    fqs[i] = '*:* AND ' + fqs[i]
+                                }
+                            }
+                            fq = "-((" + fqs.join(") AND (") + "))"
                         }
 
                         return BiocacheService.newLayerAddFq(layer, fq,
