@@ -50,7 +50,7 @@
                         }
                     }
                 };
-                var selected = {layer: null};
+                var selected = {layer: undefined};
                 var uid = 1;
                 var pidList = [];
 

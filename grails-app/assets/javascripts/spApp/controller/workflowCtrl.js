@@ -342,7 +342,7 @@
 
                 $scope.save = function () {
                     return WorkflowService.save($scope.workflowProperties.name, !$scope.workflowProperties.private, $scope.workflow).then(function (response) {
-                        bootbox.alert('<h3>' + $i18n(460, "Workflow Saved") + '</h3>')
+                        bootbox.alert('<h3>' + $i18n("Workflow Saved") + '</h3>')
                         $scope.$close()
                     });
                 }
