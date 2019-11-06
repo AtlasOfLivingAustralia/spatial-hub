@@ -546,16 +546,6 @@
                             }
                         }
 
-                        scope.updateFacetDisplayName = function(data){
-                            var displayname;
-                            for(var i = 0; data && (i < data.length); i++){
-                                displayname = $i18n(data[i].i18nCode, true);
-                                if ( displayname === data[i].i18nCode )
-                                    displayname = undefined;
-                                data[i].displayname = displayname || data[i].name || data[i].displayname;
-                            }
-                        };
-
                         /**
                          * Set facet.data using newLayer query
                          *
@@ -576,6 +566,12 @@
 
                                     return BiocacheService.getFacetMinMax(newLayer, facet).then(function (data) {
                                         facet.ranges = Util.getRangeBetweenTwoNumber(data.min, data.max);
+                                        if (facet.dataType.toLowerCase().indexOf('date') >= 0) {
+                                            $.map(facet.ranges, function (v) {
+                                                v[0] = new Date(v[0]).toISOString()
+                                                v[1] = new Date(v[1]).toISOString()
+                                            })
+                                        }
                                         BiocacheService.facet(facet.name, newLayer, facet.ranges).then(function (data) {
                                             scope.setFacetData(facet, data)
 
@@ -593,8 +589,6 @@
                         }
 
                         scope.setFacetData = function (facet, data) {
-                            scope.updateFacetDisplayName(data);
-
                             // Existing facets that do not have facet.data may have a copy of the selection as facet._fq
                             // Delete _fq after updating the facet.data with the active selection.
                             if (facet._fq) {
@@ -1114,9 +1108,9 @@
                                                             layer.scatterplotUpdating = false;
                                                         });
 
-                                                        layer.scatterplotLabel1 = Messages.get('facet.' + species.scatterplotLayers[0]) + " : " +
+                                                        layer.scatterplotLabel1 = BiocacheI18n.get('facet.' + species.scatterplotLayers[0]) + " : " +
                                                             species.scatterplotSelectionExtents[1].toFixed(4) + " - " + species.scatterplotSelectionExtents[3].toFixed(4);
-                                                        layer.scatterplotLabel2 = Messages.get('facet.' + species.scatterplotLayers[1]) + " : " +
+                                                        layer.scatterplotLabel2 = BiocacheI18n.get('facet.' + species.scatterplotLayers[1]) + " : " +
                                                             species.scatterplotSelectionExtents[0].toFixed(4) + " - " + species.scatterplotSelectionExtents[2].toFixed(4);
                                                     }
                                                 } else {
