@@ -64,7 +64,7 @@
     <br/>
 </div>
 
-<div ng-show="!_inputData.importList && !_inputData.importPoints" class="radio">
+<div ng-show="!_inputData.importList && !_inputData.importPoints && _lifeform" class="radio">
     <label>
         <input type="radio" ng-model="speciesOption" value="lifeform" ng-change="changeOption('lifeform')"
                name="{{_uniqueId}}"><span>Lifeform</span></label>
@@ -73,10 +73,9 @@
         <lifeform-select style="width:400px" on-custom="setLifeformQ"></lifeform-select>
         <hr>
     </div>
-
 </div>
 
-<div ng-show="!_inputData.importList && !_inputData.importPoints" class="radio">
+<div ng-show="!_inputData.importList && !_inputData.importPoints && _allSpecies" class="radio">
     <label>
         <input type="radio" ng-model="speciesOption" value="allSpecies" ng-change="changeOption('allSpecies')"
                name="{{_uniqueId}}"><span i18n="244">All species</span></label>
@@ -84,20 +83,19 @@
 </div>
 
 <div ng-show="doiEnabled" class="radio">
-    <label>
-        <input type="radio" ng-model="speciesOption" value="searchDois" ng-change="changeOption('searchDois')" name="{{_uniqueId}}"><span i18n="435">Search for a species in a DOI dataset</label>
-    </label>
-</div>
+    <label><input type="radio" ng-model="speciesOption" value="searchDois" ng-change="changeOption('searchDois')"
+                  name="{{_uniqueId}}"><span i18n="435">Search for a species in a DOI dataset</label>
 
-<div ng-show="speciesOption == 'searchDois'">
-    <div>
+    <br/>
+    <div ng-show="speciesOption == 'searchDois'">
         <label>
             <input id="doiAutoComplete" doi-auto-complete on-select="doiSelected">
         </label>
+        <hr>
     </div>
 </div>
 
-<div ng-show="!_inputData.importList && !_inputData.importPoints" class="radio">
+<div ng-show="!_inputData.importList && !_inputData.importPoints && _searchSpecies" class="radio">
     <label>
         <input type="radio" ng-model="speciesOption" value="searchSpecies"
                ng-change="changeOption('searchSpecies')" name="{{_uniqueId}}"><span i18n="245">Search for a species by scientific or common
@@ -117,7 +115,8 @@
 
 <div ng-show="listsEnabled()" class="radio"><label>
     <input type="radio" ng-model="speciesOption" value="speciesList" ng-change="changeOption('speciesList')"
-           ng-show="!_inputData.importPoints" name="{{_uniqueId}}"><span i18n="251">Use species list</span></label>
+           ng-show="!_inputData.importPoints && _importLists" name="{{_uniqueId}}"><span
+        i18n="251">Use species list</span></label>
 
     <div ng-show="speciesOption == 'speciesList'" style="margin-left:15px">
         <div lists-list on-custom="setQ"></div>
@@ -126,7 +125,8 @@
 </div>
 
 <div ng-show="listsEnabled()" class="radio"><label>
-    <input i18n="248" type="radio" ng-model="speciesOption" value="importList" ng-show="!_inputData.importPoints"
+    <input i18n="248" type="radio" ng-model="speciesOption" value="importList"
+           ng-show="!_inputData.importPoints && _importLists"
            ng-change="changeOption('importList')" ng-disabled="isNotLoggedIn" name="{{_uniqueId}}">Create new species
     list</label>
     <div ng-show="speciesOption == 'importList'" style="margin-left:15px">
@@ -139,7 +139,7 @@
     </div>
 </div>
 
-<div ng-show="!_inputData.importList && sandboxEnabled()" class="radio"><label>
+<div ng-show="!_inputData.importList && sandboxEnabled() && _importPoints" class="radio"><label>
     <input type="radio" ng-model="speciesOption" value="sandboxPoints"
            ng-change="changeOption('sandboxPoints')" ng-disabled="isNotLoggedIn" name="{{_uniqueId}}"><span
         i18n="254">Use imported points</span>
@@ -151,7 +151,7 @@
     </div>
 </div>
 
-<div ng-show="!_inputData.importList && sandboxEnabled()" class="radio"><label>
+<div ng-show="!_inputData.importList && sandboxEnabled() && _importPoints" class="radio"><label>
     <input type="radio" ng-model="speciesOption" value="importPoints"
            ng-change="changeOption('importPoints')"
            ng-disabled="isNotLoggedIn" name="{{_uniqueId}}"><span i18n="252">Import points</span></label>

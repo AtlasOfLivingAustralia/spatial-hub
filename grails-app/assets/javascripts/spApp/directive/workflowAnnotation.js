@@ -19,9 +19,9 @@
                         if (!scope.value) {
                             scope.value = {
                                 dataSetAnnotation: '',
-                                workflowAnnotation: '',
+                                workflowAnnotation: {},
                                 userDisplayName: userDisplayName,
-                                userOrganisation: userOrganisation
+                                userOrganisation: userOrganisation,
                             };
                         }
 

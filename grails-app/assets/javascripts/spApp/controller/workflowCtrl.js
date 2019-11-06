@@ -28,7 +28,7 @@
                 $scope.areaLayerId = -1; //$scope.getAreaLayer()
 
                 $scope.workflow = []
-                $scope.workflowProperties = {name: '', private: true}
+                $scope.workflowProperties = {name: '', private: true, workflow: $scope.workflow}
 
                 $scope.speciesLayers = $.merge([{name: 'none', uid: -1}], MapService.speciesLayers())
                 $scope.areaLayers = $.merge([{name: 'none', uid: -1}], MapService.areaLayers())
@@ -96,14 +96,6 @@
                             }
                         }
                     })
-                }
-
-                $scope.delete = function (item) {
-                    for (var i in $scope.workflow) {
-                        if ($scope.workflow[i] === item) {
-                            $scope.workflow.splice(i, 1)
-                        }
-                    }
                 }
 
                 $scope.getSpeciesLayer = function () {

@@ -51,6 +51,10 @@
         "open": "ScatterplotList"
       },
       {
+        "name": "Double Gridding",
+        "open": "DoubleGridding"
+      },
+      {
         "name": "Taxon Frequency",
         "open": "TaxonFrequency"
       },

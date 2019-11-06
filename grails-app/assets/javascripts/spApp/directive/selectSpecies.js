@@ -24,7 +24,14 @@
                         _speciesOption: '=?speciesOption',
                         _absentOption: '=?absentOption',
                         _canAddSpecies: '=?canAddSpecies',
-                        _dateRangeOption: '=?dateRangeOption'
+                        _dateRangeOption: '=?dateRangeOption',
+                        _listsEnabled: '=?listsEnabled',
+                        _lifeforms: '=?lifeforms',
+                        _importList: '=?importList',
+                        _importPoints: '=?importPoints',
+                        _searchSpecies: '=?searchSpecies',
+                        _allSpecies: '=?allSpecies',
+
                     },
                     templateUrl: '/spApp/selectSpeciesCtrl.htm',
                     link: function (scope, element, attrs) {
@@ -45,6 +52,13 @@
                         if (scope._absentOption === undefined) scope._absentOption = true;
                         if (scope._canAddSpecies === undefined) scope._canAddSpecies = true;
 
+                        if (scope._listsEnabled === undefined) scope._listsEnabled = true
+                        if (scope._lifeforms === undefined) scope._lifeforms = true
+                        if (scope._importList === undefined) scope._importList = true
+                        if (scope._importPoints === undefined) scope._importPoints = true
+                        if (scope._searchSpecies === undefined) scope._searchSpecies = true
+                        if (scope._allSpecies === undefined) scope._allSpecies = true
+
                         scope.spatiallyValid = true;
                         scope.spatiallySuspect = false;
                         scope.includeExpertDistributions = scope._areaIncludes;
@@ -61,7 +75,6 @@
                         } else {
                             scope.speciesOption = scope._speciesOption;
                         }
-
                         scope.multiselect = false;
                         if (scope._selectedQ === undefined) {
                             scope._selectedQ = {q: [], bs: null, ws: null, name: ''}
