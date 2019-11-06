@@ -19,7 +19,9 @@
               total: 0,
               page: 1,
               offset: 0,
-              max: 10
+              max: 10,
+              sort: 'dateMinted',
+              order: 'desc'
             };
             $scope.trustAsHtml = $sce.trustAsHtml;
 
@@ -53,7 +55,7 @@
                 } else {
                     var query = $scope.searchText,
                         queryWords = query.split(" "),
-                        queryTemplate = "applicationMetadata.queryTitle:*SEARCHTERM* applicationMetadata.userOrganisation:SEARCHTERM* applicationMetadata.userDisplayName:SEARCHTERM*",
+                        queryTemplate = "applicationMetadata.queryTitle:*SEARCHTERM* applicationMetadata.organisation:SEARCHTERM* applicationMetadata.modeller:SEARCHTERM*",
                         results = [];
 
                     for(var i =0; i < queryWords.length; i++) {
