@@ -249,18 +249,6 @@
 
                                     var item = data[i];
 
-                                    //map with geom_idx
-                                    var parts = item.wmsurl.split("&");
-                                    parts[0] = parts[0].split("?")[1];
-                                    var parameters = {};
-                                    for (var j in parts) {
-                                        var kv = parts[j].split("=");
-                                        if (kv.length === 2) {
-                                            parameters[kv[0]] = kv[1]
-                                        }
-                                    }
-                                    parameters['transparent'] = true;
-
                                     var name = item.area_name;
                                     if (name === undefined) {
                                         name = item.scientific
@@ -310,6 +298,18 @@
 
                                         pidList.push(data[i]);
                                     } else {
+                                        //map with geom_idx
+                                        var parts = item.wmsurl.split("&");
+                                        parts[0] = parts[0].split("?")[1];
+                                        var parameters = {};
+                                        for (var j in parts) {
+                                            var kv = parts[j].split("=");
+                                            if (kv.length === 2) {
+                                                parameters[kv[0]] = kv[1]
+                                            }
+                                        }
+                                        parameters['transparent'] = true;
+
                                         MapService.add({
                                             log: query.log,
                                             query: query,
