@@ -90,8 +90,8 @@
 
                         scope.setLayers = function (data) {
                             for (var i = 0; i < data.length; i++) {
-                                if (((scope._environmental && data[i].layer.type === 'Environmental') ||
-                                    (scope._contextual && data[i].layer.type === 'Contextual'))
+                                if (((scope._environmental && data[i].layer.type.toLowerCase() === 'environmental') ||
+                                    (scope._contextual && data[i].layer.type.toLowerCase() === 'contextual'))
                                     && (!scope._analysis || data[i].analysis)) {
                                     scope.layers.push(
                                         LayersService.convertFieldDataToMapLayer(data[i], scope.isSelected(data[i].id)))

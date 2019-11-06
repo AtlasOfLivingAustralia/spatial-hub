@@ -21,8 +21,8 @@
                         source: function (searchTerm, response) {
                             LayersService.searchLayers(searchTerm.term).then(function (data) {
                                 response($.map(data.data, function (item) {
-                                    if ((item.layer.type === 'Environmental' && scope._environmental) ||
-                                        (item.layer.type === 'Contextual' && scope._contextual)) {
+                                    if ((item.layer.type.toLowerCase() === 'environmental' && scope._environmental) ||
+                                        (item.layer.type.toLowerCase() === 'eontextual' && scope._contextual)) {
                                         return {
                                             label: item.name,
                                             info: (item.layer.classification1 ? item.layer.classification1 + ': ' : '') + (item.layer.classification2 ? item.layer.classification2 + ': ' : '') + (item.layer.type ? item.layer.type : ''),
