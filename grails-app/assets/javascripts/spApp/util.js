@@ -209,13 +209,14 @@ var Util = {
     download: function (url, filename) {
         var link = document.createElement("a");
         if (filename !== undefined) {
-            link.download = filename
-        } else {
-            link.download = "download"
+            link.setAttribute('download', filename);
         }
-        link.target = '_blank';
-        link.href = url;
+        link.setAttribute('target', '_blank');
+        link.setAttribute('href', url);
+        link.style.display = 'none';
+        document.body.appendChild(link);
         link.click();
+        document.body.removeChild(link);
     },
 
     reconnect: function () {

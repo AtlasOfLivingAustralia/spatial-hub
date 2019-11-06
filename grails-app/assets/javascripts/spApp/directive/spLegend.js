@@ -55,7 +55,7 @@
                         });
 
                         scope.showLegend = function () {
-                            scope.selected.hidelegend = false
+                            scope.selected.layer.hidelegend = false
                         };
 
                         scope.areaLayers = [];
@@ -99,6 +99,16 @@
                                     }
                                 }
                             }
+                            for (var i = selectedLayer.leaflet.layerOptions.layers.length - 1; i > 0; i--) {
+                                delete selectedLayer.leaflet.layerOptions.layers[i]
+                            }
+
+                            selectedLayer.leaflet.layerOptions.layers.splice(1, selectedLayer.leaflet.layerOptions.layers.length - 1)
+                            selectedLayer.leaflet.layerOptions.layers[0].layerParams.opacity = scope.selected.layer.leaflet.layerOptions.layers[0].opacity / 100.0
+
+                            $timeout(function () {
+                                scope.updateWMS(selectedLayer)
+                            }, 0)
                         };
 
                         scope.contextualClearHighlight = function () {
@@ -227,25 +237,53 @@
                             MapService.leafletScope.zoom(item.bbox)
                         };
 
-                        scope.contextualHighlight = function (name, pid) {
+                        scope.contextualHighlight = function (name, pid, item) {
                             var selectedLayer = scope.selected.layer;
                             if (selectedLayer !== undefined) {
-                                selectedLayer.contextualHighlight = name;
-                                LayersService.getObject(pid).then(function (data) {
-                                    MapService.removeHighlight();
+                                if (item.selected) {
+                                    selectedLayer.contextualHighlight = name;
 
-                                    data.data.layertype = 'area';
-                                    data.data.color = 'ff0000';
-                                    data.data.opacity = 100.0;
-                                    MapService.addHighlight(data.data);
-                                });
+                                    var found = false
+                                    for (var i = selectedLayer.leaflet.layerOptions.layers.length - 1; i > 0; i--) {
+                                        if (selectedLayer.leaflet.layerOptions.layers[i] && selectedLayer.leaflet.layerOptions.layers[i].pid === pid) {
+                                            found = true
+                                        }
+                                    }
+
+                                    if (!found) {
+                                        // hide top layer in layer group
+                                        selectedLayer.leaflet.layerOptions.layers[0].layerParams.opacity = 0
+                                        MapService.mapFromPid({pid: pid}, selectedLayer, 'ff0000')
+                                    }
+                                } else {
+                                    for (var i = selectedLayer.leaflet.layerOptions.layers.length - 1; i > 0; i--) {
+                                        if (selectedLayer.leaflet.layerOptions.layers[i] && selectedLayer.leaflet.layerOptions.layers[i].pid === pid) {
+                                            delete selectedLayer.leaflet.layerOptions.layers[i]
+                                            selectedLayer.leaflet.layerOptions.layers.splice(i, 1)
+                                        }
+                                    }
+
+                                    if (selectedLayer.leaflet.layerOptions.layers.length > 1) {
+                                        // hide top layer in layer group
+                                        selectedLayer.leaflet.layerOptions.layers[0].layerParams.opacity = 0
+                                    } else {
+                                        // show top layer in layer group
+                                        selectedLayer.leaflet.layerOptions.layers[0].layerParams.opacity = scope.selected.layer.leaflet.layerOptions.layers[0].opacity / 100.0
+                                    }
+
+                                    MapService.reloadLayer(selectedLayer)
+                                }
                             }
                         };
 
                         scope.contextualSelectionChange = function (item) {
                             var selectedLayer = scope.selected.layer;
                             if (selectedLayer !== undefined) {
-                                selectedLayer.contextualSelection[item.name] = item
+                                if (item.selected) {
+                                    selectedLayer.contextualSelection[item.name] = item
+                                } else {
+                                    delete selectedLayer.contextualSelection[item.name]
+                                }
                             }
                         };
 
@@ -269,21 +307,22 @@
                             var selectedLayer = scope.selected.layer;
                             if (selectedLayer !== undefined) {
                                 selectedLayer.contextualFilter = ''
+                                scope.updateContextualList(selectedLayer)
                             }
                         };
 
                         scope.externalWmsLegendVisible = function () {
                             var selected = scope.selected;
                             return selected.layer !== undefined &&
-                                selected.layertype === 'wms' &&
-                                (selected.hidelegend === undefined || !selected.hidelegend)
+                                selected.layer.layertype === 'wms' &&
+                                (selected.layer.hidelegend === undefined || !selected.layer.hidelegend)
                         };
 
                         scope.wmsLegendVisible = function () {
                             var selected = scope.selected;
                             return selected.layer !== undefined &&
-                                (selected.layertype === 'grid' || selected.layertype === 'contextual') &&
-                                (selected.hidelegend === undefined || !selected.hidelegend)
+                                (selected.layer.layertype === 'grid' || selected.layer.layertype === 'contextual') &&
+                                (selected.layer.hidelegend === undefined || !selected.layer.hidelegend)
                         };
 
                         scope.hideLegend = function () {
@@ -1014,11 +1053,11 @@
                         };
 
                         scope.scatterplotDownloadData = function () {
-                            Util.download(scope.selected.layer.scatterplotDataUrl);
+                            Util.download(scope.selected.layer.scatterplotDataUrl, "scatterplotData.csv");
                         };
 
                         scope.scatterplotDownloadImage = function () {
-                            Util.download(scope.selected.layer.scatterplotUrl);
+                            Util.download(scope.selected.layer.scatterplotUrl, "scatterplotImage.png");
                         };
 
                         scope.scatterplotUpdate = function (value, layer) {

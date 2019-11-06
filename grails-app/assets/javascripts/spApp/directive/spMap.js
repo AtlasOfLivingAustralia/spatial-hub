@@ -24,13 +24,6 @@
 
                     scope.sortingLog = [];
 
-                    scope.selectControls = function () {
-                        MapService.select(undefined);
-
-                        //enable base layer chooser list, etc
-                        LayoutService.enable('options')
-                    };
-
                     scope.info = function (url, title, notes) {
                         scope.$parent.openIframe(url, title, notes)
                     };
@@ -48,7 +41,7 @@
                                         MapService.remove(uids[i])
                                     }
 
-                                    scope.selectControls()
+                                    scope.select(undefined)
                                 }
                             }
                         );
@@ -58,12 +51,14 @@
                         for (var i = 0; i < scope.list.length; i++) {
                             MapService.setVisible(scope.list[i].uid, true)
                         }
+                        scope.defaultLayerSelection()
                     };
 
                     scope.hideAll = function () {
                         for (var i = 0; i < scope.list.length; i++) {
                             MapService.setVisible(scope.list[i].uid, false)
                         }
+                        scope.select(undefined)
                     };
 
                     scope.zoom = function (item) {
@@ -78,14 +73,18 @@
                         return MapService.selected.layer === item
                     };
 
-
                     scope['delete'] = function (item) {
                         MapService.remove(item['uid']);
-                        scope.selectControls()
+                        scope.defaultLayerSelection()
                     };
 
-                    scope.updateVisibility = function (item) {
+                    scope.updateVisibility = function (item, event) {
                         MapService.setVisible(item.uid, item.visible)
+                        if (item.visible) {
+                            scope.select(item)
+                        } else {
+                            scope.defaultLayerSelection()
+                        }
                     };
 
                     scope.sortableOptions = {
@@ -98,13 +97,30 @@
                     };
 
                     scope.select = function (layer) {
-                        LayoutService.enable('legend');
                         MapService.select(layer)
+
+                        if (layer === undefined) {
+                            //enable base layer chooser list, etc
+                            LayoutService.enable('options')
+                        } else {
+                            LayoutService.enable('legend', layer);
+                        }
                     };
 
                     scope.reconnect = function () {
                         KeepAliveService.reconnect();
-                    }
+                    },
+
+                        scope.defaultLayerSelection = function () {
+                            var selection = undefined; // map options
+                            for (var i = 0; selection === undefined && i < scope.list.length; i++) {
+                                if (scope.list[i].visible) {
+                                    selection = scope.list[i];
+                                }
+                            }
+
+                            scope.select(selection)
+                        }
                 }
             };
         }])

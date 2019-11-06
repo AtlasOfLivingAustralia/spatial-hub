@@ -37,7 +37,7 @@ div#statusInfo {
     background-position-x: 100%;
 }
 
-.layer-selected {
+.layer-selected, .list-group-item.layer-selected:hover {
     background-color: lightgray;
 }
 
@@ -51,7 +51,7 @@ div#statusInfo {
 }
 
 .list-group-item:hover {
-    background-color: lightgray;
+    background-color: #eee;
 }
 
 .angular-leaflet-control-layers {
