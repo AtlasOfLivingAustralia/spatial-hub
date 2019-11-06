@@ -113,7 +113,7 @@
                         expanded.push(o);
                         for (var j = 0; j < list[i].facets.length; j++) {
                             if ($SH.default_facets_ignored.indexOf(list[i].facets[j].field) == -1) {
-                                var name = Messages.get('facet.' + list[i].facets[j].field, list[i].facets[j].field);
+                                var name = BiocacheI18n.get('facet.' + list[i].facets[j].field, list[i].facets[j].field);
                                 if (name === list[i].facets[j].field && list[i].facets[j].description) {
                                     name = list[i].facets[j].description;
                                 }
@@ -131,7 +131,7 @@
                             for (var j = 0; j < custom.length; j++) {
                                 var nameField = custom[j].split(';');
                                 if (nameField.length == 1) nameField.push(nameField[0]);
-                                var name = Messages.get('facet.' + nameField[1], nameField[0]);
+                                var name = BiocacheI18n.get('facet.' + nameField[1], nameField[0]);
                                 expanded.push({
                                     name: name,
                                     separator: false,
@@ -153,7 +153,7 @@
                             for (j = 0; j < custom.length; j++) {
                                 var nameField = custom[j].split(';');
                                 if (nameField.length == 1) nameField.push(nameField[0]);
-                                var name = Messages.get('facet.' + nameField[1], nameField[0]);
+                                var name = BiocacheI18n.get('facet.' + nameField[1], nameField[0]);
                                 expanded.push({
                                     name: name,
                                     separator: false,
@@ -219,7 +219,7 @@
                     var expanded = [];
                     for (i = 0; i < list.length; i++) {
                         if ($SH.default_facets_ignored.indexOf(list[i].name) == -1) {
-                            var label = Messages.get('facet.' + list[i].name, list[i].name);
+                            var label = BiocacheI18n.get('facet.' + list[i].name, list[i].name);
                             if (label === list[i].name && list[i].description) {
                                 label = list[i].description;
                             }
