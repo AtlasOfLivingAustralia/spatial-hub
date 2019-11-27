@@ -10,7 +10,7 @@
 //= require bootstrap/dist/js/bootstrap.min.js
 
 //leaflet
-//= require leaflet/dist/leaflet.js
+//= require leaflet/dist/leaflet-src.js
 //= require proj4/dist/proj4.js
 //= require proj4leaflet/src/proj4leaflet.js
 //= require leaflet-draw/dist/leaflet.draw.js
