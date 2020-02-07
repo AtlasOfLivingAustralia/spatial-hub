@@ -175,7 +175,19 @@ class HubWebService {
             def responseHeaders = [:]
             call.responseHeaders.each { h -> responseHeaders.put(h.name, h.value) }
 
-            [statusCode : call.statusCode, text: call.responseBody, headers: responseHeaders,
+            // use responseBodyAsString for text (UTF-8)
+            def responseBody = call.responseBody
+            try {
+                def ct = responseHeaders['Content-Type']
+                if (ct && !ct.toString().startsWith('image') &&
+                        (ct.toString().startsWith("text") || ct.toString().startsWith("application/json"))) {
+                    responseBody = new String(responseBody, 'UTF-8')
+                }
+            } catch (Exception e) {
+
+            }
+
+            [statusCode : call.statusCode, text: responseBody, headers: responseHeaders,
              contentType: call.getResponseHeader(HttpHeaders.CONTENT_TYPE)?.value]
         } catch (IOException e) {
             log.error url, e

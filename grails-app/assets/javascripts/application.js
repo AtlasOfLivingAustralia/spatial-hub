@@ -5,7 +5,6 @@
 
 //ala-bootstrap3
 //= require html5.js
-//= require ala/ala-bootstrap3.js
 
 //bootstrap
 //= require bootstrap/dist/js/bootstrap.min.js

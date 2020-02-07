@@ -489,6 +489,7 @@
                                 env = 'colormode%3A-1%3Bname%3Acircle%3Bsize%3A3%3Bopacity%3A1%3Bcolor%3A' + id.color;
                             }
 
+
                             //backup selection fq
                             var fq = undefined;
                             if (firstLayer && firstLayer.layerParams.fq) {
@@ -511,6 +512,8 @@
                                     transparent: true,
                                     continuousWorld: true
                                 }
+                                // temporarily use the same legend as colorType == 'grid'
+                                , legendurl: $SH.baseUrl + "/assets/gridlegend.png"
                             };
 
                             //restore selection fq
@@ -691,8 +694,9 @@
                                 } else if (id.sld_body) {
                                     newLayer.layerParams.sld_body = id.sld_body
                                     newLayer.url = newLayer.url.replace("gwc/service/", "")
-                                } else {
-                                    //id.leaflet.layerParams.styles = layer.id
+                                } else if (layer.id.startsWith("cl")) {
+                                    // contextual layers may have more than one style
+                                    newLayer.layerParams.styles = layer.id
                                 }
                                 newLayer.legendurl = newLayer.url
                                     .replace("gwc/service/", "")
@@ -702,7 +706,13 @@
                                     .replace("&style=", "&ignore=");
 
                                 if (!newLayer.legendurl.indexOf("GetLegendGraphic") >= 0) {
-                                    newLayer.legendurl += "&service=WMS&version=1.1.0&request=GetLegendGraphic&format=image/png"
+                                    if (id.sldBody) {
+                                        newLayer.legendurl += "&service=WMS&version=1.1.0&request=GetLegendGraphic&format=image/png&sld_body=" + encodeURIComponent(id.sldBody)
+                                    } else if (id.sld_body) {
+                                        newLayer.legendurl += "&service=WMS&version=1.1.0&request=GetLegendGraphic&format=image/png&sld_body=" + encodeURIComponent(id.sld_body)
+                                    } else if (layer.id.startsWith("cl")) {
+                                        newLayer.legendurl += "&service=WMS&version=1.1.0&request=GetLegendGraphic&format=image/png&style=" + encodeURIComponent(layer.id)
+                                    }
                                 }
                             }
                         }
