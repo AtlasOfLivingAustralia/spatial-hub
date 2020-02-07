@@ -98,6 +98,13 @@ spApp.config(['$httpProvider', function ($httpProvider) {
             },
 
             'responseError': function (rejection, a, c) {
+                // For auth redirect issue, retry once when status == -1 and withCredentials == true
+                if (rejection.status == -1 && rejection.config.withCredentials && rejection.config.retried === undefined) {
+                    var $http = angular.element(document.querySelector('sp-app')).injector().get('$http');
+                    rejection.config.retried = true;
+                    return $http(rejection.config);
+                }
+
                 var httpService = angular.element(document.querySelector('sp-app')).injector().get('HttpService');
                 if (httpService) httpService.pop(rejection, 'responseError');
 

@@ -7,7 +7,7 @@
 </div>
 
 <div class="modal-body">
-    <div style="overflow:scroll" ng-if="workflow.length == 0">
+    <div style="overflow:auto" ng-if="workflow.length == 0">
         <input type="text" width="150px"
                placeholder="Filter workflows"
                ng-model="workflowFilter">
@@ -59,17 +59,17 @@
             </tbody>
         </table>
     </div>
-    <div style="overflow:scroll" ng-if="workflow.length > 0 && playStep < 0">
+    <div style="overflow:auto" ng-if="workflow.length > 0 && playStep < 0">
 
         <workflow-item workflow="workflowProperties"></workflow-item>
 
-        <div style="overflow:scroll" ng-if="workflow.length > 0 && playStep >= 0">
-        <uib-progressbar class="progress-striped"
-                         ng-class="{ active: true }" value="100" type='info' title="Running..."><span
-        >Running...</span>
-        </uib-progressbar>
+        <div style="overflow:auto" ng-if="workflow.length > 0 && playStep >= 0">
+            <uib-progressbar class="progress-striped"
+                             ng-class="{ active: true }" value="100" type='info' title="Running..."><span
+            >Running...</span>
+            </uib-progressbar>
+        </div>
     </div>
-</div>
 
 <div class="modal-footer">
     <button class="btn btn-default" type="button" ng-click="$close()" ng-show="playStep >= 0">Cancel</button>

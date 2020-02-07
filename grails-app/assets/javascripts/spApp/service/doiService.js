@@ -141,10 +141,11 @@
                 assembleDoiMetadata: function(species, area, workflowData) {
                     var deferred = $q.defer();
                     var doiApplicationData = {
-                        applicationName:config.applicationName || "CSDM",
-                        organisation:workflowData.userOrganisation,
-                        modeller:workflowData.userDisplayName,
+                        applicationName: config.applicationName || "CSDM",
+                        organisation: workflowData.userOrganisation,
+                        modeller: workflowData.userDisplayName,
                         workflowAnnotation: workflowData.workflowAnnotation,
+                        workflowUrl: workflowData.workflowUrl,
                         dataSetAnnotation: workflowData.dataSetAnnotation
                     };
 

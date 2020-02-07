@@ -42,7 +42,16 @@
                                     <div select-species selected-q="values[i]" unique-id="i" min="v.constraints.min"
                                          area-includes="v.constraints.areaIncludes"
                                          spatial-validity="v.constraints.spatialValidity"
-                                         species-option="v.constraints.speciesOption"></div>
+                                         species-option="v.constraints.speciesOption"
+                                         absent-option="v.constraints.absentOption"
+                                         can-add-species="v.constraints.canAddSpecies"
+                                         date-range-option="v.constraints.dateRangeOption"
+                                         lifeforms="v.constraints.lifeforms"
+                                         import-list="v.constraints.importList"
+                                         import-points="v.constraints.importPoints"
+                                         search-species="v.constraints.searchSpecies"
+                                         all-species="v.constraints.allSpecies">
+                                    </div>
                                 </div>
                                 <div ng-if="v.type == 'date'">
                                     <div select-date_range selected-date-range="values[i]" unique-id="i"></div>
@@ -104,7 +113,7 @@
                                     <label ng-if="v.constraints.header !== undefined">{{v.constraints.header}}</label>
                                 </div>
                                 <div ng-if="v.type == 'phylogeneticTree'">
-                                    <div style="height:300px;overflow:scroll;display:block"
+                                    <div style="height:300px;overflow:auto;display:block"
                                          select-phylo selected-phylo="values[i]"></div>
                                 </div>
                                 <div ng-if="v.type == 'text'">

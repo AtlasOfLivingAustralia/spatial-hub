@@ -8,14 +8,15 @@
      *   workflowItem contents for view, save
      */
     angular.module('workflow-item-directive', [])
-        .directive('workflowItem', [function () {
+        .directive('workflowItem', ['LayoutService', function (LayoutService) {
 
             return {
-                templateUrl: '/spApp/worflowItemCtrl.htm',
+                templateUrl: '/spApp/workflowItemCtrl.htm',
                 scope: {
                     _workflow: '=?workflow',
                 },
                 link: function (scope, element, attrs) {
+                    console.log(scope._workflow)
 
                     LayoutService.addToSave(scope);
 
@@ -24,6 +25,16 @@
                             if (scope._workflow[i] === item) {
                                 scope._workflow.splice(i, 1)
                             }
+                        }
+                    }
+
+                    scope.toDate = function (str) {
+                        if (str == null) {
+                            return ''
+                        } else {
+                            var date = new Date(str)
+
+                            return date
                         }
                     }
                 }

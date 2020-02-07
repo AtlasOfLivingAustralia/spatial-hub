@@ -1,10 +1,10 @@
-<div ng-if="!workflowId">
-    <label><span>Name</span></label>
-    <input type="text" ng-model="workflowProperties.name" style="margin-left:20px;width:50%">
-    <input type="checkbox" ng-model="workflowProperties.private" style="margin-left:40px"><span
+<div ng-if="!_workflow.id">
+    <label><span>Workflow Name</span></label>
+    <input type="text" ng-model="_workflow.name" style="margin-left:20px;width:50%">
+    <input type="checkbox" ng-model="_workflow.private" style="margin-left:40px"><span
         style="margin-left:10px">is Private</span>
 </div>
-<div ng-if="!!workflowId">
+<div ng-if="!!_workflow.id">
     <label style="width:150px"><span>Id</span></label><span class="small">{{_workflow.id}}</span>
     <br/>
     <label style="width:150px"><span>Name</span></label><span class="small">{{_workflow.name}}</span>

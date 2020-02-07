@@ -25,7 +25,6 @@
                         _absentOption: '=?absentOption',
                         _canAddSpecies: '=?canAddSpecies',
                         _dateRangeOption: '=?dateRangeOption',
-                        _listsEnabled: '=?listsEnabled',
                         _lifeforms: '=?lifeforms',
                         _importList: '=?importList',
                         _importPoints: '=?importPoints',
@@ -35,6 +34,23 @@
                     },
                     templateUrl: '/spApp/selectSpeciesCtrl.htm',
                     link: function (scope, element, attrs) {
+                        // override settings with _inputData
+                        if (scope._inputData !== undefined) {
+                            if (scope._inputData.includeLayers !== undefined) scope._includeLayers = scope._inputData.includeLayers;
+                            if (scope._inputData.min !== undefined) scope._min = scope._inputData.min;
+                            if (scope._inputData.areaIncludes !== undefined) scope._areaIncludes = scope._inputData.areaIncludes;
+                            if (scope._inputData.spatialValidity !== undefined) scope._spatialValidity = scope._inputData.spatialValidity;
+                            if (scope._inputData.speciesOption !== undefined) scope._speciesOption = scope._inputData.speciesOption;
+
+                            if (scope._inputData.absentOption !== undefined) scope._absentOption = scope._inputData.absentOption;
+                            if (scope._inputData.canAddSpecies !== undefined) scope._canAddSpecies = scope._inputData.canAddSpecies;
+                            if (scope._inputData.dateRangeOption !== undefined) scope._dateRangeOption = scope._inputData.dateRangeOption;
+                            if (scope._inputData.lifeforms !== undefined) scope._lifeforms = scope._inputData.lifeforms;
+                            if (scope._inputData.importList !== undefined) scope._importList = scope._inputData.importList;
+                            if (scope._inputData.importPoints !== undefined) scope._importPoints = scope._inputData.importPoints;
+                            if (scope._inputData.searchSpecies !== undefined) scope._searchSpecies = scope._inputData.searchSpecies;
+                            if (scope._inputData.allSpecies !== undefined) scope._allSpecies = scope._inputData.allSpecies;
+                        }
 
                         //defaults
                         if (scope._min === undefined) scope._min = 1;
@@ -49,10 +65,9 @@
                             //when speciesOption is defined do not replace selection
                             scope._speciesOptionMandatory = true;
                         }
-                        if (scope._absentOption === undefined) scope._absentOption = true;
+                        if (scope._absentOption === undefined) scope._absentOption = false;
                         if (scope._canAddSpecies === undefined) scope._canAddSpecies = true;
 
-                        if (scope._listsEnabled === undefined) scope._listsEnabled = true
                         if (scope._lifeforms === undefined) scope._lifeforms = true
                         if (scope._importList === undefined) scope._importList = true
                         if (scope._importPoints === undefined) scope._importPoints = true
@@ -70,11 +85,8 @@
 
                         scope.includeAbsences = false;
 
-                        if (scope._inputData !== undefined && scope._inputData.speciesOption !== undefined) {
-                            scope.speciesOption = scope._inputData.speciesOption
-                        } else {
-                            scope.speciesOption = scope._speciesOption;
-                        }
+                        scope.speciesOption = scope._speciesOption;
+
                         scope.multiselect = false;
                         if (scope._selectedQ === undefined) {
                             scope._selectedQ = {q: [], bs: null, ws: null, name: ''}
@@ -93,11 +105,6 @@
                         LayoutService.addToSave(scope);
 
                         scope.speciesLayers = scope._includeLayers ? MapService.speciesLayers() : [];
-                        if (!scope._speciesOptionMandatory &&
-                            (scope._inputData === undefined || scope._inputData.speciesOption === undefined) &&
-                            scope.speciesOption === 'searchSpecies' && scope.speciesLayers.length > 0) {
-                            scope.speciesOption = scope.speciesLayers[0].uid;
-                        }
 
                         scope.openSandbox = function () {
                             $timeout(function () {
@@ -350,8 +357,7 @@
                                 scope.changeOption(scope._selectedQ.selectOption)
                             } else if (scope._min === 0) {
                                 scope.speciesOption = 'none'
-                            } else if (!scope._speciesOptionMandatory &&
-                                (scope._inputData === undefined || scope._inputData.speciesOption === undefined) &&
+                            } else if (!scope._speciesOptionMandatory && scope.speciesOption === 'searchSpecies' &&
                                 scope.speciesLayers.length > 0) {
                                 scope.changeOption(scope.speciesLayers[0].uid)
                             } else if (scope._min > 0) {

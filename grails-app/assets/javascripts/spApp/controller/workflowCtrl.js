@@ -44,7 +44,7 @@
                 $scope.loadWorkflow = function (id) {
                     if (id === undefined) {
                         // load current workflow
-                        $scope.workflow = []
+                        while ($scope.workflow.length > 0) $scope.workflow.pop();
                         $.map(LoggerService.localHistory(), function (v) {
                             if (v.category1 != 'Create' ||
                                 v.category2 == 'scatterplotCreateInOut' ||
@@ -55,37 +55,25 @@
                             }
                         })
 
-                        $scope.initDescriptions()
+                        WorkflowService.initDescriptions($scope.workflowProperties.workflow)
 
                         $scope.workflowProperties.name = $i18n(459, "My workflow") + " " + new Date().toLocaleString()
                     } else {
                         WorkflowService.get(id).then(function (response) {
-                            $scope.workflow = JSON.parse(response.data.metadata)
+                            while ($scope.workflow.length > 0) $scope.workflow.pop();
+                            var items = JSON.parse(response.data.metadata)
+                            $.map(items, function (i) {
+                                $scope.workflow.push(i)
+                            })
                             $scope.workflowProperties.name = response.data.name
                             $scope.workflowId = id
                             $scope.workflowProperties.id = id
                             $scope.workflowProperties.created = response.data.created
                             $scope.workflowProperties.private = response.data.isPrivate
 
-                            $scope.initDescriptions()
+                            WorkflowService.initDescriptions($scope.workflowProperties.workflow)
                         })
                     }
-                }
-
-                $scope.initDescriptions = function () {
-                    $.map($scope.workflow, function (v) {
-                        if (typeof(v.data) == 'string') {
-                            v.data = JSON.parse(v.data)
-                        }
-
-                        v.raw = JSON.stringify(v.data)
-
-                        if ($.isArray(v.data.data)) {
-                            $.map(v.data.data, function (subv) {
-                                subv.raw = JSON.stringify(subv.facet)
-                            })
-                        }
-                    })
                 }
 
                 $scope.deleteWorkflow = function (id) {

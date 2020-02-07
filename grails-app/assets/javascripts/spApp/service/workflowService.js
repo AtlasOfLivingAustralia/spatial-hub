@@ -24,11 +24,21 @@
             };
 
             var thiz = {
-                save: function (name, isPublic, data) {
+                /**
+                 *
+                 * @param name
+                 * @param isPublic
+                 * @param data
+                 * @param mintDoi make the saved workflow readonly
+                 * @returns {HttpPromise}
+                 */
+                save: function (name, isPublic, data, mintDoi) {
+                    if (mintDoi === undefined) mintDoi = false;
                     return $http.post($SH.layersServiceUrl + "/workflow/save", {
                         description: name,
                         isPublic: isPublic,
-                        metadata: data
+                        metadata: data,
+                        doi: mintDoi
                     }, _httpDescription("save"))
                 },
 
@@ -42,6 +52,51 @@
 
                 delete: function (id) {
                     return $http.get($SH.layersServiceUrl + "/workflow/delete/" + id, _httpDescription("delete"))
+                },
+
+                cleanup: function (workflow) {
+                    // cleanup unnecessary workflow items
+                    $.map(workflow, function (i) {
+                        if (i.raw) delete i.raw
+                        if ($.isArray(i.data.data)) {
+                            $.map(i.data.data, function (subv) {
+                                if (subv.raw) delete subv.raw
+                            })
+                        }
+                    })
+                },
+
+                // all text fields are mandatory
+                isValid: function (workflowProperties) {
+                    if (!workflowProperties.name) return false;
+
+                    var valid = true;
+                    $.map(workflowProperties.workflow, function (i) {
+                        if (i.description === undefined || i.description.trim().length == 0) valid = false
+                        if ($.isArray(i.data.data)) {
+                            $.map(i.data.data, function (subv) {
+                                if (subv.description === undefined || subv.description.trim().length == 0) valid = false
+                            })
+                        }
+                    })
+
+                    return valid;
+                },
+
+                initDescriptions: function (workflow) {
+                    $.map(workflow, function (v) {
+                        if (typeof (v.data) == 'string') {
+                            v.data = JSON.parse(v.data)
+                        }
+
+                        v.raw = JSON.stringify(v.data)
+
+                        if ($.isArray(v.data.data)) {
+                            $.map(v.data.data, function (subv) {
+                                subv.raw = JSON.stringify(subv.facet)
+                            })
+                        }
+                    })
                 }
             }
 

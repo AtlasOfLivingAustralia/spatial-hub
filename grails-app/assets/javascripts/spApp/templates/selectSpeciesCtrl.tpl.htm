@@ -113,9 +113,9 @@
     </div>
 </div>
 
-<div ng-show="listsEnabled()" class="radio"><label>
+<div ng-show="listsEnabled() && _importList" class="radio"><label>
     <input type="radio" ng-model="speciesOption" value="speciesList" ng-change="changeOption('speciesList')"
-           ng-show="!_inputData.importPoints && _importLists" name="{{_uniqueId}}"><span
+           name="{{_uniqueId}}"><span
         i18n="251">Use species list</span></label>
 
     <div ng-show="speciesOption == 'speciesList'" style="margin-left:15px">
@@ -124,9 +124,8 @@
     </div>
 </div>
 
-<div ng-show="listsEnabled()" class="radio"><label>
+<div ng-show="listsEnabled() && _importList" class="radio"><label>
     <input i18n="248" type="radio" ng-model="speciesOption" value="importList"
-           ng-show="!_inputData.importPoints && _importLists"
            ng-change="changeOption('importList')" ng-disabled="isNotLoggedIn" name="{{_uniqueId}}">Create new species
     list</label>
     <div ng-show="speciesOption == 'importList'" style="margin-left:15px">
@@ -139,7 +138,7 @@
     </div>
 </div>
 
-<div ng-show="!_inputData.importList && sandboxEnabled() && _importPoints" class="radio"><label>
+<div ng-show="sandboxEnabled() && _importPoints" class="radio"><label>
     <input type="radio" ng-model="speciesOption" value="sandboxPoints"
            ng-change="changeOption('sandboxPoints')" ng-disabled="isNotLoggedIn" name="{{_uniqueId}}"><span
         i18n="254">Use imported points</span>
@@ -151,7 +150,7 @@
     </div>
 </div>
 
-<div ng-show="!_inputData.importList && sandboxEnabled() && _importPoints" class="radio"><label>
+<div ng-show="sandboxEnabled() && _importPoints" class="radio"><label>
     <input type="radio" ng-model="speciesOption" value="importPoints"
            ng-change="changeOption('importPoints')"
            ng-disabled="isNotLoggedIn" name="{{_uniqueId}}"><span i18n="252">Import points</span></label>

@@ -130,7 +130,14 @@
         "open": "createSpeciesList",
         "params": {
           "speciesOption": "speciesList",
-          "importList": true
+          "importList": true,
+          "importPoints": false,
+          "canAddSpecies": false,
+          "absentOption": false,
+          "dateRangeOption": false,
+          "lifeforms": false,
+          "allSpecies": false,
+          "searchSpecies": false
         }
       },
       {
@@ -168,6 +175,10 @@
       {
         "name": "Areas",
         "open": "ToolExportAreaService"
+      },
+      {
+        "name": "DOI",
+        "open": "ToolExportDoiService"
       },
       {
         "name": "Points to BCCVL",

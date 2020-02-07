@@ -165,6 +165,15 @@
                             } else if (value.type === 'species') {
                                 if (value.constraints['areaIncludes'] === undefined) value.constraints['areaIncludes'] = false;
                                 if (value.constraints['spatialValidity'] === undefined) value.constraints['spatialValidity'] = true;
+                                if (value.constraints['absentOption'] === undefined) value.constraints['absentOption'] = false;
+                                if (value.constraints['canAddSpecies'] === undefined) value.constraints['canAddSpecies'] = false;
+                                if (value.constraints['dateRangeOption'] === undefined) value.constraints['dateRangeOption'] = true;
+                                if (value.constraints['lifeforms'] === undefined) value.constraints['lifeforms'] = true;
+                                if (value.constraints['importList'] === undefined) value.constraints['importList'] = true;
+                                if (value.constraints['importPoints'] === undefined) value.constraints['importPoints'] = true;
+                                if (value.constraints['searchSpecies'] === undefined) value.constraints['searchSpecies'] = true;
+                                if (value.constraints['allSpecies'] === undefined) value.constraints['allSpecies'] = true;
+
 
                                 if (value.constraints['default'] !== undefined) v = value.constraints['default'];
                                 else if (value.constraints['speciesOption'] === 'allSpecies') {
@@ -428,16 +437,8 @@
                                         }
                                     }
                                 } else if ($scope.values[k].q !== undefined) {
-                                    inputs[kvalue] = {
-                                        q: $scope.values[k].q,
-                                        ws: $scope.values[k].ws,
-                                        bs: $scope.values[k].bs,
-                                        name: $scope.values[k].name
-                                    };
-                                    // additional species related values
-                                    if ($scope.values[k].species_list) {
-                                        inputs[kvalue].species_list = $scope.values[k].species_list;
-                                    }
+                                    inputs[kvalue] = $.extend({}, $scope.values[k]);
+
                                     // additional date range fq
                                     if ($scope.injectDateRange) {
                                         inputs[kvalue].q = inputs[kvalue].q.concat($scope.values[k + 1].fq)
