@@ -229,8 +229,8 @@
                             var ly = scope._selected.layer.leaflet.layerOptions.layers[i];
                             if (s.fq.length) {
                                 ly.layerParams.fq = s.fq
-                            } else {
-                                ly.layerParams.fq = undefined
+                            } else if (ly.layerParams.fq) {
+                                delete ly.layerParams.fq
                             }
                         }
 

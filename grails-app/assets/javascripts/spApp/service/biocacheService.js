@@ -509,8 +509,10 @@
                     var q = '';
                     if (list instanceof Array) {
                         $.each(list, function (index, item) {
-                            if (q.length > 0) q += '&fq=';
-                            q += encodeURIComponent(item)
+                            if (item !== undefined && item !== null) {
+                                if (q.length > 0) q += '&fq=';
+                                q += encodeURIComponent(item)
+                            }
                         })
                     } else {
                         q = list
