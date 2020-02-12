@@ -42,7 +42,7 @@
                         </a></th>
                 </tr>
                 </thead>
-                <tbody style="height:300px;overflow:scroll">
+                <tbody style="height:300px;overflow:auto">
                 <tr ng-repeat="item in items | orderBy:sortType:sortReverse | filter:searchLists">
                     <td style="width:10px" class="td-vertical-align text-center"><input type="checkbox"
                                                                                         ng-model="item.selected"

@@ -1,0 +1,60 @@
+<div ng-if="!_workflow.id">
+    <label><span>Workflow Name</span></label>
+    <input type="text" ng-model="_workflow.name" style="margin-left:20px;width:50%">
+    <input type="checkbox" ng-model="_workflow.private" style="margin-left:40px"><span
+        style="margin-left:10px">is Private</span>
+</div>
+<div ng-if="!!_workflow.id">
+    <label style="width:150px"><span>Id</span></label><span class="small">{{_workflow.id}}</span>
+    <br/>
+    <label style="width:150px"><span>Name</span></label><span class="small">{{_workflow.name}}</span>
+    <br/>
+    <label style="width:150px"><span>Created</span></label><span class="small">{{ (toDate(_workflow.created) | date : 'yyyy-MM-ddThh:mm:ss' : 'UTC') + (toDate(_workflow.created)?'Z':'')}}</span>
+    <br/>
+    <label style="width:150px"><span>Is Private</span></label><input style="width:50%" type="checkbox"
+                                                                     ng-model="workflowProperties.private"
+                                                                     disabled>
+</div>
+<table style="margin-top:30px" class="table table-striped table-condensed">
+    <thead>
+    <th></th>
+    <th>Type</th>
+    <th>Action</th>
+    <th>Annotation</th>
+    <th></th>
+    <th></th>
+    <th></th>
+    </thead>
+    <tbody>
+    <tr ng-repeat="item in _workflow.workflow">
+        <td style="vertical-align: top">{{$index + 1}}</td>
+        <td style="vertical-align: top">{{item.category1}}</td>
+        <td style="vertical-align: top">{{item.category2}}</td>
+        <td>
+                    <textarea style="width:400px;height:50px" ng-model="item.description"
+                              placeholder="{{'Add annotation. Parameters: ' + item.raw}}"></textarea>
+            <div ng-if="hasSubitems(item)">
+                <table class="table table-condensed">
+                    <thead>
+                    <th ng-show="!!workflowId">Tick to Skip</th>
+                    <th>Annotation</th>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="subitem in item.data.data">
+                        <td ng-show="!!workflowId"><input type="checkbox" ng-model="subitem.ignore"></td>
+                        <td><textarea style="width:400px;height:25px" ng-model="subitem.description"
+                                      placeholder="{{'Add annotation. Parameters: ' + subitem.raw}}"></textarea>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </td>
+        <td style="vertical-align: top">
+            <!--<button class="btn btn-default btn-xs" ng-if="isTool(item)" ng-click="edit(item)">edit</button>-->
+        </td>
+        <td style="vertical-align: top"><i class="glyphicon glyphicon-trash" ng-click="delete(item)"></i></td>
+    </tr>
+    </tbody>
+</table>
+</div>

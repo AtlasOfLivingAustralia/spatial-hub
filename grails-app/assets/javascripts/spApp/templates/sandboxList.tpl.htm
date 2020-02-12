@@ -38,7 +38,7 @@
                     </a></th>
             </tr>
             </thead>
-            <tbody style="height:300px;overflow:scroll">
+            <tbody style="height:300px;overflow:auto">
             <tr ng-repeat="item in sandboxItems | orderBy:sortType:sortReverse | filter:searchSandbox">
                 <td style="width:10px" class="td-vertical-align text-center"><input type="checkbox"
                                                                                     ng-model="item.selected"

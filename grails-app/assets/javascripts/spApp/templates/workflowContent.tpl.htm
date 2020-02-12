@@ -7,7 +7,7 @@
 </div>
 
 <div class="modal-body">
-    <div style="overflow:scroll" ng-if="workflow.length == 0">
+    <div style="overflow:auto" ng-if="workflow.length == 0">
         <input type="text" width="150px"
                placeholder="Filter workflows"
                ng-model="workflowFilter">
@@ -59,75 +59,17 @@
             </tbody>
         </table>
     </div>
-    <div style="overflow:scroll" ng-if="workflow.length > 0 && playStep < 0">
+    <div style="overflow:auto" ng-if="workflow.length > 0 && playStep < 0">
 
-        <div ng-if="!workflowId">
-            <label><span>Name</span></label>
-            <input type="text" ng-model="workflowProperties.name" style="margin-left:20px;width:50%">
-            <input type="checkbox" ng-model="workflowProperties.private" style="margin-left:40px"><span
-                style="margin-left:10px">is Private</span>
+        <workflow-item workflow="workflowProperties"></workflow-item>
+
+        <div style="overflow:auto" ng-if="workflow.length > 0 && playStep >= 0">
+            <uib-progressbar class="progress-striped"
+                             ng-class="{ active: true }" value="100" type='info' title="Running..."><span
+            >Running...</span>
+            </uib-progressbar>
         </div>
-        <div ng-if="!!workflowId">
-            <label style="width:150px"><span>Id</span></label><span class="small">{{workflowProperties.id}}</span>
-            <br/>
-            <label style="width:150px"><span>Name</span></label><span class="small">{{workflowProperties.name}}</span>
-            <br/>
-            <label style="width:150px"><span>Created</span></label><span class="small">{{ (toDate(workflowProperties.created) | date : 'yyyy-MM-ddThh:mm:ss' : 'UTC') + (toDate(workflowProperties.created)?'Z':'')}}</span>
-            <br/>
-            <label style="width:150px"><span>Is Private</span></label><input style="width:50%" type="checkbox"
-                                                                             ng-model="workflowProperties.private"
-                                                                             disabled>
-        </div>
-        <table style="margin-top:30px" class="table table-striped table-condensed">
-            <thead>
-            <th></th>
-            <th>Type</th>
-            <th>Action</th>
-            <th>Annotation</th>
-            <th></th>
-            <th></th>
-            <th></th>
-            </thead>
-            <tbody>
-            <tr ng-repeat="item in workflow">
-                <td style="vertical-align: top">{{$index + 1}}</td>
-                <td style="vertical-align: top">{{item.category1}}</td>
-                <td style="vertical-align: top">{{item.category2}}</td>
-                <td>
-                    <textarea style="width:400px;height:50px" ng-model="item.description"
-                              placeholder="{{'Add annotation. Parameters: ' + item.raw}}"></textarea>
-                    <div ng-if="hasSubitems(item)">
-                        <table class="table table-condensed">
-                            <thead>
-                            <th ng-show="!!workflowId">Tick to Skip</th>
-                            <th>Annotation</th>
-                            </thead>
-                            <tbody>
-                            <tr ng-repeat="subitem in item.data.data">
-                                <td ng-show="!!workflowId"><input type="checkbox" ng-model="subitem.ignore"></td>
-                                <td><textarea style="width:400px;height:25px" ng-model="subitem.description"
-                                              placeholder="{{'Add annotation. Parameters: ' + subitem.raw}}"></textarea>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </td>
-                <td style="vertical-align: top">
-                    <!--<button class="btn btn-default btn-xs" ng-if="isTool(item)" ng-click="edit(item)">edit</button>-->
-                </td>
-                <td style="vertical-align: top"><i class="glyphicon glyphicon-trash" ng-click="delete(item)"></i></td>
-            </tr>
-            </tbody>
-        </table>
     </div>
-    <div style="overflow:scroll" ng-if="workflow.length > 0 && playStep >= 0">
-        <uib-progressbar class="progress-striped"
-                         ng-class="{ active: true }" value="100" type='info' title="Running..."><span
-        >Running...</span>
-        </uib-progressbar>
-    </div>
-</div>
 
 <div class="modal-footer">
     <button class="btn btn-default" type="button" ng-click="$close()" ng-show="playStep >= 0">Cancel</button>

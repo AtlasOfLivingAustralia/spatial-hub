@@ -4,7 +4,7 @@
 </div>
 
 <div class="modal-body">
-    <div style="overflow:scroll">
+    <div style="overflow:auto">
         <select ng-model="category">
             <option ng-repeat="x in categories" value="{{x.value}}">
                 {{x.name}}
@@ -37,7 +37,7 @@
                 <th style="width:10px"></th>
             </tr>
             </thead>
-            <tbody style="overflow:scroll">
+            <tbody style="overflow:auto">
             <tr ng-repeat="x in data | filter:filter | filter:(category == selectedFacetsValue ? {selected: true} : {class: category}) | orderBy:sortType:sortReverse ">
                 <td><input type="checkbox" ng-model="x.selected" ng-change="selectionChanged(x)"></td>
                 <td>{{x.class}}</td>

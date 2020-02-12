@@ -7,7 +7,8 @@
     <div class="form-group">
         <label for="user" class="col-md-4 control-label">User</label>
         <div class="col-md-8">
-            <input type="text" class="form-control" readonly="readonly" id="user" ng-model="value.userDisplayName">
+            <input type="text" class="form-control input-sm" readonly="readonly" id="user"
+                   ng-model="value.userDisplayName">
         </div>
     </div>
     <div class="form-group">
@@ -23,9 +24,9 @@
         </div>
     </div>
     <div class="form-group">
-        <label for="organisation" class="col-md-4 control-label">Workflow annotation</label>
-        <div class="col-md-8">
-            <textarea id="workflowAnnotation" class="form-control" ng-model="value.workflowAnnotation" rows="20"></textarea>
+        <label for="workflowItem" class="col-md-4 control-label">Workflow annotation</label>
+        <div class="col-md-12 well">
+            <div workflow-item workflow="value.workflowAnnotation"></div>
         </div>
     </div>
 

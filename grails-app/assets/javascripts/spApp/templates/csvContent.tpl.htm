@@ -9,9 +9,9 @@
         <br/>
         <br/>
         <span i18n="69" ng-if="truncated">Partial results</span>
-        <div style="height:300px;overflow:scroll">
+        <div style="height:300px;overflow:auto">
             <table class="table table-striped csv-table">
-                <tbody style="height:300px;overflow:scroll;display:block">
+                <tbody style="height:300px;overflow:auto;display:block">
                 <tr ng-repeat="x in summary track by $index">
                     <button i18n="70" class="btn btn-xs" ng-if="mappable" ng-click="addToMap(x)">
                         Add to map

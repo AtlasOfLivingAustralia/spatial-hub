@@ -27,7 +27,7 @@ div#statusInfo {
 }
 
 .csv-table > tbody > tr > td {
-    overflow:scroll;
+    overflow: auto;
     white-space: nowrap;
 }
 
@@ -47,7 +47,7 @@ div#statusInfo {
 
 .collapse.in, .collapsing, .header-collapse {
     height: 340px;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .list-group-item:hover {
@@ -887,9 +887,9 @@ body {
 }
 
 .fixed-head > tbody {
-    display:block;
+    display: block;
     table-layout: fixed;
-    overflow: scroll;
+    overflow: auto;
 }
 
 .fixed-head > tbody > tr {
@@ -1003,7 +1003,7 @@ body {
 
 .modeless > .modal-dialog > .modal-content > .modal-body {
     height: 500px;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .modal.in .modal-dialog {
@@ -1049,7 +1049,7 @@ img.map-icon {
 .logText {
     height: 300px;
     width: 100%;
-    overflow: scroll;
+    overflow: auto;
     display: block;
     font-size: 12px;
 }
