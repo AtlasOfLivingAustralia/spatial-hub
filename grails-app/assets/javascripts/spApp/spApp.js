@@ -176,12 +176,11 @@ function fetchData() {
         });
     }
 
-    promises.push(  $http.get($SH.layersServiceUrl + "/fields/search?q=", _httpDescription('getLayers')).then(function (data) {
+    promises.push($http.get($SH.layersServiceUrl + "/fields/search?q=", _httpDescription('getLayers')).then(function (data) {
         $.map(data.data, function (v) {
             gLayers.push(v);
         })
     }))
-
 
     promises.push($http.get($SH.baseUrl + "/portal/i18n?lang=" + $SH.i18n, _httpDescription('geti18n')).then(function (result) {
         for (k in result.data) {
@@ -228,10 +227,6 @@ function fetchData() {
             return $q.when(cap)
         });
     }));
-
-
-
-
 
     // add to promises list if waiting is required before making the page visible
     return $q.all(promises).then(function (results) {
