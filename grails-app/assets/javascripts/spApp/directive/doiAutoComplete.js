@@ -35,10 +35,13 @@
                                         iElement.removeClass(loadingClass);
                                     }
                                     response($.map(data.searchResults, function (item, idx) {
-                                        return {
-                                            label: item.title,
-                                            info: DoiService.buildInfoString(item),
-                                            value: item
+                                        // Only return results we can usefully display.
+                                        if (DoiService.getQueryUrl(item)) {
+                                            return {
+                                                label: item.title,
+                                                info: DoiService.buildInfoString(item),
+                                                value: item
+                                            }
                                         }
                                     }));
                                 },

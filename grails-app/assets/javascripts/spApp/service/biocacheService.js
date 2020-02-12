@@ -970,6 +970,34 @@
                         }
                         return {sum: sum, fq: sel}
                     }
+                },
+                downloadAsync:function(species, area, doiApplicationData) {
+                    var params = {
+                        hubName:"CSDM",
+                        file:species.name,
+                        mintDoi:true,
+                        reasonTypeId:13,
+                        fileType:'csv',
+                        qa:'none',
+                        sourceTypeId:10002,
+                        email: $SH.userEmail,
+                        emailTemplate: 'csdm'
+                    };
+
+                    // This should be a POST but the data binding in biocache-service isn't setup to bind from the POST body.
+                    for (var key in doiApplicationData) {
+                        if (doiApplicationData.hasOwnProperty(key)) {
+                            params["doiMetadata["+key+"]"] = doiApplicationData[key];
+                        }
+                    }
+
+                    return thiz.newLayer(species, area, species.name).then(function (query) {
+                        var downloadUrl = $SH.biocacheServiceUrl + '/occurrences/offline/download';
+                        params.q=query.qid;
+                        params.searchUrl = $SH.biocacheServiceUrl + '/occurrences/search?q='+query.qid;
+                        return $http.get(downloadUrl, _httpDescription("offlineDownload", {params:params}));
+                    });
+
                 }
             };
             return thiz;

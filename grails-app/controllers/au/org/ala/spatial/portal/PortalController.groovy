@@ -155,6 +155,7 @@ class PortalController {
                     render(view: 'index',
                             model: [config     : config,
                                     userId     : userId,
+                                    userDetails: authService.userDetails(),
                                     sessionId  : sessionService.newId(userId),
                                     messagesAge: messageService.messagesAge,
                                     hub        : hub])
