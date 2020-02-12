@@ -92,7 +92,7 @@
                                 BiocacheService.speciesListUrl(query);
 
                             future.then(function (url) {
-                                Util.download(url);
+                                Util.download(url, 'speciesList.csv');
                             })
                         }
                     },

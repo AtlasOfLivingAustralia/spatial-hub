@@ -35,9 +35,9 @@
                         return layoutStack;
                     },
 
-                    enable: function (type) {
+                    enable: function (type, data) {
                         if (type === 'legend') {
-                            showLegend[0] = true;
+                            showLegend[0] = data === undefined ? false : data;
                             showOptions[0] = false;
                         } else if (type === 'options') {
                             showLegend[0] = false;
@@ -378,7 +378,7 @@
                 });
 
                 $rootScope.$on('showLegend', function (event, data) {
-                    _this.enable('legend');
+                    _this.enable('legend', data);
                 });
 
                 return _this;
