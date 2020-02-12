@@ -289,6 +289,14 @@
                         s.type = value;
                         scope.onStop()
                     }
+
+                    /* init */
+                    if (scope._selected.layer.playback) {
+                        if (scope._selected.layer.playback.play && !scope._selected.layer.playback.pause) {
+                            scope.clearSteps();
+                            nextStep()
+                        }
+                    }
                 }
             };
         }])

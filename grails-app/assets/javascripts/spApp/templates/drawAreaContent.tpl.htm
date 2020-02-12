@@ -71,6 +71,11 @@
                 <span i18n="75">Area name&nbsp;</span><input ng-model="areaName"></input>
                 <br/>
                 <br/>
+                <div ng-show="type == 'drawPolyline'">
+                    <span>Radius (km)&nbsp;</span><input ng-model="radiusKm" ng-change="lineWithBuffer()"></input>
+                    <br/>
+                    <br/>
+                </div>
                 <span i18n="76">WKT</span>
                 <br/>
                 <textarea ng-model="selectedArea.wkt" style="width:350px;height:200px;margin-left:10px"

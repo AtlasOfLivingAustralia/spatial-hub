@@ -135,14 +135,20 @@ class HubWebService {
 
                     if (nameValues) {
                         nameValues.each { k, v ->
-                            if (v instanceof List) {
-                                v.each { i ->
-                                    ((PostMethod) call).addParameter(String.valueOf(k), String.valueOf(i))
+                            String key = String.valueOf(k)
+                            String value = String.valueOf(v)
+                            if (key != null && value != null) {
+                                if (v instanceof List) {
+                                    v.each { i ->
+                                        String item = String.valueOf(i)
+                                        if (item) {
+                                            ((PostMethod) call).addParameter(key, item)
+                                        }
+                                    }
+                                } else {
+                                    ((PostMethod) call).addParameter(key, value)
                                 }
-                            } else {
-                                ((PostMethod) call).addParameter(String.valueOf(k), String.valueOf(v))
                             }
-
                         }
                     }
                 }

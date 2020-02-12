@@ -1058,6 +1058,14 @@ ul.errors {
     padding-top: 150px
 }
 
+#doiAutoComplete {
+    width: 400px;
+}
+
+.popover {
+    max-width: none;
+}
+
 .ui-autocomplete .ui-menu-item-wrapper {
     display: block;
 }
@@ -1065,4 +1073,28 @@ ul.errors {
 .save-load {
     color: white;
     padding-right: 20px;
+}
+
+.inactive .ui-widget-header {
+    background-color: #999999;
+    background-image: none;
+}
+
+.list-multiple {
+    display: inline-flex;
+    width: 200px;
+    padding: 5px;
+}
+
+
+::-webkit-input-placeholder {
+    color: #aaa;
+}
+
+:-ms-input-placeholder {
+    color: #aaa;
+}
+
+::placeholder {
+    color: #aaa;
 }

@@ -8,7 +8,7 @@
         <div class="col-md-12">
             <form class="form-horizontal" ng-init="stepCount = []">
 
-                <div ng-show="stepView && stage == 'input'">
+                <div ng-show="stepView && (stage == 'input' || stage == 'edit')">
                     <div id="tool-items" ng-repeat="(key, sv) in stepView" ng-init="idx = $index"
                          class="panel panel-default">
                         <div ng-repeat="i in sv.inputArr"
@@ -97,9 +97,10 @@
                                 <div ng-if="v.type == 'list' && v.constraints.selection != 'single'">
                                     <label ng-if="sv.name !== undefined && sv.name !== v.description">{{v.description}}</label>
                                     <br ng-if="sv.name !== undefined && sv.name !== v.description"/>
-                                    <select ng-model="values[i]" multiple ng-init="values[i] = values[i]"
-                                            ng-options="item.value as item.label for item in v.constraints._list">
-                                    </select>
+                                    <div class='list-multiple' ng-repeat="item in v.constraints._list">
+                                        <input class="list-multiple-checkbox" type='checkbox' value="item.value"
+                                               ng-model="item.selected"><label class="list-multiple-label">{{item.label}}</label>
+                                    </div>
                                     <label ng-if="v.constraints.header !== undefined">{{v.constraints.header}}</label>
                                 </div>
                                 <div ng-if="v.type == 'phylogeneticTree'">
@@ -156,7 +157,7 @@
 <div class="modal-footer">
     <button i18n="45" class="btn btn-default" type="button" ng-click="close()">Cancel</button>
     <button i18n="39" class="btn btn-primary" type="button" ng-click="finish()" ng-hide="finished"
-            ng-disabled="isDisabled() || stage != 'input'">Next &gt;
+            ng-disabled="isDisabled() || (stage != 'input' && stage != 'edit')">Next &gt;
     </button>
 
     <a download ng-href="{{downloadUrl}}" style="float:left" ng-show="finished && downloadUrl">

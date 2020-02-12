@@ -8,8 +8,8 @@
      *    Species selection control
      */
     angular.module('select-species-directive', ['map-service', 'lists-service'])
-        .directive('selectSpecies', ['MapService', 'ListsService', '$timeout', 'LayoutService',
-            function (MapService, ListsService, $timeout, LayoutService) {
+        .directive('selectSpecies', ['MapService', 'ListsService', '$timeout', 'LayoutService', 'DoiService',
+            function (MapService, ListsService, $timeout, LayoutService, DoiService) {
 
                 return {
                     scope: {
@@ -75,6 +75,7 @@
 
                         scope.sandboxName = '';
                         scope.speciesListName = '';
+                        scope.doiEnabled = DoiService.isEnabled();
 
                         LayoutService.addToSave(scope);
 
@@ -137,6 +138,7 @@
                                     selection.wkt = undefined;
                                     selection.qid = undefined;
                                     selection.species_list = undefined;
+                                    selection.layerUid = undefined;
                                 } else {
                                     scope.clearQ();
                                 }
@@ -213,7 +215,9 @@
                                 selection.bs = query.bs;
                                 selection.ws = query.ws;
                                 if (selection.bs === undefined) scope._selectedQ.bs = $SH.biocacheServiceUrl;
-                                if (selection.ws === undefined) scope._selectedQ.ws = $SH.biocacheUrl
+                                if (selection.ws === undefined) scope._selectedQ.ws = $SH.biocacheUrl;
+
+                                selection.layerUid = query.layerUid;
 
                                 // update the total selection when this is a multiselect
                                 if (scope.multiselect) {
@@ -303,14 +307,19 @@
                                 species_list: layer.species_list,
                                 wkt: layer.wkt,
                                 qid: layer.qid,
-                                name: layer.name
+                                layerUid: layer.uid
                             };
 
                             if (query.bs === undefined) query.bs = $SH.biocacheServiceUrl;
                             if (query.ws === undefined) query.ws = $SH.biocacheUrl;
 
                             return query;
-                        }
+                        };
+
+                        scope.doiSelected = function(doi) {
+                            var queryParams = DoiService.buildQueryFromDoi(doi);
+                            scope.setQ(queryParams);
+                        };
 
                         scope.isLoggedIn = $SH.userId !== undefined && $SH.userId !== null && $SH.userId.length > 0;
                         scope.isNotLoggedIn = !scope.isLoggedIn;
@@ -325,6 +334,18 @@
                                 scope.speciesLayers.length > 0) {
                                 scope.changeOption(scope.speciesLayers[0].uid)
                             } else if (scope._min > 0) {
+                                // select existing layer if layerUid matches and return immediately
+                                if (scope._selectedQ.layerUid !== undefined) {
+                                    for (var i = 0; i < scope.speciesLayers.length; i++) {
+                                        // not all species layers must have a qid
+                                        if (scope.speciesLayers[i].uid === scope._selectedQ.layerUid) {
+                                            scope.speciesOption = scope.speciesLayers[i].uid;
+                                            scope.changeOption()
+                                            return;
+                                        }
+                                    }
+                                }
+
                                 // select existing layer if selectedQ matches
                                 if (scope._selectedQ.q.length > 0) {
                                     for (var i = 0; i < scope.speciesLayers.length; i++) {

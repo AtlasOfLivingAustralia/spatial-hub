@@ -21,7 +21,7 @@ def build(String baseDir) {
     println 'Copying files to grails-app/assets/node_modules'
     new ProcessBuilder().inheritIO().command('rm', '-r', 'grails-app/assets/node_modules').start().waitFor()
 
-    def files = ['angular/angular.min.js', 'angular-animate/angular-animate.min.js', 'angular-aria/angular-aria.min.js',
+    def files = ['angular/angular.js', 'angular/angular.min.js', 'angular-animate/angular-animate.min.js', 'angular-aria/angular-aria.min.js',
                  'angular-leaflet-directive/dist/angular-leaflet-directive.min.js', 'angular-route/angular-route.min.js',
                  'angular-touch/angular-touch.min.js', 'angular-ui-bootstrap/dist/ui-bootstrap-tpls.js',
                  'angular-ui-bootstrap/dist/ui-bootstrap-csp.css', 'bootbox/dist/bootbox.min.js', 'jquery/dist/jquery.min.js',
@@ -104,6 +104,13 @@ def build(String baseDir) {
     def jsDirs = ['controller', 'directive', 'leaflet', 'service']
     for (String jsDir : jsDirs) {
         idx = Math.max(idx, findLastIndex(baseDir + '/grails-app/assets/javascripts/spApp/' + jsDir, "\$i18n(", ", \""))
+    }
+
+    // get max prop id
+    for (def kv : prop) {
+        try {
+            idx = Math.max(idx, Integer.parseInt(kv.key))
+        } catch (e) {}
     }
 
     idx++

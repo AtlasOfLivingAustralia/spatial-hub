@@ -5,11 +5,12 @@
      * @ngdoc service
      * @name LayersService
      * @description
-     *   Access to layer services of spatial-service
+     *   Access to layer services of spatial-service    *
+     *
      */
     angular.module('layers-service', ['ngFileUpload'])
-        .factory('LayersService', ['$http', '$timeout', '$q', 'Upload', function ($http, $timeout, $q, Upload) {
-            var layers = [];
+        .factory('LayersService', ['$http', '$timeout', '$q', 'Upload','gLayers', function ($http, $timeout, $q, Upload, gLayers) {
+            var layers = gLayers;
 
             var _httpDescription = function (method, httpconfig) {
                 if (httpconfig === undefined) {
@@ -21,12 +22,12 @@
                 return httpconfig;
             };
 
-            var url = $SH.layersServiceUrl + "/fields/search?q=";
-            $http.get(url, _httpDescription('getLayers')).then(function (data) {
-                layers = data.data;
-            });
+            // var url = $SH.layersServiceUrl + "/fields/search?q=";
+            // $http.get(url, _httpDescription('getLayers')).then(function (data) {
+            //     layers = data.data;
+            // });
 
-            return {
+            var thiz = {
                 /**
                  * Search a pageable list of field objects
                  * @memberof LayersService
@@ -406,7 +407,164 @@
                     var fieldData = this.getLayer(fieldId);
 
                     return this.convertFieldDataToMapLayer(fieldData, isSelected)
+                },
+                /**
+                 * Query layers using WMS service getFeatureInfo.
+                 *
+                 * @param layers
+                 * @param latlng
+                 * @returns {HttpPromise}
+                 */
+                getFeatureInfo: function (layers, leafletMap, latlng) {
+                    // TODO: support >1 WMS sources
+                    var url = layers[0].leaflet.layerOptions.layers[0].url;
+
+                    var layerNames = '';
+                    for (var ly in layers) {
+                        if (layerNames.length > 0) layerNames += ',';
+                        layerNames += layers[ly].leaflet.layerOptions.layers[0].layerOptions.layers
+                    }
+
+                    var point = leafletMap.latLngToContainerPoint(latlng, leafletMap.getZoom());
+                    var size = leafletMap.getSize();
+
+                    var crs = leafletMap.options.crs;
+
+                    var sw = crs.project(leafletMap.getBounds().getSouthWest());
+                    var ne = crs.project(leafletMap.getBounds().getNorthEast());
+
+                    var params = {
+                        request: 'GetFeatureInfo',
+                        srs: crs.code,
+                        bbox: sw.x + ',' + sw.y + ',' + ne.x + ',' + ne.y,
+                        height: size.y,
+                        width: size.x,
+                        layers: layerNames,
+                        query_layers: layerNames,
+                        feature_count: layers.length * 10,
+                        info_format: 'text/plain',
+                        x: point.x,
+                        i: point.x,
+                        y: point.y,
+                        j: point.y
+                    };
+
+                    var split = url.split('?');
+                    var urlBase = split[0] + "?";
+                    var existingParams = '';
+                    if (split.length > 1) {
+                        existingParams = split[1].split('&');
+                    }
+                    for (var i in existingParams) {
+                        if (existingParams[i].match(/^layers=.*/) == null) {
+                            urlBase += '&' + existingParams[i];
+                        }
+                    }
+
+                    url = urlBase.replace("/gwc/service", "") + L.Util.getParamString(params, urlBase, true);
+
+                    return $http.get(url, _httpDescription('getFeatureInfo')).then(function (response) {
+                        return thiz.parseGetFeatureInfo(response.data, layers)
+                    })
+                },
+                /**
+                 * Test if an area intersects with a coordinate
+                 *
+                 * @memberOf PopupService
+                 * @param {list} pid area id
+                 * @param {latlng} latlng coordinate to inspect as {lat:latitude, lng:longitude}
+                 * @returns {HttpPromise}
+                 *
+                 * @example
+                 * Input:
+                 * - pid
+                 *  67620
+                 * - latlng
+                 *  {lat:-22, lng:131}
+                 * Output:
+                 * {
+                            "name_id": 0,
+                            "pid": "67620",
+                            "id": "Northern Territory",
+                            "fieldname": "Australian States and Territories",
+                            "featureType": "MULTIPOLYGON",
+                            "area_km": 1395847.4575625565,
+                            "description": "null",
+                            "bbox": "POLYGON((128.999222 -26.002015,128.999222 -10.902499,137.996094 -10.902499,137.996094 -26.002015,128.999222 -26.002015))",
+                            "fid": "cl22",
+                            "wmsurl": "https://spatial.ala.org.au/geoserver/wms?service=WMS&version=1.1.0&request=GetMap&layers=ALA:Objects&format=image/png&viewparams=s:67620",
+                            "name": "Northern Territory"
+                        }
+                 */
+                getAreaIntersects: function (pid, latlng) {
+                    var url = $SH.layersServiceUrl + "/object/intersect/" + pid + "/" + latlng.lat + "/" + latlng.lng;
+                    return $http.get(url, _httpDescription('getAreaIntersects'))
+                },
+
+                parseGetFeatureInfo: function (plainText, layers) {
+                    var result = [];
+                    var blockString = "--------------------------------------------";
+                    for (var ly in layers) {
+                        var layerName = layers[ly].leaflet.layerOptions.layers[0].layerOptions.layers;
+                        layerName = layerName.replace("ALA:", "");
+                        var field = this.getLayer(layers[ly].id + '');
+                        var sname;
+                        if (field) {
+                            sname = field.sname;
+                        }
+                        var units = undefined;
+
+                        //start of layer intersect values in response from geoserver is "http.*{{layerName}}':"
+                        var start = plainText.indexOf(layerName + "':");
+                        var value = '';
+                        if (start > 0) {
+                            var blockStart = plainText.indexOf(blockString, start);
+                            var blockEnd = plainText.indexOf(blockString, blockStart + blockString.length);
+
+                            var properties = plainText.substring(blockStart + blockString.length, blockEnd - 1).trim().split("\n")
+
+                            if (sname) {
+                                for (var i in properties) {
+                                    if (properties[i].toUpperCase().match('^' + sname.toUpperCase() + ' = .*') != null) {
+                                        value = properties[i].substring(properties[i].indexOf('=') + 2, properties[i].length).trim();
+                                    }
+                                }
+                            } else {
+                                value = properties[0].substring(properties[0].indexOf('=') + 2, properties[0].length).trim();
+                                if (isNaN(value)) {
+                                    // use value as-is
+                                } else if (field) {
+                                    // filter out nodatavalues
+                                    units = field.layer.environmentalvalueunits;
+                                    if (Number(value) < Number(field.layer.environmentalvaluemin)) {
+                                        value = '';
+                                    }
+                                } else {
+                                    // analysis layers have nodatavalue < 0
+                                    if (Number(value) < 0) {
+                                        value = ''
+                                    }
+                                }
+                            }
+                        }
+                        // no intersect with this layer
+                        if (units) {
+                            result.push({
+                                layername: layers[ly].name,
+                                value: value,
+                                units: units
+                            })
+                        } else {
+                            result.push({
+                                layername: layers[ly].name,
+                                value: value
+                            })
+                        }
+                    }
+                    return result;
                 }
             }
+
+            return thiz;
         }])
 }(angular));

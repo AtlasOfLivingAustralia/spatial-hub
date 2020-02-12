@@ -36,7 +36,7 @@
                     occurrences = [],
                     areaLayers = [],
                     occurrenceList;
-                var occurenceBBox = []; //bbox of a popup/occurence. Need to scope level, then won't change when zooming
+                var occurrenceBBox = []; //bbox of a popup/occurence. Need to scope level, then won't change when zooming
                 var processedLayers = [0];
 
                 var _httpDescription = function (method, httpconfig) {
@@ -76,8 +76,9 @@
                 }
 
 
-                function OccurrenceList(speciesLayers) {
+                function OccurrenceList(speciesLayers, occurrenceBBox) {
                     var self = this;
+                    this.occurrenceBBox = occurrenceBBox
                     this.isFirstOccurrence = true;
                     this.layersWithResults = [];
 
@@ -99,20 +100,99 @@
                         }
                     };
 
-                    this.getOccurrence = function (index, layer) {
-                        //var q = this.getQueryParams(layer)
-                        //Can not use 'getQueryParams' because bbox which decides 'layer' will be overwritten
-
-                        var fq = ["(latitude:[" + occurenceBBox[0][0] + " TO " + occurenceBBox[1][0] + "] AND longitude:[" + occurenceBBox[0][1] + " TO " + occurenceBBox[1][1] + "])"];
-
-                        if (layer.isSelectedFacetsOnly) {// add extra fq, e.g. search selected facade occurence in the layer
-                            //q.fqs.push(decodeURIComponent(layer.sel))
-                            fq.push(decodeURIComponent(layer.sel))
-                        } else if (layer.isWithoutSelectedFacetsOnly) {
-                            //q.fqs.push('-('+decodeURIComponent(layer.sel)+')');
-                            fq.push('-(' + decodeURIComponent(layer.sel) + ')')
-
+                    /**
+                     * Get the fq terms for a layer.
+                     *
+                     * Optionally include fq terms to
+                     * - Restrict results to the clicked bounding box.
+                     * - Restrict results to occurrences matching the adhoc terms.
+                     * - Restrict results to occurrences not in matching the adhoc terms.
+                     *
+                     * Adhoc terms are constructed from
+                     * - layer.adhocGroup that lists occurrence ids that are included or excluded.
+                     * - layer.adhocBBoxes that lists bounding boxes of occurrences that are included.
+                     *
+                     * @param layer
+                     * @param includeClickedBox boolean
+                     * @param includeAdhoc boolean
+                     * @param excludeAdhoc boolean
+                     * @returns {Array}
+                     */
+                    this.getFq = function (layer, includeClickedBox, includeAdhoc, excludeAdhoc) {
+                        var facetFq = biocacheService.facetsToFq(layer.facets, true);
+                        var fq = [];
+                        if (facetFq.fq) {
+                            if (layer.isSelectedFacetsOnly) {
+                                fq = facetFq.fq;
+                            } else if (layer.isWithoutSelectedFacetsOnly) {
+                                var fqs = facetFq.fq.splice()
+                                for (var i = 0; i < fqs.length; i++) {
+                                    // Use (*:* AND -facet:*) instead of (-facet:*)
+                                    if (fqs[i].match(/^-[^\s]*:\*$/) != null) {
+                                        fqs[i] = '*:* AND ' + fqs[i]
+                                    }
+                                }
+                                fq = ["-((" + fqs.join(") AND (") + "))"];
+                            }
                         }
+
+                        // include clicked bbox
+                        if (includeClickedBox) {
+                            fq.push("latitude:[" + this.occurrenceBBox[0][0] + " TO " + this.occurrenceBBox[1][0] + "]")
+                            fq.push("longitude:[" + this.occurrenceBBox[0][1] + " TO " + this.occurrenceBBox[1][1] + "]");
+                        }
+
+                        var includedFqs = []
+                        var excludedFqs = []
+
+                        // include adhoc term
+                        if (includeAdhoc || excludeAdhoc) {
+                            for (var k in layer.adhocGroup) {
+                                if (layer.adhocGroup[k]) {
+                                    // include
+                                    includedFqs.push("id:" + k)
+                                } else {
+                                    // exclude
+                                    excludedFqs.push("id:" + k)
+                                }
+                            }
+
+                            for (var i in layer.adhocBBoxes) {
+                                var occurrenceBBox = layer.adhocBBoxes[i];
+                                includedFqs.push("(latitude:[" + occurrenceBBox[0][0] + " TO " + occurrenceBBox[1][0] + "] AND longitude:[" + occurrenceBBox[0][1] + " TO " + occurrenceBBox[1][1] + "])");
+                            }
+                        }
+
+                        if (includeAdhoc) {
+                            if (includedFqs.length > 0) {
+                                fq.push(includedFqs.join(" OR "))
+                            }
+                            if (excludedFqs.length > 0) {
+                                fq.push("(*:* AND -" + excludedFqs.join(" AND -") + ")")
+                            }
+                        }
+
+                        if (excludeAdhoc) {
+                            var term = '';
+                            if (includedFqs.length > 0) {
+                                term += "(*:* AND -" + includedFqs.join(" AND -") + ")";
+                                if (excludedFqs.length > 0) {
+                                    term += " OR "
+                                }
+                            }
+                            if (excludedFqs.length > 0) {
+                                term += excludedFqs.join(" OR ")
+                            }
+                            if (term.length > 0) {
+                                fq.push(term)
+                            }
+                        }
+
+                        return fq;
+                    }
+
+                    this.getOccurrence = function (index, layer) {
+                        var fq = this.getFq(layer, true, false, false)
 
                         self.layer = layer;
                         biocacheService.searchForOccurrences(layer, fq, 1, index).then(function (data) {
@@ -123,13 +203,10 @@
                                 self.occurrences.splice(0, self.occurrences.length);
                                 self.occurrences.push.apply(self.occurrences, data.occurrences);
 
-                                //data.occurrences[0].adhocGroup = self.isAdhocGroup();
                                 //check if ticked or in bbox
                                 self.tickOccurence();
 
                                 self.viewRecord()
-
-
                             }
                         })
 
@@ -155,68 +232,29 @@
                         var oc = self.occurrences[0];
                         var id = oc.uuid;
 
-                        //check if current oc is in the bboxes
-                        //var lat = self.occurrences[0].decimalLatitude;
-                        //var lng = self.occurrences[0].decimalLongitude;
-                        // var isIn = false;
-                        /* for(var i in layer.adhocBBoxes){
-                             var bbox = layer.adhocBBoxes[i];
-                             if (lat >= bbox[0][0] && lat<=bbox[1][0] && lng >= bbox[0][1] && lng <= bbox[1][1]){
-                                 isIn = true;
-                             }
-                         }*/
-
                         if (layer.adhocBBoxes && layer.adhocBBoxes.length > 0) {
-                            var orFqs = []
-                            var iFq = '(id:' + id + ")";
                             for (var i in layer.adhocBBoxes) {
-                                var occurenceBBox = layer.adhocBBoxes[i];
-                                var bFq = "(latitude:[" + occurenceBBox[0][0] + " TO " + occurenceBBox[1][0] + "] AND longitude:[" + occurenceBBox[0][1] + " TO " + occurenceBBox[1][1] + "])";
-                                // Append SEL in
-                                if (occurenceBBox[2]) {
-                                    bFq = "(" + bFq + ' AND ' + occurenceBBox[2] + ")"
+                                var occurrenceBBox = layer.adhocBBoxes[i];
+                                if (oc.decimalLatitude <= occurrenceBBox[1][0] && oc.decimalLatitude >= occurrenceBBox[0][0] &&
+                                    oc.decimalLongitude <= occurrenceBBox[1][1] && oc.decimalLongitude >= occurrenceBBox[0][1]) {
+                                    return true;
                                 }
-                                orFqs.push(bFq)
                             }
-
-                            var bbq = "(" + orFqs.join(' OR ') + ")";
-
-                            var fqs = [iFq, bbq];
-
-
-                            return biocacheService.count(layer, fqs).then(function (count) {
-                                if (count == 1) {
-                                    return $q.when(true);
-                                } else {
-                                    return $q.when(false);
-                                }
-                            });
-                        } else
-                            return $q.when(false);
-
-
+                        }
+                        return false;
                     }
 
                     this.isAdhocOrBBox = function () {
                         var oc = self.occurrences[0];
                         var id = oc.uuid;
 
-                        if (self.isAdhocGroup()) // it is MANUALLY checked
+                        if (self.isAdhocGroup()) {// it is MANUALLY checked
                             oc.adhocGroup = true;
-                        else if (self.layer.adhocGroup[id] == false) // Manually unchecked,
+                        } else if (self.layer.adhocGroup[id] == false) { // Manually unchecked,
                             oc.adhocGroup = false;
-                        else {
-                            self.isInBBox().then(function (result) {
-                                oc.adhocGroup = result;
-                                // if ( self.layer.adhocGroup[id] == undefined && result)
-                                //     return true;
-                                // else if ( self.layer.adhocGroup[id] == undefined && !result)
-                                //     return false;
-                                // else
-                                //     return false;
-                            })
+                        } else {
+                            oc.adhocGroup = self.isInBBox();
                         }
-
                     }
 
                     this.toggleAdhocGroup = function () {
@@ -229,7 +267,6 @@
                         }
                         //this variable is linked with its Checkbox
                         //it may be set by bbox which related to the function 'add all to adhoc'
-                        //Todo It will causes inaccurate layer.adhocGroupSize
 
                         var isChecked = oc.adhocGroup;
                         layer.adhocGroup[id] = isChecked;
@@ -237,12 +274,7 @@
                         //Caculate adhocGroupSize
                         this.countAdhocOccurences();
 
-
-                        // if (layer.adhocGroup[id] !== undefined) layer.adhocGroup[id] = !layer.adhocGroup[id];
-                        // else layer.adhocGroup[id] = true;
-                        //
-                        // if (layer.adhocGroup[id]) layer.adhocGroupSize++;
-                        // else layer.adhocGroupSize--
+                        this.buildAdhocQuery();
                     };
 
                     this.getNextOccurrence = function () {
@@ -265,6 +297,15 @@
                         self.index -= 1;
                         var query = this.getSearchLayerAndIndex();
                         this.getOccurrence(query.index, query.layer)
+                    };
+
+                    this.listRecords = function () {
+                        if (self.layer !== undefined) {
+                            var fq = self.getFq(self.layer, true, false, false)
+                            var url = biocacheService.constructSearchResultUrl(self.layer, fq, 10, 0, true).then(function (url) {
+                                self.listRecordsUrl = url
+                            })
+                        }
                     };
 
                     this.getSearchLayerAndIndex = function () {
@@ -325,7 +366,6 @@
                             targetlayer.isWithoutSelectedFacetsOnly = false;
                             this.toggleDisplayLayer(targetlayer)
                         }
-                        // this.toggleDisplayLayer(targetlayer)
                     }
 
                     this.toggleDisplayLayer = function (targetedlayer) {
@@ -368,220 +408,59 @@
                     this.toggleSelFacadeOnLayer = function (targetedLayer) {
                         targetedLayer.isWithoutSelectedFacetsOnly = false;
                         targetedLayer.isSelectedFacetsOnly = true;
-                        //this.showThisLayerOnly(targetedLayer)
                         this.showSelOfLayer(targetedLayer, true);
                     }
                     this.toggleUnSelFacadeOnLayer = function (targetedLayer) {
                         targetedLayer.isWithoutSelectedFacetsOnly = true;
                         targetedLayer.isSelectedFacetsOnly = false;
-                        //this.showThisLayerOnly(targetedLayer)
                         this.showSelOfLayer(targetedLayer, true);
                     }
 
 
                     this.toggleBBox = function () {
-                        //Match the algorithm in getQueryParams and getLatLngFq
                         //New feautre: bind with Sel facade
 
                         var layer = self.layer;
                         if (layer.adhocBBoxes == undefined) layer.adhocBBoxes = [];
                         if (layer.adhocGroup == undefined) layer.adhocGroup = {};
 
-                        var currentOB = occurenceBBox.slice();
-                        if (layer.isSelectedFacetsOnly)
-                            currentOB.push('(' + decodeURIComponent(layer.sel) + ')');
-                        else if (layer.isWithoutSelectedFacetsOnly)
-                            currentOB.push(decodeURIComponent("-(" + layer.sel + ")"))
-                        else
-                            currentOB.push('')
-
+                        // Toggle occurrenceBBox globally for the layer, regardless of the facet or layer selection
+                        var jsonBBox = JSON.stringify(this.occurrenceBBox);
                         var idx = layer.adhocBBoxes.findIndex(function (box) {
-                            return JSON.stringify(box) == JSON.stringify(currentOB)
+                            return JSON.stringify(box) == jsonBBox
                         })
 
-
                         if (idx == -1) {
-                            layer.adhocBBoxes.push(currentOB);
-                            this.adjustAdhoc().then(function () {
-                                self.countAdhocOccurences();
-                                //check if current oc is in the bbox
-                                self.tickOccurence();
-                            });
+                            layer.adhocBBoxes.push(this.occurrenceBBox);
+
+                            self.countAdhocOccurences();
+
+                            //check if current oc is in the bbox
+                            self.tickOccurence();
+                        } else {
+                            adhocBBoxes.splice(idx, 1)
                         }
 
-
-                    }
-                    // get ids in adhoc group and occurencebbox
-                    //occurenceBBox MUST EXIST
-                    this.adjustAdhoc = function () {
-                        var layer = self.layer;
-                        var oids = Object.keys(layer.adhocGroup);
-                        if (occurenceBBox && oids.length > 0) {
-                            var fqs = []
-                            var oFq = '(id:' + oids.join(' OR id:') + ")";
-                            var bFq = "(latitude:[" + occurenceBBox[0][0] + " TO " + occurenceBBox[1][0] + "] AND longitude:[" + occurenceBBox[0][1] + " TO " + occurenceBBox[1][1] + "])";
-                            fqs.push(oFq)
-                            fqs.push(bFq);
-
-                            //Be AWARE OF BLACKETS, MAY NOT WORK
-                            if (layer.isSelectedFacetsOnly)
-                                fqs.push("(" + decodeURIComponent(layer.sel) + ")");
-                            else if (layer.isWithoutSelectedFacetsOnly)
-                                fqs.push(decodeURIComponent("-(" + layer.sel + ")"))
-
-                            var newq = {
-                                q: fqs,
-                                bs: layer.bs,
-                                ws: layer.ws
-                            }
-
-                            return biocacheService.facetGeneral('id', newq, -1, 0).then(function (data) {
-                                if (data !== undefined) {
-                                    var id_frs = _.find(data, function (d) {
-                                        return data.fieldName = 'id'
-                                    })
-                                    if (id_frs && id_frs.count > 0) {
-                                        var frs = id_frs.fieldResult;
-                                        if (frs) {
-                                            _.each(frs, function (idfacet) {
-                                                delete layer.adhocGroup[idfacet.label];
-                                            })
-                                        }
-                                    }
-                                }
-
-                            });
-
-                        }
-                        //returned finished promise
-                        return $q.when('Done');
+                        this.buildAdhocQuery();
                     }
 
                     this.countAdhocOccurences = function () {
                         var layer = self.layer;
-                        var fq = this.buildAdhocQuery()
-                        if (fq.length > 0)
+                        var fq = this.getFq(layer, false, true, false)
+                        if (layer.adhocBBoxes.length > 0 || layer.adhocGroup.length > 0) {
                             biocacheService.count(layer, fq).then(function (count) {
                                 layer.adhocGroupSize = count;
                             });
-                        else
+                        } else {
                             layer.adhocGroupSize = 0;
+                        }
                     }
-
-                    //Todo can fq generation in one place?
 
                     this.buildAdhocQuery = function () {
-                        var layer = self.layer;
-                        if (layer.adhocBBoxes)
-                            var bboxes = layer.adhocBBoxes.slice();
-                        else {
-                            var bboxes = layer.adhocBBoxes = [];
-                        }
-                        var fqs = []
-
-                        // bbox and in adhoc should use OR
-                        var bbox_inadhoc = []
-                        bboxes.forEach(function (bbox) {
-                            var bbq = "(latitude:[" + bbox[0][0] + " TO " + bbox[1][0] + "] AND longitude:[" + bbox[0][1] + " TO " + bbox[1][1] + "])";
-                            // Append SEL in
-                            if (bbox[2]) {
-                                bbq = "(" + bbq + ' AND ' + bbox[2] + ")"
-                            }
-
-                            bbox_inadhoc.push(bbq);
-
-                        })
-
-                        //Selected adhoc group items
-                        //Caculate adhocGroup 'True' as in; 'False' as out
-                        var inAdhocs = _.filter(_.keys(layer.adhocGroup), function (key) {
-                            return layer.adhocGroup[key]
-                        });
-                        var inFq = ''
-                        if (inAdhocs.length > 0)
-                            var inFq = 'id:' + inAdhocs.join(' OR id:');
-                        if (inFq !== '')
-                            bbox_inadhoc.push(inFq);
-
-                        var bboxQ = ''
-                        if (bbox_inadhoc.length > 1)
-                            bboxQ = '(' + bbox_inadhoc.join(' OR ') + ")";
-                        else if (bbox_inadhoc.length == 1)
-                            bboxQ = bbox_inadhoc[0];
-
                         // //sync q to layer, which is used by spLegend or other place
-                        layer.inAdhocQ = bboxQ;
-                        //all bboxes with extra included id are concated into one query, which is bboxQ
-                        if (bboxQ !== '') {
-                            fqs.push(bboxQ);
-                            //Out adhoc ONLY have meaning when query has some adhocs
-                            //Otherwise it return all records - out adhoc number
-                            //Out adhoc should be AND
-                            var outAdhocs = _.reject(_.keys(layer.adhocGroup), function (key) {
-                                return layer.adhocGroup[key]
-                            });
-                            if (outAdhocs.length > 0) {
-                                var outFq = '-(id:' + outAdhocs.join(' OR id:') + ')';
-                                fqs.push(outFq);
-                                layer.inAdhocQ = bboxQ + ' AND ' + outFq;
-                            }
-
-                        }
-
-
-                        layer.outAdhocQ = '-(' + layer.inAdhocQ + ')';
-
-                        return fqs;
-
+                        self.layer.inAdhocQ = this.getFq(self.layer, false, true, false);
+                        self.layer.outAdhocQ = this.getFq(self.layer, false, false, true);
                     }
-
-
-                    this.getQueryParams = function (layer) {
-                        var q = {query: {}, fqs: undefined},
-                            fqs;
-                        q.query.bs = layer.bs;
-                        q.query.ws = layer.ws;
-                        q.query.q = layer.q;
-                        q.fqs = [];
-                        layer.fq && layer.fq.forEach(function (fq) {
-                            if ((fq.indexOf(/latitude/) !== -1) || (fq.indexOf(/longitude/) !== -1)) {
-                                q.fqs.push(fq)
-                            }
-                        });
-
-                        fqs = self.getLatLngFq(loc, layer.size);
-                        q.fqs.push.apply(q.fqs, fqs);
-
-                        return q
-                    };
-
-                    this.getLatLngFq = function (latlng, dotradius) {
-                        var fq = [];
-                        dotradius = dotradius * 1 + 3;
-                        var px = leafletMap.latLngToContainerPoint(latlng);
-                        var ll1 = leafletMap.containerPointToLatLng(L.point(px.x + dotradius, px.y + dotradius));
-                        var ll2 = leafletMap.containerPointToLatLng(L.point(px.x + dotradius, px.y - dotradius));
-                        var ll3 = leafletMap.containerPointToLatLng(L.point(px.x - dotradius, px.y - dotradius));
-                        var ll4 = leafletMap.containerPointToLatLng(L.point(px.x - dotradius, px.y + dotradius));
-                        var maxLng = Math.max(ll1.lng, ll2.lng, ll3.lng, ll4.lng);
-                        var maxLat = Math.max(ll1.lat, ll2.lat, ll3.lat, ll4.lat);
-                        var lonSize = Math.abs(latlng.lng - maxLng);
-                        var latSize = Math.abs(latlng.lat - maxLat);
-                        fq.push("latitude:[" + (latlng.lat - latSize) + " TO " + (latlng.lat + latSize) + "]");
-                        fq.push("longitude:[" + (latlng.lng - lonSize) + " TO " + (latlng.lng + lonSize) + "]");
-
-                        return fq
-                    };
-
-                    this.listRecords = function () {
-                        if (self.layer !== undefined) {
-                            //var q = self.getQueryParams(self.layer);
-                            var fq = self.getLatLngFq(loc, self.layer.size)
-                            var url = biocacheService.constructSearchResultUrl(self.layer, fq, 10, 0, true).then(function (url) {
-                                self.listRecordsUrl = url
-                            })
-                        }
-                    };
 
                     this.viewRecord = function () {
                         if (self.occurrences && self.occurrences.length > 0) {
@@ -613,10 +492,8 @@
                         this.layer.adhocBBoxes.splice(idx, 1);
                     }
 
-
                     speciesLayers.forEach(function (layer) {
-                        //var q = self.getQueryParams(layer);
-                        var fq = self.getLatLngFq(loc, layer.size).slice()
+                        var fq = self.getFq(layer, true, false, false)
                         biocacheService.count(layer, fq).then(function (count) {
                             if (count !== undefined && count > 0) {
                                 self.layersWithResults.push(layer);
@@ -637,57 +514,24 @@
                                 inFq.push(decodeURIComponent(layer.sel));
                                 biocacheService.count(layer, inFq).then(function (count) {
                                     layer.selCount = count;
-                                    //layer.withoutSelCount = layer.total - count;
                                 })
                                 // sel ends
                                 var outFq = fq.slice()
-                                outFq.push('-(' + decodeURIComponent(layer.sel) + ')')
+                                var fq = decodeURIComponent(layer.sel)
+                                // Use -(*:* AND -facet:*) instead of -(-facet:*)
+                                if (fq.matches(/^-[^\s]*:\*$/) != null) {
+                                    outFq.push('-(*:* AND ' + fq + ')')
+                                } else {
+                                    outFq.push('-(' + fq + ')')
+                                }
                                 biocacheService.count(layer, outFq).then(function (count) {
                                     layer.withoutSelCount = count;
-
                                 })
                             }
-
                         })
                     });
 
-
                     var self = this;
-
-                    //Watch if sel on a layer is changed
-                    $rootScope.$watch(function () {
-                        if (self.layer)
-                            return self.layer.sel;
-                        else
-                            return ''
-                    }, function (newValues, oldValues) {
-                        var layer = self.layer;
-                        //var q = self.getQueryParams(layer);
-                        //Count occurences with facet selection
-                        if (layer && layer.sel) {
-                            //layer.sel has been encoded in spLengend.js
-
-                            var fq = ["(latitude:[" + occurenceBBox[0][0] + " TO " + occurenceBBox[1][0] + "] AND longitude:[" + occurenceBBox[0][1] + " TO " + occurenceBBox[1][1] + "])"];
-                            //layer.sel has been encoded in spLengend.js
-                            var inFq = fq.slice();
-                            inFq.push(decodeURIComponent(layer.sel));
-                            biocacheService.count(layer, inFq).then(function (count) {
-                                layer.selCount = count;
-                                //layer.withoutSelCount = layer.total - count;
-                            })
-                            // sel ends
-                            var outFq = fq.slice()
-                            outFq.push('-(' + decodeURIComponent(layer.sel) + ')')
-                            biocacheService.count(layer, outFq).then(function (count) {
-                                layer.withoutSelCount = count
-                            })
-
-                        }// sel ends
-
-
-                    });
-
-
                 }
 
                 return {
@@ -732,7 +576,6 @@
 
                         var self = this;
                         loc = latlng;
-
 
                         // reset flag
                         addPopupFlag = true;
@@ -784,7 +627,7 @@
                             });
 
                             if (ssLayers.length) {
-                                var promiseIntersect = self.getIntersects(ssLayers, latlng);
+                                var promiseIntersect = LayersService.getIntersects(ssLayers, latlng.lat, latlng.lng);
                                 if (promiseIntersect) {
                                     promiseIntersect.then(function (content) {
                                         intersects.push.apply(intersects, content.data);
@@ -795,11 +638,10 @@
                             }
 
                             if (layers.length) {
-                                var promiseIntersect = self.getFeatureInfo(layers, latlng);
+                                var promiseIntersect = LayersService.getFeatureInfo(layers, leafletMap, latlng);
                                 if (promiseIntersect) {
                                     promiseIntersect.then(function (content) {
-                                        //parse plain text content
-                                        var result = self.parseGetFeatureInfo(content.data, layers);
+                                        var result = content;
 
                                         intersects.push.apply(intersects, result);
                                         addPopupToMap(loc, leafletMap, templatePromise, intersects, occurrenceList);
@@ -810,7 +652,7 @@
 
                             if (areaLayers.length) {
                                 areaLayers.forEach(function (layer) {
-                                    self.getAreaIntersects(layer.pid, latlng).then(function (resp) {
+                                    LayersService.getAreaIntersects(layer.pid, latlng).then(function (resp) {
                                         if (resp.data.name) {
                                             intersects.push({layername: $i18n(402, "Area"), value: resp.data.name});
                                             addPopupToMap(loc, leafletMap, templatePromise, intersects, occurrenceList);
@@ -827,198 +669,12 @@
                                 var ll = leafletMap.containerPointToLatLng(L.point(px.x + dotradius, px.y + dotradius));
                                 var lonSize = Math.abs(loc.lng - ll.lng);
                                 var latSize = Math.abs(loc.lat - ll.lat);
-                                occurenceBBox = [[loc.lat - latSize, loc.lng - lonSize], [loc.lat + latSize, loc.lng + lonSize]]
+                                occurrenceBBox = [[loc.lat - latSize, loc.lng - lonSize], [loc.lat + latSize, loc.lng + lonSize]]
                             }
 
-                            occurrenceList = new OccurrenceList(speciesLayers);
+                            occurrenceList = new OccurrenceList(speciesLayers, occurrenceBBox);
 
                         });
-
-                    },
-                    /**
-                     * Get layer values for a coordinate.
-                     *
-                     * TODO: Move to LayersService
-                     *
-                     * @memberOf PopupService
-                     * @param {list} layers list of layer names or fieldIds
-                     * @param {latlng} latlng coordinate to inspect as {lat:latitude, lng:longitude}
-                     * @returns {HttpPromise}
-                     *
-                     * @example:
-                     * Input:
-                     * - layers
-                     *  ["cl22", "el899"]
-                     * - latlng
-                     *  {lat:-22, lng:131}
-                     * Output:
-                     *  [{
-                         "field": "cl22",
-                         "layername": "Australian States and Territories",
-                         "pid": "67620",
-                         "value": "Northern Territory"
-                         },
-                     {
-                     "field": "el899",
-                     "layername": "Species Richness",
-                     "units": "frequency",
-                     "value": 0.037037037
-                     }]
-                     */
-                    getIntersects: function (layers, latlng) {
-                        if (typeof layers === "string") {
-                            layers = [layers]
-                        }
-
-                        return layersService.intersectLayers(layers, latlng.lng, latlng.lat)
-                    },
-                    getFeatureInfo: function (layers, latlng) {
-                        // TODO: support >1 WMS sources
-                        var url = layers[0].leaflet.layerOptions.layers[0].url;
-
-                        var layerNames = '';
-                        for (var ly in layers) {
-                            if (layerNames.length > 0) layerNames += ',';
-                            layerNames += layers[ly].leaflet.layerOptions.layers[0].layerOptions.layers
-                        }
-
-                        var point = leafletMap.latLngToContainerPoint(latlng, leafletMap.getZoom());
-                        var size = leafletMap.getSize();
-
-                        var crs = leafletMap.options.crs;
-
-                        var sw = crs.project(leafletMap.getBounds().getSouthWest());
-                        var ne = crs.project(leafletMap.getBounds().getNorthEast());
-
-                        var params = {
-                            request: 'GetFeatureInfo',
-                            srs: crs.code,
-                            bbox: sw.x + ',' + sw.y + ',' + ne.x + ',' + ne.y,
-                            height: size.y,
-                            width: size.x,
-                            layers: layerNames,
-                            query_layers: layerNames,
-                            feature_count: layers.length * 10,
-                            info_format: 'text/plain',
-                            x: point.x,
-                            i: point.x,
-                            y: point.y,
-                            j: point.y
-                        };
-
-                        var split = url.split('?');
-                        var urlBase = split[0] + "?";
-                        var existingParams = '';
-                        if (split.length > 1) {
-                            existingParams = split[1].split('&');
-                        }
-                        for (var i in existingParams) {
-                            if (existingParams[i].match(/^layers=.*/) == null) {
-                                urlBase += '&' + existingParams[i];
-                            }
-                        }
-
-                        url = urlBase.replace("/gwc/service", "") + L.Util.getParamString(params, urlBase, true);
-
-                        return $http.get(url, _httpDescription('getFeatureInfo'))
-                    },
-                    /**
-                     * Test if an area intersects with a coordinate
-                     *
-                     * TODO: Move to LayersService
-                     *
-                     * @memberOf PopupService
-                     * @param {list} pid area id
-                     * @param {latlng} latlng coordinate to inspect as {lat:latitude, lng:longitude}
-                     * @returns {HttpPromise}
-                     *
-                     * @example
-                     * Input:
-                     * - pid
-                     *  67620
-                     * - latlng
-                     *  {lat:-22, lng:131}
-                     * Output:
-                     * {
-                            "name_id": 0,
-                            "pid": "67620",
-                            "id": "Northern Territory",
-                            "fieldname": "Australian States and Territories",
-                            "featureType": "MULTIPOLYGON",
-                            "area_km": 1395847.4575625565,
-                            "description": "null",
-                            "bbox": "POLYGON((128.999222 -26.002015,128.999222 -10.902499,137.996094 -10.902499,137.996094 -26.002015,128.999222 -26.002015))",
-                            "fid": "cl22",
-                            "wmsurl": "https://spatial.ala.org.au/geoserver/wms?service=WMS&version=1.1.0&request=GetMap&layers=ALA:Objects&format=image/png&viewparams=s:67620",
-                            "name": "Northern Territory"
-                        }
-                     */
-                    getAreaIntersects: function (pid, latlng) {
-                        var url = $SH.layersServiceUrl + "/object/intersect/" + pid + "/" + latlng.lat + "/" + latlng.lng;
-                        return $http.get(url, _httpDescription('getAreaIntersects'))
-                    },
-
-                    parseGetFeatureInfo: function (plainText, layers) {
-                        var result = [];
-                        var blockString = "--------------------------------------------";
-                        for (var ly in layers) {
-                            var layerName = layers[ly].leaflet.layerOptions.layers[0].layerOptions.layers;
-                            layerName = layerName.replace("ALA:", "");
-                            var field = LayersService.getLayer(layers[ly].id + '');
-                            var sname;
-                            if (field) {
-                                sname = field.sname;
-                            }
-                            var units = undefined;
-
-                            //start of layer intersect values in response from geoserver is "http.*{{layerName}}':"
-                            var start = plainText.indexOf(layerName + "':");
-                            var value = '';
-                            if (start > 0) {
-                                var blockStart = plainText.indexOf(blockString, start);
-                                var blockEnd = plainText.indexOf(blockString, blockStart + blockString.length);
-
-                                var properties = plainText.substring(blockStart + blockString.length, blockEnd - 1).trim().split("\n")
-
-                                if (sname) {
-                                    for (var i in properties) {
-                                        if (properties[i].toUpperCase().match('^' + sname.toUpperCase() + ' = .*') != null) {
-                                            value = properties[i].substring(properties[i].indexOf('=') + 2, properties[i].length).trim();
-                                        }
-                                    }
-                                } else {
-                                    value = properties[0].substring(properties[0].indexOf('=') + 2, properties[0].length).trim();
-                                    if (isNaN(value)) {
-                                        // use value as-is
-                                    } else if (field) {
-                                        // filter out nodatavalues
-                                        units = field.layer.environmentalvalueunits;
-                                        if (Number(value) < Number(field.layer.environmentalvaluemin)) {
-                                            value = '';
-                                        }
-                                    } else {
-                                        // analysis layers have nodatavalue < 0
-                                        if (Number(value) < 0) {
-                                            value = ''
-                                        }
-                                    }
-                                }
-                            }
-                            // no intersect with this layer
-                            if (units) {
-                                result.push({
-                                    layername: layers[ly].name,
-                                    value: value,
-                                    units: units
-                                })
-                            } else {
-                                result.push({
-                                    layername: layers[ly].name,
-                                    value: value
-                                })
-                            }
-                        }
-                        return result;
                     }
                 }
             }])

@@ -67,6 +67,8 @@
                             LayoutService.openPanel('area', $scope.area, false)
                         } else if ($scope.area === 'pointOnLayer') {
                             LayoutService.openPanel('area', $scope.area, false)
+                        } else if ($scope.area === 'drawPolyline') {
+                            LayoutService.openPanel('area', $scope.area, false)
                         } else if ($scope.area === 'addressRadius') {
                         } else if ($scope.area === 'pointRadius') {
                         } else if ($scope.area === 'gazetteer') {

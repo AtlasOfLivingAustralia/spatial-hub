@@ -55,6 +55,10 @@
                             SessionsService.save(SessionsService.current())
                         };
 
+                        scope.workflows = function () {
+                            scope.open('workflow')
+                        }
+
                         scope.spatialHubLogin = function () {
                             SessionsService.saveAndLogin(SessionsService.current())
                         };

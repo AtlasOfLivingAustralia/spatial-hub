@@ -25,7 +25,7 @@
                     scope.sortingLog = [];
 
                     scope.selectControls = function () {
-                        MapService.select(null);
+                        MapService.select(undefined);
 
                         //enable base layer chooser list, etc
                         LayoutService.enable('options')

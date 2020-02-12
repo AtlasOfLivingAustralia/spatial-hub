@@ -156,8 +156,11 @@ function fetchData() {
 
     var gLayerDistances = {};
     var gMessages = {};
+    var gLayers = []
+
     spApp.constant("gLayerDistances", gLayerDistances);
     spApp.constant("gMessages", gMessages);
+    spApp.constant("gLayers", gLayers);
 
     var distancesUrl = $SH.layersServiceUrl + "/layerDistances/layerdistancesJSON";
 
@@ -173,17 +176,30 @@ function fetchData() {
         });
     }
 
+    promises.push(  $http.get($SH.layersServiceUrl + "/fields/search?q=", _httpDescription('getLayers')).then(function (data) {
+        $.map(data.data, function (v) {
+            gLayers.push(v);
+        })
+    }))
+
+
     promises.push($http.get($SH.baseUrl + "/portal/i18n?lang=" + $SH.i18n, _httpDescription('geti18n')).then(function (result) {
         for (k in result.data) {
             gMessages[k + ""] = result.data[k]
         }
         $SH.gMessages = gMessages;
         $i18n = function (k) {
-            var key = ("" + k).replace(" ", "_");
+            var key = ("" + k).replace(" ", "_"), match;
             if ($SH.gMessages[key] !== undefined) {
                 return $SH.gMessages[key]
             } else {
-                return k
+                // turn pattern like "year:[1980 TO 1989]" to a more human readable format
+                // The above example return "1980 TO 1989"
+                match = (""+k).match(/\[(.* TO .*)\]/);
+                if(match && match.length === 2)
+                    return match[1];
+                else
+                    return k;
             }
         }
     }));
@@ -212,6 +228,10 @@ function fetchData() {
             return $q.when(cap)
         });
     }));
+
+
+
+
 
     // add to promises list if waiting is required before making the page visible
     return $q.all(promises).then(function (results) {

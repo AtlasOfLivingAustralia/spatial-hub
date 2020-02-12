@@ -18,6 +18,15 @@
       {
         "name": "Facet",
         "open": "ToolAddFacetService"
+      },
+      {
+        "name": "History",
+        "open": "log",
+        "params": {
+          "display": {
+            "size": "full"
+          }
+        }
       }
     ]
   },

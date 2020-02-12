@@ -179,7 +179,7 @@
                             }
                             if (map.hasLayer(ly)) {
                                 // all layers are groups
-                                // when more than one layer in the group, the first is always visible=false
+                                // when more than one layer in the group, the first is always visible=false unless layer.parentVisible=true
                                 var pos = 0;
                                 var len = 0;
                                 var i;
@@ -188,7 +188,7 @@
                                 }
                                 for (i in ly._layers) {
                                     var layer = ly._layers[i];
-                                    if (pos === 0 && len > 1) {
+                                    if (pos === 0 && len > 1 && (layerIn.parentVisible === undefined || !layerIn.parentVisible)) {
                                         layer.visible = false
                                     } else {
                                         layer.visible = show
@@ -690,6 +690,8 @@
                                     $scope.$emit('setWkt', [wkt]);
                                 } else if (type === "marker") {
                                     $scope.$emit('setWkt', ['point', geoJSON.geometry.coordinates[0], geoJSON.geometry.coordinates[1]]);
+                                } else if (type === 'polyline') {
+                                    $scope.$emit('setWkt', ['polyline', geoJSON.geometry.coordinates]);
                                 } else {
                                     var wkt = Util.wrappedToWkt(Util.wrap(geoJSON.geometry.coordinates[0]));
 

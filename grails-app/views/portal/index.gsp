@@ -89,6 +89,13 @@
         presetWMSServers: ${(config.presetWMSServers as grails.converters.JSON).toString().encodeAsRaw()},
         getMapExamples: ${(config.getMapExamples as grails.converters.JSON).toString().encodeAsRaw()},
 
+        <g:if test="${config.doiService?.url}">
+        doiServiceUrl: '${config.doiService.url}',
+        </g:if>
+        <g:if test="${config.doiService?.searchFilter}">
+        doiSearchFilter: '${config.doiService.searchFilter}',
+        </g:if>
+
         qc: '${config.qc}',
 
         validUrls: [
@@ -109,6 +116,9 @@
             '${config.geoserver.url}/**',
             '${config.collections.url}/**',
             '${config.phylolink.url}/**'
+            <g:if test="${config.doiService?.url}">
+            , '${config.doiService.url}/**'
+            </g:if>
         ],
         i18n: '${config.i18n?.region?:"default"}',
         editable: ${params.edit?:'false'},
@@ -121,16 +131,57 @@
 
         config: ${(config.spApp as grails.converters.JSON).toString().encodeAsRaw()},
 
+        rangeDataTypes: ${(config.rangeDataTypes as grails.converters.JSON).toString().encodeAsRaw()},
+        numberOfIntervalsForRangeData: ${(config.numberOfIntervalsForRangeData).toString().encodeAsRaw()},
+
         dateFacet: '${config.date.facet}',
         dateMin: '${config.date.min}',
         dateMax: '${config.date.max}'
 
-        <g:if test="${config.get('indexFields', null) != null}">
-        , indexFields: ${(config.indexFields as grails.converters.JSON).toString().encodeAsRaw()}
+        /**
+         * Override the list of grouped facets from biocache-service (biocacheService.url/search/grouped/facets).
+         *
+         * This is used in a drop down list within the 'Edit species layer' section that is used to  colour or facet
+         * upon the species layer.
+         */
+        <g:if test="${config.get('groupedFacets', null) != null}">
+        , groupedFacets: ${(config.groupedFacets as grails.converters.JSON).toString().encodeAsRaw()}
         </g:if>
+
+        /**
+         * Remove fields that are retrieved from biocache-service (biocacheService.url/search/grouped/facets) and
+         * (biocacheService.url/index/fields)
+         */
         <g:if test="${config.get('fieldsIgnored', null) != null}">
         , fieldsIgnored: ${(config.fieldsIgnored as grails.converters.JSON).toString().encodeAsRaw()}
         </g:if>
+
+        /**
+         * Include or Exclude the 'Search facets...' option. This is used in a drop down list within
+         * the 'Edit species layer' section that is used to colour or facet upon the species layer.
+         */
+        , facetSearch: '${config.facet.search}'
+
+        /**
+         * Include or Exclude the grouped facet listing. These grouped facets appear at the end of the drop down list
+         * within the 'Edit species layer' section that is used to colour or facet upon the species layer.
+         */
+        , facetList: '${config.facet.list}'
+
+        /**
+         * Enabled multiple species layer filters within the 'Edit species layer' section.
+         */
+        , filtersEnabled: ${config.filters.enabled}
+
+        /**
+         * Enable workflow button in the header
+         */
+        , workflowEnabled: ${config.workflow.enabled}
+
+        /**
+         * List of public workflow Ids for the species filter
+         */
+        , workflowFilters: ${(config.workflow.speciesFilters as grails.converters.JSON).toString().encodeAsRaw()}
     };
 
     BIE_VARS = {

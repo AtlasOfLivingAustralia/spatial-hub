@@ -43,8 +43,8 @@
     </div>
     <div ng-if="panelMode[0] == 'area'" draw-area config='panelData.area'></div>
     <div ng-if="panelMode[0] == 'envelope'" envelope></div>
-    <div ng-if="panelMode[0] == 'nearestLocality'" nearest-locality></div>
-    <div ng-if="panelMode[0] == 'pointComparison'" point-comparison></div>
+    <div ng-if="panelMode[0] == 'nearestLocality'" nearest-locality config='panelData.nearestLocality'></div>
+    <div ng-if="panelMode[0] == 'pointComparison'" point-comparison config='panelData.pointComparison'></div>
 </div>
 
 <div id="right-panel">
