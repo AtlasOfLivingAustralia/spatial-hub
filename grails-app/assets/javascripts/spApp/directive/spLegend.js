@@ -585,12 +585,6 @@
                             }
                         }
 
-                        scope.updateFacetDisplayName = function(data){
-                            for(var i = 0; data && (i < data.length); i++){
-                                data[i].displayname = $i18n(data[i].i18nCode || data[i].displayname || data[i].name);
-                            }
-                        };
-
                         /**
                          * Set facet.data using newLayer query
                          *
@@ -611,6 +605,12 @@
 
                                     return BiocacheService.getFacetMinMax(newLayer, facet).then(function (data) {
                                         facet.ranges = Util.getRangeBetweenTwoNumber(data.min, data.max);
+                                        if (facet.dataType.toLowerCase().indexOf('date') >= 0) {
+                                            $.map(facet.ranges, function (v) {
+                                                v[0] = new Date(v[0]).toISOString()
+                                                v[1] = new Date(v[1]).toISOString()
+                                            })
+                                        }
                                         BiocacheService.facet(facet.name, newLayer, facet.ranges).then(function (data) {
                                             scope.setFacetData(facet, data)
 
@@ -628,8 +628,6 @@
                         }
 
                         scope.setFacetData = function (facet, data) {
-                            scope.updateFacetDisplayName(data);
-
                             // Existing facets that do not have facet.data may have a copy of the selection as facet._fq
                             // Delete _fq after updating the facet.data with the active selection.
                             if (facet._fq) {
@@ -938,7 +936,7 @@
                                                 (selectedLayer.uncertainty ? "%3Buncertainty%3A1" : "")
                                         } else {
                                             var ranges = "";
-                                            if (Util.isFacetOfRangeDataType(selectedLayer.activeFacet.dataType) && selectedLayer.activeFacet.ranges && selectedLayer.activeFacet.ranges.length > 0) {
+                                            if (selectedLayer.activeFacet && Util.isFacetOfRangeDataType(selectedLayer.activeFacet.dataType) && selectedLayer.activeFacet.ranges && selectedLayer.activeFacet.ranges.length > 0) {
                                                 ranges = encodeURIComponent( "," + selectedLayer.activeFacet.ranges.join(","));
                                             }
 
@@ -1149,9 +1147,9 @@
                                                             layer.scatterplotUpdating = false;
                                                         });
 
-                                                        layer.scatterplotLabel1 = Messages.get('facet.' + species.scatterplotLayers[0]) + " : " +
+                                                        layer.scatterplotLabel1 = BiocacheI18n.get('facet.' + species.scatterplotLayers[0]) + " : " +
                                                             species.scatterplotSelectionExtents[1].toFixed(4) + " - " + species.scatterplotSelectionExtents[3].toFixed(4);
-                                                        layer.scatterplotLabel2 = Messages.get('facet.' + species.scatterplotLayers[1]) + " : " +
+                                                        layer.scatterplotLabel2 = BiocacheI18n.get('facet.' + species.scatterplotLayers[1]) + " : " +
                                                             species.scatterplotSelectionExtents[0].toFixed(4) + " - " + species.scatterplotSelectionExtents[2].toFixed(4);
                                                     }
                                                 } else {

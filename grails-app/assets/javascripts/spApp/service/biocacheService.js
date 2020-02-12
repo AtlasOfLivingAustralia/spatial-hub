@@ -434,7 +434,28 @@
                         return $http.get(query.bs + "/webportal/legend?cm=" + facet + ranges + "&q=" + response.qid + "&type=application/json", _httpDescription('facet',
                             {headers: {Accept: "application/json"}})).then(function (response) {
                             $.map(response.data, function (v, k) {
-                                v.displayname = Messages.get(facet + '.' + v.name, v.name ? v.name : "")
+                                if (ranges.length > 0) {
+                                    // parse name for ranges: (optional '-')  + facet + '.[' + min + ' TO ' + max + ']'
+                                    var match = ("" + v.name).match(/(-)*.*\[(.* TO .*)\]/);
+                                    if (match && match.length === 3) {
+                                        match[1] = match[1] || "";
+                                        // add "exclude" to label for facets with '-'
+                                        if (match[1] === '-' && match[2] === "* TO *") {
+                                            match[1] = "";
+                                            match[2] = $i18n(460)
+                                            // 'min' is for numerical sorting
+                                            v.min = ''
+                                        } else {
+                                            // 'min' is for numerical sorting
+                                            v.min = parseFloat(match[2].split(' ')[0])
+                                        }
+                                        v.displayname = match[1] + match[2];
+                                    } else {
+                                        v.displayname = v.name
+                                    }
+                                } else {
+                                    v.displayname = BiocacheI18n.get(facet + '.' + v.name, v.name ? v.name : "")
+                                }
                             });
                             return response.data;
                         });
@@ -488,7 +509,7 @@
                         return $http.get(url, _httpDescription('facetGeneral', config)).then(function (response) {
                             if (response.data && response.data[0] && response.data[0].fieldResult) {
                                 $.map(response.data[0].fieldResult, function (v, k) {
-                                    v.displaylabel = Messages.get(facet + '.' + v.label, v.label ? v.label : "")
+                                    v.displaylabel = BiocacheI18n.get(facet + '.' + v.label, v.label ? v.label : "")
                                 });
                                 return response.data;
                             } else {
