@@ -627,7 +627,7 @@
                             });
 
                             if (ssLayers.length) {
-                                var promiseIntersect = LayersService.getIntersects(ssLayers, latlng.lat, latlng.lng);
+                                var promiseIntersect = LayersService.intersectLayers(ssLayers, latlng.lng, latlng.lat);
                                 if (promiseIntersect) {
                                     promiseIntersect.then(function (content) {
                                         intersects.push.apply(intersects, content.data);
