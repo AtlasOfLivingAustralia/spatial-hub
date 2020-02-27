@@ -870,7 +870,7 @@
                             layers = [layers]
                         }
 
-                        return layersService.intersectLayers(layers, latlng.lng, latlng.lat)
+                        return LayersService.intersectLayers(layers, latlng.lng, latlng.lat)
                     },
                     getFeatureInfo: function (layers, latlng) {
                         // TODO: support >1 WMS sources
