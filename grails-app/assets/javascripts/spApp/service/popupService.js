@@ -25,7 +25,7 @@
      */
     angular.module('popup-service', ['leaflet-directive', 'map-service', 'biocache-service'])
         .factory("PopupService", ['$rootScope', '$compile', '$http', '$q', '$window', '$templateRequest', 'leafletData', 'MapService', 'BiocacheService', 'LayersService',
-            function ($rootScope, $compile, $http, $q, $window, $templateRequest, leafletData, mapService, biocacheService, LayersService) {
+            function ($rootScope, $compile, $http, $q, $window, $templateRequest, leafletData, mapService, biocacheService, layersService) {
                 var addPopupFlag = true,
                     popup, loc, leafletMap;
                 var templatePromise = $templateRequest('/spApp/intersectPopupContent.htm');
@@ -749,7 +749,7 @@
                                 if (layer.visible) {
                                     switch (layer.layertype) {
                                         case "contextual":
-                                            var f = LayersService.getLayer(layer.id);
+                                            var f = layersService.getLayer(layer.id);
                                             if (!$SH.wmsIntersect || (f && f.type === 'a')) {
                                                 ssLayers.push(layer.id)
                                             } else {
@@ -766,7 +766,7 @@
                                         case "area":
                                             if (layer.type === "envelope") {
                                                 var layerid = '' + layer.id;
-                                                var f = LayersService.getLayer(layerid);
+                                                var f = layersService.getLayer(layerid);
                                                 if (!$SH.wmsIntersect || (f && f.type === 'a')) {
                                                     ssLayers.push(layerid)
                                                 } else {
@@ -870,7 +870,7 @@
                             layers = [layers]
                         }
 
-                        return LayersService.intersectLayers(layers, latlng.lng, latlng.lat)
+                        return layersService.intersectLayers(layers, latlng.lng, latlng.lat)
                     },
                     getFeatureInfo: function (layers, latlng) {
                         // TODO: support >1 WMS sources
@@ -964,7 +964,7 @@
                         for (var ly in layers) {
                             var layerName = layers[ly].leaflet.layerOptions.layers[0].layerOptions.layers;
                             layerName = layerName.replace("ALA:", "");
-                            var field = LayersService.getLayer(layers[ly].id + '');
+                            var field = layersService.getLayer(layers[ly].id + '');
                             var sname;
                             if (field) {
                                 sname = field.sname;
