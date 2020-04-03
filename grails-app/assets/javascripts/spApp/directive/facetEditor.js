@@ -71,7 +71,7 @@
                         };
 
                         scope.setLoading = function () {
-                            if ( scope._facet.data == undefined )
+                            if (scope._facet.data == undefined)
                                 scope._facet.loading = true;
                             else
                                 scope._facet.loading = false;
