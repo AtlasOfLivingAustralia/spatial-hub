@@ -56,7 +56,8 @@
     </tr>
     <tr ng-if="facetDisplay === 'chart'">
         <td>
-            <div uib-popover="{{$i18n(452)}}" popover-title="{{$i18n(451)}}" popover-trigger="'mouseenter'"
+            <div uib-popover='{{$i18n(452, "Use the slider to select facet classes. All facet classes falling in between the range selector are selected. Selections falling outside the range are cleared.")}}'
+                 popover-title='{{$i18n(451, "Slider help")}}' popover-trigger="'mouseenter'"
                  popover-placement="right" style="height: 30px">
                 <i class="glyphicon glyphicon-info-sign"></i>
             </div>

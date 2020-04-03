@@ -103,7 +103,7 @@
                 if(doi)
                     return DoiService.buildInfoString(doi);
                 else
-                    return $i18n(462);
+                    return $i18n(462, "No dataset selected");
             };
 
             $scope.getDOIURL = function(doi){
@@ -120,7 +120,7 @@
                 if (url) {
                     var searchParams = UrlParamsService.parseSearchParams(url);
                     var queryParams = DoiService.buildQueryFromDoi(doi, searchParams);
-                    var newName = $i18n(465) + ": " +  DoiService.buildShortInfo(doi);
+                    var newName = $i18n(465, "DOI") + ": " + DoiService.buildShortInfo(doi);
                     if (queryParams.q && queryParams.q.length > 0) {
                         queryParams.qid = queryParams.q[0];
                         queryParams.q.splice(0,1);
@@ -135,7 +135,7 @@
                 }
                 else {
                     // This shouldn't happen as dois without a URL will be filtered out by the search process.
-                    bootbox.alert($i18n(472));
+                    bootbox.alert($i18n(472, "No data was able to be extracted from the selected DOI"));
                 }
             };
 

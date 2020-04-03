@@ -352,10 +352,11 @@
                                         var idx = tooltipItem.index,
                                             label;
 
-                                        if(chartData[idx].selected)
-                                            label =  $i18n(450);
+                                        if (chartData[idx].selected)
+                                            label = $i18n(450, "Selected");
                                         else
-                                            label = $i18n(459);
+                                            label = $i18n(473, "Select by clicking label or bar");
+
                                         return label;
                                     }
                                 }

@@ -442,7 +442,7 @@
                                         // add "exclude" to label for facets with '-'
                                         if (match[1] === '-' && match[2] === "* TO *") {
                                             match[1] = "";
-                                            match[2] = $i18n(460)
+                                            match[2] = $i18n(460, "Not supplied")
                                             // 'min' is for numerical sorting
                                             v.min = ''
                                         } else {
