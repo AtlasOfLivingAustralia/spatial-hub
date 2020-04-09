@@ -61,6 +61,7 @@
                         if ($.isArray(i.data.data)) {
                             $.map(i.data.data, function (subv) {
                                 if (subv.raw) delete subv.raw
+                                if (subv.enabled) delete subv.enabled
                             })
                         }
                     })
@@ -94,6 +95,7 @@
                         if ($.isArray(v.data.data)) {
                             $.map(v.data.data, function (subv) {
                                 subv.raw = JSON.stringify(subv.facet)
+                                subv.enabled = true
                             })
                         }
                     })

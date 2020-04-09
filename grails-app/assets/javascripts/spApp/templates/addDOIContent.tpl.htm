@@ -46,9 +46,10 @@
                     <td>{{result.doi}}</td>
                     <td ng-bind-html="trustAsHtml(result.applicationMetadata.queryTitle)"></td>
                     <td>{{result.applicationMetadata.recordCount}}</td>
-                    <td>{{result.applicationMetadata.userOrganisation}}</td>
-                    <td>{{result.applicationMetadata.userDisplayName}}</td>
+                    <td>{{result.applicationMetadata.organisation}}</td>
+                    <td>{{result.applicationMetadata.modeller}}</td>
                     <td>{{result.applicationMetadata.requestedOn}}</td>
+                    <td>{{result.applicationMetadata.sdmAvailable}}</td>
                     <td></td>
                 </tr>
                 <tr ng-if="(!results || !results.total) && !loading">

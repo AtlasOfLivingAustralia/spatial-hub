@@ -71,7 +71,7 @@
                     var pid = downloadingArea.pid;
                     var name = downloadingArea.name;
                     var url = LayersService.getAreaDownloadUrl(pid, inputs[1].toLowerCase(), name);
-                    Util.download(url, name.replaceAll('[^a-zA-Z0-9]', '_') + "." + inputs[1].toLowerCase());
+                    Util.download(url, name.replace('[^a-zA-Z0-9]', '_') + "." + inputs[1].toLowerCase());
                 }
             };
         }])

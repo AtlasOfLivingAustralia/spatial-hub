@@ -584,6 +584,13 @@ spring:
 #    port: 6379
 #    password: ""
 
+# Used by the DOI dataset import and DOI generation
+#doiService:
+#  url: "https://doi.ala.org.au"
+#  searchFilter:
+#    applicationMetadata:
+#      applicationName: "CSDM"
+
 ---
 environments:
     development:

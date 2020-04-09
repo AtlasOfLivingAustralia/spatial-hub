@@ -36,12 +36,12 @@
             <div ng-if="hasSubitems(item)">
                 <table class="table table-condensed">
                     <thead>
-                    <th ng-show="!!workflowId">Tick to Skip</th>
+                    <th ng-show="_workflow.id">Enabled</th>
                     <th>Annotation</th>
                     </thead>
                     <tbody>
                     <tr ng-repeat="subitem in item.data.data">
-                        <td ng-show="!!workflowId"><input type="checkbox" ng-model="subitem.ignore"></td>
+                        <td ng-show="_workflow.id"><input type="checkbox" ng-model="subitem.enabled"></td>
                         <td><textarea style="width:400px;height:25px" ng-model="subitem.description"
                                       placeholder="{{'Add annotation. Parameters: ' + subitem.raw}}"></textarea>
                         </td>

@@ -20,17 +20,17 @@
                 var thiz = {
                     execute: function (event, data) {
                         if (event == SCATTERPLOT_CREATE_IN_OUT[1]) {
-                            var inFq = data.data[0].ignore ? undefined : data.data[0].facet
-                            var outFq = data.data[1].ignore ? undefined : data.data[1].facet
+                            var inFq = data.data[0].enabled ? data.data[0].facet : undefined
+                            var outFq = data.data[1].enabled ? data.data[1].facet : undefined
                             return thiz.scatterplotCreateInOut(MapService.getFullLayer(data.layerId), inFq, outFq)
                         } else if (event == ADHOC_CREATE_IN_OUT[1]) {
-                            var inFq = data.data[0].ignore ? undefined : data.data[0].facet
-                            var outFq = data.data[1].ignore ? undefined : data.data[1].facet
+                            var inFq = data.data[0].enabled ? data.data[0].facet : undefined
+                            var outFq = data.data[1].enabled ? data.data[1].facet : undefined
                             return thiz.adhocCreateInOut(MapService.getFullLayer(data.layerId), inFq, outFq)
                         } else if (event == FACET_NEW_LAYER[1]) {
                             var newFqs = []
                             $.map(data.data, function (v) {
-                                if (!v.ignore) {
+                                if (v.enabled) {
                                     newFqs.push(v.facet)
                                 }
                             })
@@ -38,7 +38,7 @@
                         } else if (event == FACET_NEW_LAYER_OUT[1]) {
                             var newFqs = []
                             $.map(data.data, function (v) {
-                                if (!v.ignore) {
+                                if (v.enabled) {
                                     newFqs.push(v.facet)
                                 }
                             })

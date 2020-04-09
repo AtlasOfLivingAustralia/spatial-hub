@@ -327,10 +327,6 @@
                     });
                 }
 
-                $scope.hasSubitems = function (item) {
-                    return $.isArray(!item.data || item.data.data)
-                }
-
                 $scope.back = function () {
                     $scope.workflow = []
                     $scope.playStep = 0

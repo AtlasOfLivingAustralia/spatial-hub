@@ -73,6 +73,7 @@
         defaultZoom: ${config.startup.zoom},
         baseLayers: ${(config.startup.baselayers as grails.converters.JSON).toString().encodeAsRaw()},
         defaultBaseLayer: '${config.startup.baselayer.default}',
+
         <g:if test="${config.flickr.url}">
         flickrUrl: '${config.flickr.url}',
         flickrLicensesData: ${(config.flickr.licensesData as grails.converters.JSON).toString().encodeAsRaw()},
@@ -85,6 +86,7 @@
         flickrFilter: '${(config.flickr.filter?:'').toString().encodeAsRaw()}',
         flickrNbrOfPhotosToDisplay: '${config.flickr.nbrOfPhotosToDisplay}',
         </g:if>
+
         menu: '${config.grails.serverURL}/portal/config/menu?hub=${hub}',
         defaultAreas: ${(config.defaultareas as grails.converters.JSON).toString().encodeAsRaw()},
         defaultSpeciesDotSize: ${config.speciesDotSize},
@@ -95,9 +97,19 @@
         <g:if test="${config.doiService?.url}">
         doiServiceUrl: '${config.doiService.url}',
         </g:if>
+
         <g:if test="${config.doiService?.searchFilter}">
         doiSearchFilter: '${config.doiService.searchFilter}',
         </g:if>
+
+        <g:if test="${config.doiService?.displayTemplate}">
+        doiDisplayTemplate: '${config.doiService.displayTemplate}',
+        </g:if>
+
+        <g:if test="${config.doiService?.emailTemplate}">
+        doiEmailTemplate: '${config.doiService.emailTemplate}',
+        </g:if>
+
         annotateDatasetOnExport: ${Boolean.valueOf(config.annotateDatasetOnExport)},
         qc: '${config.qc}',
 

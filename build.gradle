@@ -16,7 +16,7 @@ plugins {
     id 'com.bertramlabs.asset-pipeline' version '2.5.0'
 }
 
-version "0.4-SNAPSHOT"
+version "0.3.2-SNAPSHOT"
 group "au.org.ala"
 
 apply plugin:"eclipse"

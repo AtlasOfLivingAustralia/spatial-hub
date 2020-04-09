@@ -13,19 +13,22 @@
             return {
                 templateUrl: '/spApp/workflowItemCtrl.htm',
                 scope: {
-                    _workflow: '=?workflow',
+                    _workflow: '=?workflow'
                 },
                 link: function (scope, element, attrs) {
-                    console.log(scope._workflow)
-
                     LayoutService.addToSave(scope);
 
                     scope.delete = function (item) {
-                        for (var i in scope._workflow) {
-                            if (scope._workflow[i] === item) {
-                                scope._workflow.splice(i, 1)
+                        for (var i in scope._workflow.workflow) {
+                            if (scope._workflow.workflow[i] === item) {
+                                scope._workflow.workflow.splice(i, 1)
                             }
                         }
+                    }
+
+                    scope.hasSubitems = function (item) {
+                        if (!item.data) return false
+                        return $.isArray(item.data.data)
                     }
 
                     scope.toDate = function (str) {

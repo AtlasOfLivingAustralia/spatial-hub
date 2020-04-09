@@ -973,15 +973,16 @@
                 },
                 downloadAsync:function(species, area, doiApplicationData) {
                     var params = {
-                        hubName:"CSDM",
-                        file:species.name,
-                        mintDoi:true,
-                        reasonTypeId:13,
-                        fileType:'csv',
-                        qa:'none',
-                        sourceTypeId:10002,
+                        hubName: "CSDM",
+                        file: species.name,
+                        mintDoi: true,
+                        reasonTypeId: 13,
+                        fileType: 'csv',
+                        qa: 'none',
+                        sourceTypeId: 10002,
                         email: $SH.userEmail,
-                        emailTemplate: 'csdm'
+                        emailTemplate: $SH.doiEmailTemplate || 'csdm',
+                        displayTemplate: $SH.doiDisplayTemplate || 'csdm'
                     };
 
                     // This should be a POST but the data binding in biocache-service isn't setup to bind from the POST body.
