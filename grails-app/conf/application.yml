@@ -10,6 +10,7 @@ grails:
             - file:/data/spatial-hub/config/spatial-hub-config.properties
             - file:/data/spatial-hub/config/spatial-hub-config.yml
             - file:/data/spatial-hub/config/spatial-hub-config.groovy
+            - file:D:\\reinhardt\\firma\\Biodiversity\\working\\data\\spatial-hub\\spatial-hub-config.yml
     spring:
         transactionManagement:
             proxies: false

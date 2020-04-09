@@ -106,6 +106,7 @@ compileGroovy.dependsOn(_Events)
 bootRun.dependsOn(_Events)
 
 bootRun {
+    grails { pathingJar = true }
     jvmArgs('-Dspring.output.ansi.enabled=always', '-Xmx4G')
     addResources = true
 }

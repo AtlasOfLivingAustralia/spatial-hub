@@ -132,7 +132,8 @@ class HubWebService {
                     call = new PutMethod(url)
                 } else if (type == HttpPost.METHOD_NAME) {
                     call = new PostMethod(url)
-
+                    // new command RW
+                    call.getParams().setContentCharset("utf-8");
                     if (nameValues) {
                         nameValues.each { k, v ->
                             if (v instanceof List) {

@@ -2,11 +2,11 @@ import org.apache.commons.io.FileUtils
 import org.apache.commons.lang.StringUtils
 
 def build(String baseDir) {
-
     println 'Starting NPM install'
     final workdir = new File(baseDir, '')
     final proc = new ProcessBuilder().inheritIO()
-    final exec = proc.command('npm', '-dd', 'install').start()
+    // npm for UNIX, npm.cmd for Windows
+    final exec = proc.command('npm.cmd', '-dd', 'install').start()
     def exitValue = exec.waitFor()
     if (exitValue) {
         println '*****************************************************'
@@ -19,15 +19,17 @@ def build(String baseDir) {
     }
 
     println 'Copying files to grails-app/assets/node_modules'
-    new ProcessBuilder().inheritIO().command('rm', '-r', 'grails-app/assets/node_modules').start().waitFor()
-
+    // new ProcessBuilder().inheritIO().command('rm', '-r', 'grails-app/assets/node_modules').start().waitFor()
+    println '================================='
+    println baseDir
+    println '================================='
     def files = ['angular/angular.min.js', 'angular-animate/angular-animate.min.js', 'angular-aria/angular-aria.min.js',
                  'angular-leaflet-directive/dist/angular-leaflet-directive.min.js', 'angular-route/angular-route.min.js',
                  'angular-touch/angular-touch.min.js', 'angular-ui-bootstrap/dist/ui-bootstrap-tpls.js',
                  'angular-ui-bootstrap/dist/ui-bootstrap-csp.css', 'bootbox/dist/bootbox.min.js', 'jquery/dist/jquery.min.js',
                  'ng-file-upload/dist/ng-file-upload.js', 'ngbootbox/dist/ngBootbox.min.js',
                  'bootstrap/dist/', 'leaflet/dist/', 'leaflet-draw/dist/', 'proj4/dist/proj4.js',
-                 'proj4leaflet/src/proj4leaflet.js']
+                 'proj4leaflet/src/proj4leaflet.js','ace-builds-1.2.8/src/ace.js', 'ace-builds-1.2.8/src/mode-json.js', 'angular/angular-csp.css']
     files.each { name ->
         def dst = new File(baseDir + '/grails-app/assets/node_modules/' + name)
         dst.getParentFile().mkdirs()
@@ -62,7 +64,7 @@ def build(String baseDir) {
 
     // jsdoc
     println 'Starting JSDoc'
-    final exec2 = proc.command('npm', 'run', 'jsdoc').start()
+    final exec2 = proc.command('npm.cmd', 'run', 'jsdoc').start()
     def exitValue2 = exec2.waitFor()
     if (exitValue2) {
         println '*****************************************************'
