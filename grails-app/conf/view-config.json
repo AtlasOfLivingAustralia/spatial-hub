@@ -291,6 +291,35 @@
         ]
       }
     ]
+  },
+  "DoubleGridding": {
+    "view": [
+      {
+        "inputs": [
+          "area"
+        ]
+      },
+      {
+        "inputs": [
+          "species"
+        ]
+      },
+      {
+        "inputs": [
+          "primaryGridCellSize"
+        ]
+      },
+      {
+        "inputs": [
+          "secondaryGridCellSize"
+        ]
+      },
+      {
+        "inputs": [
+          "yearSize"
+        ]
+      }
+    ]
   }
 }
 
