@@ -817,8 +817,7 @@
                     if (fq.length > 0 || (wkt !== undefined && wkt !== null && wkt.length > 0)) {
                         return this.registerParam(bs, q, fq, wkt).then(function (data) {
                             return {
-                                q: q,
-                                fq: fq,
+                                q: $.merge([q], fq),
                                 wkt: wkt,
                                 qid: "qid:" + data.qid,
                                 bs: bs,
@@ -830,10 +829,9 @@
                         var qc = [];
                         if ($SH.qc !== undefined && $SH.qc != null && $SH.qc.length > 0) qc = [$SH.qc];
                         return $q.when({
-                            q: q,
-                            fq: qc, //fq.length == 0 so it is safe to use qc here
+                            q: $.merge(q, qc), //fq.length == 0 so it is safe to use qc here
                             wkt: wkt,
-                            qid: q,
+                            qid: "(" + q + ") AND " + qc[0],
                             bs: bs,
                             ws: ws,
                             name: name
