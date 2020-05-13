@@ -9,9 +9,9 @@
      */
     angular.module('area-report-ctrl', ['map-service', 'biocache-service', 'lists-service', 'layers-service'])
         .controller('AreaReportCtrl', ['$scope', 'MapService', '$timeout', 'LayoutService', '$uibModalInstance',
-            'BiocacheService', 'data', '$http', 'ListsService', 'LayersService', 'EventService',
+            'BiocacheService', 'data', '$http', 'ListsService', 'LayersService', 'EventService', '$q',
             function ($scope, MapService, $timeout, LayoutService, $uibModalInstance, BiocacheService, data, $http,
-                      ListsService, LayersService, EventService) {
+                      ListsService, LayersService, EventService, $q) {
                 LayoutService.addToModeless($scope);
 
                 $scope._httpDescription = function (method, httpconfig) {
@@ -35,12 +35,12 @@
 
                 $scope.journalMapDocumentCount = function () {
                     if ($scope.area.wkt !== undefined && $scope.area.wkt.length > 0) {
-                        $http.get(LayersService.url() + "/journalMap/search?wkt=" + $scope.area.wkt, $scope._httpDescription('journalmapCount')).then(function (response) {
-                            $scope.setJournalMapCount(response.data)
+                        return $http.get(LayersService.url() + "/journalMap/search?wkt=" + $scope.area.wkt, $scope._httpDescription('journalmapCount')).then(function (response) {
+                            return $scope.setJournalMapCount(response.data)
                         });
                     } else {
-                        $http.get(LayersService.url() + "/journalMap/search?pid=" + $scope.area.pid, $scope._httpDescription('journalmapCount')).then(function (response) {
-                            $scope.setJournalMapCount(response.data)
+                        return $http.get(LayersService.url() + "/journalMap/search?pid=" + $scope.area.pid, $scope._httpDescription('journalmapCount')).then(function (response) {
+                            return $scope.setJournalMapCount(response.data)
                         });
                     }
                 };
@@ -59,6 +59,7 @@
                             }
                         }
                     }
+                    return $q.when(true)
                 };
 
                 $scope.journalMap = [];
@@ -75,16 +76,17 @@
                             }
                         }
                     }
+                    return $q.when(true)
                 };
 
                 $scope.distributionCounts = function () {
                     if ($scope.area.wkt !== undefined && $scope.area.wkt.length > 0) {
-                        $http.get(LayersService.url() + "/distributions?wkt=" + $scope.area.wkt, $scope._httpDescription('distributionCounts')).then(function (response) {
-                            $scope.setDistributionCount(response.data)
+                        return $http.get(LayersService.url() + "/distributions?wkt=" + $scope.area.wkt, $scope._httpDescription('distributionCounts')).then(function (response) {
+                            return $scope.setDistributionCount(response.data)
                         });
                     } else {
-                        $http.get(LayersService.url() + "/distributions?pid=" + $scope.area.pid, $scope._httpDescription('distributionCounts')).then(function (response) {
-                            $scope.setDistributionCount(response.data)
+                        return $http.get(LayersService.url() + "/distributions?pid=" + $scope.area.pid, $scope._httpDescription('distributionCounts')).then(function (response) {
+                            return $scope.setDistributionCount(response.data)
                         });
                     }
                 };
@@ -116,15 +118,16 @@
                             }
                         }
                     }
+                    return $q.when(true)
                 };
                 $scope.checklistCounts = function () {
                     if ($scope.area.wkt !== undefined && $scope.area.wkt.length > 0) {
-                        $http.get(LayersService.url() + "/checklists?wkt=" + $scope.area.wkt, $scope._httpDescription('checklistCounts')).then(function (response) {
-                            $scope.setChecklistCount(response.data)
+                        return $http.get(LayersService.url() + "/checklists?wkt=" + $scope.area.wkt, $scope._httpDescription('checklistCounts')).then(function (response) {
+                            return $scope.setChecklistCount(response.data)
                         });
                     } else {
-                        $http.get(LayersService.url() + "/checklists?pid=" + $scope.area.pid, $scope._httpDescription('checklistCounts')).then(function (response) {
-                            $scope.setChecklistCount(response.data)
+                        return $http.get(LayersService.url() + "/checklists?pid=" + $scope.area.pid, $scope._httpDescription('checklistCounts')).then(function (response) {
+                            return $scope.setChecklistCount(response.data)
                         });
                     }
                 };
@@ -140,17 +143,19 @@
                             }
                         }
                     }
+                    return $q.when(true)
                 };
                 $scope.gazPointCounts = function () {
                     if ($scope.area.wkt !== undefined && $scope.area.wkt.length > 0) {
-                        $http.get(LayersService.url() + "/objects/inarea/" + LayersService.gazField() + "?wkt=" + $scope.area.wkt + "&limit=9999999", $scope._httpDescription('gazetteerCounts')).then(function (response) {
-                            $scope.setGazCount(response.data)
+                        return $http.get(LayersService.url() + "/objects/inarea/" + LayersService.gazField() + "?wkt=" + $scope.area.wkt + "&limit=9999999", $scope._httpDescription('gazetteerCounts')).then(function (response) {
+                            return $scope.setGazCount(response.data)
                         });
                     } else {
-                        $http.get(LayersService.url() + "/objects/inarea/" + LayersService.gazField() + "?pid=" + $scope.area.pid + "&limit=9999999", $scope._httpDescription('gazetteerCounts')).then(function (response) {
-                            $scope.setGazCount(response.data)
+                        return $http.get(LayersService.url() + "/objects/inarea/" + LayersService.gazField() + "?pid=" + $scope.area.pid + "&limit=9999999", $scope._httpDescription('gazetteerCounts')).then(function (response) {
+                            return $scope.setGazCount(response.data)
                         });
                     }
+                    return $q.when(true)
                 };
 
                 $scope.poi = [];
@@ -163,15 +168,16 @@
                             }
                         }
                     }
+                    return $q.when(true)
                 };
                 $scope.pointOfInterestCounts = function () {
                     if ($scope.area.wkt !== undefined && $scope.area.wkt.length > 0) {
-                        $http.get(LayersService.url() + "/intersect/poi/wkt?wkt=" + $scope.area.wkt + "&limit=9999999", $scope._httpDescription('pointsOfInterestCount')).then(function (response) {
-                            $scope.setPoi(response.data)
+                        return $http.get(LayersService.url() + "/intersect/poi/wkt?wkt=" + $scope.area.wkt + "&limit=9999999", $scope._httpDescription('pointsOfInterestCount')).then(function (response) {
+                            return $scope.setPoi(response.data)
                         });
                     } else {
-                        $http.get(LayersService.url() + "/intersect/poi/wkt?pid=" + $scope.area.pid + "&limit=9999999", $scope._httpDescription('pointsOfInterestCount')).then(function (response) {
-                            $scope.setPoi(response.data)
+                        return $http.get(LayersService.url() + "/intersect/poi/wkt?pid=" + $scope.area.pid + "&limit=9999999", $scope._httpDescription('pointsOfInterestCount')).then(function (response) {
+                            return $scope.setPoi(response.data)
                         });
                     }
                 };
@@ -313,36 +319,48 @@
                         });
 
                         $timeout(function () {
-                            $scope.checklistCounts();
-                            $scope.distributionCounts();
-                            $scope.journalMapDocumentCount();
-                            $scope.gazPointCounts();
-                            $scope.pointOfInterestCounts()
+                            $scope.checklistCounts().then(function () {
+                                $scope.distributionCounts().then(function () {
+                                    $scope.journalMapDocumentCount().then(function () {
+                                        $scope.gazPointCounts().then(function () {
+                                            $scope.pointOfInterestCounts()
+                                        })
+                                    })
+                                })
+                            })
                         }, 0);
 
-                        var items = $scope.items;
-                        var k;
-                        for (k in items) {
-                            if (items.hasOwnProperty(k)) {
-                                if (items[k].query !== undefined) {
-                                    items[k].value = '';
-                                    if (items[k].occurrences !== undefined && items[k].occurrences) {
-                                        $scope.count(items[k], BiocacheService.count(items[k].query, items[k].extraQ))
-                                    } else if (items[k].name.indexOf('endemic') >= 0) {
-                                        $scope.count(items[k], BiocacheService.speciesCountEndemic(items[k].query, items[k].extraQ))
-                                    } else {
-                                        $scope.count(items[k], BiocacheService.speciesCount(items[k].query, items[k].extraQ))
-                                    }
-                                }
-                            }
-                        }
-
-                        $scope.makeCSV()
+                        $scope.countNextItem($scope.items, 0);
                     });
                 };
 
+                $scope.countNextItem = function(items, index) {
+                    if (index < items.length) {
+                        if (items[index].query !== undefined) {
+                            items[index].value = '';
+                            if (items[index].occurrences !== undefined && items[index].occurrences) {
+                                $scope.count(items[index], BiocacheService.count(items[index].query, items[index].extraQ)).then(function (count) {
+                                    $scope.countNextItem(items, index + 1)
+                                })
+                            } else if (items[index].name.indexOf('endemic') >= 0) {
+                                $scope.count(items[index], BiocacheService.speciesCountEndemic(items[index].query, items[index].extraQ))
+                                // endemic counts are slow, do not wait
+                                $scope.countNextItem(items, index + 1)
+                            } else {
+                                $scope.count(items[index], BiocacheService.speciesCount(items[index].query, items[index].extraQ)).then(function (count) {
+                                    $scope.countNextItem(items, index + 1)
+                                })
+                            }
+                        } else {
+                            $scope.countNextItem(items, index + 1)
+                        }
+                    } else {
+                        $scope.makeCSV()
+                    }
+                }
+
                 $scope.count = function (item, promise) {
-                    promise.then(function (data) {
+                    return promise.then(function (data) {
                         item.value = data
                     })
                 };
