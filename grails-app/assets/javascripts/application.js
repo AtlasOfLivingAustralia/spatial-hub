@@ -10,7 +10,7 @@
 //= require bootstrap/dist/js/bootstrap.min.js
 
 //leaflet
-//= require leaflet/dist/leaflet.js
+//= require leaflet/dist/leaflet-src.js
 //= require proj4/dist/proj4.js
 //= require proj4leaflet/src/proj4leaflet.js
 //= require leaflet-draw/dist/leaflet.draw.js
@@ -43,6 +43,14 @@
 //= require underscore/underscore-min.js
 //= require components.js
 //= require sandbox-hub/preview.js
+
+//ala-charts-plugin
+//= require bootstrap-multiselect.js
+//require bootstrap-slider.js
+//= require bootstrap-toggle.min.js
+//= require Chart.min.js
+//= require ALAChart.js
+//= require angular-chart.js
 
 //spatial-hub
 //= require jquery-csv/jquery.csv.js

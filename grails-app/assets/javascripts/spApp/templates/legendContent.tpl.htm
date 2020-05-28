@@ -2,8 +2,8 @@
     <form class="form-horizontal" ng-show="selected.layer">
 
         <div class="form-group row">
-            <label i18n="115" for="selectedLayerName" style=";width:70px">Layer name</label>
-            <input style="width:300px" type="text" id="selectedLayerName"
+            <label i18n="115" for="selectedLayerName" style=";width:70px">Name</label>
+            <input style="width:300px;vertical-align: top;" type="text" id="selectedLayerName"
                    ng-model="selected.layer.name"/>
         </div>
 
@@ -13,9 +13,8 @@
                 <label><span i18n="116">Records selected:&nbsp;</span>{{ selected.layer.scatterplotSelectionCount
                     }}<span
                             i18n="117">&nbsp;record/s</span></label>
-                <button i18n="118" class="btn btn-xs btn-default" ng-click="scatterplotCreateInOut()">add in/out
-                    layers to
-                    map
+                <button i18n="118" class="btn btn-xs btn-default" ng-click="scatterplotCreateInOut()">
+                    add in/out layers to map
                 </button>
             </div>
 
@@ -81,17 +80,32 @@
             <select style=";width:300px" id='facet' ng-model="selected.layer.facet"
                     ng-change="updateFacet()">
                 <option i18n="128" value="-1">User defined colour</option>
-                <option ng-repeat="x in selected.layer.list" value="{{x.facet}}" ng-disabled="x.separator">
+                <option value="search">Search facets...</option>
+                <option ng-repeat="filter in workflowFilters" value="{{filter.workflowId}}">{{filter.name}}</option>
+
+                <option ng-show="filtersEnabled()" disabled>--- Active Filters ---</option>
+                <option ng-repeat="x in selected.layer.facets | filter:{enabled: true}" value="{{x.name}}"
+                        ng-if="showActiveFilter()">
+                    {{x.displayName}}
+                </option>
+
+                <option ng-repeat="x in selected.layer.groupedFacets" value="{{x.facet}}" ng-disabled="x.separator">
                     {{x.name}}
                 </option>
             </select>
+            <div ng-show="filtersEnabled() && isFilterSelected()" class="btn-group"
+                 style="float: right;margin-right: 20px;">
+                <button class="btn-xs btn btn-default" ng-click="removeFacet()">Remove filter</button>
+            </div>
         </div>
 
         <div class="form-group row" ng-show="selected.layer.layertype == 'species' && selected.layer.colorType=='-1' &&
                                         selected.layer.facet!='-1'">
 
-            <facet-editor ng-if="selected.layer.activeFacet !== undefined"
-                          facet="selected.layer.activeFacet" on-custom="updateSelection(false)"></facet-editor>
+            <div ng-show="selected.layer.facetProgress"><span>{{selected.layer.facetProgress}}</span></div>
+
+            <facet-editor ng-if="selected.layer.activeFacet !== undefined && !selected.layer.facetProgress"
+                          facet="selected.layer.activeFacet" on-custom="updateSelection()"></facet-editor>
 
             <div style="float:right;padding-right:30px" class="btn-group">
                 <button i18n="131" class="btn btn-xs btn-default" ng-click="facetNewLayer()"
@@ -101,6 +115,8 @@
                         ng-disabled="!facetsSelected()">Create layer without selection
                 </button>
             </div>
+            <br/>
+            <hr/>
         </div>
 
         <div ng-show="(selected.layer.layertype == 'species' && selected.layer.colorType=='-1' &&
@@ -251,8 +267,8 @@
                     &nbsp;
                 </div>
             </div>
+            <br/>
         </div>
-        <br/>
 
         <div class="form-group row" ng-show="selected.layer.showColourSliders">
             <label i18n="133" style="float:left;width:70px" for="size">Red</label>
@@ -303,7 +319,7 @@
 
         <div class="form-group row" ng-show="wmsLegendVisible()">
             <div ng-show="selected.layer.layertype != 'grid'">
-                <input style="width:200px" type="text" ng-model="selected.layer.contextualFilter"/>
+                <input style="width:200px" type="text" placeholder="Filter" ng-model="selected.layer.contextualFilter"/>
                 <button i18n="141" ng-click="updateContextualList()" class="btn btn-xs btn-default">apply filter
                 </button>
                 <button i18n="129" ng-click="clearContextualFilter()" class="btn btn-xs btn-default">clear filter
@@ -315,7 +331,7 @@
                 </uib-progressbar>
                 <table class="table table-striped" style="width:370px;overflow:auto;display:block">
                     <tr ng-repeat="x in selected.layer.contextualList"
-                        ng-click="contextualHighlight(x.name, x.pid)">
+                        ng-click="contextualHighlight(x.name, x.pid, x)">
                         <td style="width:20px">
                             <input type="checkbox"
                                    ng-model="x.selected"
@@ -346,9 +362,6 @@
                 </div>
 
                 <div style="float:right;padding-right:30px" class="btn-group">
-                    <button i18n="144" class="btn btn-xs btn-default"
-                            ng-click="contextualClearHighlight()">Clear highlight
-                    </button>
                     <button i18n="120" class="btn btn-xs btn-default"
                             ng-click="contextualClearSelection()">Clear selection
                     </button>

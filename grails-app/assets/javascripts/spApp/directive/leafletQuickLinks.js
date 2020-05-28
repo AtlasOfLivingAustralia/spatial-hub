@@ -49,7 +49,7 @@
                             };
 
                             $scope.open = function (name, data, includeSpecies, includeArea) {
-                                if (includeSpecies === undefined || includeSpecies !== false) {
+                                if ($scope.species && (includeSpecies === undefined || includeSpecies !== false)) {
                                     var species = MapService.getSpeciesLayerQuery($scope.species);
                                     if (includeSpecies === undefined || includeSpecies === true) {
                                         $scope.setDefault(data, 'species', species);
@@ -57,7 +57,7 @@
                                         $scope.setDefault(data, includeSpecies, species);
                                     }
                                 }
-                                if (includeArea === undefined || includeArea !== false) {
+                                if ($scope.area && (includeArea === undefined || includeArea !== false)) {
                                     var area = MapService.getAreaLayerQuery($scope.area);
                                     if (includeArea === undefined || includeArea === true) {
                                         $scope.setDefault(data, 'area', area);

@@ -46,13 +46,14 @@
                         }
                     });
                 },
-                createList: function (name, description, items, makePrivate) {
+                createList: function (name, description, items, makePrivate, listType) {
 
                     var list = {
                         "listName": name,
                         "listItems": items,
                         "description": description,
-                        "isPrivate": makePrivate
+                        "isPrivate": makePrivate,
+                        "listType": listType
                     };
                     return $http.post($SH.baseUrl + "/portal/postSpeciesList", list, _httpDescription('createList', {withCredentials: true})).then(function (resp) {
                         return resp;

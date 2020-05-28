@@ -96,12 +96,16 @@
                         var geospatialKosher = null;
                         var sbList = [];
                         var savedsession;
+                        var workflow;
 
                         for (var key in params) {
                             if (params.hasOwnProperty(key)) {
 
                                 var value = params[key];
 
+                                if ("workflow" == key) {
+                                    workflow = value;
+                                }
                                 if ("wmscache" === key) {
                                     useSpeciesWMSCache = value;
                                 }
@@ -175,6 +179,11 @@
 
                         var promises = [];
 
+                        if (!tool && workflow) {
+                            tool = 'workflow'
+                            toolParameters = JSON.stringify({workflowId: workflow})
+                        }
+
                         if (sbList.length > 0 || (s !== null && s !== undefined && s.length > 0)) {
                             var query = {q: sbList, bs: bs, ws: ws};
                             if (wkt !== undefined && wkt !== null) query.wkt = wkt;
@@ -220,6 +229,21 @@
                                 MapService.zoomToAll()
                             }
                         })
+                    },
+                    parseSearchParams: function(url) {
+                        var parser = document.createElement('a');
+                        parser.href = url;
+                        var query = parser.search.substr(1); // Remove the '?' from the query string
+                        var result = {};
+                        var paramList = query.split("&");
+                        for (var i=0; i<paramList.length; i++) {
+                            var param = paramList[i].split("=");
+                            if (param[0]) { // bie search queries sometimes start with ?& so an empty parameter is possible
+                                result[param[0]] = decodeURIComponent(param[1]);
+                            }
+                        }
+                        return result;
+
                     },
                     mapToolParams: function (tool, toolParameters) {
                         var map = {};

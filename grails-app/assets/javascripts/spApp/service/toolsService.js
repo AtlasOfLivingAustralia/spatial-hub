@@ -129,13 +129,26 @@
                                 uiScope.downloadUrl = LayersService.url() + '/tasks/output/' + uiScope.finishedData.id + '/' + encodeURI(filename) + '?filename=' + d.file;
 
                                 if (uiScope.downloadImmediately && uiScope.spec.download !== false) {
-                                    Util.download(uiScope.downloadUrl);
+                                    Util.download(uiScope.downloadUrl, d.file);
                                 }
                             } else if (d.downloadUrl) {
                                 uiScope.downloadUrl = d.downloadUrl;
 
+                                // look for "filename=" at the end of the url
+                                var filename = 'file'
+                                var match = d.downloadUrl.match('filename=.*$')
+                                if (match && match.length > 0) {
+                                    filename = match[0].replace('filename=', '')
+                                } else {
+                                    // remove params and use end of url
+                                    match = d.downloadUrl.match('([^/\\?]*)(\\?.*)?$')
+                                    if (match && match.length > 1) {
+                                        filename = match[1]
+                                    }
+                                }
+
                                 if (uiScope.downloadImmediately && uiScope.spec.download !== false) {
-                                    Util.download(uiScope.downloadUrl);
+                                    Util.download(uiScope.downloadUrl, filename);
                                 }
                             }
                         }
@@ -269,15 +282,15 @@
                 }
 
                 function executeLocal(uiScope, toolName, inputs) {
+                    // Create log entry for a local tool when the task is finished with the input data
+                    LoggerService.log('Tool', uiScope.toolName, inputs)
+
                     var result = localToolServices[toolName].execute(inputs)
 
                     if (result && result.then) {
                         result.then(function (response) {
                             uiScope.finishedData = response;
                             _executeResult(uiScope);
-
-                            // Create log entry for a local tool when the task is finished with the input data
-                            LoggerService.log('Tool', uiScope.toolName, JSON.stringify(inputs))
 
                             uiScope.$close();
                         })

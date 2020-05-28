@@ -22,7 +22,9 @@
                 };
 
                 return {
-                    scope: {},
+                    scope: {
+                        _config: '=config'
+                    },
                     templateUrl: '/spApp/pointComparisonContent.htm',
                     link: function (scope, iElement, iAttrs) {
 
@@ -112,7 +114,7 @@
                                         scope.statusUrl = response.data.statusUrl
                                         $timeout(scope.checkStatus(), 2000)
                                     } else if (response.data.downloadUrl) {
-                                        LoggerService.log("View", "pointComparison", {points: scope.points})
+                                        LoggerService.log("View", "pointComparison", {points: $.merge([], scope.points)})
                                         $http.get($SH.baseUrl + '/portal/getSampleCSV?url=' + encodeURIComponent(response.data.downloadUrl), _httpDescription('getCsv')).then(function (response) {
                                             if (scope.comparison.length > 0)
                                                 scope.comparison.splice(0, scope.comparison.length);
@@ -125,7 +127,7 @@
                                             });
 
                                             for (var i = 2; i < csv[0].length; i++) {
-                                                var row = [Messages.get('facet.' + csv[0][i], csv[0][i])];
+                                                var row = [BiocacheI18n.get('facet.' + csv[0][i], csv[0][i])];
                                                 for (var j = 1; j < csv.length; j++) {
                                                     row.push(csv[j][i]);
                                                 }
@@ -164,7 +166,14 @@
                             }
                         });
 
-                        scope.addMarker();
+                        /* init */
+                        if (!scope._config) {
+                            scope.addMarker();
+                        } else {
+                            scope.points = scope._config.points;
+                            scope.update();
+                            scope.compare();
+                        }
                     }
                 }
             }])

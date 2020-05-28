@@ -155,6 +155,7 @@ class PortalController {
                     render(view: 'index',
                             model: [config     : config,
                                     userId     : userId,
+                                    userDetails: authService.userDetails(),
                                     sessionId  : sessionService.newId(userId),
                                     messagesAge: messageService.messagesAge,
                                     hub        : hub])
@@ -220,7 +221,7 @@ class PortalController {
 
         response.contentType = 'text/javascript'
 
-        String text = 'Messages = { messages: ' +
+        String text = 'BiocacheI18n = { messages: ' +
                 messageService.messages +
                 ',get: function(key, _default) { var value = this.messages[key]; if (!value) { ' +
                 'if (_default !== undefined) { return _default; } else { return key; } } else { return value } } }; '

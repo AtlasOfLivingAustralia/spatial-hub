@@ -8,7 +8,8 @@
      *   Access to spatial-hub sessions
      */
     angular.module('sessions-service', [])
-        .factory('SessionsService', ['$http', '$rootScope', 'MapService', function ($http, $rootScope, MapService) {
+        .factory('SessionsService', ['$http', '$rootScope', 'MapService', 'BiocacheService','LoggerService',
+            function ($http, $rootScope, MapService, BiocacheService, LoggerService) {
 
             var _httpDescription = function (method, httpconfig) {
                 if (httpconfig === undefined) {
@@ -86,7 +87,23 @@
                                 contextualSelection: src.contextualSelection,
                                 contextualFilter: src.contextualFilter,
                                 facetSelectionCount: src.facetSelectionCount,
-                                sel: src.sel,
+
+                                facets: src.facets ? $.map(src.facets, function (v) {
+                                    // Session only needs to store the list of selected items.
+                                    // Only the fq is required. It will be deleted after facet.data is reloaded.
+                                    var copy = $.merge({}, v);
+
+                                    delete copy.data;
+
+                                    if (copy._fq === undefined && v.data && v.data.length > 0) {
+                                        copy._fq = []
+                                        $.map(v.data, function (d) {
+                                            copy._fq.push(BiocacheService.facetToFq(v.data, false))
+                                        })
+                                    }
+
+                                    return copy;
+                                }) : undefined,
 
                                 index: src.index,
 
@@ -236,11 +253,11 @@
                  */
                 load: function (sessionId) {
                     return this.get(sessionId).then(function (data) {
-                        _this._load(data);
+                        _this._load(data, sessionId);
                     })
                 },
 
-                _load: function (sessionData) {
+                _load: function (sessionData, sessionId) {
                     if (sessionData && sessionData.extents) {
                         MapService.removeAll();
 
@@ -251,6 +268,8 @@
 
                         MapService.setBaseMap(sessionData.basemap);
 
+                        LoggerService.log('Map', 'Session', {sessionId: sessionId})
+
                         //add in index order
                         sessionData.layers.sort(function (a, b) {
                             return a.index - b.index
@@ -259,6 +278,7 @@
                         for (var i = 0; i < sessionData.layers.length; i++) {
                             sessionData.layers[i].fromSave = true;
                             sessionData.layers[i].uid += uidOffset;
+                            sessionData.layers[i].log = false
                             MapService.add(sessionData.layers[i])
                         }
                     }

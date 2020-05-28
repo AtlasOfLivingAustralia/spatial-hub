@@ -10,10 +10,13 @@
     angular.module('tool-export-sample-service', [])
         .factory("ToolExportSampleService", ["$http", "$q", "MapService", "LayersService", "BiocacheService",
             function ($http, $q, MapService, LayersService, BiocacheService) {
+                var annotateDatasetOnExport = $SH.annotateDatasetOnExport;
+
                 var _this = {
                     species: undefined,
                     area: undefined,
                     layers: undefined,
+                    annotation: undefined,
 
                     // Override text with view-config.json
                     spec: {
@@ -59,6 +62,10 @@
                         _this.species = inputs[1];
                         _this.layers = inputs[2];
 
+                        if (annotateDatasetOnExport) {
+                            _this.annotation = inputs[3];
+                        }
+
                         return BiocacheService.newLayer(_this.species, _this.area, '').then(function (query) {
                             //include redirect to biocache-service/occurrences/search page
                             var sampleUrl = _this.species.ws + '/download/options1?searchParams=' +
@@ -82,10 +89,29 @@
                                 sampleUrl += '&layers=' + _this.species.species_list;
                             }
 
+                            if (_this.annotation) {
+                                sampleUrl += '&organisation=' + encodeURIComponent(_this.annotation.userOrganisation)
+                                           + '&workflowAnnotation=' + encodeURIComponent(_this.annotation.workflowAnnotation)
+                                           + '&dataSetAnnotation=' + encodeURIComponent(_this.annotation.dataSetAnnotation);
+                            }
+
                             return $q.when({output: {0: {openUrl: sampleUrl}}});
                         });
                     }
                 };
+
+                // Datasets produced by the CSDM tool are required to be annotated to allow other researchers to
+                // understand the workflow used to produce the data and decide whether it is relevant to them.
+                if (annotateDatasetOnExport) {
+                    _this.spec.input.push({
+                        "name":"annotateWorkflow",
+                        "description": "Annotate your workflow",
+                        "type":"annotation",
+                        "constraints":{
+                            "optional":false
+                        }
+                    });
+                }
 
                 return _this;
             }])

@@ -7,7 +7,7 @@
     </div>
 </div>
 
-<div style="width:410px;padding-left:25px;overflow-y:scroll;margin-left:-420px;"
+<div style="width:410px;padding-left:25px;overflow-y:auto;margin-left:-420px;"
      ng-style="(panelMode[0] == 'default' && {'overflow-y':'visible'}) || {'overflow-y':'scroll'}"
      class="pull-left"
      ng-controller="LayoutCtrl" id="left-panel">
@@ -20,7 +20,7 @@
             </div>
 
             <div class="ui-layout-south ui-layout-pane ui-layout-pane-south" name="divSelectedLayer" id="legend"
-                 ng-show="showOptions[0] || showLegend[0]"
+                 ng-show="showOptions[0] || showLegend[0] !== false"
                  style="display:block;overflow:hidden;background-color: #fff;height:100%">
                 <div class="col-md-12" style="padding-left:0px;padding-right:0px;height:100%;padding-bottom:10px">
                     <div class="panel panel-default" style="overflow:hidden;height:100%">
@@ -28,13 +28,13 @@
                             <i style="float:right" class="glyphicon glyphicon-menu-down"
                                ng-click="toggleOptions(false)"></i>
                             <h3 class="panel-title">
-                                <div i18n="285" ng-show="showOptions[0]">Edit map options</div>
-                                <div i18n="286" ng-show="showLegend[0]">Edit layer options</div>
+                                <div i18n="155" ng-show="showOptions[0]">Map options</div>
+                                <div ng-show="showLegend[0] !== false">{{ showLegend[0].name}}</div>
                             </h3>
                         </div>
-                        <div class="panel-body" style="padding-left:5px;overflow:scroll;height:100%;">
+                        <div class="panel-body" style="padding-left:5px;overflow:auto;height:100%;">
                             <div sp-options ng-show="showOptions[0]" style="padding-right:15px"></div>
-                            <div sp-legend ng-show="showLegend[0]"></div>
+                            <div sp-legend ng-show="showLegend[0] !== false"></div>
                         </div>
                     </div>
                 </div>
@@ -43,8 +43,8 @@
     </div>
     <div ng-if="panelMode[0] == 'area'" draw-area config='panelData.area'></div>
     <div ng-if="panelMode[0] == 'envelope'" envelope></div>
-    <div ng-if="panelMode[0] == 'nearestLocality'" nearest-locality></div>
-    <div ng-if="panelMode[0] == 'pointComparison'" point-comparison></div>
+    <div ng-if="panelMode[0] == 'nearestLocality'" nearest-locality config='panelData.nearestLocality'></div>
+    <div ng-if="panelMode[0] == 'pointComparison'" point-comparison config='panelData.pointComparison'></div>
 </div>
 
 <div id="right-panel">

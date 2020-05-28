@@ -286,6 +286,7 @@ bccvl:
         url: 'https://app.bccvl.org.au/bccvl/oauth2/authorize?client_id=F031d7ce-abb0-11e6-a678-0242ac120005&response_type=token&redirect_uri='
     post:
         url: 'https://app.bccvl.org.au/API/dm/v1/import_ala_data'
+
 keep:
     alive:
         timeout:
@@ -366,12 +367,12 @@ presetWMSServers:
     - name: "Geoserver IMOS"
       url: "http://geoserver.imos.org.au/geoserver/wms?REQUEST=GetCapabilities"
     - name: "GA"
-      url: "http://www.ga.gov.au/gis/services/earth_science/GA_Surface_Geology_of_Australia/MapServer/WMSServer?request=GetCapabilities"
+      url: "http://services.ga.gov.au/gis/services/GA_Surface_Geology/MapServer/WMSServer?request=GetCapabilities&service=WMS"
     - name: "Geofabric BOM"
       url: "http://geofabric.bom.gov.au/simplefeatures/ows?service=WMS&request=GetCapabilities"
 
 allowProxy:
-    server: 'data.auscover.org.au,data.auscover.org.au:80,geoserver.imos.org.au,www.ga.gov.au/gis,geofabric.bom.gov.au'
+    server: 'data.auscover.org.au,data.auscover.org.au:80,geoserver.imos.org.au,www.ga.gov.au/gis,geofabric.bom.gov.au,doi.ala.org.au,doi-test.ala.org.au,ga.gov.au,aodn.org.au'
 
 getMapExamples:
     - name: "Fractional Cover CLW - Non-PS Veg - 2012.297"
@@ -458,8 +459,59 @@ spApp:
     leftPanel: true
     # show the header by default
     header: true
+    # list charts to show on species info page
+    charts:
+      genus:
+        title: "By genus"
+        chartType: "doughnut"
+        emptyValueMsg: "Genus not specified"
+        hideEmptyValues: true
+        disableBiocacheQueryOnClick: true
+      collection_uid:
+        title: "By collection"
+        chartType: "doughnut"
+        emptyValueMsg: "Collection not specified"
+        hideEmptyValues: true
+        disableBiocacheQueryOnClick: true
+      assertions:
+        title: "By data assertion"
+        chartType: "horizontal-bar"
+        emptyValueMsg: "Assertion not specified"
+        hideEmptyValues: true
+        disableBiocacheQueryOnClick: true
+      type_status:
+        title: "By type status (as % of all type specimens)"
+        chartType: "doughnut"
+        emptyValueMsg: "Type status not specified"
+        hideEmptyValues: true
+        disableBiocacheQueryOnClick: true
+      state_conservation:
+        title: "By state conservation status"
+        chartType: "bar"
+        emptyValueMsg: "State conservation not specified"
+        hideEmptyValues: true
+        disableBiocacheQueryOnClick: true
+      month:
+        title: "By month"
+        chartType: "bar"
+        emptyValueMsg: "Month not specified"
+        hideEmptyValues: true
+        disableBiocacheQueryOnClick: true
+      decade:
+        title: "By decade"
+        chartType: "bar"
+        emptyValueMsg: "Year not specified"
+        hideEmptyValues: true
+        disableBiocacheQueryOnClick: true
 
+rangeDataTypes:
+  - 'tint'
+  - 'int'
+  - 'tdouble'
+  - 'tfloat'
+  - 'tdate'
 
+numberOfIntervalsForRangeData: 7
 #
 # portal.gsp layout options
 #
@@ -470,6 +522,59 @@ date.facet: 'occurrence_date'
 date.min: '1780-01-01'
 date.max: '2020-01-01'
 
+#
+# Override the list of grouped facets from biocache-service (biocacheService.url/search/grouped/facets).
+# This is used in a drop down list within the 'Edit species layer' section that is used to  colour or facet
+# upon the species layer.
+#
+#groupedFacets:
+#  - title: 'group 1 title'
+#    facets:
+#      - field: "SOLR field name" (mandatory)
+#        sort: 'index' for non-numeric fields OR 'count' or numeric fields (optional, default is index)
+#        description: 'label for the field' (optional, default is the SOLR field name)
+#        dwcTerm: 'Darwin Core term' (optional)
+#        i18nValues: true to translate facet values using biocache-service /facets/i18n OR false (optional, default is false)
+
+#
+# Remove fields that are retrieved from biocache-service (biocacheService.url/search/grouped/facets) and
+# (biocacheService.url/index/fields)
+#
+#fieldsIgnored:
+#  - field1
+#  - field2
+
+#
+# Include or Exclude the 'Search facets...' option. This is used in a drop down list within the 'Edit species layer'
+# section that is used to colour or facet upon the species layer.
+#
+facet.search: true
+
+#
+# Include or Exclude the grouped facet listing. These grouped facets appear at the end of the drop down list
+# within the 'Edit species layer' section that is used to colour or facet upon the species layer.
+#
+facet.list: true
+
+#
+# Enabled multiple species layer filters within the 'Edit species layer' section.
+#
+filters.enabled: true
+
+#
+# Enable workflow header button
+#
+workflow.enabled: true
+
+#
+# List of workflowIds that operate on a species layer. These appear when clicking on the 'default filter' 'filter'
+# in the `Edit species layer` section.
+#
+# These workflows will be forced to operate on the selected layer and should be public.
+#
+#workflow.speciesFilters: [ { name: 'CSDM default filter', workflowId: 52 } ]
+workflow.speciesFilters: []
+
 ## spring-session config
 spring:
   session:
@@ -479,11 +584,21 @@ spring:
 #    port: 6379
 #    password: ""
 
+# Used by the DOI dataset import and DOI generation
+#doiService:
+#  url: "https://doi.ala.org.au"
+#  searchFilter:
+#    applicationMetadata:
+#      applicationName: "CSDM"
+
 ---
 environments:
     development:
+        server:
+          port: 8087
+          use-forward-headers: true
         grails:
-          serverURL: http://devt.ala.org.au
+          serverURL: http://devt.ala.org.au:8087
     test:
     production:
         assets:

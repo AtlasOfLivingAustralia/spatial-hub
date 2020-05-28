@@ -21,7 +21,7 @@
 
             var indexFields;
 
-            return {
+            var thiz = {
                 /**
                  * Get the number of unique species (by facet names_and_lsid)
                  * @memberof BiocacheService
@@ -427,12 +427,35 @@
                   "green": 57
                   }]
                  */
-                facet: function (facet, query) {
+                facet: function (facet, query, ranges) {
                     return this.registerQuery(query).then(function (response) {
-                        return $http.get(query.bs + "/webportal/legend?cm=" + facet + "&q=" + response.qid + "&type=application/json", _httpDescription('facet',
+                        ranges = (ranges || []).join(",");
+                        ranges = ranges.length > 0 ? "," + ranges : "";
+                        return $http.get(query.bs + "/webportal/legend?cm=" + facet + ranges + "&q=" + response.qid + "&type=application/json", _httpDescription('facet',
                             {headers: {Accept: "application/json"}})).then(function (response) {
                             $.map(response.data, function (v, k) {
-                                v.displayname = Messages.get(facet + '.' + v.name, v.name ? v.name : "")
+                                if (ranges.length > 0) {
+                                    // parse name for ranges: (optional '-')  + facet + '.[' + min + ' TO ' + max + ']'
+                                    var match = ("" + v.name).match(/(-)*.*\[(.* TO .*)\]/);
+                                    if (match && match.length === 3) {
+                                        match[1] = match[1] || "";
+                                        // add "exclude" to label for facets with '-'
+                                        if (match[1] === '-' && match[2] === "* TO *") {
+                                            match[1] = "";
+                                            match[2] = $i18n(474, "Not supplied")
+                                            // 'min' is for numerical sorting
+                                            v.min = ''
+                                        } else {
+                                            // 'min' is for numerical sorting
+                                            v.min = parseFloat(match[2].split(' ')[0])
+                                        }
+                                        v.displayname = match[1] + match[2];
+                                    } else {
+                                        v.displayname = v.name
+                                    }
+                                } else {
+                                    v.displayname = BiocacheI18n.get(facet + '.' + v.name, v.name ? v.name : "")
+                                }
                             });
                             return response.data;
                         });
@@ -486,7 +509,7 @@
                         return $http.get(url, _httpDescription('facetGeneral', config)).then(function (response) {
                             if (response.data && response.data[0] && response.data[0].fieldResult) {
                                 $.map(response.data[0].fieldResult, function (v, k) {
-                                    v.displaylabel = Messages.get(facet + '.' + v.label, v.label ? v.label : "")
+                                    v.displaylabel = BiocacheI18n.get(facet + '.' + v.label, v.label ? v.label : "")
                                 });
                                 return response.data;
                             } else {
@@ -509,8 +532,10 @@
                     var q = '';
                     if (list instanceof Array) {
                         $.each(list, function (index, item) {
-                            if (q.length > 0) q += '&fq=';
-                            q += encodeURIComponent(item)
+                            if (item !== undefined && item !== null) {
+                                if (q.length > 0) q += '&fq=';
+                                q += encodeURIComponent(item)
+                            }
                         })
                     } else {
                         q = list
@@ -746,7 +771,11 @@
                         $.merge(fqs, [newFq])
                     }
 
-                    return this.registerLayer(query.bs, query.ws, fqs, query.wkt, newName)
+                    return this.registerLayer(query.bs, query.ws, fqs, query.wkt, newName).then(function (data) {
+                        data.species_list = query.species_list
+
+                        return data
+                    })
                 },
                 /**
                  * Create a layer and register for qid
@@ -788,8 +817,7 @@
                     if (fq.length > 0 || (wkt !== undefined && wkt !== null && wkt.length > 0)) {
                         return this.registerParam(bs, q, fq, wkt).then(function (data) {
                             return {
-                                q: q,
-                                fq: fq,
+                                q: $.merge([q], fq),
                                 wkt: wkt,
                                 qid: "qid:" + data.qid,
                                 bs: bs,
@@ -801,10 +829,9 @@
                         var qc = [];
                         if ($SH.qc !== undefined && $SH.qc != null && $SH.qc.length > 0) qc = [$SH.qc];
                         return $q.when({
-                            q: q,
-                            fq: qc, //fq.length == 0 so it is safe to use qc here
+                            q: $.merge(q, qc), //fq.length == 0 so it is safe to use qc here
                             wkt: wkt,
-                            qid: q,
+                            qid: "(" + q + ") AND " + qc[0],
                             bs: bs,
                             ws: ws,
                             name: name
@@ -813,17 +840,165 @@
                 },
                 getIndexFields: function () {
                     // use static index fields before biocache-service index fields
-                    if ($SH.indexFields) {
-                        return $q.when($SH.indexFields)
-                    } else if (scope.indexFields) {
+                    if (indexFields) {
                         return $q.when(indexFields)
                     } else {
-                        return $http.get($SH.baseUrl + "/index/fields", data, _httpDescription('getIndexFields')).then(function (response) {
+                        return $http.get($SH.biocacheServiceUrl + "/index/fields", _httpDescription('getIndexFields')).then(function (response) {
                             indexFields = response.data;
-                            return response.data
+                            for (var i = 0; i < indexFields.length; i++) {
+                                indexFields[i].displayName = indexFields[i].dwcTerm || indexFields[i].description || indexFields[i].name
+                                if (indexFields[i].classs === undefined) {
+                                    indexFields[i].classs = 'Other'
+                                }
+                                indexFields[i].url = thiz.parseUrl(indexFields[i].info)
+                                if (indexFields[i].url !== undefined) {
+                                    indexFields[i].info = indexFields[i].info.replace(indexFields[i].url, '')
+                                } else {
+                                    indexFields[i].url = ''
+                                }
+                                if (indexFields[i].description === undefined) {
+                                    indexFields[i].description = ''
+                                }
+                            }
+                            return indexFields
                         });
                     }
+                },
+                parseUrl: function (info) {
+                    if (info !== undefined) {
+                        var match = info.match("\\bhttps?://[^\\b]+")
+                        if (match) {
+                            return match[0]
+                        }
+                    }
+                    return undefined
+                },
+                /**
+                 * Get the minimum and maxium value for a facet in a given query.
+                 * @param query
+                 * @param facet
+                 * @returns {Promise(Object)}
+                 * Input:
+                 * - facet
+                 *  {
+                 *      name: "year"
+                 *      ...
+                 *  }
+                 * - query
+                 *  {
+                 *      "q": "frog",
+                 *      "bs": "https://biocache-ws.ala.org.au/ws",
+                 *      "ws": "https://biocache.ala.org.au"
+                 *  }
+                 *
+                 * Output:
+                 * {
+                 *      "min":1896.0,
+                 *      "max":2019.0,
+                 *      "label":"year"
+                 * }
+                 */
+                getFacetMinMax: function(query, facet) {
+                    var defaultValue = {min: undefined, max: undefined, label: facet.name};
+                    if (Util.isFacetOfRangeDataType(facet.dataType)) {
+                        return this.registerQuery(query).then(function (response) {
+                            return $http.get(query.bs + "/chart?q=" + response.qid + "&statType=min,max&stats=" + facet.name).then(function (response) {
+                                return response.data.data && response.data.data[0] && response.data.data[0].data && response.data.data[0].data[0] || defaultValue;
+                            });
+                        });
+                    } else {
+                        return $q.when(defaultValue);
+                    }
+                },
+                facetsToFq: function (facet, ignoreEnabledFlag) {
+                    var fqs = [];
+                    if (facet && facet.length > 0) {
+                        for (var i in facet) {
+                            var term = this.facetToFq(facet[i], ignoreEnabledFlag)
+                            if (term && term.fq) {
+                                fqs.push(term.fq)
+                            }
+                        }
+                    }
+                    return fqs;
+                },
+                facetToFq: function (facet, ignoreEnabledFlag) {
+                    if (facet.data === undefined || (!ignoreEnabledFlag && !facet.enabled)) {
+                        return {sum: 0, fq: undefined}
+                    }
+                    var sel = '';
+                    var invert = false;
+                    var count = 0;
+                    var sum = 0;
+                    // sum only applies to the single facet
+                    for (var i = 0; i < facet.data.length; i++) {
+                        if (facet.data[i].selected) {
+                            var fq = facet.data[i].fq;
+                            if (fq.match(/^-/g) != null && (fq.match(/:\*$/g) != null || fq.match(/\[\* TO \*\]$/g) != null)) {
+                                invert = true
+                            }
+                            count++;
+                            sum += facet.data[i].count;
+                        }
+                    }
+
+                    if (count == 0 /*|| count == facet.data.length*/) {
+                        return {sum: 0, fq: undefined}
+                    } else {
+                        if (count === 1) invert = false;
+                        for (i = 0; i < facet.data.length; i++) {
+                            if (facet.data[i].selected) {
+                                var fq = facet.data[i].fq;
+
+                                if (invert) {
+                                    if (sel.length > 0) sel += " AND ";
+                                    if (fq.match(/^-/g) != null && (fq.match(/:\*$/g) != null || fq.match(/\[\* TO \*\]$/g) != null)) {
+                                        sel += fq.substring(1)
+                                    } else {
+                                        sel += '-' + fq
+                                    }
+                                } else {
+                                    if (sel.length > 0) sel += " OR ";
+                                    sel += fq
+                                }
+                            }
+                        }
+                        if (invert) {
+                            sel = '-(' + sel + ')'
+                        }
+                        return {sum: sum, fq: sel}
+                    }
+                },
+                downloadAsync:function(species, area, doiApplicationData) {
+                    var params = {
+                        hubName: "CSDM",
+                        file: species.name,
+                        mintDoi: true,
+                        reasonTypeId: 13,
+                        fileType: 'csv',
+                        qa: 'none',
+                        sourceTypeId: 10002,
+                        email: $SH.userEmail,
+                        emailTemplate: $SH.doiEmailTemplate || 'csdm',
+                        displayTemplate: $SH.doiDisplayTemplate || 'csdm'
+                    };
+
+                    // This should be a POST but the data binding in biocache-service isn't setup to bind from the POST body.
+                    for (var key in doiApplicationData) {
+                        if (doiApplicationData.hasOwnProperty(key)) {
+                            params["doiMetadata["+key+"]"] = doiApplicationData[key];
+                        }
+                    }
+
+                    return thiz.newLayer(species, area, species.name).then(function (query) {
+                        var downloadUrl = $SH.biocacheServiceUrl + '/occurrences/offline/download';
+                        params.q=query.qid;
+                        params.searchUrl = $SH.biocacheServiceUrl + '/occurrences/search?q='+query.qid;
+                        return $http.get(downloadUrl, _httpDescription("offlineDownload", {params:params}));
+                    });
+
                 }
             };
+            return thiz;
         }])
 }(angular));

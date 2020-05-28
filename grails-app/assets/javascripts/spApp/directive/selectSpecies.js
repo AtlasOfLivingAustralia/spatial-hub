@@ -8,8 +8,8 @@
      *    Species selection control
      */
     angular.module('select-species-directive', ['map-service', 'lists-service'])
-        .directive('selectSpecies', ['MapService', 'ListsService', '$timeout', 'LayoutService',
-            function (MapService, ListsService, $timeout, LayoutService) {
+        .directive('selectSpecies', ['MapService', 'ListsService', '$timeout', 'LayoutService', 'DoiService', 'UrlParamsService',
+            function (MapService, ListsService, $timeout, LayoutService, DoiService, UrlParamsService) {
 
                 return {
                     scope: {
@@ -24,10 +24,33 @@
                         _speciesOption: '=?speciesOption',
                         _absentOption: '=?absentOption',
                         _canAddSpecies: '=?canAddSpecies',
-                        _dateRangeOption: '=?dateRangeOption'
+                        _dateRangeOption: '=?dateRangeOption',
+                        _lifeforms: '=?lifeforms',
+                        _importList: '=?importList',
+                        _importPoints: '=?importPoints',
+                        _searchSpecies: '=?searchSpecies',
+                        _allSpecies: '=?allSpecies',
+
                     },
                     templateUrl: '/spApp/selectSpeciesCtrl.htm',
                     link: function (scope, element, attrs) {
+                        // override settings with _inputData
+                        if (scope._inputData !== undefined) {
+                            if (scope._inputData.includeLayers !== undefined) scope._includeLayers = scope._inputData.includeLayers;
+                            if (scope._inputData.min !== undefined) scope._min = scope._inputData.min;
+                            if (scope._inputData.areaIncludes !== undefined) scope._areaIncludes = scope._inputData.areaIncludes;
+                            if (scope._inputData.spatialValidity !== undefined) scope._spatialValidity = scope._inputData.spatialValidity;
+                            if (scope._inputData.speciesOption !== undefined) scope._speciesOption = scope._inputData.speciesOption;
+
+                            if (scope._inputData.absentOption !== undefined) scope._absentOption = scope._inputData.absentOption;
+                            if (scope._inputData.canAddSpecies !== undefined) scope._canAddSpecies = scope._inputData.canAddSpecies;
+                            if (scope._inputData.dateRangeOption !== undefined) scope._dateRangeOption = scope._inputData.dateRangeOption;
+                            if (scope._inputData.lifeforms !== undefined) scope._lifeforms = scope._inputData.lifeforms;
+                            if (scope._inputData.importList !== undefined) scope._importList = scope._inputData.importList;
+                            if (scope._inputData.importPoints !== undefined) scope._importPoints = scope._inputData.importPoints;
+                            if (scope._inputData.searchSpecies !== undefined) scope._searchSpecies = scope._inputData.searchSpecies;
+                            if (scope._inputData.allSpecies !== undefined) scope._allSpecies = scope._inputData.allSpecies;
+                        }
 
                         //defaults
                         if (scope._min === undefined) scope._min = 1;
@@ -42,8 +65,14 @@
                             //when speciesOption is defined do not replace selection
                             scope._speciesOptionMandatory = true;
                         }
-                        if (scope._absentOption === undefined) scope._absentOption = true;
+                        if (scope._absentOption === undefined) scope._absentOption = false;
                         if (scope._canAddSpecies === undefined) scope._canAddSpecies = true;
+
+                        if (scope._lifeforms === undefined) scope._lifeforms = true
+                        if (scope._importList === undefined) scope._importList = true
+                        if (scope._importPoints === undefined) scope._importPoints = true
+                        if (scope._searchSpecies === undefined) scope._searchSpecies = true
+                        if (scope._allSpecies === undefined) scope._allSpecies = true
 
                         scope.spatiallyValid = true;
                         scope.spatiallySuspect = false;
@@ -56,11 +85,7 @@
 
                         scope.includeAbsences = false;
 
-                        if (scope._inputData !== undefined && scope._inputData.speciesOption !== undefined) {
-                            scope.speciesOption = scope._inputData.speciesOption
-                        } else {
-                            scope.speciesOption = scope._speciesOption;
-                        }
+                        scope.speciesOption = scope._speciesOption;
 
                         scope.multiselect = false;
                         if (scope._selectedQ === undefined) {
@@ -75,15 +100,11 @@
 
                         scope.sandboxName = '';
                         scope.speciesListName = '';
+                        scope.doiEnabled = DoiService.isEnabled();
 
                         LayoutService.addToSave(scope);
 
                         scope.speciesLayers = scope._includeLayers ? MapService.speciesLayers() : [];
-                        if (!scope._speciesOptionMandatory &&
-                            (scope._inputData === undefined || scope._inputData.speciesOption === undefined) &&
-                            scope.speciesOption === 'searchSpecies' && scope.speciesLayers.length > 0) {
-                            scope.speciesOption = scope.speciesLayers[0].uid;
-                        }
 
                         scope.openSandbox = function () {
                             $timeout(function () {
@@ -137,6 +158,7 @@
                                     selection.wkt = undefined;
                                     selection.qid = undefined;
                                     selection.species_list = undefined;
+                                    selection.layerUid = undefined;
                                 } else {
                                     scope.clearQ();
                                 }
@@ -213,7 +235,9 @@
                                 selection.bs = query.bs;
                                 selection.ws = query.ws;
                                 if (selection.bs === undefined) scope._selectedQ.bs = $SH.biocacheServiceUrl;
-                                if (selection.ws === undefined) scope._selectedQ.ws = $SH.biocacheUrl
+                                if (selection.ws === undefined) scope._selectedQ.ws = $SH.biocacheUrl;
+
+                                selection.layerUid = query.layerUid;
 
                                 // update the total selection when this is a multiselect
                                 if (scope.multiselect) {
@@ -303,14 +327,27 @@
                                 species_list: layer.species_list,
                                 wkt: layer.wkt,
                                 qid: layer.qid,
-                                name: layer.name
+                                layerUid: layer.uid
                             };
 
                             if (query.bs === undefined) query.bs = $SH.biocacheServiceUrl;
                             if (query.ws === undefined) query.ws = $SH.biocacheUrl;
 
                             return query;
-                        }
+                        };
+
+                        scope.doiSelected = function(doi) {
+                            var url = DoiService.getQueryUrl(doi);
+                            if (url) {
+                                var searchParams = UrlParamsService.parseSearchParams(url);
+                                var queryParams = DoiService.buildQueryFromDoi(doi, searchParams);
+                                scope.setQ(queryParams);
+                            }
+                            else {
+                                // This shouldn't happen as dois without a URL will be filtered out by the search process.
+                                bootbox.alert("No data was able to be extracted from the selected DOI");
+                            }
+                        };
 
                         scope.isLoggedIn = $SH.userId !== undefined && $SH.userId !== null && $SH.userId.length > 0;
                         scope.isNotLoggedIn = !scope.isLoggedIn;
@@ -320,11 +357,22 @@
                                 scope.changeOption(scope._selectedQ.selectOption)
                             } else if (scope._min === 0) {
                                 scope.speciesOption = 'none'
-                            } else if (!scope._speciesOptionMandatory &&
-                                (scope._inputData === undefined || scope._inputData.speciesOption === undefined) &&
+                            } else if (!scope._speciesOptionMandatory && scope.speciesOption === 'searchSpecies' &&
                                 scope.speciesLayers.length > 0) {
                                 scope.changeOption(scope.speciesLayers[0].uid)
                             } else if (scope._min > 0) {
+                                // select existing layer if layerUid matches and return immediately
+                                if (scope._selectedQ.layerUid !== undefined) {
+                                    for (var i = 0; i < scope.speciesLayers.length; i++) {
+                                        // not all species layers must have a qid
+                                        if (scope.speciesLayers[i].uid === scope._selectedQ.layerUid) {
+                                            scope.speciesOption = scope.speciesLayers[i].uid;
+                                            scope.changeOption()
+                                            return;
+                                        }
+                                    }
+                                }
+
                                 // select existing layer if selectedQ matches
                                 if (scope._selectedQ.q.length > 0) {
                                     for (var i = 0; i < scope.speciesLayers.length; i++) {

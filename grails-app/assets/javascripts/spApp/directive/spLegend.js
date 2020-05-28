@@ -8,8 +8,8 @@
      *    Panel displaying selected map layer information and controls
      */
     angular.module('sp-legend-directive', ['map-service', 'biocache-service', 'layers-service', 'popup-service'])
-        .directive('spLegend', ['$timeout', '$q', 'MapService', 'BiocacheService', 'LayersService', 'ColourService', '$http', 'LayoutService', 'PopupService', 'LoggerService',
-            function ($timeout, $q, MapService, BiocacheService, LayersService, ColourService, $http, LayoutService, PopupService, LoggerService) {
+        .directive('spLegend', ['$timeout', '$q', 'MapService', 'BiocacheService', 'LayersService', 'ColourService', '$http', 'LayoutService', 'PopupService', 'EventService',
+            function ($timeout, $q, MapService, BiocacheService, LayersService, ColourService, $http, LayoutService, PopupService, EventService) {
 
                 var _httpDescription = function (method, httpconfig) {
                     if (httpconfig === undefined) {
@@ -35,6 +35,7 @@
                         scope.selected = MapService.selected;
                         scope.selectedWatch = [MapService.selected];
 
+                        scope.workflowFilters = $SH.workflowFilters;
 
                         scope.sortType = 'count';
                         scope.sortReverse = true;
@@ -48,12 +49,13 @@
                         };
 
                         scope.$watch('selected.layer.uid', function (oldValue, newValue) {
+                            LayoutService.closeModeless('FacetEditorModalCtrl')
                             scope.setAreaLayers();
                             scope.updateFacet();
                         });
 
                         scope.showLegend = function () {
-                            scope.selected.hidelegend = false
+                            scope.selected.layer.hidelegend = false
                         };
 
                         scope.areaLayers = [];
@@ -62,15 +64,16 @@
                             scope.areaLayers = [{pid: null, name: ''}].concat(MapService.areaLayers());
                         };
 
-                        scope.updateContextualList = function () {
-                            if (scope.selected.layer !== undefined && scope.selected.layer !== null && scope.selected.layer.contextualPage !== undefined) {
-                                LayersService.getField(scope.selected.layer.id,
-                                    (scope.selected.layer.contextualPage - 1) * scope.selected.layer.contextualPageSize,
-                                    scope.selected.layer.contextualPageSize, scope.selected.layer.contextualFilter).then(function (data) {
-                                    scope.selected.layer.contextualList = data.data.objects;
-                                    for (var i in scope.selected.layer.contextualList) {
-                                        if (scope.selected.layer.contextualList.hasOwnProperty(i)) {
-                                            scope.selected.layer.contextualList[i].selected = (scope.selected.layer.contextualSelection[scope.selected.layer.contextualList[i].name] !== undefined)
+                        scope.updateContextualList = function (_layer) {
+                            var selectedLayer = _layer || scope.selected.layer;
+                            if (selectedLayer !== undefined && selectedLayer !== null && selectedLayer.contextualPage !== undefined) {
+                                LayersService.getField(selectedLayer.id,
+                                    (selectedLayer.contextualPage - 1) * selectedLayer.contextualPageSize,
+                                    selectedLayer.contextualPageSize, selectedLayer.contextualFilter).then(function (data) {
+                                    selectedLayer.contextualList = data.data.objects;
+                                    for (var i in selectedLayer.contextualList) {
+                                        if (selectedLayer.contextualList.hasOwnProperty(i)) {
+                                            selectedLayer.contextualList[i].selected = (selectedLayer.contextualSelection[selectedLayer.contextualList[i].name] !== undefined)
                                         }
                                     }
                                 })
@@ -82,84 +85,64 @@
                         };
 
                         scope.contextualClearSelection = function () {
-                            if (scope.selected.layer !== undefined) {
+                            var selectedLayer = scope.selected.layer;
+                            if (selectedLayer !== undefined) {
                                 var key;
-                                for (key in scope.selected.layer.contextualSelection) {
-                                    if (scope.selected.layer.contextualSelection.hasOwnProperty(key)) {
-                                        delete scope.selected.layer.contextualSelection[key]
+                                for (key in selectedLayer.contextualSelection) {
+                                    if (selectedLayer.contextualSelection.hasOwnProperty(key)) {
+                                        delete selectedLayer.contextualSelection[key]
                                     }
                                 }
-                                for (var i in scope.selected.layer.contextualList) {
-                                    if (scope.selected.layer.contextualList.hasOwnProperty(i)) {
-                                        scope.selected.layer.contextualList[i].selected = false
+                                for (var i in selectedLayer.contextualList) {
+                                    if (selectedLayer.contextualList.hasOwnProperty(i)) {
+                                        selectedLayer.contextualList[i].selected = false
                                     }
                                 }
                             }
+                            for (var i = selectedLayer.leaflet.layerOptions.layers.length - 1; i > 0; i--) {
+                                delete selectedLayer.leaflet.layerOptions.layers[i]
+                            }
+
+                            selectedLayer.leaflet.layerOptions.layers.splice(1, selectedLayer.leaflet.layerOptions.layers.length - 1)
+                            selectedLayer.leaflet.layerOptions.layers[0].layerParams.opacity = scope.selected.layer.leaflet.layerOptions.layers[0].opacity / 100.0
+
+                            $timeout(function () {
+                                scope.updateWMS(selectedLayer)
+                            }, 0)
                         };
 
                         scope.contextualClearHighlight = function () {
-                            if (scope.selected.layer !== undefined) {
+                            var selectedLayer = scope.selected.layer;
+                            if (selectedLayer !== undefined) {
                                 //remove highlight layer
-                                scope.selected.layer.contextualHighlight = "";
+                                selectedLayer.contextualHighlight = "";
                                 MapService.setHighlightVisible(false);
                             }
                         };
 
                         scope.scatterplotCreateInOut = function () {
-                            if (scope.selected.layer !== undefined) {
-                                var inFq = scope.selected.layer.scatterplotFq;
-                                var outFq = '-(' + scope.selected.layer.scatterplotFq + ')';
+                            var selectedLayer = scope.selected.layer;
+                            if (selectedLayer !== undefined) {
+                                var inFq = selectedLayer.scatterplotFq;
+                                var outFq = '-(' + selectedLayer.scatterplotFq + ')';
 
-                                LoggerService.log("Create", "scatterplotCreateInOut", JSON.stringify({
-                                    scatterplot: scope.selected.layer.scatterplotId,
-                                    scatterplotFq: scope.selected.layer.scatterplotFq
-                                }))
-
-                                BiocacheService.newLayerAddFq(scope.selected.layer, inFq,
-                                    scope.selected.layer.name + " : " + $i18n(338, "in scatterplot selection")).then(function (data) {
-                                    MapService.add(data)
-                                });
-
-                                BiocacheService.newLayerAddFq(scope.selected.layer, outFq,
-                                    scope.selected.layer.name + " : " + $i18n(339, "out scatterplot selection")).then(function (data) {
-                                    MapService.add(data)
-                                })
+                                EventService.scatterplotCreateInOut(selectedLayer, inFq, outFq)
                             }
                         };
 
                         scope.adhocCreateInOut = function () {
-                            if (scope.selected.layer !== undefined) {
-
-                                LoggerService.log("Create", "adhocCreateInOut",
-                                    JSON.stringify({
-                                        query: scope.selected.layer.q, bs: scope.selected.layer.bs,
-                                        ws: scope.selected.layer.ws, inFq: scope.selected.layer.inAdhocQ,
-                                        outFq: scope.selected.layer.outAdhocQ
-                                    }))
-
-                                if (scope.selected.layer.inAdhocQ) {
-                                    var inFq = scope.selected.layer.inAdhocQ
-                                    BiocacheService.newLayerAddFq(scope.selected.layer, inFq,
-                                        scope.selected.layer.name + " : " + $i18n(340, "in adhoc")).then(function (data) {
-                                        MapService.add(data)
-                                    });
-                                }
-
-                                if (scope.selected.layer.outAdhocQ) {
-                                    var outFq = scope.selected.layer.outAdhocQ;
-                                    BiocacheService.newLayerAddFq(scope.selected.layer, outFq,
-                                        scope.selected.layer.name + " : " + $i18n(341, "out adhoc")).then(function (data) {
-                                        MapService.add(data)
-                                    })
-                                }
+                            var selectedLayer = scope.selected.layer;
+                            if (selectedLayer !== undefined) {
+                                EventService.adhocCreateInOut(selectedLayer, selectedLayer.inAdhocQ, selectedLayer.outAdhocQ)
                             }
                         };
 
                         scope.isCreateAreaDisabled = function () {
-                            if (scope.selected.layer != null && scope.selected.layer !== undefined) {
-                                for (var key in scope.selected.layer.contextualSelection) {
-                                    if (scope.selected.layer.contextualSelection.hasOwnProperty(key)) {
-                                        var item = scope.selected.layer.contextualSelection[key];
+                            var selectedLayer = scope.selected.layer;
+                            if (selectedLayer !== undefined) {
+                                for (var key in selectedLayer.contextualSelection) {
+                                    if (selectedLayer.contextualSelection.hasOwnProperty(key)) {
+                                        var item = selectedLayer.contextualSelection[key];
                                         if (item.selected) {
                                             return false;
                                         }
@@ -170,22 +153,22 @@
                         };
 
                         scope.contextualCreateArea = function () {
-                            if (scope.selected.layer !== undefined) {
+                            if (selectedLayer !== undefined) {
                                 var ids = [];
                                 var fqs = [];
                                 var objects = [];
 
-                                for (var key in scope.selected.layer.contextualSelection) {
-                                    if (scope.selected.layer.contextualSelection.hasOwnProperty(key)) {
-                                        var item = scope.selected.layer.contextualSelection[key];
+                                for (var key in selectedLayer.contextualSelection) {
+                                    if (selectedLayer.contextualSelection.hasOwnProperty(key)) {
+                                        var item = selectedLayer.contextualSelection[key];
                                         if (item.selected) {
-                                            fqs.push(scope.selected.layer.id + ':"' + item.name + '"');
+                                            fqs.push(selectedLayer.id + ':"' + item.name + '"');
                                             ids.push(item.pid);
                                         }
                                     }
                                 }
 
-                                scope.mapObjectsList(ids, fqs, objects, 0, scope.selected.layer.name);
+                                scope.mapObjectsList(ids, fqs, objects, 0, selectedLayer.name);
                             }
                         };
 
@@ -254,259 +237,179 @@
                             MapService.leafletScope.zoom(item.bbox)
                         };
 
-                        scope.contextualHighlight = function (name, pid) {
-                            if (scope.selected.layer !== undefined) {
-                                scope.selected.layer.contextualHighlight = name;
-                                LayersService.getObject(pid).then(function (data) {
-                                    MapService.removeHighlight();
+                        scope.contextualHighlight = function (name, pid, item) {
+                            var selectedLayer = scope.selected.layer;
+                            if (selectedLayer !== undefined) {
+                                if (item.selected) {
+                                    selectedLayer.contextualHighlight = name;
 
-                                    data.data.layertype = 'area';
-                                    data.data.color = 'ff0000';
-                                    data.data.opacity = 100.0;
-                                    MapService.addHighlight(data.data);
-                                });
+                                    var found = false
+                                    for (var i = selectedLayer.leaflet.layerOptions.layers.length - 1; i > 0; i--) {
+                                        if (selectedLayer.leaflet.layerOptions.layers[i] && selectedLayer.leaflet.layerOptions.layers[i].pid === pid) {
+                                            found = true
+                                        }
+                                    }
+
+                                    if (!found) {
+                                        // hide top layer in layer group
+                                        selectedLayer.leaflet.layerOptions.layers[0].layerParams.opacity = 0
+                                        MapService.mapFromPid({pid: pid}, selectedLayer, 'ff0000')
+                                    }
+                                } else {
+                                    for (var i = selectedLayer.leaflet.layerOptions.layers.length - 1; i > 0; i--) {
+                                        if (selectedLayer.leaflet.layerOptions.layers[i] && selectedLayer.leaflet.layerOptions.layers[i].pid === pid) {
+                                            delete selectedLayer.leaflet.layerOptions.layers[i]
+                                            selectedLayer.leaflet.layerOptions.layers.splice(i, 1)
+                                        }
+                                    }
+
+                                    if (selectedLayer.leaflet.layerOptions.layers.length > 1) {
+                                        // hide top layer in layer group
+                                        selectedLayer.leaflet.layerOptions.layers[0].layerParams.opacity = 0
+                                    } else {
+                                        // show top layer in layer group
+                                        selectedLayer.leaflet.layerOptions.layers[0].layerParams.opacity = scope.selected.layer.leaflet.layerOptions.layers[0].opacity / 100.0
+                                    }
+
+                                    MapService.reloadLayer(selectedLayer)
+                                }
                             }
                         };
 
                         scope.contextualSelectionChange = function (item) {
-                            if (scope.selected.layer !== undefined) {
-                                scope.selected.layer.contextualSelection[item.name] = item
+                            var selectedLayer = scope.selected.layer;
+                            if (selectedLayer !== undefined) {
+                                if (item.selected) {
+                                    selectedLayer.contextualSelection[item.name] = item
+                                } else {
+                                    delete selectedLayer.contextualSelection[item.name]
+                                }
                             }
                         };
 
                         scope.contextualPageBack = function () {
-                            if (scope.selected.layer !== undefined && scope.selected.layer !== null && scope.selected.layer.contextualPage > 1) {
-                                scope.selected.layer.contextualPage--;
-                                scope.updateContextualList()
+                            var selectedLayer = scope.selected.layer;
+                            if (selectedLayer !== undefined && selectedLayer.contextualPage > 1) {
+                                selectedLayer.contextualPage--;
+                                scope.updateContextualList(selectedLayer)
                             }
                         };
 
                         scope.contextualPageForward = function () {
-                            if (scope.selected.layer !== null && scope.selected.layer.contextualPage < scope.selected.layer.contextualMaxPage) {
-                                scope.selected.layer.contextualPage++;
-                                scope.updateContextualList()
+                            var selectedLayer = scope.selected.layer;
+                            if (selectedLayer.contextualPage < selectedLayer.contextualMaxPage) {
+                                selectedLayer.contextualPage++;
+                                scope.updateContextualList(selectedLayer)
                             }
                         };
 
                         scope.clearContextualFilter = function () {
-                            if (scope.selected.layer !== undefined) {
-                                scope.selected.layer.contextualFilter = ''
+                            var selectedLayer = scope.selected.layer;
+                            if (selectedLayer !== undefined) {
+                                selectedLayer.contextualFilter = ''
+                                scope.updateContextualList(selectedLayer)
                             }
                         };
 
                         scope.externalWmsLegendVisible = function () {
-                            return scope.selected.layer !== undefined && scope.selected.layer !== null &&
-                                scope.selected.layer.layertype === 'wms' &&
-                                (scope.selected.hidelegend === undefined || !scope.selected.hidelegend)
+                            var selected = scope.selected;
+                            return selected.layer !== undefined &&
+                                selected.layer.layertype === 'wms' &&
+                                (selected.layer.hidelegend === undefined || !selected.layer.hidelegend)
                         };
 
                         scope.wmsLegendVisible = function () {
-                            return scope.selected.layer !== undefined && scope.selected.layer !== null &&
-                                (scope.selected.layer.layertype === 'grid' || scope.selected.layer.layertype === 'contextual') &&
-                                (scope.selected.hidelegend === undefined || !scope.selected.hidelegend)
+                            var selected = scope.selected;
+                            return selected.layer !== undefined &&
+                                (selected.layer.layertype === 'grid' || selected.layer.layertype === 'contextual') &&
+                                (selected.layer.hidelegend === undefined || !selected.layer.hidelegend)
                         };
 
                         scope.hideLegend = function () {
-                            scope.selected.hidelegend = true
+                            scope.selected.layer.hidelegend = true
                         };
 
                         scope.popupLegend = function () {
+                            var selected = scope.selected;
                             L.control.window(map, {
                                 modal: false,
-                                title: scope.selected.displayname,
-                                content: '<img src="' + scope.selected.layer.leaflet.layerOptions.layers[0].legendurl + '"/>'
+                                title: selected.displayname,
+                                content: '<img src="' + selected.layer.leaflet.layerOptions.layers[0].legendurl + '"/>'
                             }).show()
                         };
 
                         scope.setColor = function (color) {
-                            if (scope.selected.layer !== undefined) {
-                                scope.selected.layer.color = color;
+                            var selectedLayer = scope.selected.layer;
+                            if (selectedLayer !== undefined) {
+                                selectedLayer.color = color;
                                 scope.updateWMS();
                                 scope.scatterplotUpdate()
                             }
                         };
 
                         scope.setColorType = function (colorType) {
-                            if (scope.selected.layer !== undefined) {
-                                scope.selected.layer.colorType = colorType;
+                            var selectedLayer = scope.selected.layer;
+                            if (selectedLayer !== undefined) {
+                                selectedLayer.colorType = colorType;
                                 scope.updateWMS();
                                 scope.scatterplotUpdate()
                             }
                         };
 
                         scope.facetNewLayer = function () {
-                            if (scope.selected.layer !== undefined) {
-                                BiocacheService.newLayerAddFq(scope.selected.layer, decodeURIComponent(scope.selected.layer.sel),
-                                    scope.selected.layer.name + " : " + $i18n(342, "from selected")).then(function (data) {
-                                    data.species_list = scope.selected.layer.species_list;
-
-                                    LoggerService.log("Create", "facetNewLayer",
-                                        JSON.stringify({
-                                            query: scope.selected.layer.q, bs: scope.selected.layer.bs,
-                                            ws: scope.selected.layer.ws, facet: scope.selected.layer.sel
-                                        }))
-
-                                    MapService.add(data)
-                                })
+                            var selectedLayer = scope.selected.layer;
+                            if (selectedLayer !== undefined) {
+                                EventService.facetNewLayer(selectedLayer, scope.getFacetFqs(true, selectedLayer))
                             }
                         };
 
+                        scope.getFacetFqs = function (includeActiveFacet, layer) {
+                            var selectedLayer = layer || scope.selected.layer;
+                            var newFqs = BiocacheService.facetsToFq(selectedLayer.facets, false)
+                            var fq = BiocacheService.facetToFq(selectedLayer.activeFacet, true);
+                            if (fq.fq) {
+                                var idx = newFqs.indexOf(fq.fq)
+                                if (includeActiveFacet && selectedLayer.activeFacet) {
+                                    if (idx < 0) {
+                                        newFqs.push(fq.fq)
+                                    }
+                                } else {
+                                    // remove active facet
+                                    if (idx >= 0) {
+                                        newFqs.splice(idx, 1)
+                                    }
+                                }
+                            }
+                            return newFqs;
+                        }
+
                         scope.facetNewLayerOut = function () {
-                            if (scope.selected.layer !== undefined) {
-                                BiocacheService.newLayerAddFq(scope.selected.layer, decodeURIComponent('-(' + scope.selected.layer.sel + ')'),
-                                    scope.selected.layer.name + " : " + $i18n(343, "from unselected")).then(function (data) {
-                                    data.species_list = scope.selected.layer.species_list;
-
-                                    LoggerService.log("Create", "facetNewLayerOut",
-                                        JSON.stringify({
-                                            query: scope.selected.layer.q, bs: scope.selected.layer.bs,
-                                            ws: scope.selected.layer.ws, facet: '-(' + scope.selected.layer.sel + ')'
-                                        }))
-
-                                    MapService.add(data)
-                                })
+                            var selectedLayer = scope.selected.layer;
+                            if (selectedLayer !== undefined) {
+                                EventService.facetNewLayerOut(selectedLayer, scope.getFacetFqs(true, selectedLayer))
                             }
                         };
 
                         scope.facetsSelected = function () {
-                            return scope.selected.layer !== undefined &&
-                                scope.selected.layer !== null &&
-                                scope.selected.layer.sel !== undefined &&
-                                scope.selected.layer.sel.length > 0;
+                            var selectedLayer = scope.selected.layer;
+                            return selectedLayer !== undefined &&
+                                selectedLayer.facetSelectionCount !== undefined &&
+                                selectedLayer.facetSelectionCount > 0;
                         };
 
-                        scope.facetsSelectedCount = function () {
-                            if (scope.selected.layer !== undefined &&
-                                scope.selected.layer !== null &&
-                                scope.selected.layer.sel !== undefined &&
-                                scope.selected.layer.sel.length > 0) {
-                                return scope.selected.layer.sel.length
-                            } else {
-                                return 0
-                            }
-                        };
-
-                        scope.facetClearSelection = function () {
-                            if (scope.selected.layer !== undefined) {
-                                for (var i = 0; i < scope.selected.layer.facetList[scope.selected.layer.facet].length; i++) {
-                                    scope.selected.layer.facetList[scope.selected.layer.facet][i].selected = false
+                        scope.updateSelection = function () {
+                            var selectedLayer = scope.selected.layer;
+                            if (selectedLayer !== undefined) {
+                                var sum = 0;
+                                for (var i = 0; selectedLayer.activeFacet &&
+                                selectedLayer.activeFacet.data &&
+                                i < selectedLayer.activeFacet.data.length; i++) {
+                                    sum += selectedLayer.activeFacet.data[i].count
                                 }
-                                scope.updateSelection()
-                            }
-                        };
-
-                        scope.checkAllFacets = function () {
-                            if (scope.isAllFacetsSelected) {
-                                scope.facetSelectAll()
-                            } else {
-                                scope.facetClearSelection()
-                            }
-                        }
-
-                        scope.facetSelectAll = function () {
-                            if (scope.selected.layer !== undefined) {
-                                for (var i = 0; i < scope.selected.layer.facetList[scope.selected.layer.facet].length; i++) {
-                                    scope.selected.layer.facetList[scope.selected.layer.facet][i].selected = true
-                                }
-                                scope.updateSelection()
-                            }
-                        };
-
-                        scope.isAllFacetsSelected = false;
-
-                        scope.ifAllFacetsSelected = function () {
-                            if (scope.selected.layer !== undefined) {
-                                for (var i = 0; i < scope.selected.layer.facetList[scope.selected.layer.facet].length; i++) {
-                                    if (!scope.selected.layer.facetList[scope.selected.layer.facet][i].selected) {
-                                        return false;
-                                    }
-                                }
-                                return true;
-                            }
-                            return false;
-                        }
-
-                        scope.updateSelection = function (isFacetList) {
-                            if (scope.selected.layer !== undefined) {
-                                var facets = []
-                                var newFqs = []
-                                if (isFacetList) {
-                                    for (var f in scope.selected.layer.facets) {
-                                        if (scope.selected.layer.facets[f].enabled) {
-                                            facets.push(scope.selected.layer.facets[f])
-                                        }
-                                    }
-                                } else if (scope.selected.layer.facetList[scope.selected.layer.facet] !== undefined) {
-                                    facets.push({
-                                        activeFacet: true,
-                                        data: scope.selected.layer.facetList[scope.selected.layer.facet]
-                                    })
-                                }
-
-                                for (var j = 0; j < facets.length; j++) {
-                                    var facet = facets[j]
-                                    var sel = '';
-                                    var invert = false;
-                                    var count = 0;
-                                    var sum = 0;
-                                    // sum only applies to the single facet
-                                    for (var i = 0; i < facet.data.length; i++) {
-                                        if (facet.data[i].selected) {
-                                            var fq = facet.data[i].fq;
-                                            if (fq.match(/^-/g) != null && (fq.match(/:\*$/g) != null || fq.match(/\[\* TO \*\]$/g) != null)) {
-                                                invert = true
-                                            }
-                                            count++;
-                                            sum += facet.data[i].count;
-                                        }
-                                    }
-                                    if (!isFacetList) scope.selected.layer.facetSelectionCount = sum;
-
-                                    if (count === 1) invert = false;
-                                    for (i = 0; i < facet.data.length; i++) {
-                                        if (facet.data[i].selected) {
-                                            var fq = facet.data[i].fq;
-
-                                            if (invert) {
-                                                if (sel.length > 0) sel += " AND ";
-                                                if (fq.match(/^-/g) != null && (fq.match(/:\*$/g) != null || fq.match(/\[\* TO \*\]$/g) != null)) {
-                                                    sel += fq.substring(1)
-                                                } else {
-                                                    sel += '-' + fq
-                                                }
-                                            } else {
-                                                if (sel.length > 0) sel += " OR ";
-                                                sel += fq
-                                            }
-                                        }
-                                    }
-                                    if (invert) {
-                                        sel = '-(' + sel + ')'
-                                    }
-
-                                    if (isFacetList) {
-                                        scope.selected.layer.sel = ''
-
-                                        newFqs.push(sel)
-                                        scope.selected.layer.fq = newFqs
-                                    } else {
-                                        scope.selected.layer.sel = encodeURIComponent(sel)
-                                    }
-                                    scope.isAllFacetsSelected = scope.ifAllFacetsSelected()
-                                }
+                                selectedLayer.facetSelectionCount = sum
 
                                 scope.updateWMS();
                             }
-                        };
-
-                        scope.formatColor = function (item) {
-                            var r = Number(item.red).toString(16);
-                            if (r.length === 1) r = '0' + r;
-                            var g = Number(item.green).toString(16);
-                            if (g.length === 1) g = '0' + g;
-                            var b = Number(item.blue).toString(16);
-                            if (b.length === 1) b = '0' + b;
-                            return r + g + b
                         };
 
                         scope.getFacetItemCount = function (item, layer, fq) {
@@ -516,14 +419,14 @@
                             });
                         };
 
-                        scope.asyncFacetCounts = function (queue, results) {
-                            scope.facetProgress = (results.length + 1) + " of " + (queue.length + results.length);
+                        scope.asyncFacetCounts = function (queue, results, selectedLayer) {
+                            selectedLayer.facetProgress = (results.length + 1) + " of " + (queue.length + results.length);
                             var facetCount = queue.pop();
-                            return scope.getFacetItemCount(facetCount[0], scope.selected.layer, facetCount[1]).then(
+                            return scope.getFacetItemCount(facetCount[0], facetCount[1], facetCount[2]).then(
                                 function (data) {
                                     results.push(data);
                                     if (queue.length > 0) {
-                                        return scope.asyncFacetCounts(queue, results);
+                                        return scope.asyncFacetCounts(queue, results, selectedLayer);
                                     } else {
                                         return $q.when();
                                     }
@@ -531,7 +434,7 @@
                             );
                         };
 
-                        scope.speciesListToFacetList = function (data) {
+                        scope.speciesListToFacetList = function (data, newLayer) {
                             var def = $q.defer();
 
                             var list = [];
@@ -546,55 +449,62 @@
                                 item.count = 0; // TODO: check if this needs to be an object
                                 var c = ColourService.getColour(ci);
                                 var listItem = {
-                                    name: key, displayname: key, count: item.count,
+                                    name: key, displayname: key, count: item.count, min: item.min, max: item.max, isRangeDataType: item.isRangeDataType,
                                     fq: item.fq, red: c.red, green: c.green, blue: c.blue
                                 };
                                 //populate count
-                                queue.push([listItem, item.fq]);
+                                queue.push([listItem, newLayer, item.fq]);
                                 ci = ci + 1;
                             }
 
                             // async for queue
                             var results = [];
-                            scope.facetProgress = results.length + " of " + queue.length;
-                            promises.push(scope.asyncFacetCounts(queue, results));
+                            var selectedLayer = scope.selected.layer;
+                            selectedLayer.facetProgress = results.length + " of " + queue.length;
+                            promises.push(scope.asyncFacetCounts(queue, results, selectedLayer));
 
                             $q.all(promises).then(function (result) {
                                 result = results;
                                 result.sort(function (a, b) {
-                                    return b.count - a.count
+                                    if (a.isRangeDataType) {
+                                        return a.min - b.min
+                                    } else {
+                                        return b.count - a.count
+                                    }
                                 });
                                 def.resolve(result);
-                                //sort and aggregate the rest of layers after the top 5
-                                var maxMappedFacets = 5;
+                                //sort and aggregate the rest of layers after the top x number
+                                var maxMappedFacets = $SH.numberOfIntervalsForRangeData || 5;
                                 if (result.length < maxMappedFacets) {
                                     for (var i in result) {
-                                        var c = ColourService.getColour(i);
-                                        scope.createSubLayer(c, scope.selected.layer, result[i].fq)
+                                        var c = result[i].isRangeDataType? ColourService.getLinearColour(i) : ColourService.getColour(i);
+                                        scope.createSubLayer(c, selectedLayer, result[i].fq)
                                         result[i].red = c.red;
                                         result[i].green = c.green;
                                         result[i].blue = c.blue;
                                     }
                                 } else {
                                     for (var i = 0; i < maxMappedFacets; i++) {
-                                        var c = ColourService.getColour(i);
-                                        scope.createSubLayer(c, scope.selected.layer, result[i].fq)
+                                        var c = result[i].isRangeDataType? ColourService.getLinearColour(i) : ColourService.getColour(i);
+                                        scope.createSubLayer(c, selectedLayer, result[i].fq)
                                         result[i].red = c.red;
                                         result[i].green = c.green;
                                         result[i].blue = c.blue;
                                     }
                                     //agregate the rest
                                     var aggreatedfq = [];
-                                    var c = ColourService.getColour(maxMappedFacets);
+                                    var c = result[0] && result[0].isRangeDataType? ColourService.getLinearColour(maxMappedFacets) : ColourService.getColour(i);
                                     for (var i = maxMappedFacets; i < result.length; i++) {
                                         aggreatedfq.push(result[i].fq);
                                         result[i].red = c.red;
                                         result[i].green = c.green;
                                         result[i].blue = c.blue;
                                     }
-                                    scope.createSubLayer(c, scope.selected.layer, "(" + aggreatedfq.join(' OR ') + ")")
+
+                                    if (aggreatedfq.length > 0)
+                                        scope.createSubLayer(c, selectedLayer, "(" + aggreatedfq.join(' OR ') + ")")
                                 }
-                                scope.facetProgress = undefined;
+                                selectedLayer.facetProgress = undefined;
 
                             });
                             return def.promise;
@@ -610,67 +520,304 @@
                             });
                         };
 
+                        scope.createSubLayerScatterplotEnvelope = function (parentLayer, layer1, min1, max1, layer2, min2, max2) {
+                            var sld_body = decodeURIComponent(
+                                '%3CStyledLayerDescriptor%20version%3D%221.0.0%22%20xmlns%3D%22http%3A%2F%2Fhttp://www.opengis.net%2Fsld%22%3E' +
+                                '%3CNamedLayer%3E%3CName%3EALA%3A' + LayersService.getLayer(layer1).layer.name + '%3C%2FName%3E%3CUserStyle%3E%3CFeatureTypeStyle%3E%3CRule%3E%3CRasterSymbolizer%3E' +
+                                '%3CColorMap%20type=%22intervals%22%20extended=%22true%22%3E' +
+                                '%3CColorMapEntry%20color%3D%220x00FF00%22%20opacity%3D%220%22%20quantity%3D%22' + min1 + '%22%2F%3E' +
+                                '%3CColorMapEntry%20color%3D%220x00FF00%22%20opacity%3D%221%22%20quantity%3D%22' + max1 + '%22%2F%3E' +
+                                '%3C%2FColorMap%3E%3C%2FRasterSymbolizer%3E%3C%2FRule%3E%3C%2FFeatureTypeStyle%3E%3C%2FUserStyle%3E%3C%2FNamedLayer%3E' +
+                                '%3CNamedLayer%3E%3CName%3EALA%3A' + LayersService.getLayer(layer2).layer.name + '%3C%2FName%3E%3CUserStyle%3E%3CFeatureTypeStyle%3E%3CRule%3E%3CRasterSymbolizer%3E' +
+                                '%3CColorMap%20type=%22intervals%22%20extended=%22true%22%3E' +
+                                '%3CColorMapEntry%20color%3D%220x00FF00%22%20opacity%3D%220%22%20quantity%3D%22' + min2 + '%22%2F%3E' +
+                                '%3CColorMapEntry%20color%3D%220x00FF00%22%20opacity%3D%221%22%20quantity%3D%22' + max2 + '%22%2F%3E' +
+                                '%3C%2FColorMap%3E%3C%2FRasterSymbolizer%3E%3C%2FRule%3E' +
+                                '%3CVendorOption%20name%3D%22composite%22%3Edestination-in%3C%2FVendorOption%3E' +
+                                '%3C%2FFeatureTypeStyle%3E%3C%2FUserStyle%3E%3C%2FNamedLayer%3E' +
+                                '%3C%2FStyledLayerDescriptor%3E')
+
+                            var subLayer = {
+                                layertype: 'scatterplotEnvelope',
+                                id: layer1,
+                                sld_body: sld_body,
+                                layer1: layer1,
+                                layer2: layer2
+                            }
+                            return MapService.add(subLayer, parentLayer);
+                        };
+
                         scope.isSpeciesListFacet = function (facet) {
                             return facet.indexOf('species_list') === 0;
                         };
 
-                        scope.updateFacet = function () {
-                            if (scope.selected.layer) {
-                                if (scope.selected.layer.activeFacet === undefined) {
-                                    scope.selected.layer.activeFacet = {
-                                        id: 0,
-                                        name: scope.selected.layer.facet,
-                                        data: undefined,
-                                        enabled: true
-                                    }
-                                } else {
-                                    scope.selected.layer.activeFacet.name = scope.selected.layer.facet;
-                                }
+                        /**
+                         * Update scope.selected.layer.activeFacet.data
+                         *
+                         * Redraws WMS of scope.selected.layer
+                         *
+                         * @returns promise with scope.selected.layer.activeFacet.data
+                         */
+                        scope.refreshFacetData = function (ignoreFilters) {
+                            // When refreshing take a copy of the last selection
+                            // so it can be reapplied to the new data.
+                            var selectedLayer = scope.selected.layer;
+                            var fq = BiocacheService.facetToFq(selectedLayer.activeFacet, false)
+                            if (fq.fq) {
+                                selectedLayer.activeFacet._fq = fq.fq
                             }
 
-                            if (scope.selected.layer !== undefined && scope.selected.layer !== null && scope.selected.layer.facet !== '-1' &&
-                                scope.selected.layer.facetList[scope.selected.layer.facet] === undefined) {
+                            if (ignoreFilters) {
+                                return scope.fetchFacetData(selectedLayer.activeFacet, selectedLayer).then(function (data) {
+                                    scope.updateWMS();
+                                    return $q.when(data)
+                                })
+                            } else {
+                                // do not include the active facet when updating facet data counts
+                                var newFqs = scope.getFacetFqs(false);
 
-                                var facets = scope.selected.layer.facets
-                                if (facets === undefined) {
-                                    scope.selected.layer.facets = facets = []
-                                }
+                                return BiocacheService.newLayerAddFq(selectedLayer, newFqs).then(function (newLayer) {
+                                    return scope.fetchFacetData(selectedLayer.activeFacet, newLayer).then(function (data) {
+                                        scope.updateWMS();
+                                        return $q.when(data)
+                                    })
+                                })
+                            }
+                        }
 
-                                if (scope.selected.layer.facet && scope.isSpeciesListFacet(scope.selected.layer.facet)) {
-                                    // find facet in list
-                                    for (var i in scope.selected.layer.list) {
-                                        var f = scope.selected.layer.list[i];
-                                        if (f.facet === scope.selected.layer.facet) {
-                                            scope.speciesListToFacetList(f.species_list_facet).then(function (result) {
-                                                scope.selected.layer.facetList[scope.selected.layer.facet] = result;
+                        /**
+                         * Set facet.data using newLayer query
+                         *
+                         * @param facet facet object
+                         * @param newLayer query
+                         * @returns promise with facet.data
+                         */
+                        scope.fetchFacetData = function (facet, newLayer) {
+                            var selectedLayer = scope.selected.layer;
+                            if (scope.isSpeciesListFacet(selectedLayer.facet)) {
+                                return scope.speciesListToFacetList(selectedLayer.activeFacet.species_list_facet, newLayer).then(function (data) {
+                                    scope.setFacetData(facet, data)
 
-                                                scope.selected.layer.activeFacet.data = result;
+                                    return data
+                                })
+                            } else {
+                                if (Util.isFacetOfRangeDataType(facet.dataType)) {
 
-                                                scope.facetClearSelection();
-                                                scope.updateWMS();
+                                    return BiocacheService.getFacetMinMax(newLayer, facet).then(function (data) {
+                                        facet.ranges = Util.getRangeBetweenTwoNumber(data.min, data.max);
+                                        if (facet.dataType.toLowerCase().indexOf('date') >= 0) {
+                                            $.map(facet.ranges, function (v) {
+                                                v[0] = new Date(v[0]).toISOString()
+                                                v[1] = new Date(v[1]).toISOString()
                                             })
                                         }
-                                    }
+                                        BiocacheService.facet(facet.name, newLayer, facet.ranges).then(function (data) {
+                                            scope.setFacetData(facet, data)
+
+                                            return data
+                                        })
+                                    })
                                 } else {
-                                    BiocacheService.facet(scope.selected.layer.facet, scope.selected.layer).then(function (data) {
-                                        scope.selected.layer.facetList[scope.selected.layer.facet] = data;
+                                    return BiocacheService.facet(facet.name, newLayer).then(function (data) {
+                                        scope.setFacetData(facet, data)
 
-                                        scope.selected.layer.activeFacet.data = data;
-
-                                        scope.facetClearSelection();
-                                        scope.updateWMS();
+                                        return data
                                     })
                                 }
-                            } else {
-                                if (scope.selected.layer !== undefined && scope.selected.layer !== null) {
-                                    scope.selected.layer.activeFacet.name = scope.selected.layer.facet;
-                                    scope.selected.layer.activeFacet.data = scope.selected.layer.facetList[scope.selected.layer.facet];
+                            }
+                        }
+
+                        scope.setFacetData = function (facet, data) {
+                            // Existing facets that do not have facet.data may have a copy of the selection as facet._fq
+                            // Delete _fq after updating the facet.data with the active selection.
+                            if (facet._fq) {
+                                for (var i in data) {
+                                    var fq = data[i].fq;
+                                    var isInverted = facet._fq.indexOf("-(") === 0;
+                                    if (fq.match(/^-/g) != null && (fq.match(/:\*$/g) != null || fq.match(/\[\* TO \*\]$/g) != null)) {
+                                        fq = fq.substring(1)
+                                    }
+                                    if (facet._fq.indexOf(fq) >= 0 || facet._fq.indexOf(' ' + fq) >= 0
+                                        || facet._fq.indexOf('(' + fq) >= 0) {
+                                        // found the fq at a boundary (start of _fq, after a space, after a bracket)
+                                        data[i].selected = true;
+                                    } else if (facet._fq.indexOf('-' + fq) >= 0) {
+                                        // found inverse fq
+                                        data[i].selected = isInverted;
+                                    }
                                 }
 
-                                scope.updateWMS();
+                                delete facet._fq;
                             }
-                            scope.scatterplotUpdate();
+                            facet.data = data;
+                            return data
+                        }
+
+                        scope.filtersEnabled = function () {
+                            return $SH.filtersEnabled
+                        }
+
+                        scope.showActiveFilter = function () {
+                            if ($SH.filtersEnabled) {
+                                return true
+                            }
+
+                            // do not show grouped facets twice in the drop down list
+                            var selectedLayer = scope.selected.layer;
+                            for (var i in selectedLayer.groupedFacets) {
+                                if (selectedLayer.groupedFacets[i].facet === selectedLayer.facet) {
+                                    return false
+                                }
+                            }
+
+                            return true
+                        }
+
+                        scope.addToFacets = function (facetName, layer) {
+                            // add new facet
+                            var selectedLayer = layer || scope.selected.layer;
+                            var nextId = 0
+                            if (selectedLayer.facets.length > 0) {
+                                nextId = selectedLayer.facets[selectedLayer.facets.length - 1].id + 1
+                            }
+
+                            for (var i = 0; i < selectedLayer.indexFields.length; i++) {
+                                if (selectedLayer.indexFields[i].facet === facetName) {
+                                    var facet = {
+                                        id: nextId,
+                                        name: selectedLayer.indexFields[i].facet,
+                                        dataType: selectedLayer.indexFields[i].dataType,
+                                        displayName: selectedLayer.indexFields[i].displayName,
+                                        info: selectedLayer.indexFields[i].info,
+                                        description: selectedLayer.indexFields[i].description,
+                                        data: undefined,
+                                        enabled: true,
+                                        species_list_facet: selectedLayer.indexFields[i].species_list_facet
+                                    }
+
+                                    if (selectedLayer.facets.length > 0 && !$SH.filtersEnabled) {
+                                        selectedLayer.facets.splice(0, selectedLayer.facets.length)
+                                    }
+                                    selectedLayer.facets.push(facet)
+
+                                    return facet
+                                }
+                            }
+                        }
+
+                        scope.updateFacet = function () {
+                            var selectedLayer = scope.selected.layer;
+                            if (selectedLayer !== undefined && selectedLayer.facets) {
+                                if (selectedLayer.facet === 'search') {
+                                    scope.searchFacets()
+                                    return;
+                                }
+
+                                // is a workflow filter selected?
+                                for (var i = 0; i < scope.workflowFilters.length; i++) {
+                                    if (scope.workflowFilters[i].workflowId == selectedLayer.facet) {
+                                        selectedLayer.facet = '-1'
+                                        LayoutService.openModal('workflow', {
+                                            speciesLayerId: selectedLayer.uid,
+                                            workflowId: scope.workflowFilters[i].workflowId
+                                        });
+                                        return;
+                                    }
+                                }
+
+                                var facet
+                                if (selectedLayer.scatterplotUrl === undefined) {
+                                    // does it already exist?
+                                    for (var i = 0; i < selectedLayer.facets.length; i++) {
+                                        if (selectedLayer.facets[i].name === selectedLayer.facet) {
+                                            facet = selectedLayer.facets[i]
+                                        }
+                                    }
+                                } else if (selectedLayer.facets.length > 0) {
+                                    selectedLayer.facets = []
+                                }
+
+                                if (facet === undefined && selectedLayer.facet !== "-1") {
+                                    facet = scope.addToFacets(selectedLayer.facet, selectedLayer)
+                                }
+
+                                if (facet !== undefined) {
+                                    selectedLayer.activeFacet = facet
+
+                                    // always update facet data
+                                    scope.refreshFacetData(false).then(function (data) {
+                                        if (selectedLayer.scatterplotUrl !== undefined) {
+                                            scope.scatterplotUpdate(selectedLayer);
+                                        }
+                                    })
+                                } else {
+                                    scope.updateWMS();
+                                    if (scope.selected.layer.scatterplotUrl !== undefined) {
+                                        scope.scatterplotUpdate();
+                                    }
+                                }
+                            }
                         };
+
+                        scope.searchFacets = function () {
+                            var data = scope.selected.layer.indexFields
+                            for (var i = 0; i < data.length; i++) {
+                                data[i].selected = scope.isFacetSelected(data[i].facet)
+                            }
+                            LayoutService.openModal('facet', {
+                                data: data,
+                                onChange: scope.updateFacets
+                            }, false)
+                        }
+
+                        scope.isFacetSelected = function (facet, layer) {
+                            var selectedLayer = layer || scope.selected.layer;
+                            for (var i = 0; i < selectedLayer.facets.length; i++) {
+                                if (selectedLayer.facets[i].name === facet) {
+                                    return selectedLayer.facets[i].enabled;
+                                }
+                            }
+                            return false;
+                        }
+
+                        scope.updateFacets = function (data, layer) {
+                            var selectedLayer = layer || scope.selected.layer;
+                            // identify and add new facets
+                            var newFacet
+                            for (var j = 0; j < data.length; j++) {
+                                if (data[j].selected && !scope.isFacetSelected(data[j].facet)) {
+                                    scope.addToFacets(data[j].facet)
+                                    newFacet = data[j].facet
+                                }
+                            }
+
+                            // remove facets that are not selected
+                            for (var i = 0; i < scope.selected.layer.facets.length; i++) {
+                                var found = false;
+                                for (var j = 0; j < data.length; j++) {
+                                    if (data[j].facet === scope.selected.layer.facets[i].name) {
+                                        if (newFacet !== undefined) {
+                                            newFacet = data[j].facet
+                                        }
+                                        found = true;
+                                    }
+                                }
+                                if (!found) {
+                                    scope.selected.layer.facets.splice(i, 1);
+                                    i--;
+                                }
+                            }
+
+                            // select a facet
+                            if (newFacet) {
+                                scope.selected.layer.facet = newFacet
+                                scope.updateFacet()
+                            } else {
+                                // select user defined colour
+                                scope.selected.layer.facet = '-1'
+                                scope.updateFacet()
+                            }
+                        }
 
                         scope.moveUp = function () {
                             if (scope.selected.layer !== undefined) {
@@ -748,37 +895,58 @@
                             }
                         };
 
-                        scope.updateWMS = function () {
-                            if (scope.selected.layer !== undefined && scope.selected.layer !== null) {
-                                scope.selected.layer.wms = scope.selected.layer.name + ', ' + scope.selected.layer.color + ', '
-                                    + scope.selected.layer.colorType + ', ' + scope.selected.layer.opacity + ', '
-                                    + scope.selected.layer.uncertainty + ', ' + scope.selected.layer.size;
+                        scope.updateWMS = function (layer) {
+                            var selectedLayer = layer || scope.selected.layer;
+                            if (selectedLayer !== undefined) {
+                                selectedLayer.wms = selectedLayer.name + ', ' + selectedLayer.color + ', '
+                                    + selectedLayer.colorType + ', ' + selectedLayer.opacity + ', '
+                                    + selectedLayer.uncertainty + ', ' + selectedLayer.size;
 
-                                if (scope.selected.layer.leaflet) {
-                                    var firstLayer = scope.selected.layer.leaflet.layerOptions.layers[0];
-                                    if (scope.selected.layer.colorType === 'grid') {
-                                        firstLayer.layerParams.ENV = 'colormode%3Agrid%3Bname%3Acircle%3Bsize%3A' +
-                                            scope.selected.layer.size + '%3Bopacity%3A1'
-                                    } else if (scope.selected.layer.colorType === '-1') {
-                                        // do not use layer.facet as colour mode if it is a species_list
-                                        if (scope.selected.layer.facet === '-1' || scope.selected.layer.facet.indexOf('species_list') == 0) {
-                                            firstLayer.layerParams.ENV = 'color%3A' + scope.selected.layer.color + '%3Bname%3Acircle%3Bsize%3A' +
-                                                scope.selected.layer.size + '%3Bopacity%3A1' +
-                                                (scope.selected.layer.uncertainty ? "%3Buncertainty%3A1" : "")
-                                        } else {
-                                            firstLayer.layerParams.ENV = 'colormode%3A' + scope.selected.layer.facet + '%3Bname%3Acircle%3Bsize%3A' +
-                                                scope.selected.layer.size + '%3Bopacity%3A1' +
-                                                (scope.selected.layer.uncertainty ? "%3Buncertainty%3A1" : "")
-                                        }
-                                        if (scope.selected.layer.sel !== undefined && scope.selected.layer.sel.length > 0) {
-                                            firstLayer.layerParams.ENV += '%3Bsel%3A' + scope.selected.layer.sel
-                                        }
-                                    }
+                                if (selectedLayer.leaflet) {
+                                    var firstLayer = selectedLayer.leaflet.layerOptions.layers[0];
 
-                                    if (scope.fq.length) {
-                                        firstLayer.layerParams.fq = scope.fq
+                                    // using the layer.facets selection will override the colour to -1 and red
+                                    var facetSelectionOverride = false
+                                    if (selectedLayer.facets && selectedLayer.facets.length > 0) {
+                                        firstLayer.layerParams.fq = scope.getFacetFqs(true, selectedLayer);
+                                        var activeFacet = BiocacheService.facetToFq(selectedLayer.activeFacet, true);
+
+                                        // override colour for this active facet selection
+                                        if (activeFacet.fq) {
+                                            var colour = "FF0000"
+                                            firstLayer.layerParams.ENV = 'color%3A' + colour + '%3Bname%3Acircle%3Bsize%3A' +
+                                                selectedLayer.size + '%3Bopacity%3A1' +
+                                                (selectedLayer.uncertainty ? "%3Buncertainty%3A1" : "")
+                                            facetSelectionOverride = true
+                                        }
                                     } else {
                                         delete firstLayer.layerParams["fq"]
+                                    }
+
+                                    if (facetSelectionOverride) {
+                                        // ENV already set
+                                    } else if (selectedLayer.colorType === 'grid') {
+                                        firstLayer.layerParams.ENV = 'colormode%3Agrid%3Bname%3Acircle%3Bsize%3A' +
+                                            selectedLayer.size + '%3Bopacity%3A1'
+                                    } else if (selectedLayer.colorType === '-1') {
+                                        // do not use layer.facet as colour mode if it is a species_list
+                                        if (selectedLayer.facet === '-1' || selectedLayer.facet.indexOf('species_list') == 0) {
+                                            firstLayer.layerParams.ENV = 'color%3A' + selectedLayer.color + '%3Bname%3Acircle%3Bsize%3A' +
+                                                selectedLayer.size + '%3Bopacity%3A1' +
+                                                (selectedLayer.uncertainty ? "%3Buncertainty%3A1" : "")
+                                        } else {
+                                            var ranges = "";
+                                            if (selectedLayer.activeFacet && Util.isFacetOfRangeDataType(selectedLayer.activeFacet.dataType) && selectedLayer.activeFacet.ranges && selectedLayer.activeFacet.ranges.length > 0) {
+                                                ranges = encodeURIComponent( "," + selectedLayer.activeFacet.ranges.join(","));
+                                            }
+
+                                            firstLayer.layerParams.ENV = 'colormode%3A' + selectedLayer.facet + ranges + '%3Bname%3Acircle%3Bsize%3A' +
+                                                selectedLayer.size + '%3Bopacity%3A1' +
+                                                (selectedLayer.uncertainty ? "%3Buncertainty%3A1" : "")
+                                        }
+                                        if (selectedLayer.scatterplotFq !== undefined && selectedLayer.scatterplotFq.length > 0) {
+                                            firstLayer.layerParams.ENV += '%3Bsel%3A' + encodeURIComponent(selectedLayer.scatterplotFq)
+                                        }
                                     }
 
                                     MapService.reMap(scope.selected);
@@ -885,17 +1053,18 @@
                         };
 
                         scope.scatterplotDownloadData = function () {
-                            Util.download(scope.selected.layer.scatterplotDataUrl);
+                            Util.download(scope.selected.layer.scatterplotDataUrl, "scatterplotData.csv");
                         };
 
                         scope.scatterplotDownloadImage = function () {
-                            Util.download(scope.selected.layer.scatterplotUrl);
+                            Util.download(scope.selected.layer.scatterplotUrl, "scatterplotImage.png");
                         };
 
-                        scope.scatterplotUpdate = function (value) {
-                            if (scope.selected && scope.selected.layer && scope.selected.layer.scatterplotUrl) {
+                        scope.scatterplotUpdate = function (value, layer) {
+                            var selectedLayer = layer || scope.selected.layer;
+                            if (selectedLayer && selectedLayer.scatterplotUrl) {
 
-                                scope.selected.layer.scatterplotUpdating = true;
+                                selectedLayer.scatterplotUpdating = true;
                                 var task = {
                                     name: 'ScatterplotDraw',
                                     input: $.extend({}, scope.selected.layer)
@@ -904,14 +1073,14 @@
 
                                 task.input.opacity = task.input.opacity / 100;
                                 if (value || value == null) {
-                                    scope.selected.layer.scatterplotSelection = value;
+                                    selectedLayer.scatterplotSelection = value;
                                     task.input.selection = value;
                                 } else {
-                                    task.input.selection = scope.selected.layer.scatterplotSelection;
+                                    task.input.selection = selectedLayer.scatterplotSelection;
                                 }
-                                task.input.wkt = [{pid: scope.selected.layer.highlightWkt}];
+                                task.input.wkt = [{pid: selectedLayer.highlightWkt}];
                                 $http.post($SH.baseUrl + '/portal/postTask?sessionId=' + $SH.sessionId, task, _httpDescription('updateScatterplot', {ignoreErrors: true})).then(function (response) {
-                                    scope.checkScatterplotStatus(LayersService.url() + '/tasks/status/' + response.data.id, scope.selected.layer)
+                                    scope.checkScatterplotStatus(LayersService.url() + '/tasks/status/' + response.data.id, selectedLayer)
                                 })
                             }
                         };
@@ -948,47 +1117,48 @@
                                             var d = scope.finishedData.output[k];
                                             if (d.name === 'species') {
                                                 var species = jQuery.parseJSON(d.file);
-                                                scope.selected.layer.scatterplotUrl = species.scatterplotUrl;
+                                                layer.scatterplotUrl = species.scatterplotUrl;
 
                                                 if (species.scatterplotSelectionExtents && species.scatterplotLayers) {
-                                                    scope.selected.layer.scatterplotSelectionExtents = species.scatterplotSelectionExtents;
+                                                    layer.scatterplotSelectionExtents = species.scatterplotSelectionExtents;
                                                     var fq = species.scatterplotLayers[0] + ":[" + species.scatterplotSelectionExtents[1] + " TO " + species.scatterplotSelectionExtents[3] + "] AND " +
                                                         species.scatterplotLayers[1] + ":[" + species.scatterplotSelectionExtents[0] + " TO " + species.scatterplotSelectionExtents[2] + "]";
                                                     var fqs = [fq];
-                                                    scope.selected.layer.scatterplotFq = fq;
+                                                    layer.scatterplotFq = fq;
+
+                                                    for (var i = layer.leaflet.layerOptions.layers.length - 1; i > 0; i--) {
+                                                        delete layer.leaflet.layerOptions.layers[i]
+                                                    }
                                                     if (species.scatterplotSelectionExtents.length === 0) {
-                                                        scope.selected.layer.sel = undefined;
                                                         fqs = [];
-                                                        scope.selected.layer.scatterplotSelectionCount = 0;
+                                                        layer.scatterplotSelectionCount = 0;
 
-                                                        scope.updateWMS();
+                                                        scope.updateWMS(layer);
                                                     } else {
-                                                        var sel = encodeURIComponent(fq);
-                                                        if (sel !== scope.selected.layer.sel) {
-                                                            scope.selected.layer.sel = sel;
-                                                        }
+                                                        scope.createSubLayerScatterplotEnvelope(layer,
+                                                            species.scatterplotLayers[0], species.scatterplotSelectionExtents[1], species.scatterplotSelectionExtents[3],
+                                                            species.scatterplotLayers[1], species.scatterplotSelectionExtents[0], species.scatterplotSelectionExtents[2])
 
-                                                        scope.updateWMS();
+                                                        scope.updateWMS(layer);
                                                         updateNow = false;
-                                                        scope.selected.layer.scatterplotSelectionCount = $i18n(377, "counting...");
-                                                        BiocacheService.count(scope.selected.layer, fqs).then(function (count) {
-                                                            scope.selected.layer.scatterplotSelectionCount = count;
+                                                        layer.scatterplotSelectionCount = $i18n(377, "counting...");
+                                                        BiocacheService.count(layer, fqs).then(function (count) {
+                                                            layer.scatterplotSelectionCount = count;
                                                             layer.scatterplotUpdating = false;
                                                         });
 
-                                                        scope.selected.layer.scatterplotLabel1 = Messages.get('facet.' + species.scatterplotLayers[0]) + " : " +
+                                                        layer.scatterplotLabel1 = BiocacheI18n.get('facet.' + species.scatterplotLayers[0]) + " : " +
                                                             species.scatterplotSelectionExtents[1].toFixed(4) + " - " + species.scatterplotSelectionExtents[3].toFixed(4);
-                                                        scope.selected.layer.scatterplotLabel2 = Messages.get('facet.' + species.scatterplotLayers[1]) + " : " +
+                                                        layer.scatterplotLabel2 = BiocacheI18n.get('facet.' + species.scatterplotLayers[1]) + " : " +
                                                             species.scatterplotSelectionExtents[0].toFixed(4) + " - " + species.scatterplotSelectionExtents[2].toFixed(4);
                                                     }
                                                 } else {
-                                                    scope.selected.layer.scatterplotSelectionExtents = null;
-                                                    scope.selected.layer.scatterplotLabel1 = '';
-                                                    scope.selected.layer.scatterplotLabel2 = '';
-                                                    scope.selected.layer.scatterplotFq = [];
-                                                    scope.selected.layer.sel = undefined;
-                                                    scope.selected.layer.scatterplotSelectionCount = 0;
-                                                    scope.updateWMS();
+                                                    layer.scatterplotSelectionExtents = null;
+                                                    layer.scatterplotLabel1 = '';
+                                                    layer.scatterplotLabel2 = '';
+                                                    layer.scatterplotFq = [];
+                                                    layer.scatterplotSelectionCount = 0;
+                                                    scope.updateWMS(layer);
                                                 }
                                             }
                                         }
@@ -1021,14 +1191,15 @@
 
                         scope.colourTimeout = null;
 
-                        scope.updateColour = function () {
-                            var r = scope.selected.layer.red.toString(16);
+                        scope.updateColour = function (layer) {
+                            var selectedLayer = layer || scope.selected.layer;
+                            var r = selectedLayer.red.toString(16);
                             if (r.length === 1) r = '0' + r;
-                            var g = scope.selected.layer.green.toString(16);
+                            var g = selectedLayer.green.toString(16);
                             if (g.length === 1) g = '0' + g;
-                            var b = scope.selected.layer.blue.toString(16);
+                            var b = selectedLayer.blue.toString(16);
                             if (b.length === 1) b = '0' + b;
-                            scope.selected.layer.color = r + g + b;
+                            selectedLayer.color = r + g + b;
 
                             if (scope.colourTimeout !== null) clearTimeout(scope.colourTimeout);
                             scope.colourTimeout = setTimeout(function () {
@@ -1039,6 +1210,33 @@
                         scope.applyColour = function () {
                             scope.updateWMS();
                             scope.scatterplotUpdate()
+                        }
+
+                        scope.isFilterSelected = function (layer) {
+                            var selectedLayer = layer || scope.selected.layer;
+                            if (selectedLayer && selectedLayer.facets) {
+                                for (var i = 0; i < selectedLayer.facets.length; i++) {
+                                    if (selectedLayer.facets[i].name === selectedLayer.facet) {
+                                        return true;
+                                    }
+                                }
+                            }
+                            return false;
+                        }
+
+                        scope.removeFacet = function (layer) {
+                            var selectedLayer = layer || scope.selected.layer;
+                            for (var i = 0; i < selectedLayer.facets.length; i++) {
+                                if (selectedLayer.facets[i].name === selectedLayer.facet) {
+                                    selectedLayer.facets.splice(i, 1)
+                                    if (selectedLayer.facets.length > 0) {
+                                        selectedLayer.facet = selectedLayer.facets[0].name
+                                    } else {
+                                        selectedLayer.facet = "-1"
+                                    }
+                                    scope.updateFacet()
+                                }
+                            }
                         }
                     }
 

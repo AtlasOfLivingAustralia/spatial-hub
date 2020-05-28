@@ -18,6 +18,15 @@
       {
         "name": "Facet",
         "open": "ToolAddFacetService"
+      },
+      {
+        "name": "History",
+        "open": "log",
+        "params": {
+          "display": {
+            "size": "full"
+          }
+        }
       }
     ]
   },
@@ -40,6 +49,10 @@
       {
         "name": "Scatterplot - multiple",
         "open": "ScatterplotList"
+      },
+      {
+        "name": "Double Gridding",
+        "open": "DoubleGridding"
       },
       {
         "name": "Taxon Frequency",
@@ -117,7 +130,14 @@
         "open": "createSpeciesList",
         "params": {
           "speciesOption": "speciesList",
-          "importList": true
+          "importList": true,
+          "importPoints": false,
+          "canAddSpecies": false,
+          "absentOption": false,
+          "dateRangeOption": false,
+          "lifeforms": false,
+          "allSpecies": false,
+          "searchSpecies": false
         }
       },
       {
@@ -155,6 +175,10 @@
       {
         "name": "Areas",
         "open": "ToolExportAreaService"
+      },
+      {
+        "name": "DOI",
+        "open": "ToolExportDoiService"
       },
       {
         "name": "Points to BCCVL",

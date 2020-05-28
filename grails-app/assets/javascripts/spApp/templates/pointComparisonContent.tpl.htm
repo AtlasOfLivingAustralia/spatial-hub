@@ -7,7 +7,7 @@
             </h3>
         </div>
 
-        <div class="panel-body" style="width: 390px;overflow:scroll">
+        <div class="panel-body" style="width: 390px;overflow:auto">
             <table class="table table-striped" ng-show="points.length > 0">
                 <thead>
                 <tr>
@@ -62,12 +62,12 @@
                 <hr/>
                 <h4 i18n="181">Comparison Result</h4>
                 <div>
-                    <input style="width:200px" type="text" ng-model="searchText.name"/>
+                    <input style="width:200px" type="text" placeholder="Filter" ng-model="searchText.name"/>
                     <button i18n="129" ng-click="searchText.name=''" class="btn btn-xs btn-default"
                             ng-disabled="searchText.name == ''">clear filter
                     </button>
                 </div>
-                <div style="max-width: 360px; overflow: scroll">
+                <div style="max-width: 360px; overflow: auto">
                     <table class="table table-striped">
                         <thead>
                         <tr>

@@ -37,6 +37,10 @@
                                                                     ng-change="selectArea('pointOnLayer')"
                                                                     value="pointOnLayer"><span i18n="8">Select area from polygonal layer</span></label>
                                 </div>
+                                <div class="checkbox"><label><input type="radio" ng-model="area" name="addArea_area"
+                                                                    ng-change="selectArea('drawPolyline')"
+                                                                    value="drawPolyline"><span>Draw polyline with buffer</span></label>
+                                </div>
                             </div>
 
                             <div ng-show="!inputData.importArea" class="area-types">
@@ -208,7 +212,7 @@
                                         <div class="col-lg-6">
                                             <p i18n="35">Areas for merging</p>
                                             <table class="table table-striped panel panel-default"
-                                                   style="height:400px;overflow:scroll;display:block">
+                                                   style="height:400px;overflow:auto;display:block">
                                                 <thead>
                                                 <tr>
                                                     <th align="center"><input type="checkbox"
