@@ -850,6 +850,7 @@
                                 if (indexFields[i].classs === undefined) {
                                     indexFields[i].classs = 'Other'
                                 }
+                                indexFields[i].class = indexFields[i].classs
                                 indexFields[i].url = thiz.parseUrl(indexFields[i].info)
                                 if (indexFields[i].url !== undefined) {
                                     indexFields[i].info = indexFields[i].info.replace(indexFields[i].url, '')
