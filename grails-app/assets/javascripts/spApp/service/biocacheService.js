@@ -828,10 +828,12 @@
                     } else {
                         var qc = [];
                         if ($SH.qc !== undefined && $SH.qc != null && $SH.qc.length > 0) qc = [$SH.qc];
+                        var qid = q;
+                        if (qc.length > 0) qid = "(" + q + ") AND " + qc[0]
                         return $q.when({
                             q: $.merge(q, qc), //fq.length == 0 so it is safe to use qc here
                             wkt: wkt,
-                            qid: "(" + q + ") AND " + qc[0],
+                            qid: qid,
                             bs: bs,
                             ws: ws,
                             name: name
