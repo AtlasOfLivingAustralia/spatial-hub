@@ -28,7 +28,8 @@
                             "description": "Species options.",
                             "type": "speciesOptions",
                             "constraints": {
-                                "optional": true
+                                "optional": true,
+                                "absentOption": true
                             }
                         },
                         {
@@ -48,9 +49,20 @@
                     var speciesOptions = inputs[1];
                     var facet = inputs[2];
                     var q = [facet];
-                    if (speciesOptions.spatiallyValid && speciesOptions.spatiallySuspect) q.push('geospatial_kosher:*');
-                    else if (speciesOptions.spatiallyValid) q.push('geospatial_kosher:true');
-                    else if (speciesOptions.spatiallySuspect) q.push('geospatial_kosher:false');
+                    if (speciesOptions.spatiallyUnknown) {
+                        if (speciesOptions.spatiallyValid && speciesOptions.spatiallySuspect) { /* do nothing */
+                        } else if (speciesOptions.spatiallyValid) q.push('-geospatial_kosher:false');
+                        else if (speciesOptions.spatiallySuspect) q.push('-geospatial_kosher:true');
+                    } else {
+                        if (speciesOptions.spatiallyValid && speciesOptions.spatiallySuspect) q.push('geospatial_kosher:*');
+                        else if (speciesOptions.spatiallyValid) q.push('geospatial_kosher:true');
+                        else if (speciesOptions.spatiallySuspect) q.push('geospatial_kosher:false');
+                    }
+
+                    if (!speciesOptions.includeAbsences) {
+                        q.push($SH.fqExcludeAbsent)
+                    }
+
                     var newName = $i18n(127, "Facet");
 
                     //Guess name from factet Genuse:"Cractus" OR Genuse:"xxxxxx"

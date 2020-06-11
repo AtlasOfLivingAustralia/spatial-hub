@@ -165,7 +165,7 @@
                             } else if (value.type === 'species') {
                                 if (value.constraints['areaIncludes'] === undefined) value.constraints['areaIncludes'] = false;
                                 if (value.constraints['spatialValidity'] === undefined) value.constraints['spatialValidity'] = true;
-                                if (value.constraints['absentOption'] === undefined) value.constraints['absentOption'] = false;
+                                if (value.constraints['absentOption'] === undefined) value.constraints['absentOption'] = true;
                                 if (value.constraints['canAddSpecies'] === undefined) value.constraints['canAddSpecies'] = false;
                                 if (value.constraints['dateRangeOption'] === undefined) value.constraints['dateRangeOption'] = true;
                                 if (value.constraints['lifeforms'] === undefined) value.constraints['lifeforms'] = true;
@@ -174,12 +174,11 @@
                                 if (value.constraints['searchSpecies'] === undefined) value.constraints['searchSpecies'] = true;
                                 if (value.constraints['allSpecies'] === undefined) value.constraints['allSpecies'] = true;
 
-
                                 if (value.constraints['default'] !== undefined) v = value.constraints['default'];
                                 else if (value.constraints['speciesOption'] === 'allSpecies') {
                                     //specify allSpecies default
                                     v = {
-                                        q: ["*:*", "geospatial_kosher:true", $SH.fqExcludeAbsent],
+                                        q: ["*:*"],
                                         name: 'All species',
                                         bs: $SH.biocacheServiceUrl,
                                         ws: $SH.biocacheUrl

@@ -1,17 +1,22 @@
-<div ng-show="_spatialValidity" class="checkbox">
+<div ng-show="_spatialValidity && !mappedLayerSelected" class="checkbox">
     <label>
         <input type="checkbox" ng-model="spatiallyValid" ng-change="setQ()"><span i18n="238">Include spatially-valid records</span>
     </label>
 </div>
-<div ng-show="_spatialValidity" class="checkbox">
+<div ng-show="_spatialValidity && !mappedLayerSelected" class="checkbox">
     <label>
         <input type="checkbox" ng-model="spatiallySuspect" ng-change="setQ()"><span i18n="239">Include spatially-suspect records</span>
     </label>
 </div>
-<div ng-show="_absentOption" class="checkbox">
+<div ng-show="_spatialValidity && !mappedLayerSelected" class="checkbox">
     <label>
-        <input type="checkbox" ng-model="includeAbsences" ng-change="setQ()"><span
-            i18n="284">Include absent occurrences</span>
+        <input type="checkbox" ng-model="spatiallyUnknown"
+               ng-change="setQ()"><span>Include spatially-undefined records</span>
+    </label>
+</div>
+<div ng-show="_absentOption && !mappedLayerSelected" class="checkbox">
+    <label>
+        <input type="checkbox" ng-model="includeAbsences" ng-change="setQ()"><span>Include absences</span>
     </label>
 </div>
 <div ng-show="_areaIncludes">
@@ -30,7 +35,7 @@
         </label>
     </div>
 </div>
-<div ng-show="_dateRangeOption">
+<div ng-show="_dateRangeOption && !mappedLayerSelected">
     <select-date-range selected-date-range="dateRange" on-custom="setQ()"></select-date-range>
 </div>
 
