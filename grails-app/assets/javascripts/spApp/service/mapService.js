@@ -955,16 +955,6 @@
 
                         return query
                     },
-                    getAllSpeciesQuery: function (layer) {
-                        var query = {q: [], name: '', bs: '', ws: ''};
-                        query.name = $i18n("All species");
-                        query.bs = $SH.biocacheServiceUrl;
-                        query.ws = $SH.biocacheUrl;
-                        query.q.push('*:*');
-                        query.selectOption = 'allSpecies';
-
-                        return query
-                    },
                     getAreaLayerQuery: function (layer) {
                         var query = {
                             area: {}
