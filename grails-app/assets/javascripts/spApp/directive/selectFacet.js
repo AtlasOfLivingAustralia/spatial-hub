@@ -39,6 +39,9 @@
 
                         scope.facetFilter = '';
 
+                        scope.indexFields = []
+                        scope.extraFacets = []
+
                         LayoutService.addToSave(scope);
 
                         scope.ok = function (data) {
@@ -67,7 +70,33 @@
                             }
                         };
 
+                        BiocacheService.getIndexFields().then(function (indexFields) {
+                            scope.indexFields = indexFields
+                        })
+
+                        scope.updateExtraFacets = function (data) {
+                            while (scope.extraFacets.length > 0) scope.extraFacets.pop()
+                            for (var j = 0; j < data.length; j++) {
+                                if (data[j].selected) {
+                                    scope.extraFacets.push(data[j])
+                                    scope.facet = data[j].name
+                                }
+                            }
+                        }
+
+                        scope.searchFacets = function () {
+                            LayoutService.openModal('facet', {
+                                data: scope.indexFields,
+                                onChange: scope.updateExtraFacets
+                            }, true)
+                        }
+
                         scope.resetFacet = function () {
+                            if (scope.facet === 'search') {
+                                scope.searchFacets()
+                                return;
+                            }
+
                             scope.offset = 0;
                             scope.clearSelection();
                             scope.updateFacet()
@@ -105,25 +134,28 @@
                             if ($SH.qc !== undefined && $SH.qc != null && $SH.qc.length > 0) qid = [$SH.qc];
                             var pageSize = 10;
                             var offset = scope.offset;
-                            BiocacheService.facetGeneral(scope.facet, {
-                                qid: qid,
-                                bs: $SH.biocacheServiceUrl
-                            }, pageSize, offset, scope.facetFilter, config).then(function (data) {
-                                if (data.length > 0) {
-                                    scope.facetList = data[0].fieldResult;
-                                    scope.exportUrl = BiocacheService.facetDownload(scope.facet);
-                                    scope.max = data[0].count;
-                                    scope.maxPages = Math.ceil(scope.max / scope.pageSize)
-                                } else {
-                                    scope.max = 0;
-                                    scope.facetList = [];
-                                    scope.maxPages = 0
-                                }
-                                scope.updateSel();
-                                scope.updateCheckmarks();
 
-                                scope.updatingPage = false;
-                            })
+                            if (scope.facet !== 'search') {
+                                BiocacheService.facetGeneral(scope.facet, {
+                                    qid: qid,
+                                    bs: $SH.biocacheServiceUrl
+                                }, pageSize, offset, scope.facetFilter, config).then(function (data) {
+                                    if (data.length > 0) {
+                                        scope.facetList = data[0].fieldResult;
+                                        scope.exportUrl = BiocacheService.facetDownload(scope.facet);
+                                        scope.max = data[0].count;
+                                        scope.maxPages = Math.ceil(scope.max / scope.pageSize)
+                                    } else {
+                                        scope.max = 0;
+                                        scope.facetList = [];
+                                        scope.maxPages = 0
+                                    }
+                                    scope.updateSel();
+                                    scope.updateCheckmarks();
+
+                                    scope.updatingPage = false;
+                                })
+                            }
                         };
 
                         scope.clearSelection = function () {
