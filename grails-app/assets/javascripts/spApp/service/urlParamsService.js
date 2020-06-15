@@ -122,10 +122,6 @@
                                 } else if ("q" === key) {
                                     s = value;
 
-                                    if (value.match(/^\(/g) != null && value.match(/\)$/g) != null && !value.include(" ")) {
-                                        s = value.substring(1, value.length() - 2);
-                                    }
-
                                     if (s && s !== undefined) {
                                         sbList.push(s);
                                     }
