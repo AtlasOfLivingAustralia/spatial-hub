@@ -100,9 +100,13 @@
                                 });
 
                                 //sample
-                                scope.statusUrl = $SH.samplingUrl + "/intersect/batch?points=" + points + "&fids=" + fids;
+                                if (points.length > 0) {
+                                    scope.statusUrl = $SH.samplingUrl + "/intersect/batch?points=" + points + "&fids=" + fids;
 
-                                scope.checkStatus();
+                                    scope.checkStatus();
+                                } else {
+                                    scope.searching = false;
+                                }
                             });
                         };
 
@@ -170,7 +174,9 @@
                         if (!scope._config) {
                             scope.addMarker();
                         } else {
-                            scope.points = scope._config.points;
+                            if (scope._config.points) {
+                                scope.points = scope._config.points;
+                            }
                             scope.update();
                             scope.compare();
                         }
