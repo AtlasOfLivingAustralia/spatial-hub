@@ -87,7 +87,7 @@
         </div>
     </div>
     <div class="modal-footer">
-        <a download="nearestLocalities_{{point.longitude}}_{{point.latitude}}.csv"
+        <a download="pointComparison_{{point.longitude}}_{{point.latitude}}.csv"
            ng-show="comparison.length > 0 && !searching"
            ng-href="{{exportUrl}}" ng-disabled="exportUrl == null" style="margin-right:30px">
             <i class="glyphicon glyphicon-download-alt"></i><span i18n="51">Download</span>
