@@ -576,7 +576,7 @@
                             promises.push(BiocacheService.count(id).then(function (data) {
                                 id.count = data;
                                 if (id.count == 0 && id.fromSave === undefined) {
-                                    bootbox.alert(id.name + "<br/><br/>" + $i18n("No occurrences mapped for this layer and applied filters."))
+                                    bootbox.alert(id.name + "<br/><br/>" + $i18n(475, "No occurrences mapped for this layer and applied filters."))
                                 }
                                 if (id.count < 100000 && id.fromSave === undefined) {
                                     id.colorType = '-1'
