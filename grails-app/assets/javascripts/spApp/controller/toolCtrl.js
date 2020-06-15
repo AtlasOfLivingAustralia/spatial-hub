@@ -148,7 +148,7 @@
                             var v;
                             if (value.type === 'area') {
                                 if (value.constraints['defaultAreas'] === undefined) value.constraints['defaultAreas'] = true;
-                                if (value.constraints['defaultToWorld'] === undefined) value.constraints['defaultToWorld'] = false;
+                                if (value.constraints['defaultToWorld'] === undefined) value.constraints['defaultToWorld'] = true;
                                 if (value.constraints['max'] === undefined) value.constraints['max'] = 1000;
 
                                 if (value.constraints['default'] !== undefined) {

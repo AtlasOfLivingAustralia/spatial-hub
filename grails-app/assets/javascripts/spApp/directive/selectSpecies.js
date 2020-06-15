@@ -76,9 +76,9 @@
 
                         scope.spatiallyValid = true;
                         scope.spatiallySuspect = false;
-                        scope.includeExpertDistributions = scope._areaIncludes;
-                        scope.includeChecklists = scope._areaIncludes;
-                        scope.includeAnimalMovement = scope._areaIncludes;
+                        scope.includeExpertDistributions = false;
+                        scope.includeChecklists = false;
+                        scope.includeAnimalMovement = false;
 
                         scope.dateRange = {fq: []};
                         scope.prevDateRange = [];
