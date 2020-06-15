@@ -20,7 +20,7 @@
                                 "constraints": {
                                     "min": 1,
                                     "max": 1,
-                                    "defaultToWorld": false
+                                    "defaultToWorld": true
                                 }
                             },
                             {
