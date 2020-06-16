@@ -70,6 +70,7 @@
                             $scope.spec = angular.merge({}, specList[k])
                         }
 
+                        $scope.initSpec();
                         $scope.initValues();
                         $scope.buildViews();
 
@@ -111,6 +112,65 @@
                         }
                     }
                 };
+
+                $scope.initSpec = function () {
+                    var c = $scope.spec.input;
+                    var k;
+                    var value;
+                    for (k in c) {
+                        if (c.hasOwnProperty(k)) {
+                            value = c[k];
+                            if (value.constraints === undefined) value.constraints = {};
+                            var v;
+                            if (value.type === 'area') {
+                                if (value.constraints['defaultAreas'] === undefined) value.constraints['defaultAreas'] = true;
+                                if (value.constraints['defaultToWorld'] === undefined) value.constraints['defaultToWorld'] = true;
+                                if (value.constraints['max'] === undefined) value.constraints['max'] = 1000;
+                            } else if (value.type === 'species') {
+                                if (value.constraints['areaIncludes'] === undefined) value.constraints['areaIncludes'] = false;
+                                if (value.constraints['spatialValidity'] === undefined) value.constraints['spatialValidity'] = true;
+                                if (value.constraints['absentOption'] === undefined) value.constraints['absentOption'] = true;
+                                if (value.constraints['canAddSpecies'] === undefined) value.constraints['canAddSpecies'] = false;
+                                if (value.constraints['dateRangeOption'] === undefined) value.constraints['dateRangeOption'] = true;
+                                if (value.constraints['lifeforms'] === undefined) value.constraints['lifeforms'] = true;
+                                if (value.constraints['importList'] === undefined) value.constraints['importList'] = true;
+                                if (value.constraints['importPoints'] === undefined) value.constraints['importPoints'] = true;
+                                if (value.constraints['searchSpecies'] === undefined) value.constraints['searchSpecies'] = true;
+                                if (value.constraints['allSpecies'] === undefined) value.constraints['allSpecies'] = true;
+                                // } else if (value.type === 'date') {
+                                // } else if (value.type === 'layer') {
+                                // } else if (value.type === 'boolean') {
+                                // } else if (value.type === 'int') {
+                                // } else if (value.type === 'double') {
+                            } else if (value.type === 'list') {
+                                // convert to array of labels and values
+                                value.constraints._list = [];
+                                if (value.constraints.labels === undefined) {
+                                    value.constraints.labels = value.constraints.content;
+                                }
+                                for (var i in value.constraints.content) {
+                                    var label = value.constraints.content[i]
+                                    if (value.constraints.labels) {
+                                        label = value.constraints.labels[i]
+                                    }
+                                    value.constraints._list.push({
+                                        value: value.constraints.content[i],
+                                        label: label,
+                                        selected: false
+                                    })
+                                }
+                                // } else if (value.type === 'phylogeneticTree') {
+                                // } else if (value.type === 'text') {
+                            } else if (value.type === 'speciesOptions') {
+                                if (value.constraints['areaIncludes'] === undefined) value.constraints['areaIncludes'] = false;
+                                if (value.constraints['kosherIncludes'] === undefined) value.constraints['kosherIncludes'] = true;
+                                if (value.constraints['endemicIncludes'] === undefined) value.constraints['endemicIncludes'] = false;
+                                // } else if (value.type === 'facet') {
+                                // } else {
+                            }
+                        }
+                    }
+                }
 
                 $scope.initValues = function () {
                     //no need for initValues when $scope.values is populated from LayoutService.addToSave
@@ -220,24 +280,6 @@
                                 } else {
                                     v = value.constraints['default'];
                                 }
-                                // convert to array of labels and values
-                                value.constraints._list = [];
-                                if (value.constraints.labels === undefined) {
-                                    value.constraints.labels = value.constraints.content;
-                                }
-                                for (var i in value.constraints.content) {
-                                    var label = value.constraints.content[i]
-                                    if (value.constraints.labels) {
-                                        label = value.constraints.labels[i]
-                                    }
-                                    value.constraints._list.push({
-                                        value: value.constraints.content[i],
-                                        label: label,
-                                        selected: false
-                                    })
-                                }
-                            } else if (value.constraints !== undefined && value.constraints['default'] !== undefined) {
-                                v = value.constraints['default']
                             } else if (value.type === 'phylogeneticTree') {
                                 if (value.constraints['default'] !== undefined) v = value.constraints['default'];
                                 else v = []
@@ -253,6 +295,8 @@
                             } else if (value.type === 'facet') {
                                 if (value.constraints['default'] !== undefined) v = value.constraints['default'];
                                 else v = ""
+                            } else if (value.constraints !== undefined && value.constraints['default'] !== undefined) {
+                                v = value.constraints['default']
                             } else {
                                 v = null
                             }
