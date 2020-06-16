@@ -251,7 +251,9 @@
                                 <div class="btn-group btn-group-sm">
                                     <button i18n="37" ng-show="!uploadingFile && uploadProgress == 0"
                                             class="btn btn-default"
-                                            ngf-select="uploadFile($file)">Choose file
+                                            ngf-select="uploadFile($newFiles)"
+                                            ngf-max-size="maxFileSize"
+                                    >Choose file
                                     </button>
                                 </div>
 
