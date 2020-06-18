@@ -30,7 +30,7 @@
     "jsdoc": "^3.5.5"
   },
   "dependencies": {
-    "angular": "1.5.8",
+    "angular": "1.8.0",
     "angular-animate": "1.5.8",
     "angular-aria": "1.5.8",
     "angular-leaflet-directive": "0.9.5",
