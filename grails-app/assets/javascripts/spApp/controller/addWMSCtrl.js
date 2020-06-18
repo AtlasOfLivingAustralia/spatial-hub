@@ -40,7 +40,7 @@
                     $scope.warning = '';
                     $scope.loading = true;
 
-                    var urlFinal = $SH.baseUrl + "/portal/proxy?url=" + +encodeURIComponent(url)
+                    var urlFinal = $SH.baseUrl + "/portal/proxy?url=" + encodeURIComponent(url)
 
                     $http.get(urlFinal, $scope._httpDescription('proxyGetCapabilities'))
                         .success(function (resp) {
