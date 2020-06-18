@@ -72,7 +72,9 @@
 
                             var promise = DoiService.mintDoi(_this.species, null, _this.annotation);
                             return promise.then(function (result) {
-                                bootbox.alert("Your export request has been submitted for processing.  Once the data has been DOI'd you will be sent an email with instructions on how to import your data into the modelling tool");
+                                if (result != null) {
+                                    bootbox.alert("Your export request has been submitted for processing.  Once the data has been DOI'd you will be sent an email with instructions on how to import your data into the modelling tool");
+                                }
                                 return {};
                             }, function (error) {
                                 bootbox.alert("There was an error processing your export request.  Please try again or contact support at support@ala.org.au");

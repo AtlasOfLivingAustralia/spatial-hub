@@ -513,6 +513,10 @@
 
                         scope.createSubLayer = function (colour, layer, fq) {
                             return BiocacheService.newLayerAddFq(layer, fq, layer.name).then(function (subLayer) {
+                                if (subLayer == null) {
+                                    return $q.when(null)
+                                }
+
                                 subLayer.red = colour.red;
                                 subLayer.green = colour.green;
                                 subLayer.blue = colour.blue;
@@ -577,6 +581,10 @@
                                 var newFqs = scope.getFacetFqs(false);
 
                                 return BiocacheService.newLayerAddFq(selectedLayer, newFqs).then(function (newLayer) {
+                                    if (newLayer == null) {
+                                        return $q.when(null)
+                                    }
+
                                     return scope.fetchFacetData(selectedLayer.activeFacet, newLayer).then(function (data) {
                                         scope.updateWMS();
                                         return $q.when(data)
@@ -746,7 +754,7 @@
 
                                     // always update facet data
                                     scope.refreshFacetData(false).then(function (data) {
-                                        if (selectedLayer.scatterplotUrl !== undefined) {
+                                        if (data && selectedLayer.scatterplotUrl !== undefined) {
                                             scope.scatterplotUpdate(selectedLayer);
                                         }
                                     })

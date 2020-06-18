@@ -46,6 +46,9 @@
                 speciesCount: function (query, fqs, httpconfig) {
                     var fqList = (fqs === undefined ? '' : '&fq=' + this.joinAndEncode(fqs));
                     return this.registerQuery(query).then(function (response) {
+                        if (response == null) {
+                            return $q.when(0)
+                        }
                         return $http.get(query.bs + "/occurrence/facets?facets=names_and_lsid&flimit=0&q=" + response.qid + fqList, _httpDescription('speciesCount', httpconfig)).then(function (response) {
                             if (response.data !== undefined && response.data.length > 0 && response.data[0].count !== undefined) {
                                 return response.data[0].count;
@@ -81,11 +84,19 @@
                     if (fqs !== undefined) q = this.newLayerAddFq(query, fqs, '');
                     else q = query;
 
-                    return this.registerQuery(query).then(function (response) {
-                        return $http.get(query.bs + "/explore/endemic/speciescount/" + response.qid.replace("qid:", "") + "?facets=names_and_lsid", _httpDescription('speciesCountEndemic')).then(function (response) {
-                            return response.data.count;
-                        });
-                    })
+                    if (q == null) {
+                        return $q.when(0)
+                    } else {
+                        return this.registerQuery(query).then(function (response) {
+                            if (response == null) {
+                                return $q.when(0)
+                            } else {
+                                return $http.get(query.bs + "/explore/endemic/speciescount/" + response.qid.replace("qid:", "") + "?facets=names_and_lsid", _httpDescription('speciesCountEndemic')).then(function (response) {
+                                    return response.data.count;
+                                });
+                            }
+                        })
+                    }
                 },
                 /**
                  * Get species list CSV
@@ -113,6 +124,9 @@
                  */
                 speciesList: function (query, fqs, config) {
                     return this.speciesListUrl(query, fqs).then(function (url) {
+                        if (url == null) {
+                            return $q.when('')
+                        }
                         return $http.get(url, _httpDescription('speciesList', config)).then(function (response) {
                             return response.data;
                         });
@@ -142,6 +156,9 @@
                 speciesListUrl: function (query, fqs) {
                     var fqList = (fqs === undefined ? '' : '&fq=' + this.joinAndEncode(fqs));
                     return this.registerQuery(query).then(function (response) {
+                        if (response == null) {
+                            return null
+                        }
                         return query.bs + "/occurrences/facets/download?facets=names_and_lsid&lookup=true&count=true&lists=true&q=" + query.qid + fqList;
                     })
                 },
@@ -172,6 +189,9 @@
                  */
                 speciesListEndemic: function (query, fqs, config) {
                     this.speciesListEndemicUrl(query, fqs).then(function (url) {
+                        if (url == null) {
+                            return $q.when('')
+                        }
                         return $http.get(url, _httpDescription('speciesListEndemic', config)).then(function (response) {
                             return response.data;
                         });
@@ -203,9 +223,17 @@
                     if (fqs !== undefined) q = this.newLayerAddFq(query, fqs, '');
                     else q = query;
 
-                    return this.registerQuery(query).then(function (response) {
-                        return query.bs + "/explore/endemic/species/" + response.qid.replace("qid:", "") + ".csv?facets=names_and_lsid&lookup=true&count=true&lists=true";
-                    })
+                    if (q == null) {
+                        return $q.when(false)
+                    } else {
+                        return this.registerQuery(query).then(function (response) {
+                            if (response == null) {
+                                return $q.when(null)
+                            } else {
+                                return query.bs + "/explore/endemic/species/" + response.qid.replace("qid:", "") + ".csv?facets=names_and_lsid&lookup=true&count=true&lists=true";
+                            }
+                        })
+                    }
                 },
                 /**
                  * List data providers
@@ -231,6 +259,10 @@
                 dataProviderList: function (query, fqs) {
                     var fqList = (fqs === undefined ? '' : '&fq=' + this.joinAndEncode(fqs));
                     return this.registerQuery(query).then(function (response) {
+                        if (response == null) {
+                            return $q.when([])
+                        }
+
                         return $http.get(query.bs + "/webportal/dataProviders?q=" + response.qid + fqList, _httpDescription('dataProviderList')).then(function (response) {
                             return response.data;
                         });
@@ -261,6 +293,10 @@
                     var fqList = (fqs === undefined ? '' : '&fq=' + this.joinAndEncode(fqs));
 
                     return this.registerQuery(query).then(function (response) {
+                        if (response == null) {
+                            return $q.when(0)
+                        }
+
                         var url = query.bs + "/occurrences/search?facet=false&pageSize=0&q=" + response.qid + fqList
 
                         return $http.get(url, _httpDescription('count')).then(function (response) {
@@ -293,6 +329,10 @@
                  */
                 queryTitle: function (query) {
                     return this.registerQuery(query).then(function (response) {
+                        if (response == null) {
+                            return $q.when("")
+                        }
+
                         return $http.get(query.bs + "/webportal/params/details/" + response.qid.replace("qid:", ""), _httpDescription('queryTitle')).then(function (response) {
                             if (response.data !== undefined && response.data.displayString !== undefined) {
                                 //remove html wrapping from title
@@ -335,6 +375,9 @@
                     offset = offset || 0;
                     var fqList = (fqs === undefined ? '' : '&fq=' + this.joinAndEncode(fqs));
                     return this.registerQuery(query).then(function (response) {
+                        if (response == null) {
+                            return null
+                        }
                         return query.ws + "/occurrences/search?facet=" + facet + "&pageSize=" + pageSize + "&startIndex=" + offset + "&q=" + response.qid + fqList
                     })
                 },
@@ -381,6 +424,9 @@
                     offset = offset || 0;
                     var fqList = (fqs === undefined ? '' : '&fq=' + this.joinAndEncode(fqs));
                     return this.registerQuery(query).then(function (response) {
+                        if (response == null) {
+                            return {}
+                        }
                         return $http.get(query.bs + "/occurrences/search?facet=" + facet + "&pageSize=" + pageSize + "&startIndex=" + offset + "&q=" + response.qid + fqList + '&sort=id', _httpDescription('searchForOccurrences')).then(function (response) {
                             if (response.data !== undefined) {
                                 return response.data;
@@ -429,6 +475,10 @@
                  */
                 facet: function (facet, query, ranges) {
                     return this.registerQuery(query).then(function (response) {
+                        if (response == null) {
+                            return $q.when([])
+                        }
+
                         ranges = (ranges || []).join(",");
                         ranges = ranges.length > 0 ? "," + ranges : "";
                         return $http.get(query.bs + "/webportal/legend?cm=" + facet + ranges + "&q=" + response.qid + "&type=application/json", _httpDescription('facet',
@@ -502,6 +552,9 @@
                  */
                 facetGeneral: function (facet, query, pageSize, offset, prefixFilter, config) {
                     return this.registerQuery(query).then(function (response) {
+                        if (response == null) {
+                            return $q.when([])
+                        }
 
                         var url = query.bs + "/occurrence/facets?facets=" + facet + "&flimit=" + pageSize + "&foffset=" + offset + "&q=" + response.qid;
                         if (prefixFilter !== undefined && prefixFilter.length > 0) url += "&fprefix=" + encodeURIComponent(prefixFilter);
@@ -562,6 +615,9 @@
                  */
                 bbox: function (query) {
                     return this.registerQuery(query).then(function (response) {
+                        if (response == null) {
+                            return $q.when([[-180, -90], [180, 90]])
+                        }
                         return $http.get(query.bs + "/webportal/bbox?q=" + response.qid + "&type=application/json", _httpDescription('bbox')).then(function (response) {
                             var bb = response.data.split(",");
                             return [[bb[1], bb[0]], [bb[3], bb[2]]];
@@ -619,8 +675,13 @@
                         //     return $q.when(query)
                         // } else {
                         return $http.post($SH.baseUrl + "/portal/q", data, _httpDescription('registerQuery')).then(function (response) {
-                            query.qid = 'qid:' + response.data.qid;
-                            return query
+                            if (!response.data.qid || isNaN(response.data.qid)) {
+                                bootbox.alert($i18n("Failed to register query. Try again later."));
+                                return null
+                            } else {
+                                query.qid = 'qid:' + response.data.qid;
+                                return query
+                            }
                         });
                         // }
                     }
@@ -650,7 +711,12 @@
                     if (fq !== undefined && fq !== null) data.fq = fq;
                     if (wkt !== undefined && wkt !== null && wkt.length > 0) data.wkt = wkt;
                     return $http.post($SH.baseUrl + "/portal/q", data, _httpDescription('registerParam')).then(function (response) {
-                        return response.data
+                        if (!isNaN(response.data.qid)) {
+                            return response.data
+                        } else {
+                            bootbox.alert($i18n("Failed to register query. Try again later."));
+                            return null
+                        }
                     });
                 },
                 /**
@@ -772,9 +838,13 @@
                     }
 
                     return this.registerLayer(query.bs, query.ws, fqs, query.wkt, newName).then(function (data) {
-                        data.species_list = query.species_list
+                        if (data == null) {
+                            return null;
+                        } else {
+                            data.species_list = query.species_list
 
-                        return data
+                            return data
+                        }
                     })
                 },
                 /**
@@ -816,13 +886,17 @@
                     }
                     if (fq.length > 0 || (wkt !== undefined && wkt !== null && wkt.length > 0)) {
                         return this.registerParam(bs, q, fq, wkt).then(function (data) {
-                            return {
-                                q: $.merge([q], fq),
-                                wkt: wkt,
-                                qid: "qid:" + data.qid,
-                                bs: bs,
-                                ws: ws,
-                                name: name
+                            if (data != null) {
+                                return {
+                                    q: $.merge([q], fq),
+                                    wkt: wkt,
+                                    qid: "qid:" + data.qid,
+                                    bs: bs,
+                                    ws: ws,
+                                    name: name
+                                }
+                            } else {
+                                return null
                             }
                         })
                     } else {
@@ -905,6 +979,9 @@
                     var defaultValue = {min: undefined, max: undefined, label: facet.name};
                     if (Util.isFacetOfRangeDataType(facet.dataType)) {
                         return this.registerQuery(query).then(function (response) {
+                            if (response == null) {
+                                return $q.when(defaultValue)
+                            }
                             return $http.get(query.bs + "/chart?q=" + response.qid + "&statType=min,max&stats=" + facet.name).then(function (response) {
                                 return response.data.data && response.data.data[0] && response.data.data[0].data && response.data.data[0].data[0] || defaultValue;
                             });
@@ -994,10 +1071,14 @@
                     }
 
                     return thiz.newLayer(species, area, species.name).then(function (query) {
+                        if (query == null) {
+                            return $q.when(null)
+                        }
+
                         var downloadUrl = $SH.biocacheServiceUrl + '/occurrences/offline/download';
-                        params.q=query.qid;
-                        params.searchUrl = $SH.biocacheServiceUrl + '/occurrences/search?q='+query.qid;
-                        return $http.get(downloadUrl, _httpDescription("offlineDownload", {params:params}));
+                        params.q = query.qid;
+                        params.searchUrl = $SH.biocacheServiceUrl + '/occurrences/search?q=' + query.qid;
+                        return $http.get(downloadUrl, _httpDescription("offlineDownload", {params: params}));
                     });
 
                 }

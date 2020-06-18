@@ -25,8 +25,8 @@
      */
     angular.module('create-species-list-ctrl', ['map-service', 'biocache-service', 'layers-service'/*, 'ala.sandbox.preview'*/])
         .controller('CreateSpeciesListCtrl', ['$scope', '$controller', 'MapService', '$timeout', 'LayoutService', '$uibModalInstance',
-            'BiocacheService', 'LayersService', 'ListsService', 'data', 'BieService', 'LoggerService',
-            function ($scope, $controller, MapService, $timeout, LayoutService, $uibModalInstance, BiocacheService, LayersService, ListsService, inputData, BieService, LoggerService) {
+            'BiocacheService', 'LayersService', 'ListsService', 'data', 'BieService', 'LoggerService', '$q',
+            function ($scope, $controller, MapService, $timeout, LayoutService, $uibModalInstance, BiocacheService, LayersService, ListsService, inputData, BieService, LoggerService, $q) {
                 LayoutService.addToSave($scope);
 
                 $scope.step = '1';
@@ -186,8 +186,10 @@
                                             closeLater = true;
                                             var newquery = BiocacheService.newQuery($scope.selectedQ.q, $scope.selectedQ.name, undefined);
                                             BiocacheService.newLayer(newquery, undefined, newquery.name).then(function (data) {
-                                                data.species_list = druid;
-                                                MapService.add(data);
+                                                if (data != null) {
+                                                    data.species_list = druid;
+                                                    MapService.add(data);
+                                                }
                                                 $scope.$close();
                                             });
                                         }

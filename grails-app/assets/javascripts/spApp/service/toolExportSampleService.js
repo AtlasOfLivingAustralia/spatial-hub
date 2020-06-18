@@ -67,6 +67,10 @@
                         }
 
                         return BiocacheService.newLayer(_this.species, _this.area, '').then(function (query) {
+                            if (query == null) {
+                                return $q.when({output: {}});
+                            }
+
                             //include redirect to biocache-service/occurrences/search page
                             var sampleUrl = _this.species.ws + '/download/options1?searchParams=' +
                                 encodeURIComponent('q=' + query.qid) +
