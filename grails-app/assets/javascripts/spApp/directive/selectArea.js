@@ -18,15 +18,8 @@
                         _includeDefaultAreas: '=includeDefaultAreas',
                         _uniqueId: '=uniqueId',
                         _defaultToWorld: '=?defaultToWorld'
-                        // ,
-                        // maxAreas: '=maxAreas',
-                        // minAreas: '=minAreas'
                     },
                     link: function (scope, element, attrs) {
-
-                        // if (scope.selectedArea.area.length == 0) scope.selectedArea.area = [{}]
-                        // if (!scope.minAreas) scope.minAreas = 1
-                        // if (!scope.maxAreas) scope.maxAreas = 1
 
                         scope.selected = '';
                         LayoutService.addToSave(scope);
