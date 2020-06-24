@@ -796,7 +796,12 @@
                                 name: newLayer.name
                             };
 
-                            layerGroup.layerOptions.layers.push(newLayer);
+                            if (id.layertype === 'scatterplotEnvelope') {
+                                // add below the parent layer
+                                layerGroup.layerOptions.layers.unshift(newLayer);
+                            } else {
+                                layerGroup.layerOptions.layers.push(newLayer);
+                            }
 
                             if (!parentLeafletGroup) {
                                 id.leaflet = layerGroup;
