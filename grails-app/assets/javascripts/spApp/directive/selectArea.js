@@ -88,9 +88,11 @@
                                         }
                                     }
 
-                                    scope.selected = scope._selectedArea.area[0].name
+                                    if (scope._selectedArea.area.length > 0) {
+                                        scope.selected = scope._selectedArea.area[0].name
+                                    }
                                 }
-                            } else {
+                            } else if (scope._selectedArea.area.length > 0) {
                                 if (scope._selectedArea.area[0].uid === undefined) {
                                     scope.selected = scope._selectedArea.area[0].name
                                 } else {
