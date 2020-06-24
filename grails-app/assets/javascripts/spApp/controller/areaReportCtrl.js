@@ -170,6 +170,28 @@
                     }
                     return $q.when(true)
                 };
+
+                $scope.biocollectCounts = function (idx) {
+                    if ($SH.biocollectReport && $SH.biocollectReport.length > idx) {
+                        var bbox = $scope.area.bbox
+                        var shape = JSON.stringify({
+                            type: 'Polygon',
+                            coordinates: [[[bbox[0], bbox[1]], [bbox[2], bbox[1]], [bbox[2], bbox[3]], [bbox[0], bbox[3]], [bbox[0], bbox[1]]]]
+                        })
+                        var geoSearchJSON = encodeURIComponent(shape)
+                        var geoSearchEncoded = encodeURIComponent(LZString.compressToBase64(shape))
+
+                        var name = $SH.biocollectReport[idx].name
+                        var countUrl = $SH.biocollectReport[idx].count.replace('_geoSearchJSON_', geoSearchJSON).replace('_geoSearchEncoded', geoSearchEncoded)
+                        var linkUrl = $SH.biocollectReport[idx].link.replace('_geoSearchJSON_', geoSearchJSON).replace('_geoSearchEncoded', geoSearchEncoded)
+                        return $http.get(countUrl, $scope._httpDescription('biocollectCounts')).then(function (response) {
+                            return {count: response.data.hits.total, link: linkUrl, linkName: 'list', name: name}
+                        });
+                    } else {
+                        return $q.when({})
+                    }
+                };
+
                 $scope.pointOfInterestCounts = function () {
                     if ($scope.area.wkt !== undefined && $scope.area.wkt.length > 0) {
                         return $http.get(LayersService.url() + "/intersect/poi/wkt?wkt=" + $scope.area.wkt + "&limit=9999999", $scope._httpDescription('pointsOfInterestCount')).then(function (response) {
@@ -317,6 +339,14 @@
                                 extraQ: ["species_group:" + v]
                             })
                         });
+
+                        if ($SH.biocollectReport) {
+                            $.each($SH.biocollectReport, function (i, v) {
+                                $scope.biocollectCounts(i).then(function (data) {
+                                    $scope.items.push(data)
+                                })
+                            })
+                        }
 
                         $timeout(function () {
                             $scope.checklistCounts().then(function () {

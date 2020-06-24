@@ -279,7 +279,15 @@ http:
     timeout: 10000
 
 biocollect:
-  url: ''
+  loginUrl: 'https://biocollect.ala.org.au'
+  url: 'https://biocollect.ala.org.au'
+  areaReport:
+    - name: 'Citizen science projects'
+      count: "https://biocollect.ala.org.au/acsa/nocas/geoService?max=0&geoSearchJSON=_geoSearchJSON_"
+      link: "https://biocollect.ala.org.au/acsa#geoSearch%3D_geoSearchEncoded_"
+    - name: 'Merit Projects'
+      count: "https://biocollect.ala.org.au/merit/nocas/geoService?max=0&geoSearchJSON=_geoSearchJSON_"
+      link: "https://biocollect.ala.org.au/merit?geoSearchJSON=_geoSearchJSON_"
 
 bccvl:
     login:

@@ -58,5 +58,7 @@
 //= require_tree spApp
 //= require x2js/xml2json.min.js
 
+//biocollect searching
+//= require lz-string/libs/lz-string.min.js
 
 

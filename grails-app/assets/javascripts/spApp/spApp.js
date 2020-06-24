@@ -403,8 +403,8 @@ var authWorkaround = function (url) {
 };
 
 // This is to fix auth issues with ajax calls to other ala applications
-if ($SH.biocollectUrl) {
-    authWorkaround($SH.biocollectUrl);
+if ($SH.biocollectLoginUrl) {
+    authWorkaround($SH.biocollectLoginUrl);
 }
 
 // // Override Leaflet to fix map locking up when using different EPSGs
