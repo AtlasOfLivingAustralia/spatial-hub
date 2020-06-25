@@ -197,6 +197,8 @@
          * List of public workflow Ids for the species filter
          */
         , workflowFilters: ${(config.workflow.speciesFilters as grails.converters.JSON).toString().encodeAsRaw()}
+
+        , maxUploadSize: ${config.grails.controllers.upload.maxFileSize}
     };
 
     BIE_VARS = {

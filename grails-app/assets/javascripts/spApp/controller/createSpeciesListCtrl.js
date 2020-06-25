@@ -31,6 +31,8 @@
 
                 $scope.step = '1';
 
+                $scope.maxFileSize = $SH.maxUploadSize;
+
                 $scope.listTypes = [
                     {id: 'OTHER', label: "Other"},
                     {id: 'SPECIES_CHARACTERS', label: "Species characters list"},
@@ -63,6 +65,21 @@
                 $scope.$watch('file', function () {
                     $scope.uploadCSV();
                 });
+
+                $scope.validateFile = function (newFiles) {
+                    if (newFiles == null || newFiles.length == 0) {
+                        return
+                    }
+
+                    var file = newFiles[0]
+
+                    if (file.$error) {
+                        if (file.$errorMessages.maxSize) {
+                            bootbox.alert($i18n(476, "The uploaded file is too large. Max file size:") + " " + Math.floor($scope.maxFileSize / 1024 / 1024) + "MB");
+                            return
+                        }
+                    }
+                }
 
                 $scope.matchedItems = [];
 

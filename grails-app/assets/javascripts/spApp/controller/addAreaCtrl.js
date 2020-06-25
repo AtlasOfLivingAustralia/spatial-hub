@@ -19,6 +19,8 @@
                 $scope.step = 'default';
                 $scope.area = 'drawBoundingBox';
 
+                $scope.maxFileSize = $SH.maxUploadSize;
+
                 if (inputData !== undefined && inputData.importArea === true) {
                     $scope.area = 'importShapefile';
                 }
@@ -214,7 +216,20 @@
                     $scope.shpImg = LayersService.getShpImageUrl($scope.shapeId, "all");
                 };
 
-                $scope.uploadFile = function (file) {
+                $scope.uploadFile = function (newFiles) {
+
+                    if (newFiles == null || newFiles.length == 0) {
+                        return
+                    }
+
+                    var file = newFiles[0]
+
+                    if (file.$error) {
+                        if (file.$errorMessages.maxSize) {
+                            bootbox.alert($i18n(476, "The uploaded file is too large. Max file size:") + " " + Math.floor($scope.maxFileSize / 1024 / 1024) + "MB");
+                            return
+                        }
+                    }
 
                     if ($scope.area === 'importShapefile' && file.type.indexOf('zip') < 0) {
                         bootbox.alert($i18n(333, "The uploaded file must be shape zipped file"));
@@ -224,6 +239,22 @@
                     $scope.uploadingFile = true;
 
                     LayersService.uploadAreaFile(file, $scope.area, $scope.myAreaName, file.name).then(function (response) {
+
+                        if (response.data.error) {
+                            $scope.errorMsg = response.data.error
+                            $scope.uploadingFile = false;
+                            bootbox.alert($scope.errorMsg);
+                            $scope.uploadingFile = false;
+                            return
+                        }
+
+                        if (!response.data.shapeId) {
+                            $scope.errorMsg = $i18n(477, "Upload failed.")
+                            $scope.uploadingFile = false;
+                            bootbox.alert($scope.errorMsg);
+                            $scope.uploadingFile = false;
+                            return
+                        }
 
                         $scope.fileName = file.name;
                         if ($scope.area === 'importShapefile') {
@@ -251,6 +282,7 @@
                     }, function (response) {
                         $scope.errorMsg = response.status + ': ' + response.data;
                         $scope.uploadingFile = false;
+                        bootbox.alert($scope.errorMsg);
                     }, function (evt) {
                         $scope.uploadProgress = parseInt(100.0 * evt.loaded / evt.total);
                     });

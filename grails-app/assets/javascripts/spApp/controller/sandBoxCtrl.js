@@ -29,10 +29,26 @@
             function ($scope, $controller, MapService, $timeout, LayoutService, $uibModalInstance, BiocacheService,
                       LayersService, LoggerService, inputData) {
                 var setWatchFlag = false;
+                $scope.maxFileSize = $SH.maxUploadSize;
 
                 //workaround for logging in to sandbox
                 if ($SH.userId !== '' && $('#loginWorkaround')[0].children.length === 0) {
                     $('#loginWorkaround').append('<iframe src="' + $SH.sandboxUiUrl + '/dataCheck/ping"></iframe>')
+                }
+
+                $scope.validateFile = function (newFiles) {
+                    if (newFiles == null || newFiles.length == 0) {
+                        return
+                    }
+
+                    var file = newFiles[0]
+
+                    if (file.$error) {
+                        if (file.$errorMessages.maxSize) {
+                            bootbox.alert($i18n(476, "The uploaded file is too large. Max file size:") + " " + Math.floor($scope.maxFileSize / 1024 / 1024) + "MB");
+                            return
+                        }
+                    }
                 }
 
                 $scope.watchStatus = function () {
@@ -63,14 +79,7 @@
                                     if (!$scope.logged) {
                                         $scope.logged = true
 
-                                        // upload parameters from previewService.uploadToSandbox() - excludes file and text
-                                        var input = {
-                                            columnHeaders: preview.columnHeaders(),
-                                            firstLineIsData: preview.preview.firstLineIsData, text: '', fileId: '',
-                                            datasetName: preview.datasetName, existingUid: preview.existing.uid
-                                        }
-
-                                        LoggerService.log("Create", "Points", {query: q, input: input})
+                                        LoggerService.log("Create", "Points", {query: q})
                                     }
                                     if (newValue === 'COMPLETE') {
                                         if (inputData !== undefined && inputData.setQ !== undefined) {

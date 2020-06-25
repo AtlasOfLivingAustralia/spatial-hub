@@ -25,9 +25,11 @@
 
                 <span i18n="278">Or, Upload a list of scientific names</span>
                 <div class="form-group">
-                    <input type="file" id="file" name="file" ng-model="file">
+                    <input type="file" id="file" name="file" ng-model="file"
+                           ngf-max-size="maxFileSize"
+                           ngf-select="validateFile($newFiles)">
                 </div>
-                <div class="btn-group btn-group-sm">
+                <div class="btn-group btn-group-sm" ng-show="false">
                     <button i18n="57" class="btn btn-xs btn-default" ng-click="uploadCSV()">Upload</button>
                 </div>
 
