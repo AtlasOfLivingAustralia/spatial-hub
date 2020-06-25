@@ -186,6 +186,10 @@
 
                 $scope.init = function (areaQ) {
                     BiocacheService.registerQuery(areaQ).then(function (response) {
+                        if (response == null) {
+                            return
+                        }
+
                         areaQ.qid = response.qid;
 
                         $scope.items = [

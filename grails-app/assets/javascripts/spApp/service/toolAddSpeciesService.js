@@ -89,6 +89,10 @@
                         inputs[1].enabled = this.checkAreaCompatible(inputs[0].q);
 
                         return BiocacheService.newLayer(inputs[0], inputs[2], newName).then(function (data) {
+                            if (data == null) {
+                                return $q.when(false)
+                            }
+
                             if (inputs[1].enabled) {
                                 data.includeAnimalMovement = inputs[1].includeAnimalMovement;
                                 data.includeChecklists = inputs[1].includeChecklists;

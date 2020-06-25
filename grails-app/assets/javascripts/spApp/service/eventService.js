@@ -64,6 +64,10 @@
                         return BiocacheService.newLayerAddFq(layer, fq,
                             layer.name + " : " + $i18n(343, "from unselected")).then(function (data) {
 
+                            if (data == null) {
+                                return $q.when(null)
+                            }
+
                             var logData = []
                             $.map(newFqs, function (v) {
                                 logData.push({facet: v})
@@ -87,6 +91,10 @@
                     facetNewLayer: function (layer, newFqs) {
                         return BiocacheService.newLayerAddFq(layer, newFqs,
                             layer.name + " : " + $i18n(342, "from selected")).then(function (data) {
+
+                            if (data == null) {
+                                return $q.when(null)
+                            }
 
                             var logData = []
                             $.map(newFqs, function (v) {
@@ -125,6 +133,10 @@
                         if (inFq) {
                             promises.push(BiocacheService.newLayerAddFq(layer, inFq,
                                 layer.name + " : " + $i18n(340, "in adhoc")).then(function (data) {
+                                if (data == null) {
+                                    return $q.when(null)
+                                }
+
                                 data.log = false
                                 return MapService.add(data)
                             }))
@@ -133,6 +145,10 @@
                         if (outFq) {
                             promises.push(BiocacheService.newLayerAddFq(layer, outFq,
                                 layer.name + " : " + $i18n(341, "out adhoc")).then(function (data) {
+                                if (data == null) {
+                                    return $q.when(null)
+                                }
+
                                 data.log = false
                                 return MapService.add(data)
                             }))
@@ -158,12 +174,20 @@
 
                         promises.push(BiocacheService.newLayerAddFq(layer, inFq,
                             layer.name + " : " + $i18n(338, "in scatterplot selection")).then(function (data) {
+                            if (data == null) {
+                                return $q.when(null)
+                            }
+
                             data.log = false
                             return MapService.add(data)
                         }))
 
                         promises.push(BiocacheService.newLayerAddFq(layer, outFq,
                             layer.name + " : " + $i18n(339, "out scatterplot selection")).then(function (data) {
+                            if (data == null) {
+                                return $q.when(null)
+                            }
+
                             data.log = false
                             return MapService.add(data)
                         }))

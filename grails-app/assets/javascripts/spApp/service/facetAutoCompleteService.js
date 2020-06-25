@@ -49,6 +49,9 @@
                  */
                 search: function (query, allFacets) {
                     return BiocacheService.registerQuery(query).then(function (response) {
+                        if (response == null) {
+                            return $q.when([])
+                        }
                         return $http.get(query.bs + "/upload/dynamicFacets?q=" + response.qid, _httpDescription('search')).then(function (dynamic) {
                             if (allFacets) {
                                 return BiocacheService.getIndexFields().then(function (data) {

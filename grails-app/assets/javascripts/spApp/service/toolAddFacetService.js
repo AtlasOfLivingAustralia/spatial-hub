@@ -91,10 +91,14 @@
                         bs: $SH.biocacheServiceUrl,
                         ws: $SH.biocacheUrl
                     }, area, newName).then(function (data) {
-                        data.log = false
-                        return MapService.add(data).then(function () {
-                            return true
-                        })
+                        if (data == null) {
+                            return $q.when(false)
+                        } else {
+                            data.log = false
+                            return MapService.add(data).then(function () {
+                                return true
+                            })
+                        }
                     });
                 }
             };

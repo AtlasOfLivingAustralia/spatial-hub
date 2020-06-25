@@ -188,6 +188,10 @@
                                 query.name = response;
                                 if (qname !== undefined) newLayerResp.displayname = qname;
                                 return BiocacheService.newLayer(query, undefined, response).then(function (newLayerResp) {
+                                    if (newLayerResp == null) {
+                                        return $q.when(false)
+                                    }
+
                                     if (colourBy !== undefined) newLayerResp.facet = colourBy;
                                     if (pointtype !== undefined) newLayerResp.pointtype = pointtype;
                                     if (size !== undefined) newLayerResp.size = size;
@@ -307,6 +311,10 @@
                                         (function () {
                                             var style = params[key + ".s"];
                                             promises.push(BiocacheService.newLayer(multiQuery, undefined, layerName).then(function (newLayerResp) {
+                                                if (newLayerResp == null) {
+                                                    return $q.when(false)
+                                                }
+
                                                 newLayerResp.color = style;
                                                 MapService.add(newLayerResp)
                                             }));
