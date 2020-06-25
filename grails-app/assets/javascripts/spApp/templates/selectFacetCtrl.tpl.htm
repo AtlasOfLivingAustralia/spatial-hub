@@ -1,12 +1,14 @@
 <div>
     <label i18n="127" style=";width:70px">Facet</label>
     <select style=";width:300px" id='facet' ng-model="facet"
-            ng-change="resetFacet()">
+            ng-change="changeFacet()">
 
         <option value="search">Search facets...</option>
 
-        <option ng-repeat="x in extraFacets" value="{{x.name}}">
-            {{x.description || x.downloadName || x.name}}
+        <option disabled>--- Active Filters ---</option>
+
+        <option ng-repeat="x in activeFacets" value="{{x.facet}}">
+            {{x.name}}
         </option>
 
         <option ng-repeat="x in facets" value="{{x.facet}}"
@@ -19,7 +21,7 @@
 <div style="height:320px">
     <hr/>
     <span>Facet begins with (case sensitive):</span>
-    <input style="width:200px" type="text" ng-model="facetFilter"/>
+    <input style="width:200px" type="text" ng-model="activeFacet.facetFilter"/>
     <div class="btn-group btn-group-xs">
         <button i18n="141" ng-click="offset = 0; updatePage()" class="btn btn-default">
             apply filter
@@ -29,13 +31,13 @@
     </div>
 
     <a download="facets list"
-       ng-href="{{exportUrl}}" ng-show="exportUrl != null">
+       ng-href="{{activeFacet.exportUrl}}" ng-show="activeFacet.exportUrl != null">
         <span style="float:right" i18n="51">Download</span><i class=" pull-right glyphicon glyphicon-download-alt"></i>
     </a>
 
     <table ng-hide="updatingPage" class="table layers-table table-striped"
            style="margin-top:10px;width:100%;height:250px;overflow:auto;display:block">
-        <tr ng-repeat="x in facetList">
+        <tr ng-repeat="x in activeFacet.facetList">
             <td style="width:20px"><input type="checkbox" ng-model="x.selected"
                                           ng-change="applySelection()"></td>
             <td style="width:330px;display: block;word-wrap:break-word;">{{x.displaylabel}}</td>
@@ -62,7 +64,7 @@
     <span>Page {{(offset / pageSize) + 1}} of {{maxPages}}</span>
 
     <div style="float:right">
-        <span style="color:red">{{selection.length}} facets selected</span>
+        <span style="color:red">{{activeFacet.selection.length}} facets selected</span>
         <div class="btn-group btn-group-xs">
             <button i18n="120" ng-click="clearSelection()" class="btn btn-default">Clear selection</button>
         </div>
