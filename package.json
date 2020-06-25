@@ -46,7 +46,8 @@
     "ng-file-upload": "12.2.13",
     "ngbootbox": "0.1.2",
     "proj4leaflet": "0.7.2",
-    "x2js": "^3.2.1"
+    "x2js": "^3.2.1",
+    "lz-string": "1.4.4"
   },
   "scripts": {
     "jsdoc": "node_modules/jsdoc/jsdoc.js --configure node_modules/angular-jsdoc/common/conf.json --template node_modules/angular-jsdoc/angular-template/ --destination build/resources/main/public/docs --readme README.md --recurse grails-app/assets/javascripts/spApp"
