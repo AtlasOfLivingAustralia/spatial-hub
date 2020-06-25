@@ -75,7 +75,7 @@
                 }
 
                 /* init */
-                if (data.type) {
+                if (data && data.type) {
                     $scope.type = data.type
                     $scope.layer1 = data.layer1
                     $scope.layer2 = data.layer2
