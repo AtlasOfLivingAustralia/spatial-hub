@@ -65,7 +65,7 @@
                             //when speciesOption is defined do not replace selection
                             scope._speciesOptionMandatory = true;
                         }
-                        if (scope._absentOption === undefined) scope._absentOption = false;
+                        if (scope._absentOption === undefined) scope._absentOption = true;
                         if (scope._canAddSpecies === undefined) scope._canAddSpecies = true;
 
                         if (scope._lifeforms === undefined) scope._lifeforms = true
@@ -76,9 +76,11 @@
 
                         scope.spatiallyValid = true;
                         scope.spatiallySuspect = false;
-                        scope.includeExpertDistributions = scope._areaIncludes;
-                        scope.includeChecklists = scope._areaIncludes;
-                        scope.includeAnimalMovement = scope._areaIncludes;
+                        scope.spatiallyUnknown = false;
+                      
+                        scope.includeExpertDistributions = false;
+                        scope.includeChecklists = false;
+                        scope.includeAnimalMovement = false;
 
                         scope.dateRange = {fq: []};
                         scope.prevDateRange = [];
@@ -87,12 +89,16 @@
 
                         scope.speciesOption = scope._speciesOption;
 
+                        scope.filters = []
+
                         scope.multiselect = false;
                         if (scope._selectedQ === undefined) {
                             scope._selectedQ = {q: [], bs: null, ws: null, name: ''}
                         } else if (scope._selectedQ instanceof Array) {
                             scope.multiselect = true;
                         }
+
+                        scope.mappedLayerSelected = false;
 
                         scope.lifeformQ = {q: [], name: ''};
 
@@ -182,53 +188,59 @@
                                     selection = scope.multiNewQ;
                                 }
 
+                                // remove previous filter
+                                for (var i in scope.filters) {
+                                    var pos = query.q.indexOf(scope.filters[i])
+                                    if (pos >= 0) query.q.splice(pos, 1)
+                                }
+
                                 // apply spatial validity options
                                 var includeTrue = scope.spatiallyValid;
                                 var includeFalse = scope.spatiallySuspect;
+                                var includeNull = scope.spatiallyUnknown;
                                 var gs = ["-*:*"];
                                 if (includeTrue && !includeFalse) {
-                                    gs = ["geospatial_kosher:true"]
+                                    if (includeNull) gs = ["-geospatial_kosher:false"]
+                                    else gs = ["geospatial_kosher:true"]
                                 } else if (!includeTrue && includeFalse) {
-                                    gs = ["geospatial_kosher:false"]
+                                    if (includeNull) gs = ["-geospatial_kosher:true"]
+                                    else gs = ["geospatial_kosher:false"]
                                 } else if (includeTrue && includeFalse) {
-                                    gs = ["geospatial_kosher:*"]
+                                    if (includeNull) gs = []
+                                    else gs = ["geospatial_kosher:*"]
                                 }
-                                // exclude duplicates
-                                if (query.q.indexOf(gs[0]) >= 0) gs = []
 
                                 // apply exclude absent option
                                 var absent = [$SH.fqExcludeAbsent];
-                                if (scope.includeAbsences || query.q.indexOf(absent[0]) >= 0) {
-                                    // exclude duplicates
+                                if (scope.includeAbsences) {
                                     absent = []
                                 }
 
-                                // remove previous date range option
-                                for (var dr in scope.prevDateRange) {
-                                    var pos = query.q.indexOf(scope.prevDateRange[dr])
-                                    if (pos >= 0) query.q.splice(pos, 1)
-                                }
                                 // apply date range option
                                 var dateRange = angular.merge([], scope.dateRange.fq);
-                                // exclude duplicates
-                                for (var dr in dateRange) {
-                                    if (query.q.indexOf(dateRange[dr]) >= 0) dateRange.splice(dr, 1)
-                                }
-                                scope.prevDateRange = angular.merge([], dateRange);
 
                                 selection.species_list = query.species_list;
                                 selection.wkt = query.wkt;
 
                                 selection.includeAnimalMovement = scope.includeAnimalMovement;
                                 selection.includeExpertDistributions = scope.includeExpertDistributions;
-                                selection.q = query.q.concat(gs).concat(absent).concat(dateRange);
 
-                                if (absent.length == 0 && gs.length == 0 && dateRange.length == 0) {
-                                    // qid did not change
-                                    selection.qid = query.qid
+                                // do not apply checkbox filters when a mapped species layer is selected
+                                if (!scope.mappedLayerSelected) {
+                                    scope.filters = [].concat(gs).concat(absent).concat(dateRange);
+                                    selection.q = query.q.concat(scope.filters);
+
+                                    if (absent.length == 0 && gs.length == 0 && dateRange.length == 0) {
+                                        // qid did not change
+                                        selection.qid = query.qid
+                                    } else {
+                                        // qid changed
+                                        selection.qid = undefined
+                                    }
                                 } else {
-                                    // qid changed
-                                    selection.qid = undefined
+                                    selection.q = query.q
+                                    selection.qid = query.qid
+                                    scope.filters = []
                                 }
 
                                 selection.name = query.name;
@@ -265,6 +277,7 @@
 
                         scope.changeOption = function (option) {
                             scope.speciesOption = option;
+                            scope.mappedLayerSelected = false;
                             if (scope.speciesOption === 'none') {
                                 scope.clearQ();
                             } else if (scope.speciesOption === 'lifeform') {
@@ -293,6 +306,7 @@
                                 scope.clearQ();
                                 var layer = MapService.getFullLayer(scope.speciesOption);
                                 scope.setQ(scope.layerToQuery(layer))
+                                scope.mappedLayerSelected = true
                             }
                         };
 

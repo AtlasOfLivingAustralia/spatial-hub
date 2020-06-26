@@ -1102,3 +1102,8 @@ ul.errors {
 ::placeholder {
     color: #aaa;
 }
+
+.leaflet-control-measure .leaflet-control-measure-toggle, .leaflet-control-measure .leaflet-control-measure-toggle:hover {
+    width: 26px;
+    height: 26px;
+}

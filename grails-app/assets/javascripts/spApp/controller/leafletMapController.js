@@ -685,6 +685,14 @@
                                 }).addTo(map);
                             }
 
+                            var measureControl = new L.Control.Measure({
+                                position: 'topleft',
+                                primaryLengthUnit: 'meters',
+                                secondaryLengthUnit: 'kilometers',
+                                primaryAreaUnit: 'sqmeters'
+                            });
+                            measureControl.addTo(map);
+
                             map.on('draw:created', function (e) {
                                 var layer = e.layer;
                                 $scope.deleteDrawing(layer);

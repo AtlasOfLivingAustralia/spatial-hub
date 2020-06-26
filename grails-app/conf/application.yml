@@ -200,8 +200,6 @@ biocacheService:
         - Collection;collection_name
         - Data Resource;data_resource
         - Institution;institution_name
-      Location:
-        - Coordinate Uncertainty;coordinate_uncertainty
       Occurrence:
         - Year;occurrence_year
 

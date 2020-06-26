@@ -122,10 +122,6 @@
                                 } else if ("q" === key) {
                                     s = value;
 
-                                    if (value.match(/^\(/g) != null && value.match(/\)$/g) != null && !value.include(" ")) {
-                                        s = value.substring(1, value.length() - 2);
-                                    }
-
                                     if (s && s !== undefined) {
                                         sbList.push(s);
                                     }
@@ -333,26 +329,6 @@
                             }));
                         }
                         return promises;
-                    },
-                    parseGeospatialKosher: function (facet) {
-                        var geospatialKosher = null;
-                        if (facet !== null && facet !== undefined) {
-                            var f = facet.replace('"', "").replace("(", "").replace(")", "");
-                            if ("geospatial_kosher:true" === f) {
-                                geospatialKosher = [true, false, false];
-                            } else if ("geospatial_kosher:false" === f) {
-                                geospatialKosher = [false, true, false];
-                            } else if ("-geospatial_kosher:*" === f) {
-                                geospatialKosher = [false, false, true];
-                            } else if ("geospatial_kosher:*" === f) {
-                                geospatialKosher = [true, true, false];
-                            } else if ("-geospatial_kosher:false" === f) {
-                                geospatialKosher = [true, false, true];
-                            } else if ("-geospatial_kosher:true" === f) {
-                                geospatialKosher = [false, true, true];
-                            }
-                        }
-                        return geospatialKosher;
                     },
                     createCircle: function (longitude, latitude, radius) {
                         var belowMinus180 = false;

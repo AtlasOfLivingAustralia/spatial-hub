@@ -722,12 +722,14 @@
                     }
                     var wkt = undefined;
                     if (area !== undefined && area instanceof Array && area.length > 0 && area[0] !== undefined) {
-                        if (area[0].q && (area[0].q.length > 0)) {
-                            fq = fq.concat(area[0].q)
+                        if (area[0].pid && (area[0].pid.length > 0)) {
+                            wkt = area[0].pid
+                        } else if (area[0].q !== undefined) {
+                            if (area[0].q.length > 0) {
+                                fq = fq.concat(area[0].q)
+                            }
                         } else if (area[0].wkt && (area[0].wkt.length) > 0) {
                             wkt = area[0].wkt
-                        } else if (area[0].pid && (area[0].pid.length > 0)) {
-                            wkt = area[0].pid
                         }
                     }
                     if (query.wkt !== undefined) wkt = query.wkt;
@@ -828,10 +830,12 @@
                     } else {
                         var qc = [];
                         if ($SH.qc !== undefined && $SH.qc != null && $SH.qc.length > 0) qc = [$SH.qc];
+                        var qid = q;
+                        if (qc.length > 0) qid = "(" + q + ") AND " + qc[0]
                         return $q.when({
                             q: $.merge(q, qc), //fq.length == 0 so it is safe to use qc here
                             wkt: wkt,
-                            qid: "(" + q + ") AND " + qc[0],
+                            qid: qid,
                             bs: bs,
                             ws: ws,
                             name: name

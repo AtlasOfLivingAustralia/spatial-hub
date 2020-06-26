@@ -110,7 +110,9 @@
                         for (var i = 0; i < layers.length; i++) {
                             if (layers[i].uid === uid) {
                                 if (layers[i].bbox !== undefined && layers[i].area_km != 0) {
-                                    this.zoomToExtents(layers[i].bbox);
+                                    if (layers[i].count === undefined || layers[i].count > 0) {
+                                        this.zoomToExtents(layers[i].bbox);
+                                    }
                                     return
                                 }
                             }
@@ -123,11 +125,13 @@
                         var bbox = [[90, 180], [-90, -180]]
                         for (var i = 0; i < layers.length; i++) {
                             if (layers[i].bbox !== undefined && layers[i].area_km != 0) {
-                                zoom = true
-                                if (bbox[0][0] > layers[i].bbox[0][0]) bbox[0][0] = layers[i].bbox[0][0];
-                                if (bbox[0][1] > layers[i].bbox[0][1]) bbox[0][1] = layers[i].bbox[0][1];
-                                if (bbox[1][0] < layers[i].bbox[1][0]) bbox[1][0] = layers[i].bbox[1][0];
-                                if (bbox[1][1] < layers[i].bbox[1][1]) bbox[1][1] = layers[i].bbox[1][1];
+                                if (layers[i].count === undefined || layers[i].count > 0) {
+                                    zoom = true
+                                    if (bbox[0][0] > layers[i].bbox[0][0]) bbox[0][0] = layers[i].bbox[0][0];
+                                    if (bbox[0][1] > layers[i].bbox[0][1]) bbox[0][1] = layers[i].bbox[0][1];
+                                    if (bbox[1][0] < layers[i].bbox[1][0]) bbox[1][0] = layers[i].bbox[1][0];
+                                    if (bbox[1][1] < layers[i].bbox[1][1]) bbox[1][1] = layers[i].bbox[1][1];
+                                }
                             }
                         }
                         if (zoom) {
@@ -571,6 +575,9 @@
 
                             promises.push(BiocacheService.count(id).then(function (data) {
                                 id.count = data;
+                                if (id.count == 0 && id.fromSave === undefined) {
+                                    bootbox.alert(id.name + "<br/><br/>" + $i18n(475, "No occurrences mapped for this layer and applied filters."))
+                                }
                                 if (id.count < 100000 && id.fromSave === undefined) {
                                     id.colorType = '-1'
                                 }
@@ -789,7 +796,12 @@
                                 name: newLayer.name
                             };
 
-                            layerGroup.layerOptions.layers.push(newLayer);
+                            if (id.layertype === 'scatterplotEnvelope') {
+                                // add below the parent layer
+                                layerGroup.layerOptions.layers.unshift(newLayer);
+                            } else {
+                                layerGroup.layerOptions.layers.push(newLayer);
+                            }
 
                             if (!parentLeafletGroup) {
                                 id.leaflet = layerGroup;
@@ -945,16 +957,6 @@
                         }
 
                         if (layer.qid) query.qid = layer.qid;
-
-                        return query
-                    },
-                    getAllSpeciesQuery: function (layer) {
-                        var query = {q: [], name: '', bs: '', ws: ''};
-                        query.name = $i18n("All species");
-                        query.bs = $SH.biocacheServiceUrl;
-                        query.ws = $SH.biocacheUrl;
-                        query.q.push('*:*');
-                        query.selectOption = 'allSpecies';
 
                         return query
                     },
