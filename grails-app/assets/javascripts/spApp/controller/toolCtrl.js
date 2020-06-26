@@ -294,7 +294,7 @@
                                 else v = {}
                             } else if (value.type === 'facet') {
                                 if (value.constraints['default'] !== undefined) v = value.constraints['default'];
-                                else v = ""
+                                else v = []
                             } else if (value.constraints !== undefined && value.constraints['default'] !== undefined) {
                                 v = value.constraints['default']
                             } else {
