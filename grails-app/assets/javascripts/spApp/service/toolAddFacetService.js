@@ -48,7 +48,7 @@
                     var area = inputs[0][0];
                     var speciesOptions = inputs[1];
                     var facet = inputs[2];
-                    var q = [facet];
+                    var q = facet;
                     if (speciesOptions.spatiallyUnknown) {
                         if (speciesOptions.spatiallyValid && speciesOptions.spatiallySuspect) { /* do nothing */
                         } else if (speciesOptions.spatiallyValid) q.push('-geospatial_kosher:false');

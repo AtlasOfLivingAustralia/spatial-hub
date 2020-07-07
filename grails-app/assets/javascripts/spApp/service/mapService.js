@@ -506,6 +506,10 @@
                                 LoggerService.addLayerId(id.uid)
                             }
 
+                            if (id.qid && !id.q) {
+                                id.q = id.qid
+                            }
+
                             id.layertype = 'species';
 
                             // the display of species layers can be modified with 'facets' that hide items

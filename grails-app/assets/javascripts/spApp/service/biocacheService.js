@@ -676,7 +676,7 @@
                         // } else {
                         return $http.post($SH.baseUrl + "/portal/q", data, _httpDescription('registerQuery')).then(function (response) {
                             if (!response.data.qid || isNaN(response.data.qid)) {
-                                bootbox.alert($i18n("Failed to register query. Try again later."));
+                                bootbox.alert($i18n(478, "Failed to register query. Try again later."));
                                 return null
                             } else {
                                 query.qid = 'qid:' + response.data.qid;
@@ -714,7 +714,7 @@
                         if (!isNaN(response.data.qid)) {
                             return response.data
                         } else {
-                            bootbox.alert($i18n("Failed to register query. Try again later."));
+                            bootbox.alert($i18n(478, "Failed to register query. Try again later."));
                             return null
                         }
                     });

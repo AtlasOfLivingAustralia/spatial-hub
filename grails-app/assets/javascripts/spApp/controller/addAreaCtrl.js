@@ -156,13 +156,17 @@
                             } else {
                                 closingLater = true;
                                 LayersService.createFromWkt($scope.selectedArea.wkt, $scope.selectedArea.name, '').then(function (data) {
-                                    LayersService.getObject(data.data.id).then(function (data) {
-                                        data.data.layertype = 'area';
-                                        data.data.wkt = $scope.selectedArea.wkt;
-                                        MapService.zoomToExtents(data.data.bbox);
-                                        MapService.add(data.data);
-                                        $scope.$close()
-                                    })
+                                    if (!data.data.id) {
+                                        bootbox.alert($i18n(479, "Invalid WKT"))
+                                    } else {
+                                        LayersService.getObject(data.data.id).then(function (data) {
+                                            data.data.layertype = 'area';
+                                            data.data.wkt = $scope.selectedArea.wkt;
+                                            MapService.zoomToExtents(data.data.bbox);
+                                            MapService.add(data.data);
+                                            $scope.$close()
+                                        })
+                                    }
                                 })
                             }
                         }

@@ -153,6 +153,7 @@
                         };
 
                         scope.contextualCreateArea = function () {
+                            var selectedLayer = scope.selected.layer;
                             if (selectedLayer !== undefined) {
                                 var ids = [];
                                 var fqs = [];

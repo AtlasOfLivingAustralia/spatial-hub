@@ -215,6 +215,8 @@
                             promises.push(MapService.add(item.data))
                         } else if ("Area" == item.category2) {
                             promises.push(MapService.mapFromPid(item.data))
+                        } else {
+                            promises.push(MapService.add(item.data))
                         }
                     } else if ($scope.isView(item)) {
                         if ("tabulation" == item.category2) {

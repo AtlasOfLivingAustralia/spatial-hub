@@ -51,10 +51,10 @@
                     facetNewLayerOut: function (layer, newFqs) {
                         var fq = ''
                         if (newFqs.length > 0) {
-                            var fqs = newFqs.splice()
+                            var fqs = $.merge([], newFqs)
                             for (var i = 0; i < fqs.length; i++) {
                                 // Use (*:* AND -facet:*) instead of (-facet:*)
-                                if (fqs[i].match(/^-[^\s]*:\*$/) != null) {
+                                if (fqs[i].match(/^-[^\s]*:\*$/) != null || fqs[i].match(/^-[^\s]*:\[\* TO \*\]$/) != null) {
                                     fqs[i] = '*:* AND ' + fqs[i]
                                 }
                             }
