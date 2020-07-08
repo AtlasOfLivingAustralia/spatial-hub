@@ -1,30 +1,31 @@
 <form class="form-horizontal workflow-annotation">
-    <p>
+    <p i18n="498">
         Annotating your workflow will allow other users to assess the suitability of
         the dataset for their purposes and make it reusable.
     </p>
 
     <div class="form-group">
-        <label for="user" class="col-md-4 control-label">User</label>
+        <label i18n="499" for="user" class="col-md-4 control-label">User</label>
         <div class="col-md-8">
             <input type="text" class="form-control input-sm" readonly="readonly" id="user"
                    ng-model="value.userDisplayName">
         </div>
     </div>
     <div class="form-group">
-        <label for="organisation" class="col-md-4 control-label">Organsation</label>
+        <label i18n="500" for="organisation" class="col-md-4 control-label">Organsation</label>
         <div class="col-md-8">
             <input type="text" id="organisation" class="form-control" ng-model="value.userOrganisation">
         </div>
     </div>
     <div class="form-group">
-        <label for="dataSetAnnotation" class="col-md-4 control-label">General annotation of the dataset</label>
+        <label i18n="501" for="dataSetAnnotation" class="col-md-4 control-label">General annotation of the
+            dataset</label>
         <div class="col-md-8">
             <textarea id="dataSetAnnotation" class="form-control" ng-model="value.dataSetAnnotation" rows="3" placeholder="Please include any information relevant to the data set as a whole that would help other researchers use your dataset"></textarea>
         </div>
     </div>
     <div class="form-group">
-        <label for="workflowItem" class="col-md-4 control-label">Workflow annotation</label>
+        <label i18n="502" for="workflowItem" class="col-md-4 control-label">Workflow annotation</label>
         <div class="col-md-12 well">
             <div workflow-item workflow="value.workflowAnnotation"></div>
         </div>

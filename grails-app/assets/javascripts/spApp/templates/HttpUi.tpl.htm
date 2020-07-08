@@ -1,7 +1,7 @@
-<div style="position:absolute;border:1px solid;top:0px;z-index:9999999;">
-    <button ng-click="console.log('b');abcd()">resetLayout</button>
+<div skipI18n style="position:absolute;border:1px solid;top:0px;z-index:9999999;">
+    <button ng-click="abcd()">resetLayout</button>
 
-    <button ng-click="console.log('c');failNext()">fail next http request</button>
+    <button ng-click="failNext()">fail next http request</button>
 
 
     <table>
@@ -30,7 +30,7 @@
 
                     {{error.config.service}}, {{error.config.method}}, {{error.layout.id}}, {{error.layout.panelMode}},
                     {{error.layout.layoutStack.length}}
-                    <button ng-click="console.log('a');retry(error)">retry</button>
+                    <button ng-click="retry(error)">retry</button>
                     <br/>
                 </div>
             </td>

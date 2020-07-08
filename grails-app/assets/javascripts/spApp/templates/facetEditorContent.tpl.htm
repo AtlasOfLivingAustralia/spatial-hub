@@ -1,5 +1,5 @@
 <div>
-    <label>Display facet class in</label>
+    <label i18n="480">Display facet class in</label>
     <div class="btn-group">
         <button class="btn btn-default btn-xs" uib-btn-radio="'table'" ng-model="facetDisplay" i18n="456">
             table
@@ -16,7 +16,7 @@
 <button i18n="129" ng-click="_facet.filter=''" class="btn btn-xs btn-default" ng-disabled="_facet.filter == ''">clear
     filter
 </button>
-<button ng-click="facetClearSelection()" class="btn btn-xs btn-default">clear selection</button>
+<button i18n="481" ng-click="facetClearSelection()" class="btn btn-xs btn-default">clear selection</button>
 <uib-progressbar ng-show="_facet.loading"
                  class="progress-striped" ng-class="{ active: true }" value="100"
                  type='info' title="Updating">{{ facet.progress || 'loading...'}}

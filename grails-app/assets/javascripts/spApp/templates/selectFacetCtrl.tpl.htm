@@ -3,9 +3,9 @@
     <select style=";width:300px" id='facet' ng-model="facet"
             ng-change="changeFacet()">
 
-        <option value="search">Search facets...</option>
+        <option i18n="503" value="search">Search facets...</option>
 
-        <option disabled>--- Active Filters ---</option>
+        <option i18n="504" disabled>--- Active Filters ---</option>
 
         <option ng-repeat="x in activeFacets" value="{{x.facet}}">
             {{x.name}}
@@ -20,7 +20,7 @@
 
 <div style="height:320px">
     <hr/>
-    <span>Facet begins with (case sensitive):</span>
+    <span i18n="505">Facet begins with (case sensitive):</span>
     <input style="width:200px" type="text" ng-model="activeFacet.facetFilter"/>
     <div class="btn-group btn-group-xs">
         <button i18n="141" ng-click="offset = 0; updatePage()" class="btn btn-default">
@@ -57,11 +57,11 @@
         <button ng-click="previousPage()" class="btn btn-default" ng-disabled="offset == 0">
             <span i18n="110" aria-hidden="true">«</span>
         </button>
-        <button ng-click="nextPage()" class="btn btn-default" ng-disabled="offset + pageSize >= max">
+        <button ng-click="nextPage()" class="btn btn-default" ng-disabled="offset + pageSize >= activeFacet.max">
             <span i18n="111" aria-hidden="true">»</span>
         </button>
     </div>
-    <span>Page {{(offset / pageSize) + 1}} of {{maxPages}}</span>
+    <span>Page {{(offset / pageSize) + 1}} of {{activeFacet.maxPages}}</span>
 
     <div style="float:right">
         <span style="color:red">{{activeFacet.selection.length}} facets selected</span>

@@ -31,8 +31,6 @@
 
                         scope.pageSize = 10;
                         scope.offset = 0;
-                        scope.max = 0;
-                        scope.maxPages = 0;
 
                         scope.updatingPage = false;
                         scope.downloadSize = 0;
@@ -57,7 +55,7 @@
 
                         scope.nextPage = function () {
                             scope.applySelection();
-                            if (scope.offset + scope.pageSize < scope.max) {
+                            if (scope.offset + scope.pageSize < scope.activeFacet.max) {
                                 scope.offset += scope.pageSize;
                                 scope.updatePage()
                             }
@@ -195,8 +193,8 @@
                                     if (data.length > 0) {
                                         scope.activeFacet.facetList = data[0].fieldResult;
                                         scope.activeFacet.exportUrl = BiocacheService.facetDownload(scope.facet);
-                                        scope.activeFacet.max = data[0].count;
-                                        scope.activeFacet.maxPages = Math.ceil(scope.max / scope.pageSize)
+                                        scope.activeFacet.max = data[0].count + scope.offset;
+                                        scope.activeFacet.maxPages = Math.ceil(scope.activeFacet.max / scope.pageSize)
                                     } else {
                                         scope.activeFacet.max = 0;
                                         scope.activeFacet.facetList = [];

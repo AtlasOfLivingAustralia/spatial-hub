@@ -15,7 +15,6 @@
                     },
                     templateUrl: '/spApp/workflowAnnotation.htm',
                     link: function (scope, element, attrs) {
-                        console.log(scope);
                         if (!scope.value) {
                             scope.value = {
                                 dataSetAnnotation: '',
