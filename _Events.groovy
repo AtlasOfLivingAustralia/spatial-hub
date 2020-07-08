@@ -122,99 +122,105 @@ def build(String baseDir) {
     def dir = baseDir + '/grails-app/assets/javascripts/spApp/templates/'
     print 'i18n - find new in templates : ' + dir
     for (File f : new File(dir).listFiles()) {
+        try {
+            def label = ' ' + f.name
+            print(label)
+            def newCount = 0
 
-        def label = ' ' + f.name
-        print(label)
-        def newCount = 0
+            String input = FileUtils.readFileToString(f)
 
-        String input = FileUtils.readFileToString(f)
+            if (!input.contains("skipI18n")) {
+                def output = new StringBuilder()
 
-        if (!input.contains("skipI18n")) {
-            def output = new StringBuilder()
+                def previousPos = 0
+                start = input.indexOf('<')
+                while (start < input.length() && start != -1) {
 
-            start = 0
-            while (start < input.length() && start != -1) {
-                def next = input.indexOf('</', start)
+                    if (start > previousPos) {
+                        output.append(input.substring(previousPos, start))
+                        previousPos = start
+                    }
 
-                if (next > start) {
-                    output.append(input.substring(start, next))
-                }
+                    def readPos = -1
+                    for (int i = 0; i < textElements.length && readPos < 0; i++) {
+                        String e = textElements[i]
 
-                def writeAt = -1
-                for (int i = 0; i < textElements.length && writeAt < 0; i++) {
-                    String e = textElements[i]
+                        // match <tag...> and <tag.../>
+                        if (input.startsWith(e, start + 1)) {
+                            // break out of for loop
+                            readPos = 0
 
-                    if (input.startsWith(e, next + 1)) {
-                        //very rough matching
-                        def end1 = input.indexOf("/>", next)
-                        def end2 = input.indexOf(">", next)
-                        //check that end2 is not part of ng-*=".*" or {{*}}
-                        def s = input.substring(next, end2)
-                        while (end2 > 0 && (end1 == -1 || end1 > end2) &&
-                                (StringUtils.countMatches(s, "{{") < StringUtils.countMatches(s, "}}") ||
-                                        s.matches(".*\\sng-[^\\s=]+=(('[^']*)|(\"[^\"]*))\$"))) {
-                            end2 = input.indexOf(">", end2 + 1)
-                        }
+                            //very rough matching
+                            def end1 = input.indexOf("/>", start)
+                            def end2 = input.indexOf(">", start)
 
-                        if (end1 == -1 || end1 > end2) {
-                            //has interior
-                            def txtStart = end2 + 1
-                            def txtEnd = input.indexOf("<", txtStart)
-                            def str = input.substring(txtStart, txtEnd)
-                            // exclude whitespace, anything with angular substitution
-                            if (str.length() > 0 && !StringUtils.isWhitespace(str) && !str.contains("{{")) {
-                                //has text, insert next attr if missing
-                                if (!input.substring(next, end2).contains("i18n")) {
-                                    writeAt = e.length() + next + 1
+                            //skip over attr ng-*=".*" and substitution strings {{*}}
+                            def s = input.substring(start, end2)
+                            while (end2 > 0 && (end1 == -1 || end1 > end2) &&
+                                    (StringUtils.countMatches(s, "{{") < StringUtils.countMatches(s, "}}") ||
+                                            s.matches(".*\\sng-[^\\s=]+=(('[^']*)|(\"[^\"]*))\$"))) {
+                                end2 = input.indexOf(">", end2 + 1)
+                            }
 
-                                    output.append(input.substring(next, writeAt))
-                                    def value = input.substring(txtStart, txtEnd).replaceAll("\\s+", ' ').trim()
+                            def tagEnd = "</" + e + ">"
+                            if (end1 == -1 || end1 > end2) {
+                                //get innerText of <tag...></tag>
+                                def txtStart = end2 + 1
+                                def txtEnd = input.indexOf(tagEnd, txtStart)
+                                if (txtEnd > 0 && txtEnd < input.length()) {
+                                    def innerText = input.substring(txtStart, txtEnd)
+                                    // exclude whitespace, anything with angular substitution or tag start/end characters '<' '>'
+                                    if (innerText.length() > 0 && !innerText.contains('>') && !innerText.contains('<') && !StringUtils.isWhitespace(innerText) && !innerText.contains("{{")) {
+                                        //insert i18n attr if missing
+                                        if (!input.substring(start, end2).contains("i18n")) {
+                                            readPos = e.length() + start + 1
 
-                                    if (value != "&nbsp;") {
-                                        def currentIdx = idx
-                                        if (all.containsKey(value)) {
-                                            currentIdx = all.get(value)
-                                        } else {
-                                            all.put(value, idx)
-                                            idx++
+                                            output.append(input.substring(start, readPos))
+                                            def value = input.substring(txtStart, txtEnd).replaceAll("\\s+", ' ').trim()
 
-                                            newProperties.append("\n${currentIdx}=${value}")
-                                            newCount++
-                                            totalNewProperties++
+                                            if (value != "&nbsp;") {
+                                                def currentIdx = idx
+                                                if (all.containsKey(value)) {
+                                                    currentIdx = all.get(value)
+                                                } else {
+                                                    all.put(value, idx)
+                                                    idx++
+
+                                                    newProperties.append("\n${currentIdx}=${value}")
+                                                    newCount++
+                                                    totalNewProperties++
+                                                }
+
+                                                output.append(" i18n=\"${currentIdx}\" ")
+                                            }
+
+                                            output.append(input.substring(readPos, txtEnd + tagEnd.length()))
+                                            previousPos = txtEnd + tagEnd.length()
+                                            start = previousPos
                                         }
-
-                                        output.append(" i18n=\"${currentIdx}\" ")
                                     }
-
-                                    output.append(input.substring(writeAt, txtEnd))
-                                    start = txtEnd
                                 }
                             }
                         }
                     }
+
+                    start = input.indexOf('<', start + 1)
                 }
 
-                if (writeAt < 0) {
-                    def end = input.indexOf(">", next)
-                    if (next >= 0 && end >= 0) {
-                        output.append(input.substring(next, end + 1))
+                if (previousPos < input.length()) {
+                    output.append(input.substring(previousPos))
+                }
 
-                        start = end + 1
-                    } else if (next >= 0) {
-                        output.append(input.substring(next, input.length()))
-                        start = input.length() + 1
-                    } else {
-                        start = input.length() + 1
-                    }
+                if (newCount > 0) {
+                    // overwrite template file
+                    FileUtils.writeStringToFile(f, output.toString())
+
+                    print " - $newCount new keys, "
                 }
             }
-
-            if (newCount > 0) {
-                // overwrite template file
-                FileUtils.writeStringToFile(f, output.toString())
-
-                print " - $newCount new keys, "
-            }
+        } catch (err) {
+            println f.name
+            err.printStackTrace()
         }
     }
 
