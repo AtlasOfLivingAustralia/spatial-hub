@@ -667,6 +667,9 @@
                         if ($SH.qc !== undefined && $SH.qc !== null && $SH.qc.length > 0) data.qc = $SH.qc;
                         if (fq !== undefined && fq !== null) data.fq = fq;
                         if (query.wkt !== undefined && query.wkt !== null && query.wkt.length > 0) data.wkt = query.wkt;
+                        if (query.disableAllQualityFilters !== undefined && query.disableAllQualityFilters !== null) data.disableAllQualityFilters = query.disableAllQualityFilters;
+                        if (query.qualityProfile !== undefined && query.qualityProfile !== null) data.qualityProfile = query.qualityProfile;
+                        if (query.disableQualityFilter !== undefined && query.disableQualityFilter !== null) data.disableQualityFilter = query.disableQualityFilter;
 
                         //TODO: biocache wms request is failing for q=lsid:... when ENV contains a "sel" value. Do not set query.qid=data.q
                         // if(((data.fq === undefined || data.fq === null || data.fq.length === 0) &&
