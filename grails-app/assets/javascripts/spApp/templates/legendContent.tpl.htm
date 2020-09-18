@@ -80,10 +80,10 @@
             <select style=";width:300px" id='facet' ng-model="selected.layer.facet"
                     ng-change="updateFacet()">
                 <option i18n="128" value="-1">User defined colour</option>
-                <option value="search">Search facets...</option>
+                <option i18n="503" value="search">Search facets...</option>
                 <option ng-repeat="filter in workflowFilters" value="{{filter.workflowId}}">{{filter.name}}</option>
 
-                <option ng-show="filtersEnabled()" disabled>--- Active Filters ---</option>
+                <option i18n="504" ng-show="filtersEnabled()" disabled>--- Active Filters ---</option>
                 <option ng-repeat="x in selected.layer.facets | filter:{enabled: true}" value="{{x.name}}"
                         ng-if="showActiveFilter()">
                     {{x.displayName}}
@@ -95,7 +95,7 @@
             </select>
             <div ng-show="filtersEnabled() && isFilterSelected()" class="btn-group"
                  style="float: right;margin-right: 20px;">
-                <button class="btn-xs btn btn-default" ng-click="removeFacet()">Remove filter</button>
+                <button i18n="512" class="btn-xs btn btn-default" ng-click="removeFacet()">Remove filter</button>
             </div>
         </div>
 

@@ -142,6 +142,8 @@
         projection: '${config.projection.default}',
         fqExcludeAbsent: '${config.fq.excludeAbsent}',
         biocollectUrl: '${config.biocollect.url}',
+        biocollectLoginUrl: '${config.biocollect.loginUrl}',
+        biocollectReport: ${(config.biocollect.areaReport as grails.converters.JSON).toString().encodeAsRaw()},
         lifeforms: ${(config.lifeforms as grails.converters.JSON).toString().encodeAsRaw()},
 
         config: ${(config.spApp as grails.converters.JSON).toString().encodeAsRaw()},
@@ -197,6 +199,8 @@
          * List of public workflow Ids for the species filter
          */
         , workflowFilters: ${(config.workflow.speciesFilters as grails.converters.JSON).toString().encodeAsRaw()}
+
+        , maxUploadSize: ${config.grails.controllers.upload.maxFileSize}
     };
 
     BIE_VARS = {

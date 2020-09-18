@@ -6,6 +6,7 @@ import grails.web.http.HttpHeaders
 import io.swagger.annotations.ApiImplicitParams
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiResponses
+import org.apache.commons.httpclient.HttpStatus
 import org.apache.commons.httpclient.methods.StringRequestEntity
 import org.apache.commons.io.FileUtils
 import org.apache.commons.lang.StringUtils
@@ -362,9 +363,10 @@ class PortalController {
 
             if (!r) {
                 render [:] as JSON
-            } else if (r.error) {
+            } else if (r.error || r.statusCode > 299) {
                 log.error("failed ${type} upload: ${r}")
-                render [:] as JSON
+                def resp = [error: "Upload failed. " + HttpStatus.getStatusText(r.statusCode)]
+                render resp as JSON
             } else {
                 def json = JSON.parse(new String(r?.text ?: "{}"))
                 def shapeFileId = json.id

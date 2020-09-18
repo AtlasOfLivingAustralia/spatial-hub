@@ -49,7 +49,7 @@
                 },
 
                 logError: function (config, msg) {
-                    if (msg && msg.indexOf('Error') >= 0 && !config.ignoreErrors) {
+                    if (msg && msg.indexOf('Error') >= 0 && config && !config.ignoreErrors) {
                         // TODO: identify fatal errors
                         var isFatalError = false;
 

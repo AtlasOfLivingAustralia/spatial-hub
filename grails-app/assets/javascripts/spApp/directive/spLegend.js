@@ -153,6 +153,7 @@
                         };
 
                         scope.contextualCreateArea = function () {
+                            var selectedLayer = scope.selected.layer;
                             if (selectedLayer !== undefined) {
                                 var ids = [];
                                 var fqs = [];
@@ -513,6 +514,10 @@
 
                         scope.createSubLayer = function (colour, layer, fq) {
                             return BiocacheService.newLayerAddFq(layer, fq, layer.name).then(function (subLayer) {
+                                if (subLayer == null) {
+                                    return $q.when(null)
+                                }
+
                                 subLayer.red = colour.red;
                                 subLayer.green = colour.green;
                                 subLayer.blue = colour.blue;
@@ -577,6 +582,10 @@
                                 var newFqs = scope.getFacetFqs(false);
 
                                 return BiocacheService.newLayerAddFq(selectedLayer, newFqs).then(function (newLayer) {
+                                    if (newLayer == null) {
+                                        return $q.when(null)
+                                    }
+
                                     return scope.fetchFacetData(selectedLayer.activeFacet, newLayer).then(function (data) {
                                         scope.updateWMS();
                                         return $q.when(data)
@@ -746,7 +755,7 @@
 
                                     // always update facet data
                                     scope.refreshFacetData(false).then(function (data) {
-                                        if (selectedLayer.scatterplotUrl !== undefined) {
+                                        if (data && selectedLayer.scatterplotUrl !== undefined) {
                                             scope.scatterplotUpdate(selectedLayer);
                                         }
                                     })
@@ -904,6 +913,9 @@
 
                                 if (selectedLayer.leaflet) {
                                     var firstLayer = selectedLayer.leaflet.layerOptions.layers[0];
+                                    if (selectedLayer.scatterplotId !== undefined && selectedLayer.leaflet.layerOptions.layers[1] !== undefined) {
+                                        firstLayer = selectedLayer.leaflet.layerOptions.layers[1];
+                                    }
 
                                     // using the layer.facets selection will override the colour to -1 and red
                                     var facetSelectionOverride = false
@@ -1119,6 +1131,12 @@
                                                 var species = jQuery.parseJSON(d.file);
                                                 layer.scatterplotUrl = species.scatterplotUrl;
 
+                                                // remove scatterplot environmental envelope
+                                                while (layer.leaflet.layerOptions.layers.length > 1) {
+                                                    delete layer.leaflet.layerOptions.layers[0]
+                                                    layer.leaflet.layerOptions.layers.splice(0, 1)
+                                                }
+
                                                 if (species.scatterplotSelectionExtents && species.scatterplotLayers) {
                                                     layer.scatterplotSelectionExtents = species.scatterplotSelectionExtents;
                                                     var fq = species.scatterplotLayers[0] + ":[" + species.scatterplotSelectionExtents[1] + " TO " + species.scatterplotSelectionExtents[3] + "] AND " +
@@ -1126,9 +1144,6 @@
                                                     var fqs = [fq];
                                                     layer.scatterplotFq = fq;
 
-                                                    for (var i = layer.leaflet.layerOptions.layers.length - 1; i > 0; i--) {
-                                                        delete layer.leaflet.layerOptions.layers[i]
-                                                    }
                                                     if (species.scatterplotSelectionExtents.length === 0) {
                                                         fqs = [];
                                                         layer.scatterplotSelectionCount = 0;

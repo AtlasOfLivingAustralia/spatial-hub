@@ -15,7 +15,7 @@
                 spec: {
                     "input": [
                         {
-                            "description": "Select area.",
+                            "description": "Select area",
                             "type": "area",
                             "constraints": {
                                 "min": 1,
@@ -25,7 +25,7 @@
                             }
                         },
                         {
-                            "description": "Species options.",
+                            "description": "Species options",
                             "type": "speciesOptions",
                             "constraints": {
                                 "optional": true,
@@ -33,7 +33,7 @@
                             }
                         },
                         {
-                            "description": "Select facet.",
+                            "description": "Select facet (counts ignore species options)",
                             "type": "facet",
                             "constraints": {
                                 "min": 1,
@@ -48,7 +48,7 @@
                     var area = inputs[0][0];
                     var speciesOptions = inputs[1];
                     var facet = inputs[2];
-                    var q = [facet];
+                    var q = facet;
                     if (speciesOptions.spatiallyUnknown) {
                         if (speciesOptions.spatiallyValid && speciesOptions.spatiallySuspect) { /* do nothing */
                         } else if (speciesOptions.spatiallyValid) q.push('-geospatial_kosher:false');
@@ -65,14 +65,23 @@
 
                     var newName = $i18n(127, "Facet");
 
-                    //Guess name from factet Genuse:"Cractus" OR Genuse:"xxxxxx"
+                    //Guess name from facet Genuse:"Cractus" OR Genuse:"xxxxxx"
                     try {
-                        var classes = facet.split("OR");
-                        var classesname = [];
-                        for (var i in classes) {
-                            classesname.push(classes[0].split(":")[1].replace(/['"]+/g, ''))
+                        if (facet.length == 1) {
+                            var classes = facet[0].split("OR");
+                            var classesname = [];
+                            for (var i in classes) {
+                                classesname.push(classes[0].split(":")[1].replace(/['"]+/g, ''))
+                            }
+                            newName += ' (' + classesname.join('/') + ')'
+                        } else {
+                            var fields = []
+                            $.each(facet, function (i, v) {
+                                if (fields.length > 0) fields += ', '
+                                fields += facet.split(":")[0].replace(/['"]+/g, '')
+                            })
+                            newName += ' (' + fields + ')'
                         }
-                        newName += ' (' + classesname.join('/') + ')'
                     } catch (e) {
                         if (area.name !== undefined) newName += ' (' + area.name + ')'; //in case
                     }
@@ -82,10 +91,14 @@
                         bs: $SH.biocacheServiceUrl,
                         ws: $SH.biocacheUrl
                     }, area, newName).then(function (data) {
-                        data.log = false
-                        return MapService.add(data).then(function () {
-                            return true
-                        })
+                        if (data == null) {
+                            return $q.when(false)
+                        } else {
+                            data.log = false
+                            return MapService.add(data).then(function () {
+                                return true
+                            })
+                        }
                     });
                 }
             };

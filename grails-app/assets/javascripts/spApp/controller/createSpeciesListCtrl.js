@@ -25,11 +25,13 @@
      */
     angular.module('create-species-list-ctrl', ['map-service', 'biocache-service', 'layers-service'/*, 'ala.sandbox.preview'*/])
         .controller('CreateSpeciesListCtrl', ['$scope', '$controller', 'MapService', '$timeout', 'LayoutService', '$uibModalInstance',
-            'BiocacheService', 'LayersService', 'ListsService', 'data', 'BieService', 'LoggerService',
-            function ($scope, $controller, MapService, $timeout, LayoutService, $uibModalInstance, BiocacheService, LayersService, ListsService, inputData, BieService, LoggerService) {
+            'BiocacheService', 'LayersService', 'ListsService', 'data', 'BieService', 'LoggerService', '$q',
+            function ($scope, $controller, MapService, $timeout, LayoutService, $uibModalInstance, BiocacheService, LayersService, ListsService, inputData, BieService, LoggerService, $q) {
                 LayoutService.addToSave($scope);
 
                 $scope.step = '1';
+
+                $scope.maxFileSize = $SH.maxUploadSize;
 
                 $scope.listTypes = [
                     {id: 'OTHER', label: "Other"},
@@ -63,6 +65,21 @@
                 $scope.$watch('file', function () {
                     $scope.uploadCSV();
                 });
+
+                $scope.validateFile = function (newFiles) {
+                    if (newFiles == null || newFiles.length == 0) {
+                        return
+                    }
+
+                    var file = newFiles[0]
+
+                    if (file.$error) {
+                        if (file.$errorMessages.maxSize) {
+                            bootbox.alert($i18n(476, "The uploaded file is too large. Max file size:") + " " + Math.floor($scope.maxFileSize / 1024 / 1024) + "MB");
+                            return
+                        }
+                    }
+                }
 
                 $scope.matchedItems = [];
 
@@ -169,8 +186,10 @@
                                             closeLater = true;
                                             var newquery = BiocacheService.newQuery($scope.selectedQ.q, $scope.selectedQ.name, undefined);
                                             BiocacheService.newLayer(newquery, undefined, newquery.name).then(function (data) {
-                                                data.species_list = druid;
-                                                MapService.add(data);
+                                                if (data != null) {
+                                                    data.species_list = druid;
+                                                    MapService.add(data);
+                                                }
                                                 $scope.$close();
                                             });
                                         }

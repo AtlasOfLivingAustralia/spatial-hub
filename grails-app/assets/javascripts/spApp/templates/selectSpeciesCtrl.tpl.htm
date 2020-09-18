@@ -11,12 +11,12 @@
 <div ng-show="_spatialValidity && !mappedLayerSelected" class="checkbox">
     <label>
         <input type="checkbox" ng-model="spatiallyUnknown"
-               ng-change="setQ()"><span>Include spatially-undefined records</span>
+               ng-change="setQ()"><span i18n="525">Include spatially-undefined records</span>
     </label>
 </div>
 <div ng-show="_absentOption && !mappedLayerSelected" class="checkbox">
     <label>
-        <input type="checkbox" ng-model="includeAbsences" ng-change="setQ()"><span>Include absences</span>
+        <input type="checkbox" ng-model="includeAbsences" ng-change="setQ()"><span i18n="514">Include absences</span>
     </label>
 </div>
 <div ng-show="_areaIncludes">
@@ -48,6 +48,7 @@
 <div ng-show="multiselect">
     <div ng-repeat="layer in speciesLayers">
         <input type="checkbox" ng-model="layer.checked" ng-change="updateMultiSelection()">{{layer.name}}<span
+            i18n="526"
             ng-if="layer.species_list"
             style="margin-left:10px;font-style: italic">(may include species traits)</span>
         <br/>
@@ -58,7 +59,7 @@
 <div ng-show="multiselect" class="radio">
     <label>
         <input type="radio" ng-model="speciesOption" value="none" ng-change="changeOption('none')" name="{{_uniqueId}}">
-        <span>No additional species</span></label>
+        <span i18n="527">No additional species</span></label>
     <br/>
 </div>
 
@@ -69,10 +70,10 @@
     <br/>
 </div>
 
-<div ng-show="!_inputData.importList && !_inputData.importPoints && _lifeform" class="radio">
+<div ng-show="!_inputData.importList && !_inputData.importPoints && _lifeforms" class="radio">
     <label>
         <input type="radio" ng-model="speciesOption" value="lifeform" ng-change="changeOption('lifeform')"
-               name="{{_uniqueId}}"><span>Lifeform</span></label>
+               name="{{_uniqueId}}"><span i18n="528">Lifeform</span></label>
     <br/>
     <div ng-show="speciesOption == 'lifeform'" style="margin-left:15px">
         <lifeform-select style="width:400px" on-custom="setLifeformQ"></lifeform-select>

@@ -34,6 +34,9 @@
                      *  - ```species_lsid```: LSID for occurrences layer to add. e.g. ```species_lsid=urn:lsid:biodiversity.org.au:afd.taxon:e6aff6af-ff36-4ad5-95f2-2dfdcca8caff```
                      *  - ```fq```: biocache-service fq term for occurrences layer to add. e.g. ```fq=geospatial_kosher:true```
                      *  - ```qc```: biocache-service fq term for occurrences layer to add. e.g. ```qc=data_hub_uid:dh1```
+                     *  - ```qualityProfile```: biocache-service qualityProfile param for data quality profile to apply
+                     *  - ```disableAllQualityFilters```: biocache-service disableAllQualityFilters param to disable all data quality filters on this request
+                     *  - ```disableQualityFilter```: biocache-service disableQualityFilter param to disable individual data quality filters on this request
                      *  - ```wkt```: WKT value for the occurrences layer to add. e.g. ```wkt=POLYGON((...))```
                      *  - ```psize```: integer value specifying the default occurrence layer point size (pixel radius) for
                      *  layer to add. e.g. ```psize=10```
@@ -80,6 +83,9 @@
                         var s = "";
                         var qname;
                         var qc;
+                        var qualityProfile;
+                        var disableAllQualityFilters;
+                        var disableQualityFilter = [];
                         var wkt;
                         var size;
                         var opacity;
@@ -139,6 +145,27 @@
                                     }
                                 } else if ("wkt" === key) {
                                     wkt = value;
+                                } else if ("qualityProfile" === key) {
+                                    qualityProfile = value;
+                                    // var qualityProfile;
+                                    // var disableAllQualityFilters;
+                                    // var disableQualityFilter;
+                                } else if ("disableAllQualityFilters" === key) {
+                                    disableAllQualityFilters = value;
+                                    // var qualityProfile;
+                                    // var disableAllQualityFilters;
+                                    // var disableQualityFilter;
+                                } else if ("disableQualityFilter" === key) {
+                                    if ($.isArray(value)) {
+                                        for (var a in value) {
+                                            if (value.hasOwnProperty(a)) {
+                                                disableQualityFilter.push(value[a])
+                                            }
+                                        }
+                                    } else {
+                                        disableQualityFilter.push(value)
+                                    }
+
                                 } else if ("psize" === key) {
                                     size = parseInt(value);
                                 } else if ("popacity" === key) {
@@ -183,11 +210,18 @@
                         if (sbList.length > 0 || (s !== null && s !== undefined && s.length > 0)) {
                             var query = {q: sbList, bs: bs, ws: ws};
                             if (wkt !== undefined && wkt !== null) query.wkt = wkt;
+                            if (qualityProfile !== undefined && qualityProfile !== null && qualityProfile) query.qualityProfile = qualityProfile;
+                            if (disableAllQualityFilters !== undefined && disableAllQualityFilters !== null && disableAllQualityFilters) query.disableAllQualityFilters = disableAllQualityFilters;
+                            if (disableQualityFilter !== undefined && disableQualityFilter !== null && disableQualityFilter) query.disableQualityFilter = disableQualityFilter;
 
                             promises.push(BiocacheService.queryTitle(query).then(function (response) {
                                 query.name = response;
                                 if (qname !== undefined) newLayerResp.displayname = qname;
                                 return BiocacheService.newLayer(query, undefined, response).then(function (newLayerResp) {
+                                    if (newLayerResp == null) {
+                                        return $q.when(false)
+                                    }
+
                                     if (colourBy !== undefined) newLayerResp.facet = colourBy;
                                     if (pointtype !== undefined) newLayerResp.pointtype = pointtype;
                                     if (size !== undefined) newLayerResp.size = size;
@@ -307,6 +341,10 @@
                                         (function () {
                                             var style = params[key + ".s"];
                                             promises.push(BiocacheService.newLayer(multiQuery, undefined, layerName).then(function (newLayerResp) {
+                                                if (newLayerResp == null) {
+                                                    return $q.when(false)
+                                                }
+
                                                 newLayerResp.color = style;
                                                 MapService.add(newLayerResp)
                                             }));

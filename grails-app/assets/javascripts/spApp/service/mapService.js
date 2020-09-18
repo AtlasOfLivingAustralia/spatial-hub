@@ -251,11 +251,11 @@
                     },
 
                     addOtherArea: function (type, query, area, include) {
-                        if (include !== true || query.q.indexOf("lsid:") !== 0) {
+                        if (include !== true || query.q[0].indexOf("lsid:") !== 0) {
                             return $q.when()
                         }
                         // for consistency with the species autocomplete, only the first lsid is used in the search
-                        var lsid = query.q.substring(5);
+                        var lsid = query.q[0].substring(5);
                         return LayersService.findOtherArea(type, lsid, area).then(function (response) {
                             if (response && response.data && response.data.length > 0) {
                                 var data = response.data;
@@ -506,6 +506,10 @@
                                 LoggerService.addLayerId(id.uid)
                             }
 
+                            if (id.qid && !id.q) {
+                                id.q = id.qid
+                            }
+
                             id.layertype = 'species';
 
                             // the display of species layers can be modified with 'facets' that hide items
@@ -576,7 +580,7 @@
                             promises.push(BiocacheService.count(id).then(function (data) {
                                 id.count = data;
                                 if (id.count == 0 && id.fromSave === undefined) {
-                                    bootbox.alert(id.name + "<br/><br/>" + $i18n("No occurrences mapped for this layer and applied filters."))
+                                    bootbox.alert(id.name + "<br/><br/>" + $i18n(475, "No occurrences mapped for this layer and applied filters."))
                                 }
                                 if (id.count < 100000 && id.fromSave === undefined) {
                                     id.colorType = '-1'
@@ -588,12 +592,9 @@
 
                             if (id.layertype === 'area') {
                                 if (id.id && id.id.includes(":")){
-                                    console.log('Parse id: ' + id.id +" -> id with ':' does not store in Objects. It should contains wmsurl, otherwise it will fail" )
                                     //qs does not parse full url, it ignores the first param after ?
                                     var wmsurl = id.wmsurl.split('?')[1]
                                     var qs = new URLSearchParams(wmsurl)
-                                    if (!qs.has('service'))
-                                        console.log("Fatal error: " + wmsurl + " does not have 'wmsurl'")
                                     sld_body = qs.get('sld_body');
                                     newLayer = {
                                         name: uid + ': ' + id.name,
@@ -796,7 +797,12 @@
                                 name: newLayer.name
                             };
 
-                            layerGroup.layerOptions.layers.push(newLayer);
+                            if (id.layertype === 'scatterplotEnvelope') {
+                                // add below the parent layer
+                                layerGroup.layerOptions.layers.unshift(newLayer);
+                            } else {
+                                layerGroup.layerOptions.layers.push(newLayer);
+                            }
 
                             if (!parentLeafletGroup) {
                                 id.leaflet = layerGroup;
@@ -855,7 +861,6 @@
                     objectSld: function (item) {
                         var sldBody = '';
                         if(item.pid && item.pid.includes(":")){
-                            console.log('Warning: ' + id.id +" -> id with ':', its wmsurl should contain sld_body, otherwise the layer cannot be rendered properly!" )
                             //qs does not parse full url, it ignores the first param after ?
                             var wmsurl = id.wmsurl.split('?')[1]
                             var qs = new URLSearchParams(wmsurl)

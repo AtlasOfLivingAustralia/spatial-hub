@@ -21,6 +21,7 @@
 //= require leaflet-label/leaflet.label.js
 //= require leaflet-geodesy/leaflet-geodesy.js
 //= require Leaflet.zoomslider-0.7.1/src/L.Control.Zoomslider.js
+//= require leaflet-measure/dist/leaflet-measure.min.js
 
 //angular
 //= require angular/angular.min.js
@@ -58,5 +59,7 @@
 //= require_tree spApp
 //= require x2js/xml2json.min.js
 
+//biocollect searching
+//= require lz-string/libs/lz-string.min.js
 
 

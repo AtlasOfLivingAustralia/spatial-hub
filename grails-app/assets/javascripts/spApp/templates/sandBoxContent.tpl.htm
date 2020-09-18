@@ -97,7 +97,9 @@
 
                                 <div class="form">
                                     <label class="btn btn-default btn-file">
-                                        {{preview.file.name || 'Select File' }} <input type="file" ngf-select
+                                        {{preview.file.name || 'Select File' }} <input type="file"
+                                                                                       ngf-select="validateFile($newFiles)"
+                                                                                       ngf-max-size="maxFileSize"
                                                                                        ng-model="preview.file"
                                                                                        ng-disabled="preview.parsing"
                                                                                        style="display: none;">
