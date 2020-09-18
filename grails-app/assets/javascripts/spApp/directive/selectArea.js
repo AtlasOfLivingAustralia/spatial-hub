@@ -29,8 +29,8 @@
                         scope.addLayerAreas = function () {
                             $.map(MapService.areaLayers(), function (x, idx) {
 
-                                // Incompatible areas have area.pid.contains(':')
-                                if (x.pid !== undefined || !x.pid.contain(':')) {
+                                // Incompatible areas have area.pid.contains(':') or '~'
+                                if (x.pid /* || ((x.pid + '').indexOf(':') < 0 && (x.pid + '').indexOf('~')) < 0 */) {
                                     scope.layerAreas.push({
                                         name: x.name,
                                         q: x.q,

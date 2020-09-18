@@ -38,8 +38,13 @@
                         return $http.get(LayersService.url() + "/journalMap/search?wkt=" + $scope.area.wkt, $scope._httpDescription('journalmapCount')).then(function (response) {
                             return $scope.setJournalMapCount(response.data)
                         });
-                    } else {
+                    } else if (!($scope.area.pid.indexOf('~'))) {
                         return $http.get(LayersService.url() + "/journalMap/search?pid=" + $scope.area.pid, $scope._httpDescription('journalmapCount')).then(function (response) {
+                            return $scope.setJournalMapCount(response.data)
+                        });
+                    } else {
+                        var wkt = $scope.bboxToWkt($scope.area.bbox)
+                        return $http.get(LayersService.url() + "/journalMap/search?wkt=" + wkt, $scope._httpDescription('journalmapCount')).then(function (response) {
                             return $scope.setJournalMapCount(response.data)
                         });
                     }
@@ -84,8 +89,13 @@
                         return $http.get(LayersService.url() + "/distributions?wkt=" + $scope.area.wkt, $scope._httpDescription('distributionCounts')).then(function (response) {
                             return $scope.setDistributionCount(response.data)
                         });
-                    } else {
+                    } else if (($scope.area.pid + '').indexOf('~') < 0) {
                         return $http.get(LayersService.url() + "/distributions?pid=" + $scope.area.pid, $scope._httpDescription('distributionCounts')).then(function (response) {
+                            return $scope.setDistributionCount(response.data)
+                        });
+                    } else {
+                        var wkt = $scope.bboxToWkt($scope.area.bbox)
+                        return $http.get(LayersService.url() + "/distributions?wkt=" + encodeURIComponent(wkt), $scope._httpDescription('distributionCounts')).then(function (response) {
                             return $scope.setDistributionCount(response.data)
                         });
                     }
@@ -125,13 +135,21 @@
                         return $http.get(LayersService.url() + "/checklists?wkt=" + $scope.area.wkt, $scope._httpDescription('checklistCounts')).then(function (response) {
                             return $scope.setChecklistCount(response.data)
                         });
-                    } else {
+                    } else if (($scope.area.pid + '').indexOf('~') < 0) {
                         return $http.get(LayersService.url() + "/checklists?pid=" + $scope.area.pid, $scope._httpDescription('checklistCounts')).then(function (response) {
+                            return $scope.setChecklistCount(response.data)
+                        });
+                    } else {
+                        var wkt = $scope.bboxToWkt($scope.area.bbox)
+                        return $http.get(LayersService.url() + "/checklists?wkt=" + encodeURIComponent(wkt), $scope._httpDescription('checklistCounts')).then(function (response) {
                             return $scope.setChecklistCount(response.data)
                         });
                     }
                 };
 
+                $scope.bboxToWkt = function (bbox) {
+                    return 'POLYGON((' + bbox[0][1] + ' ' + bbox[0][0] + ',' + bbox[1][1] + ' ' + bbox[0][0] + ',' + bbox[1][1] + ' ' + bbox[1][0] + ',' + bbox[0][1] + ' ' + bbox[1][0] + ',' + bbox[0][1] + ' ' + bbox[0][0] + '))'
+                }
 
                 $scope.gazPoints = [];
                 $scope.setGazCount = function (data) {
@@ -150,11 +168,17 @@
                         return $http.get(LayersService.url() + "/objects/inarea/" + LayersService.gazField() + "?wkt=" + $scope.area.wkt + "&limit=9999999", $scope._httpDescription('gazetteerCounts')).then(function (response) {
                             return $scope.setGazCount(response.data)
                         });
-                    } else {
+                    } else if (($scope.area.pid + '').indexOf('~') < 0) {
                         return $http.get(LayersService.url() + "/objects/inarea/" + LayersService.gazField() + "?pid=" + $scope.area.pid + "&limit=9999999", $scope._httpDescription('gazetteerCounts')).then(function (response) {
                             return $scope.setGazCount(response.data)
                         });
+                    } else {
+                        var wkt = $scope.bboxToWkt($scope.area.bbox)
+                        return $http.get(LayersService.url() + "/objects/inarea/" + LayersService.gazField() + "?wkt=" + encodeURIComponent(wkt) + "&limit=9999999", $scope._httpDescription('gazetteerCounts')).then(function (response) {
+                            return $scope.setGazCount(response.data)
+                        });
                     }
+
                     return $q.when(true)
                 };
 
@@ -197,11 +221,17 @@
                         return $http.get(LayersService.url() + "/intersect/poi/wkt?wkt=" + $scope.area.wkt + "&limit=9999999", $scope._httpDescription('pointsOfInterestCount')).then(function (response) {
                             return $scope.setPoi(response.data)
                         });
-                    } else {
+                    } else if (($scope.area.pid + '').indexOf('~') < 0) {
                         return $http.get(LayersService.url() + "/intersect/poi/wkt?pid=" + $scope.area.pid + "&limit=9999999", $scope._httpDescription('pointsOfInterestCount')).then(function (response) {
                             return $scope.setPoi(response.data)
                         });
+                    } else {
+                        var wkt = $scope.bboxToWkt($scope.area.bbox)
+                        return $http.get(LayersService.url() + "/intersect/poi/wkt?wkt=" + encodeURIComponent(wkt) + "&limit=9999999", $scope._httpDescription('pointsOfInterestCount')).then(function (response) {
+                            return $scope.setPoi(response.data)
+                        });
                     }
+
                 };
 
                 $scope.items = [];

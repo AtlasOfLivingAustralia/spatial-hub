@@ -791,7 +791,7 @@
                     }
                     var wkt = undefined;
                     if (area !== undefined && area instanceof Array && area.length > 0 && area[0] !== undefined) {
-                        if (area[0].pid && (area[0].pid.length > 0)) {
+                        if (area[0].pid && (area[0].pid.length > 0) && area[0].pid.indexOf('~') < 0) {
                             wkt = area[0].pid
                         } else if (area[0].q !== undefined) {
                             if (area[0].q.length > 0) {
