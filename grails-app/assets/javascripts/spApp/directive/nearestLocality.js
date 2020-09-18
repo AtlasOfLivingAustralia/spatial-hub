@@ -9,8 +9,8 @@
      */
     angular.module('nearest-locality-directive', ['map-service', 'layers-service', 'predefined-areas-service'])
         .directive('nearestLocality', ['$rootScope', 'MapService', '$timeout', 'LayersService', 'LayoutService',
-            'PredefinedAreasService', "$http", '$filter',
-            function ($rootScope, MapService, $timeout, LayersService, LayoutService, PredefinedAreasService, $http, $filter) {
+            'PredefinedAreasService', "$http", '$filter', 'LoggerService',
+            function ($rootScope, MapService, $timeout, LayersService, LayoutService, PredefinedAreasService, $http, $filter, LoggerService) {
                 var _httpDescription = function (method, httpconfig) {
                     if (httpconfig === undefined) {
                         httpconfig = {};
