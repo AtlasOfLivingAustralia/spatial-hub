@@ -1065,7 +1065,7 @@
                         sourceTypeId: 10002,
                         email: $SH.userEmail,
                         emailTemplate: $SH.doiEmailTemplate || 'csdm',
-                        displayTemplate: $SH.doiDisplayTemplate || 'csdm'
+                        doiDisplayTemplate: $SH.doiDisplayTemplate || 'csdm'
                     };
 
                     // This should be a POST but the data binding in biocache-service isn't setup to bind from the POST body.
