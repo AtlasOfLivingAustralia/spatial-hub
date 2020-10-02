@@ -212,7 +212,7 @@
                             if (wkt !== undefined && wkt !== null) query.wkt = wkt;
                             if (qualityProfile !== undefined && qualityProfile !== null && qualityProfile) query.qualityProfile = qualityProfile;
                             if (disableAllQualityFilters !== undefined && disableAllQualityFilters !== null && disableAllQualityFilters) query.disableAllQualityFilters = disableAllQualityFilters;
-                            if (disableQualityFilter !== undefined && disableQualityFilter !== null && disableQualityFilter) query.disableQualityFilter = disableQualityFilter;
+                            if (Array.isArray(disableQualityFilter) && disableQualityFilter.length) query.disableQualityFilter = disableQualityFilter;
 
                             promises.push(BiocacheService.queryTitle(query).then(function (response) {
                                 query.name = response;
