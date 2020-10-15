@@ -711,7 +711,7 @@
                  * Output:
                  * 1234
                  */
-                registerParam: function (bs, q, fq, wkt, qualityProfile, disableAllQualityFilters, disableQualityFilter) {
+                registerParam: function (bs, q, fq, wkt, qualityProfile, disableQualityFilter, disableAllQualityFilters) {
                     var data = {q: q, bs: bs};
                     if ($SH.qc !== undefined && $SH.qc !== null && $SH.qc.length > 0) data.qc = $SH.qc;
                     if (fq !== undefined && fq !== null) data.fq = fq;
