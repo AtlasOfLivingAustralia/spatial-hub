@@ -147,14 +147,8 @@
                                     wkt = value;
                                 } else if ("qualityProfile" === key) {
                                     qualityProfile = value;
-                                    // var qualityProfile;
-                                    // var disableAllQualityFilters;
-                                    // var disableQualityFilter;
                                 } else if ("disableAllQualityFilters" === key) {
-                                    disableAllQualityFilters = value;
-                                    // var qualityProfile;
-                                    // var disableAllQualityFilters;
-                                    // var disableQualityFilter;
+                                    disableAllQualityFilters = value === 'true';
                                 } else if ("disableQualityFilter" === key) {
                                     if ($.isArray(value)) {
                                         for (var a in value) {
