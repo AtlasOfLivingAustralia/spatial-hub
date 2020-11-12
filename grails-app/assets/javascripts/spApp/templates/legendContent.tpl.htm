@@ -325,7 +325,7 @@
                 <button i18n="129" ng-click="clearContextualFilter()" class="btn btn-xs btn-default">clear filter
                 </button>
                 <uib-progressbar
-                        ng-show="selected.layer.contextualList === undefined || selected.layer.contextualList == null || selected.layer.contextualList.length == 0"
+                        ng-show="selected.layer.contextualList === undefined || selected.layer.contextualList == null || selected.layer.contextualListCount == null"
                         class="progress-striped" ng-class="{ active: true }" value="100"
                         type='info' title="Updating">loading...
                 </uib-progressbar>

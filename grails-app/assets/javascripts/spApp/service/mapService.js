@@ -708,12 +708,14 @@
                                     id.contextualSelection = {};
 
                                     id.contextualList = [];
+                                    id.contextualListCount = null;
 
                                     id.contextualPage = 1;
                                     id.contextualPageSize = 5;
 
                                     promises.push(LayersService.getField(id.id, 0, id.contextualPageSize, '').then(function (data) {
                                         id.contextualList = data.data.objects;
+                                        id.contextualListCount = id.contextualList.length;
                                         for (var i in id.contextualList) {
                                             if (id.contextualList.hasOwnProperty(i)) {
                                                 id.contextualList[i].selected = false

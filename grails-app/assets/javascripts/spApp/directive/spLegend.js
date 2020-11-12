@@ -66,11 +66,14 @@
 
                         scope.updateContextualList = function (_layer) {
                             var selectedLayer = _layer || scope.selected.layer;
+                            selectedLayer.contextualPage = 1;
+                            selectedLayer.contextualListCount = null;
                             if (selectedLayer !== undefined && selectedLayer !== null && selectedLayer.contextualPage !== undefined) {
                                 LayersService.getField(selectedLayer.id,
                                     (selectedLayer.contextualPage - 1) * selectedLayer.contextualPageSize,
                                     selectedLayer.contextualPageSize, selectedLayer.contextualFilter).then(function (data) {
                                     selectedLayer.contextualList = data.data.objects;
+                                    selectedLayer.contextualListCount = selectedLayer.contextualList.length
                                     for (var i in selectedLayer.contextualList) {
                                         if (selectedLayer.contextualList.hasOwnProperty(i)) {
                                             selectedLayer.contextualList[i].selected = (selectedLayer.contextualSelection[selectedLayer.contextualList[i].name] !== undefined)
@@ -306,6 +309,7 @@
 
                         scope.clearContextualFilter = function () {
                             var selectedLayer = scope.selected.layer;
+                            selectedLayer.contextualPage = 1;
                             if (selectedLayer !== undefined) {
                                 selectedLayer.contextualFilter = ''
                                 scope.updateContextualList(selectedLayer)
