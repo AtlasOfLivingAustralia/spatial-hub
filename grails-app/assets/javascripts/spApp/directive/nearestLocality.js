@@ -158,7 +158,9 @@
                         })
 
                         /* init */
-                        if (!scope._config) {
+                        //check if a point has been set
+                        //Init panel if no point yet
+                        if (!scope._config || !scope._config.longitude) {
                             $timeout(function () {
                                 scope.enableDrawing()
                             }, 0);
