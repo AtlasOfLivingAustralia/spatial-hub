@@ -1056,13 +1056,13 @@
                 },
                 downloadAsync:function(species, area, doiApplicationData) {
                     var params = {
-                        hubName: "CSDM",
+                        hubName: $SH.doiHubName || "CSDM",
                         file: species.name,
                         mintDoi: true,
-                        reasonTypeId: 13,
+                        reasonTypeId: $SH.doiReasonTypeId || 13,
                         fileType: 'csv',
                         qa: 'none',
-                        sourceTypeId: 10002,
+                        sourceTypeId: $SH.doiSourceTypeId || 10002,
                         email: $SH.userEmail,
                         emailTemplate: $SH.doiEmailTemplate || 'csdm',
                         doiDisplayTemplate: $SH.doiDisplayTemplate || 'csdm'
