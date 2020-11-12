@@ -63,9 +63,9 @@
                  * @param {string} value replacement text
                  */
                 commit: function (k, v) {
-                    let browser_lang = window.navigator.language
+                    let browser_lang = window.navigator.language;
                     if(browser_lang == "en" || browser_lang == "en-US") {
-                        browser_lang = "default"
+                        browser_lang = "default";
                     }
                     k = ('' + k).replace(" ", "_");
 
