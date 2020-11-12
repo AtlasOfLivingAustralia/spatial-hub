@@ -311,7 +311,28 @@
         </div>
 
         <div class="form-group row"
-             ng-show="selected.layer.layertype == 'grid' || selected.layer.layertype == 'contextual' || selected.layer.layertype=='wms'">
+             ng-show="selected.layer.layertype == 'grid'">
+            <label i18n="529" style=";width:70px">Style</label>
+            <select style=";width:300px" id='style' ng-model="selected.layer.style"
+                    ng-change="updateStyle()">
+                <option i18n="530" value="default">non-linear</option>
+                <option i18n="531" value="linear">linear</option>
+            </select>
+        </div>
+
+        <div class="form-group row"
+             ng-show="selected.layer.layertype == 'contextual'">
+            <label i18n="529" style=";width:70px">Style</label>
+            <select style=";width:300px" id='style' ng-model="selected.layer.style"
+                    ng-change="updateStyle()">
+                <option i18n="535" value="default">default</option>
+                <option i18n="533" value="outline">outline</option>
+                <option i18n="534" value="filled">filled</option>
+            </select>
+        </div>
+
+        <div class="form-group row"
+             ng-show="selected.layer.layertype == 'grid' || selected.layer.layertype == 'contextual' || selected.layer.layertype == 'gridAsContextual' || selected.layer.layertype=='wms'">
             <button i18n="138" class="btn btn-xs btn-default" ng-click="showLegend()">show legend</button>
             <button i18n="139" class="btn btn-xs btn-default" ng-click="hideLegend()">hide legend</button>
             <button i18n="140" class="btn btn-xs btn-default" ng-click="popupLegend()">popup legend</button>

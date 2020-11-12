@@ -703,7 +703,11 @@
                                 }
 
                                 if (layer.type !== 'e') {
-                                    id.layertype = 'contextual';
+                                    if (layer.type == 'c') {
+                                        id.layertype = 'contextual';
+                                    } else {
+                                        id.layertype = 'gridAsContextual'
+                                    }
 
                                     id.contextualSelection = {};
 
@@ -727,22 +731,35 @@
                                     id.layertype = 'grid'
                                 }
 
-                                var url = layer.layer.displaypath.replace("&style=", "&ignore=");
-                                url = url.replace("&styles=", "&ignore=");
-                                url = url.replace("&layers=", "&ignore=");
+                                var url = layer.layer.displaypath
+                                url = url.replace(/\?.*/, '')
+
+                                if (layer.id.startsWith("el") || id.layertype == 'gridAsContextual') {
+                                    id.defaultStyle = layer.layer.name
+                                } else if (layer.id.startsWith("cl")) {
+                                    id.defaultStyle = layer.id
+                                }
+
+                                if (!id.style) id.style = 'default'
+                                var style = id.style
+                                if ('default' == style) style = id.defaultStyle
+                                if ('linear' == style) style = id.defaultStyle + '_linear'
+                                if ('outline' == style) style = 'outline'
+                                if ('filled' == style) style = 'polygon'
 
                                 newLayer = {
                                     name: uid + ': ' + layer.layer.displayname,
                                     type: 'wms',
                                     visible: true,
                                     opacity: id.opacity / 100.0,
-                                    url: layer.layer.displaypath,
+                                    url: url,
                                     layertype: id.layertype,
                                     layerParams: {
                                         opacity: id.opacity / 100.0,
                                         layers: 'ALA:' + layer.layer.name,
                                         format: 'image/png',
-                                        transparent: true
+                                        transparent: true,
+                                        styles: style
                                     }
                                 };
 
@@ -759,26 +776,20 @@
                                 } else if (id.sld_body) {
                                     newLayer.layerParams.sld_body = id.sld_body
                                     newLayer.url = newLayer.url.replace("gwc/service/", "")
-                                } else if (layer.id.startsWith("cl")) {
-                                    // contextual layers may have more than one style
-                                    newLayer.layerParams.styles = layer.id
                                 }
+
                                 newLayer.legendurl = newLayer.url
-                                    .replace("gwc/service/", "")
-                                    .replace('GetMap', 'GetLegendGraphic')
-                                    .replace('layers=', 'layer=')
-                                    .replace('_style', '')
-                                    .replace("&style=", "&ignore=");
+                                    .replace(/gwc\/service\//, '') + "?layer=" + encodeURIComponent(newLayer.layerParams.layers)
 
                                 if (!newLayer.legendurl.indexOf("GetLegendGraphic") >= 0) {
                                     if (id.sldBody) {
-                                        newLayer.legendurl += "&service=WMS&version=1.1.0&request=GetLegendGraphic&format=image/png&sld_body=" + encodeURIComponent(id.sldBody)
+                                        newLayer.legendurl += "&service=WMS&request=GetLegendGraphic&format=image/png&sld_body=" + encodeURIComponent(id.sldBody)
                                     } else if (id.sld_body) {
-                                        newLayer.legendurl += "&service=WMS&version=1.1.0&request=GetLegendGraphic&format=image/png&sld_body=" + encodeURIComponent(id.sld_body)
-                                    } else if (layer.id.startsWith("cl")) {
-                                        newLayer.legendurl += "&service=WMS&version=1.1.0&request=GetLegendGraphic&format=image/png&style=" + encodeURIComponent(layer.id)
+                                        newLayer.legendurl += "&service=WMS&request=GetLegendGraphic&format=image/png&sld_body=" + encodeURIComponent(id.sld_body)
+                                    } else if (id.style) {
+                                        newLayer.legendurl += "&service=WMS&request=GetLegendGraphic&format=image/png&style=" + encodeURIComponent(style)
                                     } else {
-                                        newLayer.legendurl += "&REQUEST=GetLegendGraphic&FORMAT=image/png"
+                                        newLayer.legendurl += "&service=WMS&REQUEST=GetLegendGraphic&FORMAT=image/png"
                                     }
                                 }
                             }
@@ -823,7 +834,6 @@
                                 promises.push(MapService.addOtherArea("distribution", id, id.area, id.includeExpertDistributions));
                                 promises.push(MapService.addOtherArea("track", id, id.area, id.includeAnimalMovement));
                                 promises.push(MapService.addOtherArea("checklist", id, id.area, id.includeChecklists));
-
                             }
 
                             // do not select this layer if it is a child layer

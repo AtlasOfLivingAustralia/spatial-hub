@@ -291,6 +291,21 @@
                             }
                         };
 
+                        scope.updateStyle = function () {
+                            var selectedLayer = scope.selected.layer
+                            style = selectedLayer.style
+                            if ('default' == style) style = selectedLayer.defaultStyle
+                            if ('linear' == style) style = selectedLayer.defaultStyle + '_linear'
+                            if ('outline' == style) style = 'outline'
+                            if ('filled' == style) style = 'polygon'
+                            selectedLayer.leaflet.layerOptions.layers[0].layerParams.styles = style
+                            selectedLayer.leaflet.layerOptions.layers[0].legendurl = selectedLayer.leaflet.layerOptions.layers[0].legendurl.replace(/&style=[^&]*/, "&style=" + encodeURIComponent(style))
+
+                            $timeout(function () {
+                                MapService.reloadLayer(selectedLayer)
+                            }, 0)
+                        }
+
                         scope.contextualPageBack = function () {
                             var selectedLayer = scope.selected.layer;
                             if (selectedLayer !== undefined && selectedLayer.contextualPage > 1) {
@@ -326,7 +341,7 @@
                         scope.wmsLegendVisible = function () {
                             var selected = scope.selected;
                             return selected.layer !== undefined &&
-                                (selected.layer.layertype === 'grid' || selected.layer.layertype === 'contextual') &&
+                                (selected.layer.layertype === 'grid' || selected.layer.layertype === 'contextual' || selected.layer.layertype === 'gridAsContextual') &&
                                 (selected.layer.hidelegend === undefined || !selected.layer.hidelegend)
                         };
 
