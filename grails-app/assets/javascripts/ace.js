@@ -5,5 +5,5 @@
 
 
 //ace
-//= require ace-builds-1.2.8/src/ace.js
-//= require ace-builds-1.2.8/src/mode-json.js
+//= require ace-builds/src/ace.js
+//= require ace-builds/src/mode-json.js
