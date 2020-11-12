@@ -14,21 +14,21 @@
                 $scope.sortType = 'time';
                 $scope.sortReverse = 'true';
 
-                $scope['sessions'] = [];
+                $scope.sessions = [];
 
-                $scope['import'] = function (sessionId) {
+                $scope.import = function (sessionId) {
                     SessionsService.load(sessionId);
 
                     $scope.$close()
                 };
 
-                $scope['delete'] = function (sessionId) {
+                $scope.remove = function (sessionId) {
                     bootbox.confirm({
                         message: $i18n(336, "Delete this session?"),
                         size: 'small',
                         callback: function (result) {
                             if (result) {
-                                $scope.sessions = SessionsService['delete'](sessionId)
+                                $scope.sessions = SessionsService.remove(sessionId)
                             }
                         },
                         buttons: {
