@@ -435,8 +435,6 @@ class PortalController {
         } else {
             def json = request.JSON as Map
 
-            json.listType = PortalService.APP_CONSTANT
-
             def url = grailsApplication.config.lists.url
 
             def header = [:]
