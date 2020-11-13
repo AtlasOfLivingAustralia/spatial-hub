@@ -109,6 +109,15 @@
         <g:if test="${config.doiService?.emailTemplate}">
         doiEmailTemplate: '${config.doiService.emailTemplate}',
         </g:if>
+        <g:if test="${config.doiService?.sourceTypeId}">
+        doiSourceTypeId: '${config.doiService.sourceTypeId}',
+        </g:if>
+        <g:if test="${config.doiService?.hubName}">
+        doiHubName: '${config.doiService.hubName}',
+        </g:if>
+        <g:if test="${config.doiService?.reasonTypeId}">
+        doiReasonTypeId: '${config.doiService.reasonTypeId}',
+        </g:if>
 
         annotateDatasetOnExport: ${Boolean.valueOf(config.annotateDatasetOnExport)},
         qc: '${config.qc}',

@@ -696,6 +696,9 @@
                  * @param {List} query q and fq terms
                  * @param {List} fq (optional) one fq term
                  * @param {String} wkt (optional) WKT search value
+                 * @param {String} qualityProfile (optional) quality profile
+                 * @param {Array} disableQualityFilter (optional) quality filters to disable
+                 * @param {Boolean} disableAllQualityFilters (optional) whether to disable all quality filters
                  * @returns {Promise(Integer)} qid
                  *
                  * @example
@@ -708,11 +711,14 @@
                  * Output:
                  * 1234
                  */
-                registerParam: function (bs, q, fq, wkt) {
+                registerParam: function (bs, q, fq, wkt, qualityProfile, disableQualityFilter, disableAllQualityFilters) {
                     var data = {q: q, bs: bs};
                     if ($SH.qc !== undefined && $SH.qc !== null && $SH.qc.length > 0) data.qc = $SH.qc;
                     if (fq !== undefined && fq !== null) data.fq = fq;
                     if (wkt !== undefined && wkt !== null && wkt.length > 0) data.wkt = wkt;
+                    if (disableAllQualityFilters !== undefined && disableAllQualityFilters !== null) data.disableAllQualityFilters = disableAllQualityFilters;
+                    if (qualityProfile !== undefined && qualityProfile !== null) data.qualityProfile = qualityProfile;
+                    if (disableQualityFilter !== undefined && disableQualityFilter !== null) data.disableQualityFilter = disableQualityFilter;
                     return $http.post($SH.baseUrl + "/portal/q", data, _httpDescription('registerParam')).then(function (response) {
                         if (!isNaN(response.data.qid)) {
                             return response.data
@@ -791,7 +797,7 @@
                     }
                     var wkt = undefined;
                     if (area !== undefined && area instanceof Array && area.length > 0 && area[0] !== undefined) {
-                        if (area[0].pid && (area[0].pid.length > 0)) {
+                        if (area[0].pid && (area[0].pid.length > 0) && area[0].pid.indexOf('~') < 0) {
                             wkt = area[0].pid
                         } else if (area[0].q !== undefined) {
                             if (area[0].q.length > 0) {
@@ -803,7 +809,7 @@
                     }
                     if (query.wkt !== undefined) wkt = query.wkt;
 
-                    return this.registerLayer(query.bs, query.ws, fq, wkt, newName)
+                    return this.registerLayer(query.bs, query.ws, fq, wkt, query.qualityProfile, query.disableQualityFilter, query.disableAllQualityFilters, newName)
                 },
                 /**
                  * Create a new query #Layer
@@ -842,7 +848,7 @@
                         $.merge(fqs, [newFq])
                     }
 
-                    return this.registerLayer(query.bs, query.ws, fqs, query.wkt, newName).then(function (data) {
+                    return this.registerLayer(query.bs, query.ws, fqs, query.wkt, query.qualityProfile, query.disableQualityFilter, query.disableAllQualityFilters, newName).then(function (data) {
                         if (data == null) {
                             return null;
                         } else {
@@ -859,6 +865,9 @@
                  * @param {String} hubUrl biocache-hub URL
                  * @param {List} fqs q and fq terms
                  * @param {String} wkt (optional) WKT
+                 * @param {String} qualityProfile (optional) quality profile
+                 * @param {Array} disableQualityFilter (optional) quality filters to disable
+                 * @param {Boolean} disableAllQualityFilters (optional) whether to disable all quality filters
                  * @param {newName} name (optional) name for display
                  * @returns {Promise(Layer)}
                  *
@@ -879,7 +888,7 @@
                  *      "name": ""
                  *  }
                  */
-                registerLayer: function (bs, ws, fq, wkt, name) {
+                registerLayer: function (bs, ws, fq, wkt, qualityProfile, disableQualityFilter, disableAllQualityFilters, name) {
                     fq = fq.slice();
                     for (var i = 0; i < fq.length; i++) {
                         if (fq[i] === '*:*') fq.splice(i, 1)
@@ -889,8 +898,8 @@
                         q = fq[0];
                         fq.splice(0, 1)
                     }
-                    if (fq.length > 0 || (wkt !== undefined && wkt !== null && wkt.length > 0)) {
-                        return this.registerParam(bs, q, fq, wkt).then(function (data) {
+                    if (fq.length > 0 || (wkt !== undefined && wkt !== null && wkt.length > 0) || qualityProfile || disableQualityFilter || disableAllQualityFilters != null) {
+                        return this.registerParam(bs, q, fq, wkt, qualityProfile, disableQualityFilter, disableAllQualityFilters).then(function (data) {
                             if (data != null) {
                                 return {
                                     q: $.merge([q], fq),
@@ -1056,16 +1065,16 @@
                 },
                 downloadAsync:function(species, area, doiApplicationData) {
                     var params = {
-                        hubName: "CSDM",
+                        hubName: $SH.doiHubName || "CSDM",
                         file: species.name,
                         mintDoi: true,
-                        reasonTypeId: 13,
+                        reasonTypeId: $SH.doiReasonTypeId || 13,
                         fileType: 'csv',
                         qa: 'none',
-                        sourceTypeId: 10002,
+                        sourceTypeId: $SH.doiSourceTypeId || 10002,
                         email: $SH.userEmail,
                         emailTemplate: $SH.doiEmailTemplate || 'csdm',
-                        displayTemplate: $SH.doiDisplayTemplate || 'csdm'
+                        doiDisplayTemplate: $SH.doiDisplayTemplate || 'csdm'
                     };
 
                     // This should be a POST but the data binding in biocache-service isn't setup to bind from the POST body.

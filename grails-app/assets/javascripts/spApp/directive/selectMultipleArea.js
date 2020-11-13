@@ -62,7 +62,7 @@
                         scope.layerAreas = [];
                         $.map(MapService.areaLayers(), function (x, idx) {
                             // Remove incompatible areas that have area.pid.contains(':')
-                            if (!x.pid || !x.pid.includes(':')) {
+                            if (x.pid /* ((x.pid + '').indexOf(':') < 0 && (x.pid + '').indexOf('~')) < 0 */) {
                                 scope.layerAreas.push({
                                     name: x.name,
                                     q: x.q,

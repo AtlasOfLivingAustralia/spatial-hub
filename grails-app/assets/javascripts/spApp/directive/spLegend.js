@@ -66,11 +66,14 @@
 
                         scope.updateContextualList = function (_layer) {
                             var selectedLayer = _layer || scope.selected.layer;
+                            selectedLayer.contextualPage = 1;
+                            selectedLayer.contextualListCount = null;
                             if (selectedLayer !== undefined && selectedLayer !== null && selectedLayer.contextualPage !== undefined) {
                                 LayersService.getField(selectedLayer.id,
                                     (selectedLayer.contextualPage - 1) * selectedLayer.contextualPageSize,
                                     selectedLayer.contextualPageSize, selectedLayer.contextualFilter).then(function (data) {
                                     selectedLayer.contextualList = data.data.objects;
+                                    selectedLayer.contextualListCount = selectedLayer.contextualList.length
                                     for (var i in selectedLayer.contextualList) {
                                         if (selectedLayer.contextualList.hasOwnProperty(i)) {
                                             selectedLayer.contextualList[i].selected = (selectedLayer.contextualSelection[selectedLayer.contextualList[i].name] !== undefined)
@@ -288,6 +291,21 @@
                             }
                         };
 
+                        scope.updateStyle = function () {
+                            var selectedLayer = scope.selected.layer
+                            style = selectedLayer.style
+                            if ('default' == style) style = selectedLayer.defaultStyle
+                            if ('linear' == style) style = selectedLayer.defaultStyle + '_linear'
+                            if ('outline' == style) style = 'outline'
+                            if ('filled' == style) style = 'polygon'
+                            selectedLayer.leaflet.layerOptions.layers[0].layerParams.styles = style
+                            selectedLayer.leaflet.layerOptions.layers[0].legendurl = selectedLayer.leaflet.layerOptions.layers[0].legendurl.replace(/&style=[^&]*/, "&style=" + encodeURIComponent(style))
+
+                            $timeout(function () {
+                                MapService.reloadLayer(selectedLayer)
+                            }, 0)
+                        }
+
                         scope.contextualPageBack = function () {
                             var selectedLayer = scope.selected.layer;
                             if (selectedLayer !== undefined && selectedLayer.contextualPage > 1) {
@@ -306,6 +324,7 @@
 
                         scope.clearContextualFilter = function () {
                             var selectedLayer = scope.selected.layer;
+                            selectedLayer.contextualPage = 1;
                             if (selectedLayer !== undefined) {
                                 selectedLayer.contextualFilter = ''
                                 scope.updateContextualList(selectedLayer)
@@ -322,7 +341,7 @@
                         scope.wmsLegendVisible = function () {
                             var selected = scope.selected;
                             return selected.layer !== undefined &&
-                                (selected.layer.layertype === 'grid' || selected.layer.layertype === 'contextual') &&
+                                (selected.layer.layertype === 'grid' || selected.layer.layertype === 'contextual' || selected.layer.layertype === 'gridAsContextual') &&
                                 (selected.layer.hidelegend === undefined || !selected.layer.hidelegend)
                         };
 

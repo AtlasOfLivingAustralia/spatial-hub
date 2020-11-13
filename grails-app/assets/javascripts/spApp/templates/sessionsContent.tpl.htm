@@ -54,7 +54,7 @@
                 <tr ng-repeat="x in sessions | orderBy:sortType:sortReverse | filter:searchLists">
                     <td style="width:20px">
                         <div class="btn-group">
-                            <span i18n="259" class="glyphicon glyphicon-trash" ng-click="delete(x.id)"></span>
+                            <span i18n="259" class="glyphicon glyphicon-trash" ng-click="remove(x.id)"></span>
                         </div>
                     </td>
                     <td style="width:200px">
