@@ -367,7 +367,11 @@
                             if (item.metadataUrl !== undefined) {
                                 this.openIframe(item.metadataUrl, '', '')
                             } else if (item.layerId) {
-                                this.openIframe($SH.layersServiceUrl + '/layer/more/' + item.layerId, '', '')
+                                this.openIframe($SH.layersServiceUrl + '/layer/more/' + item.layerId, '', '') //Open info panel
+                            } else if (item.layer && item.layer.id){
+                                //e.g  https://spatial.ala.org.au/?layers=alwc4
+                                //with ?layers=alwc4 params, item object will be changed. No layerId, instead of layer object.
+                                this.openIframe($SH.layersServiceUrl + '/layer/more/' + item.layer.id, '', '') //Open info panel from opened panel
                             }
                         }
                     }
