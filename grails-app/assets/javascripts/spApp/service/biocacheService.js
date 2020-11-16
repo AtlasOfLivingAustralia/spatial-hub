@@ -1095,7 +1095,13 @@
                         return $http.get(downloadUrl, _httpDescription("offlineDownload", {params: params}));
                     });
 
+                },
+
+                validateQID: function(qid){
+                    var reg = /^-?\d+\.?\d*$/;
+                    return reg.test(qid);
                 }
+
             };
             return thiz;
         }])
