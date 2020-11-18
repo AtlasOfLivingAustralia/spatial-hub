@@ -678,7 +678,7 @@
                         //     return $q.when(query)
                         // } else {
                         return $http.post($SH.baseUrl + "/portal/q", data, _httpDescription('registerQuery')).then(function (response) {
-                            if (!response.data.qid || isNaN(response.data.qid)) {
+                            if (!response.data.qid || isNaN(response.data.qid) || !thiz.validateQID(response.data.qid)) {
                                 bootbox.alert($i18n(478, "Failed to register query. Try again later."));
                                 return null
                             } else {
