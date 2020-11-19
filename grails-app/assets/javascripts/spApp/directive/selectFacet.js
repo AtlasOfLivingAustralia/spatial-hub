@@ -141,7 +141,17 @@
                         };
 
                         scope.clearFilter = function () {
+                            scope.activeFacet.facetFilter='';
                             scope.facetFilter = '';
+                            scope.offset = 0;
+                            if (scope.activeFacet.selection) {
+                                scope.activeFacet.selection = []
+                            }
+                            scope.updatePage()
+                        };
+
+                        scope.applyFilter = function () {
+                            scope.facetFilter = scope.activeFacet.facetFilter;
                             scope.offset = 0;
                             scope.updatePage()
                         };
