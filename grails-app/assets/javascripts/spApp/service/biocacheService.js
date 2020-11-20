@@ -511,6 +511,7 @@
                         });
                     })
                 },
+
                 /**
                  * Get pageable facet list
                  * @memberof BiocacheService
@@ -518,6 +519,8 @@
                  * @param {Query} query Biocache query
                  * @param {Integer} pageSize (Optional) page size (default=1)
                  * @param {Integer} offset (Optional) offset (default=0)
+                 * @param {String} prefixFilter (Optional) keywords
+                 * @param {String} sortBy (Optional) sorted by field (default=count)
                  * @param {List} config (Optional) parameters for $http#get
                  * @returns {Promise(List)} facets
                  *
@@ -550,13 +553,14 @@
                          }]
                      }]
                  */
-                facetGeneral: function (facet, query, pageSize, offset, prefixFilter, config) {
+
+                facetGeneral: function (facet, query, pageSize, offset, prefixFilter, sortBy, config) {
                     return this.registerQuery(query).then(function (response) {
                         if (response == null) {
                             return $q.when([])
                         }
 
-                        var url = query.bs + "/occurrence/facets?facets=" + facet + "&flimit=" + pageSize + "&foffset=" + offset + "&q=" + response.qid;
+                        var url = query.bs + "/occurrence/facets?facets=" + facet + "&flimit=" + pageSize + "&foffset=" + offset + "&fsort=" + (sortBy ? sortBy:"count")  + "&q=" + response.qid;
                         if (prefixFilter !== undefined && prefixFilter.length > 0) url += "&fprefix=" + encodeURIComponent(prefixFilter);
 
                         return $http.get(url, _httpDescription('facetGeneral', config)).then(function (response) {

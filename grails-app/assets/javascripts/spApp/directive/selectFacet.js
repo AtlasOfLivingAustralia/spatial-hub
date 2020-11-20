@@ -23,6 +23,7 @@
                         scope.facets = [];
                         scope.facetList = [];
                         scope.exportUrl = null;
+                        scope.sortFacetsByName = false;
 
 
                         FacetAutoCompleteService.search(BiocacheService.newQuery(["-*:*"])).then(function (data) {
@@ -156,6 +157,13 @@
                             scope.updatePage()
                         };
 
+                        scope.facetsOrderByName = function(){
+                            scope.facetOrderby = 'label';
+                        }
+
+                        scope.facetsOrderByCount = function(){
+                            scope.facetOrderBy = 'count';
+                        }
 
                         scope.updateFacet = function () {
                             scope.update(true);
@@ -195,11 +203,17 @@
                                 }
                             })
 
+                            var sortBy = 'count';
+                            if(scope.sortFacetsByName){
+                                //Sort by name alphabetically
+                                sortBy = 'index'
+                            }
+
                             if (scope.facet !== 'search' && scope.facet !== '') {
                                 BiocacheService.facetGeneral(scope.facet, {
                                     q: q,
                                     bs: $SH.biocacheServiceUrl
-                                }, pageSize, offset, scope.facetFilter, config).then(function (data) {
+                                }, pageSize, offset, scope.facetFilter, sortBy, scope.config).then(function (data) {
                                     if (data.length > 0) {
                                         scope.activeFacet.facetList = data[0].fieldResult;
                                         scope.activeFacet.exportUrl = BiocacheService.facetDownload(scope.facet);
