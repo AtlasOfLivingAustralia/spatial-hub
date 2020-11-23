@@ -88,9 +88,9 @@ def build(String baseDir) {
     def newProperties = new StringBuilder()
 
     // load existing defaults
-    //def p = new File(baseDir + '/grails-app/i18n/messages.properties')
+    def p = new File(baseDir + '/grails-app/i18n/messages.properties')
     // test refere to data dir
-    def p = new File('/data/spatial-hub/i18n/messages.properties')
+    //def p = new File('/data/spatial-hub/i18n/messages.properties')
     def prop = new Properties()
     prop.load(new FileReader(p))
     // reverse lookup
