@@ -67,7 +67,7 @@
 <div ng-show="!_inputData.importList && !_inputData.importPoints" class="radio">
     <label>
         <input type="radio" ng-model="speciesOption" value="lifeform" ng-change="changeOption('lifeform')"
-               name="{{_uniqueId}}"><span>Lifeform</span></label>
+               name="{{_uniqueId}}"><span i18n="528">Lifeform</span></label>
     <br/>
     <div ng-show="speciesOption == 'lifeform'" style="margin-left:15px">
         <lifeform-select style="width:400px" on-custom="setLifeformQ"></lifeform-select>
@@ -112,9 +112,9 @@
 </div>
 
 <div ng-show="listsEnabled()" class="radio"><label>
-    <input i18n="248" type="radio" ng-model="speciesOption" value="importList" ng-show="!_inputData.importPoints"
-           ng-change="changeOption('importList')" ng-disabled="isNotLoggedIn" name="{{_uniqueId}}">Create new species
-    list</label>
+    <input  type="radio" ng-model="speciesOption" value="importList" ng-show="!_inputData.importPoints"
+            ng-change="changeOption('importList')" ng-disabled="isNotLoggedIn" name="{{_uniqueId}}"><span i18n="248">Create new species
+    list</span></label>
     <div ng-show="speciesOption == 'importList'" style="margin-left:15px">
         <span i18n="249">List:</span><span class="strong"> {{speciesListName}}</span>
         <button i18n="250" style="margin-left:30px" type="button" class="btn btn-default btn-xs"

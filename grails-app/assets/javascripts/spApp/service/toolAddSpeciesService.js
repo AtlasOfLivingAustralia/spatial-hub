@@ -13,11 +13,12 @@
                 return {
 
                     // Override text with view-config.json
+                    // Im Moment nur deutsche Internationalisierung
                     spec: {
                         "input": [
                             {
                                 "name": "species",
-                                "description": "Select species.",
+                                "description": $i18n(416),
                                 "type": "species",
                                 "constraints": {
                                     "min": 1,
@@ -30,7 +31,7 @@
                             },
                             {
                                 "name": "speciesOptions",
-                                "description": "Include related areas.",
+                                "description": $i18n(417),
                                 "type": "speciesOptions",
                                 "constraints": {
                                     "optional": true,
@@ -41,7 +42,7 @@
                             },
                             {
                                 "name": "area",
-                                "description": "Restrict to an area.",
+                                "description": $i18n(418),
                                 "type": "area",
                                 "constraints": {
                                     "min": 1,
@@ -49,7 +50,7 @@
                                     "defaultToWorld": true
                                 }
                             }],
-                        "description": "Add a species layer to the map"
+                        "description": $i18n(419)
                     },
 
 

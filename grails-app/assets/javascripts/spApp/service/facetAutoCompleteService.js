@@ -73,7 +73,7 @@
                             }
                         }
                         list.unshift({
-                            title: $i18n("Other"),
+                            title: $i18n(22),
                             facets: dynamicList
                         })
                     }

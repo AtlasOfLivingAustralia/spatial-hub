@@ -876,7 +876,7 @@
                     },
                     getAllSpeciesQuery: function (layer) {
                         var query = {q: [], name: '', bs: '', ws: ''};
-                        query.name = $i18n("All species");
+                        query.name = $i18n(244);
                         query.bs = $SH.biocacheServiceUrl;
                         query.ws = $SH.biocacheUrl;
                         query.q.push('*:*');

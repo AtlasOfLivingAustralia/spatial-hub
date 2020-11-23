@@ -15,7 +15,7 @@
                 spec: {
                     "input": [
                         {
-                            "description": "Select area.",
+                            "description": $i18n(352),
                             "type": "area",
                             "constraints": {
                                 "min": 1,
@@ -25,14 +25,14 @@
                             }
                         },
                         {
-                            "description": "Species options.",
+                            "description": $i18n(411),
                             "type": "speciesOptions",
                             "constraints": {
                                 "optional": true
                             }
                         },
                         {
-                            "description": "Select facet.",
+                            "description": $i18n(412),
                             "type": "facet",
                             "constraints": {
                                 "min": 1,
@@ -40,7 +40,7 @@
                                 "optional": false
                             }
                         }],
-                    "description": "Add species using a facet."
+                    "description": $i18n(413)
                 },
 
                 execute: function (inputs) {

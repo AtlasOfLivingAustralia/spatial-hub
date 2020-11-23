@@ -63,18 +63,22 @@
                  * @param {string} value replacement text
                  */
                 commit: function (k, v) {
-                    let browser_lang = window.navigator.language;
-                    if(browser_lang == "en" || browser_lang == "en-US") {
-                        browser_lang = "default";
-                    }
+
                     k = ('' + k).replace(" ", "_");
 
                     map[k] = v;
+                    if(window.navigator.language == "en" || window.navigator.language == "en-US") {
+                        $http.post($SH.baseUrl + "/portal/i18n?lang=default" + "&hub=" + $SH.hub, {
+                            key: k,
+                            value: v
+                        }, _httpDescription('commit'))
+                    } else {
+                        $http.post($SH.baseUrl + "/portal/i18n?lang=" + window.navigator.language + "&hub=" + $SH.hub, {
+                            key: k,
+                            value: v
+                        }, _httpDescription('commit'))
+                    }
 
-                    $http.post($SH.baseUrl + "/portal/i18n?lang=" + browser_lang + "&hub=" + $SH.hub, {
-                        key: k,
-                        value: v
-                    }, _httpDescription('commit'))
                 }
             };
 

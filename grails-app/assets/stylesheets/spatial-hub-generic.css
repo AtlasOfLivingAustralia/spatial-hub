@@ -1071,8 +1071,8 @@ section#breadcrumb {
 }
 
 section#breadcrumb li + li::before {
-    content: "\f105";
-    font-family: FontAwesome;
+    /* content: "\f105";
+    font-family: FontAwesome; */
     margin: 0 .6em;
     height: .8em;
     opacity: .6;
@@ -1811,7 +1811,7 @@ input[type="date"] {
     top: 0;
     right: 0;
     bottom: 0;
-    left: 0;
+    left: auto;
     z-index: 1050;
     -webkit-overflow-scrolling: touch;
     outline: 0;
