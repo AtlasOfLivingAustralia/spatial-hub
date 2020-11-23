@@ -17,7 +17,7 @@
                         "input": [
                             {
                                 "name": "caption",
-                                "description": "Enter a map caption.",
+                                "description": $i18n(530),
                                 "type": "text",
                                 "constraints": {
                                     "optional": true
@@ -25,7 +25,7 @@
                             },
                             {
                                 "name": "format",
-                                "description": "Select an image format.",
+                                "description": $i18n(529),
                                 "type": "list",
                                 "constraints": {
                                     "default": "png",
@@ -39,7 +39,7 @@
                                 }
 
                             }],
-                        "description": "Export areas."
+                        "description": $i18n(425)
                     },
 
                     execute: function (inputs) {

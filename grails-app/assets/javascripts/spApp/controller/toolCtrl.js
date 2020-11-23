@@ -123,7 +123,7 @@
                                 if (value.type === 'species') {
                                     c.splice(parseInt(k) + 1, 0, {
                                         type: "date",
-                                        description: "Select date range",
+                                        description: $i18n(531),
                                         name: '_date'
                                     })
                                 }
