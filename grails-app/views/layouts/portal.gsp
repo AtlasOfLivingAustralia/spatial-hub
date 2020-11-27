@@ -375,6 +375,7 @@
 
 <!-- End header -->
 <!-- end banner message -->
+<ala:systemMessage/>
 <!-- Container -->
 <div class="${fluidLayout ? 'container-fluid' : 'container'}" id="main">
     <g:layoutBody/>

@@ -238,7 +238,6 @@
     };
 
 </script>
-
 <asset:javascript src="application.js"/>
 
 <sp-app></sp-app>
