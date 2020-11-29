@@ -720,7 +720,7 @@
                     if (qualityProfile !== undefined && qualityProfile !== null) data.qualityProfile = qualityProfile;
                     if (disableQualityFilter !== undefined && disableQualityFilter !== null) data.disableQualityFilter = disableQualityFilter;
                     return $http.post($SH.baseUrl + "/portal/q", data, _httpDescription('registerParam')).then(function (response) {
-                        if (!isNaN(response.data.qid)) {
+                        if (!isNaN(response.data.qid) && thiz.validateQID(response.data.qid)) {
                             return response.data
                         } else {
                             bootbox.alert($i18n(478, "Failed to register query. Try again later."));
