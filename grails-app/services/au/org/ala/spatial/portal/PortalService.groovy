@@ -29,7 +29,6 @@ class PortalService {
     def grailsApplication
     def hubWebService
 
-    static final APP_CONSTANT = 'SPATIAL_PORTAL'
     static final DEFAULT_USER_ID = -1
 
     def caches = [QID: 'qid', PROXY: 'proxy', FLICKR_LICENCES: 'flickr']

@@ -347,6 +347,9 @@ startup:
             exportType: 'minimal'
             link: 'https://www.openstreetmap.org/about'
             projections: ['3857']
+            layerParams:
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+
         google_satellite:
             name: 'Satellite'
             layerType: 'SATELLITE'
@@ -590,12 +593,15 @@ spring:
 #    port: 6379
 #    password: ""
 
-# Used by the DOI dataset import and DOI generation
+# Used by the DOI dataset import and DOI generation when exporting datasets
 #doiService:
 #  url: "https://doi.ala.org.au"
 #  searchFilter:
 #    applicationMetadata:
 #      applicationName: "CSDM"
+#  hubName: "CSDM"
+#  reasonTypeId: 13
+#  sourceTypeId: 10002
 
 ---
 environments:

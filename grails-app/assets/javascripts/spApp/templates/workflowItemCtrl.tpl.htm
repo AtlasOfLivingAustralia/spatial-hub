@@ -9,7 +9,8 @@
     <br/>
     <label style="width:150px"><span i18n="151">Name</span></label><span class="small">{{_workflow.name}}</span>
     <br/>
-    <label style="width:150px"><span i18n="107">Created</span></label><span class="small">{{ (toDate(_workflow.created) | date : 'yyyy-MM-ddThh:mm:ss' : 'UTC') + (toDate(_workflow.created)?'Z':'')}}</span>
+    <label style="width:150px"><span i18n="107">Created</span></label><span
+        class="small">{{ (toDate(_workflow.created) | date: 'yyyy-MM-ddThh:mm:ss' : 'UTC') + (toDate(_workflow.created) ? 'Z' : '')}}</span>
     <br/>
     <label style="width:150px"><span i18n="487">Is Private</span></label><input style="width:50%" type="checkbox"
                                                                                 ng-model="workflowProperties.private"

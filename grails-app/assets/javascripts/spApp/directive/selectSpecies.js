@@ -77,7 +77,6 @@
                         scope.spatiallyValid = true;
                         scope.spatiallySuspect = false;
                         scope.spatiallyUnknown = false;
-                      
                         scope.includeExpertDistributions = false;
                         scope.includeChecklists = false;
                         scope.includeAnimalMovement = false;
