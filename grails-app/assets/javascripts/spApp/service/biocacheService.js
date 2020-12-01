@@ -682,7 +682,7 @@
                         //     return $q.when(query)
                         // } else {
                         return $http.post($SH.baseUrl + "/portal/q", data, _httpDescription('registerQuery')).then(function (response) {
-                            if (!response.data.qid || isNaN(response.data.qid)) {
+                            if (!response.data.qid || isNaN(response.data.qid) || !thiz.validateQID(response.data.qid)) {
                                 bootbox.alert($i18n(478, "Failed to register query. Try again later."));
                                 return null
                             } else {
@@ -724,7 +724,7 @@
                     if (qualityProfile !== undefined && qualityProfile !== null) data.qualityProfile = qualityProfile;
                     if (disableQualityFilter !== undefined && disableQualityFilter !== null) data.disableQualityFilter = disableQualityFilter;
                     return $http.post($SH.baseUrl + "/portal/q", data, _httpDescription('registerParam')).then(function (response) {
-                        if (!isNaN(response.data.qid)) {
+                        if (!isNaN(response.data.qid) && thiz.validateQID(response.data.qid)) {
                             return response.data
                         } else {
                             bootbox.alert($i18n(478, "Failed to register query. Try again later."));
@@ -1099,7 +1099,13 @@
                         return $http.get(downloadUrl, _httpDescription("offlineDownload", {params: params}));
                     });
 
+                },
+
+                validateQID: function(qid){
+                    var reg = /^-?\d+\.?\d*$/;
+                    return reg.test(qid);
                 }
+
             };
             return thiz;
         }])
