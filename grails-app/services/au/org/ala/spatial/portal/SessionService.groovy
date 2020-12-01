@@ -76,7 +76,7 @@ class SessionService {
         if (ADD == type) {
             list.push([id: id, name: name, time: time])
         } else if (DELETE == type) {
-            list = list.findAll { ((Map) it).id.toString() != id }
+            list = list.findAll { ((Map) it).id.toString() != id.toString() }
         }
 
         FileUtils.writeStringToFile(userFile(userId), (list as JSON).toString(true))

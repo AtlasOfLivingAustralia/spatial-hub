@@ -243,7 +243,7 @@
                     });
                 },
                 /**
-                 * Load a saved session. This adds layers, changes the basemap and sets the zoom/extents of the
+                 *   a saved session. This adds layers, changes the basemap and sets the zoom/extents of the
                  * current session.
                  *
                  * Note: map layers are not removed.

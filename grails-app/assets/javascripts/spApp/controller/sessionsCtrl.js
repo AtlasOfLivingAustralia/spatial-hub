@@ -15,6 +15,7 @@
                 $scope.sortReverse = 'true';
 
                 $scope.sessions = [];
+                $scope.keywords='';
 
                 $scope.import = function (sessionId) {
                     SessionsService.load(sessionId);
@@ -28,7 +29,11 @@
                         size: 'small',
                         callback: function (result) {
                             if (result) {
-                                $scope.sessions = SessionsService.remove(sessionId)
+                                //Return promise to prevent filter stop working
+                                var promise = SessionsService.remove(sessionId);
+                                promise.then(function(data){
+                                    $scope.sessions = data
+                                });
                             }
                         },
                         buttons: {

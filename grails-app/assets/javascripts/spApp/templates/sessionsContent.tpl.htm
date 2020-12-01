@@ -15,7 +15,7 @@
                         <div class="col-sm-6">
                             <div class="input-group">
                                 <input type="text" class="form-control" placeholder="Search sessions"
-                                       ng-model="searchLists">
+                                       ng-model="keywords">
                                 <div class="input-group-addon"><i class="fa fa-search"></i></div>
                             </div>
                         </div>
@@ -51,7 +51,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="x in sessions | orderBy:sortType:sortReverse | filter:searchLists">
+                <tr ng-repeat="x in sessions | filter:{name: keywords}">
                     <td style="width:20px">
                         <div class="btn-group">
                             <span i18n="259" class="glyphicon glyphicon-trash" ng-click="remove(x.id)"></span>
