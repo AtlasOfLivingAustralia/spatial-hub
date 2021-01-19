@@ -237,13 +237,13 @@
                  * @param {string} session id
                  * @return {Promise}
                  */
-                'delete': function (sessionId) {
+                remove: function (sessionId) {
                     return $http.delete($SH.baseUrl + "/portal/session/" + sessionId, _httpDescription('delete')).then(function (response) {
                         return response.data
                     });
                 },
                 /**
-                 * Load a saved session. This adds layers, changes the basemap and sets the zoom/extents of the
+                 *   a saved session. This adds layers, changes the basemap and sets the zoom/extents of the
                  * current session.
                  *
                  * Note: map layers are not removed.

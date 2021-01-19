@@ -320,6 +320,14 @@
         ]
       }
     ]
+  },
+  "SpeciesByLayer": {
+    "description": "Tabulate - 1D",
+    "input": {
+      "layer": {
+        "description": "Select 1 layer"
+      }
+    }
   }
 }
 

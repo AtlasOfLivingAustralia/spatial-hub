@@ -51,20 +51,16 @@
         "open": "ScatterplotList"
       },
       {
-        "name": "Double Gridding",
-        "open": "DoubleGridding"
+        "name": "Tabulate - 1D",
+        "open": "SpeciesByLayer"
+      },
+      {
+        "name": "Tabulate - 2D",
+        "open": "tabulate"
       },
       {
         "name": "Taxon Frequency",
         "open": "TaxonFrequency"
-      },
-      {
-        "name": "Tabulate",
-        "open": "tabulate"
-      },
-      {
-        "name": "Species by Layer",
-        "open": "SpeciesByLayer"
       },
       {
         "name": "Compare Points",
@@ -81,6 +77,10 @@
       {
         "name": "Points to Grid",
         "open": "PointsToGrid"
+      },
+      {
+        "name": "Double Gridding",
+        "open": "DoubleGridding"
       },
       {
         "name": "Calculate AOO and EOO",

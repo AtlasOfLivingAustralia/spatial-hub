@@ -593,12 +593,15 @@ spring:
 #    port: 6379
 #    password: ""
 
-# Used by the DOI dataset import and DOI generation
+# Used by the DOI dataset import and DOI generation when exporting datasets
 #doiService:
 #  url: "https://doi.ala.org.au"
 #  searchFilter:
 #    applicationMetadata:
 #      applicationName: "CSDM"
+#  hubName: "CSDM"
+#  reasonTypeId: 13
+#  sourceTypeId: 10002
 
 ---
 environments:
