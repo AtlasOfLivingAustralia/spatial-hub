@@ -103,11 +103,16 @@
                         var sbList = [];
                         var savedsession;
                         var workflow;
+                        var ss; //load map from stored session
 
                         for (var key in params) {
                             if (params.hasOwnProperty(key)) {
 
                                 var value = params[key];
+
+                                if("ss" == key){
+                                    ss = value;
+                                }
 
                                 if ("workflow" == key) {
                                     workflow = value;
@@ -249,7 +254,8 @@
                             if (tool !== null && tool !== undefined) {
                                 _this.mapToolParams(tool, toolParameters)
                             }
-                            if (bb === undefined) {
+                            if (bb === undefined && ss === undefined) {
+                                //ss === undefined -> map is also not loaded from stored session
                                 MapService.zoomToAll()
                             }
                         })

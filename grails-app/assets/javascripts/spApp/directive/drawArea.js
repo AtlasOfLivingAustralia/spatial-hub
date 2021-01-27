@@ -103,6 +103,21 @@
                             LayoutService.closePanel()
                         };
 
+                        scope.isNextEnabled = function(){
+                            //Directly call intersect.value.length and selectedArea.wkt.length will throw null exception
+                            if( scope.intersect && scope.intersect.value){
+                               if (scope.intersect.value.length > 0 ){
+                                   return true
+                               }
+                            }
+                            if( scope.selectedArea && scope.selectedArea.wkt){
+                               if(scope.selectedArea.wkt.length > 0){
+                                   return true;
+                               }
+                            }
+                            return false;
+                        }
+
                         scope.ok = function () {
                             scope.loading = true;
 
