@@ -16,7 +16,7 @@ plugins {
     id 'com.bertramlabs.asset-pipeline' version '2.5.0'
 }
 
-version "0.3.10"
+version "0.3.11"
 group "au.org.ala"
 
 apply plugin:"eclipse"
@@ -74,7 +74,7 @@ dependencies {
 
     compile "org.grails.plugins:ala-auth:3.1.1"
     compile "org.grails.plugins:ala-admin-plugin:2.1"
-    compile "org.grails.plugins:ala-bootstrap3:3.2.1"
+    compile "org.grails.plugins:ala-bootstrap3:3.2.3"
     compile "au.org.ala.plugins.grails:ala-charts-plugin:2.0.2-SNAPSHOT"
 
     runtime 'org.grails.plugins:sandbox-hub:1.0'
