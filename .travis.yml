@@ -6,10 +6,10 @@ branches:
   only:
   - master
   - develop
-  - /^feature\/.*$/
-  - /^release\/.*$/
-  - /^feature\/.*$/
-  - /^hotfix\/.*$/
+#  - /^feature\/.*$/
+#  - /^release\/.*$/
+#  - /^feature\/.*$/
+#  - /^hotfix\/.*$/
 addons:
   apt:
     packages:

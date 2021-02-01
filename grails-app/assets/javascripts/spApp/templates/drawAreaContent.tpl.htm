@@ -89,7 +89,7 @@
         <div class="btn-group btn-group-sm">
             <button i18n="38" class="btn btn-default" ng-click="cancel()" ng-disabled="loading">Close</button>
             <button i18n="39" class="btn btn-primary" ng-click="ok()"
-                    ng-disabled="(intersect.value.length == 0 && selectedArea.wkt.length == 0) || loading">Next &gt;
+                    ng-disabled="!isNextEnabled()">Next &gt;
             </button>
         </div>
         <uib-progressbar ng-show="loading" class="progress-striped"

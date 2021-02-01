@@ -101,14 +101,13 @@
                         var toolParameters;
                         var geospatialKosher = null;
                         var sbList = [];
-                        var savedsession;
+                        var savedsession; //load map from stored session
                         var workflow;
 
                         for (var key in params) {
                             if (params.hasOwnProperty(key)) {
 
                                 var value = params[key];
-
                                 if ("workflow" == key) {
                                     workflow = value;
                                 }
@@ -249,7 +248,11 @@
                             if (tool !== null && tool !== undefined) {
                                 _this.mapToolParams(tool, toolParameters)
                             }
-                            if (bb === undefined) {
+                            //loaded from session
+                            if (savedsession){
+                                //Todo intermittently zoom out to the whole world
+                                //MapService.zoomToExtents(MapService.getExtents())
+                            }else if (bb === undefined ) {
                                 MapService.zoomToAll()
                             }
                         })
