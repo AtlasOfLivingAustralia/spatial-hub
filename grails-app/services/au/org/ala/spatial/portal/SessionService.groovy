@@ -74,7 +74,8 @@ class SessionService {
         def list = (List) (userFile(userId).exists() ? JSON.parse(FileUtils.readFileToString(userFile(userId))) : [])
 
         if (ADD == type) {
-            list.push([id: id, name: name, time: time])
+            def url = grailsApplication.config.grails.serverURL + SAVED_SESSION_PARAM + id
+            list.push([id: id, name: name, time: time, url: url])
         } else if (DELETE == type) {
             list = list.findAll { ((Map) it).id.toString() != id.toString() }
         }
@@ -99,10 +100,6 @@ class SessionService {
 
     def list(userId) {
         def sessions = userFile(userId).exists() ? JSON.parse(FileUtils.readFileToString(userFile(userId))) : []
-        sessions.each {
-            ((Map) it).url = grailsApplication.config.grails.serverURL + SAVED_SESSION_PARAM + ((Map) it).id
-        }
-
         sessions
     }
 }
