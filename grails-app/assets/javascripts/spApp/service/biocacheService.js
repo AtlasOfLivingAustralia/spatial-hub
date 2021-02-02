@@ -667,30 +667,7 @@
                                 fq.splice(0, 1)
                             }
                         }
-                        var data = {q: q, bs: query.bs};
-                        if ($SH.qc !== undefined && $SH.qc !== null && $SH.qc.length > 0) data.qc = $SH.qc;
-                        if (fq !== undefined && fq !== null) data.fq = fq;
-                        if (query.wkt !== undefined && query.wkt !== null && query.wkt.length > 0) data.wkt = query.wkt;
-                        if (query.disableAllQualityFilters !== undefined && query.disableAllQualityFilters !== null) data.disableAllQualityFilters = query.disableAllQualityFilters;
-                        if (query.qualityProfile !== undefined && query.qualityProfile !== null) data.qualityProfile = query.qualityProfile;
-                        if (query.disableQualityFilter !== undefined && query.disableQualityFilter !== null) data.disableQualityFilter = query.disableQualityFilter;
-
-                        //TODO: biocache wms request is failing for q=lsid:... when ENV contains a "sel" value. Do not set query.qid=data.q
-                        // if(((data.fq === undefined || data.fq === null || data.fq.length === 0) &&
-                        //     (data.wkt === undefined || data.wkt === null || data.wkt.length === 0))) {
-                        //     query.qid = data.q;
-                        //     return $q.when(query)
-                        // } else {
-                        return $http.post($SH.baseUrl + "/portal/q", data, _httpDescription('registerQuery')).then(function (response) {
-                            if (!response.data.qid || isNaN(response.data.qid) || !thiz.validateQID(response.data.qid)) {
-                                bootbox.alert($i18n(478, "Failed to register query. Try again later."));
-                                return null
-                            } else {
-                                query.qid = 'qid:' + response.data.qid;
-                                return query
-                            }
-                        });
-                        // }
+                        return this.registerParam(query.bs, q, fq, query.wkt, query.qualityProfile, query.disableQualityFilter, query.disableAllQualityFilters)
                     }
                 },
                 /**
@@ -724,12 +701,15 @@
                     if (qualityProfile !== undefined && qualityProfile !== null) data.qualityProfile = qualityProfile;
                     if (disableQualityFilter !== undefined && disableQualityFilter !== null) data.disableQualityFilter = disableQualityFilter;
                     return $http.post($SH.baseUrl + "/portal/q", data, _httpDescription('registerParam')).then(function (response) {
-                        if (!isNaN(response.data.qid) && thiz.validateQID(response.data.qid)) {
+                        if (thiz.validateQID(response.data.qid)) {
                             return response.data
                         } else {
                             bootbox.alert($i18n(478, "Failed to register query. Try again later."));
                             return null
                         }
+                    }, function (response) {
+                        bootbox.alert($i18n(478, "Failed to register query. Try again later."));
+                        return null
                     });
                 },
                 /**
@@ -1102,8 +1082,7 @@
                 },
 
                 validateQID: function(qid){
-                    var reg = /^-?\d+\.?\d*$/;
-                    return reg.test(qid);
+                    return !isNaN(qid)
                 }
 
             };
