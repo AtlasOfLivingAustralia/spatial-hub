@@ -248,11 +248,8 @@
                             if (tool !== null && tool !== undefined) {
                                 _this.mapToolParams(tool, toolParameters)
                             }
-                            //loaded from session
-                            if (savedsession){
-                                //Todo intermittently zoom out to the whole world
-                                //MapService.zoomToExtents(MapService.getExtents())
-                            }else if (bb === undefined ) {
+                            //If no BBox and not loaded from session
+                            else if (bb === undefined && savedsession == undefined ) {
                                 MapService.zoomToAll()
                             }
                         })
