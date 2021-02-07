@@ -293,13 +293,14 @@
 
                         scope.updateStyle = function () {
                             var selectedLayer = scope.selected.layer
-                            style = selectedLayer.style
-                            if ('default' == style) style = selectedLayer.defaultStyle
-                            if ('linear' == style) style = selectedLayer.defaultStyle + '_linear'
-                            if ('outline' == style) style = 'outline'
-                            if ('filled' == style) style = 'polygon'
-                            selectedLayer.leaflet.layerOptions.layers[0].layerParams.styles = style
-                            selectedLayer.leaflet.layerOptions.layers[0].legendurl = selectedLayer.leaflet.layerOptions.layers[0].legendurl.replace(/&style=[^&]*/, "&style=" + encodeURIComponent(style))
+                            //style = selectedLayer.style
+                            var selectedStyle =  selectedLayer.defaultStyle
+                            if ('default' == selectedStyle) selectedStyle = selectedLayer.defaultStyle
+                            if ('linear' == selectedStyle) selectedStyle = selectedLayer.defaultStyle + '_linear'
+                            //if ('outline' == selectedStyle) selectedStyle = 'outline'
+                            //if ('filled' == selectedStyle) selectedStyle = 'polygon'
+                            selectedLayer.leaflet.layerOptions.layers[0].layerParams.styles = selectedStyle
+                            selectedLayer.leaflet.layerOptions.layers[0].legendurl = selectedLayer.leaflet.layerOptions.layers[0].legendurl.replace(/&style=[^&]*/, "&style=" + encodeURIComponent(selectedStyle))
 
                             $timeout(function () {
                                 MapService.reloadLayer(selectedLayer)
