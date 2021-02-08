@@ -292,13 +292,16 @@
                         };
 
                         scope.updateStyle = function () {
-                            var selectedLayer = scope.selected.layer
-                            //style = selectedLayer.style
-                            var selectedStyle =  selectedLayer.defaultStyle
-                            if ('default' == selectedStyle) selectedStyle = selectedLayer.defaultStyle
-                            if ('linear' == selectedStyle) selectedStyle = selectedLayer.defaultStyle + '_linear'
-                            //if ('outline' == selectedStyle) selectedStyle = 'outline'
-                            //if ('filled' == selectedStyle) selectedStyle = 'polygon'
+                            var selectedLayer = scope.selected.layer;
+                            var selectedStyle = selectedLayer.style
+
+                            //Raster style
+                            if(selectedStyle == 'non-linear') selectedStyle = selectedLayer.defaultStyle   //e.g geomacs_gmean
+                            if (selectedStyle == 'linear') selectedStyle = selectedLayer.defaultStyle + '_linear'
+                            //Vector sytle
+                            if (selectedStyle == 'default') selectedStyle = selectedLayer.defaultStyle  //e.g cl1084
+                            // if ('outline' == selectedStyle) selectedStyle = 'outline'
+                            // if ('filled' == selectedStyle) selectedStyle = 'polygon'
                             selectedLayer.leaflet.layerOptions.layers[0].layerParams.styles = selectedStyle
                             selectedLayer.leaflet.layerOptions.layers[0].legendurl = selectedLayer.leaflet.layerOptions.layers[0].legendurl.replace(/&style=[^&]*/, "&style=" + encodeURIComponent(selectedStyle))
 
