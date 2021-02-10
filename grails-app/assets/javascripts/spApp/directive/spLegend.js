@@ -292,21 +292,21 @@
                         };
 
                         scope.updateStyle = function () {
-                            var selectedLayer = scope.selected.layer;
-                            var selectedStyle = selectedLayer.style
+                            let currentLayer = scope.selected.layer;
+                            let selectedStyle = currentLayer.style
 
                             //Raster style
-                            if(selectedStyle == 'non-linear') selectedStyle = selectedLayer.defaultStyle   //e.g geomacs_gmean
-                            if (selectedStyle == 'linear') selectedStyle = selectedLayer.defaultStyle + '_linear'
+                            if(selectedStyle == 'non-linear') selectedStyle = currentLayer.defaultStyle   //e.g geomacs_gmean
+                            if (selectedStyle == 'linear') selectedStyle = currentLayer.defaultStyle + '_linear'
                             //Vector sytle
-                            if (selectedStyle == 'default') selectedStyle = selectedLayer.defaultStyle  //e.g cl1084
-                            // if ('outline' == selectedStyle) selectedStyle = 'outline'
-                            // if ('filled' == selectedStyle) selectedStyle = 'polygon'
-                            selectedLayer.leaflet.layerOptions.layers[0].layerParams.styles = selectedStyle
-                            selectedLayer.leaflet.layerOptions.layers[0].legendurl = selectedLayer.leaflet.layerOptions.layers[0].legendurl.replace(/&style=[^&]*/, "&style=" + encodeURIComponent(selectedStyle))
+                            if (selectedStyle == 'default') selectedStyle = currentLayer.defaultStyle  //e.g cl1084
+                            if (selectedStyle == 'outline') selectedStyle = 'outline'
+                            if (selectedStyle == 'filled') selectedStyle = 'polygon'
+                            currentLayer.leaflet.layerOptions.layers[0].layerParams.styles = selectedStyle
+                            currentLayer.leaflet.layerOptions.layers[0].legendurl = currentLayer.leaflet.layerOptions.layers[0].legendurl.replace(/&style=[^&]*/, "&style=" + encodeURIComponent(selectedStyle));
 
                             $timeout(function () {
-                                MapService.reloadLayer(selectedLayer)
+                                MapService.reloadLayer(currentLayer)
                             }, 0)
                         }
 
