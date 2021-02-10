@@ -292,8 +292,8 @@
                         };
 
                         scope.updateStyle = function () {
-                            let currentLayer = scope.selected.layer;
-                            let selectedStyle = currentLayer.style
+                            var currentLayer = scope.selected.layer;
+                            var selectedStyle = currentLayer.style
 
                             //Raster style
                             if(selectedStyle == 'non-linear') selectedStyle = currentLayer.defaultStyle   //e.g geomacs_gmean
