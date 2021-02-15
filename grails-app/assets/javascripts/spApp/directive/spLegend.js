@@ -1088,7 +1088,7 @@
                         };
 
                         scope.scatterplotDownloadData = function () {
-                            Util.download(scope.selected.layer.scatterplotDataUrl, "scatterplotData.csv");
+                            Util.download(scope.selected.layer.scatterplotDataUrl, "scatterplotData.zip");
                         };
 
                         scope.scatterplotDownloadImage = function () {
