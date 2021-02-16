@@ -66,8 +66,9 @@
 
                         scope.updateContextualList = function (_layer) {
                             var selectedLayer = _layer || scope.selected.layer;
-                            selectedLayer.contextualPage = 1;
-                            selectedLayer.contextualListCount = null;
+                            // Why those two lines added, it always sets the start page of pagination to 1,
+                            //selectedLayer.contextualPage = 1;
+                            //selectedLayer.contextualListCount = null;
                             if (selectedLayer !== undefined && selectedLayer !== null && selectedLayer.contextualPage !== undefined) {
                                 LayersService.getField(selectedLayer.id,
                                     (selectedLayer.contextualPage - 1) * selectedLayer.contextualPageSize,
