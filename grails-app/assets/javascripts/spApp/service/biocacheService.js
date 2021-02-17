@@ -559,8 +559,11 @@
                         if (response == null) {
                             return $q.when([])
                         }
+                        var hasQid="";
+                        if(response.qid)
+                            hasQid = "qid:" + response.qid;
 
-                        var url = query.bs + "/occurrence/facets?facets=" + facet + "&flimit=" + pageSize + "&foffset=" + offset + "&fsort=" + (sortBy ? sortBy:"count")  + "&q=" + response.qid;
+                        var url = query.bs + "/occurrence/facets?facets=" + facet + "&flimit=" + pageSize + "&foffset=" + offset + "&fsort=" + (sortBy ? sortBy:"count")  + "&q=" + hasQid;
                         if (prefixFilter !== undefined && prefixFilter.length > 0) url += "&fprefix=" + encodeURIComponent(prefixFilter);
 
                         return $http.get(url, _httpDescription('facetGeneral', config)).then(function (response) {
