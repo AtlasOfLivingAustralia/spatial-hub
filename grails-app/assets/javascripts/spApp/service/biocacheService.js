@@ -559,11 +559,8 @@
                         if (response == null) {
                             return $q.when([])
                         }
-                        var hasQid="";
-                        if(response.qid)
-                            hasQid = "qid:" + response.qid;
 
-                        var url = query.bs + "/occurrence/facets?facets=" + facet + "&flimit=" + pageSize + "&foffset=" + offset + "&fsort=" + (sortBy ? sortBy:"count")  + "&q=" + hasQid;
+                        var url = query.bs + "/occurrence/facets?facets=" + facet + "&flimit=" + pageSize + "&foffset=" + offset + "&fsort=" + (sortBy ? sortBy:"count")  + "&q=" + response.qid;
                         if (prefixFilter !== undefined && prefixFilter.length > 0) url += "&fprefix=" + encodeURIComponent(prefixFilter);
 
                         return $http.get(url, _httpDescription('facetGeneral', config)).then(function (response) {
@@ -705,7 +702,8 @@
                     if (disableQualityFilter !== undefined && disableQualityFilter !== null) data.disableQualityFilter = disableQualityFilter;
                     return $http.post($SH.baseUrl + "/portal/q", data, _httpDescription('registerParam')).then(function (response) {
                         if (thiz.validateQID(response.data.qid)) {
-                            return response.data
+                            //Need to return 'qid:xxxxxx'
+                            return {qid: "qid:" + response.data.qid}
                         } else {
                             bootbox.alert($i18n(478, "Failed to register query. Try again later."));
                             return null
