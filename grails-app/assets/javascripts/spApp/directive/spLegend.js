@@ -66,9 +66,15 @@
 
                         scope.updateContextualList = function (_layer) {
                             var selectedLayer = _layer || scope.selected.layer;
-                            selectedLayer.contextualPage = 1;
-                            selectedLayer.contextualListCount = null;
-                            if (selectedLayer !== undefined && selectedLayer !== null && selectedLayer.contextualPage !== undefined) {
+                            // Why those two lines added, it always sets the start page of pagination to 1,
+                            //selectedLayer.contextualPage = 1;
+                            //selectedLayer.contextualListCount = null;
+                            if ( selectedLayer.contextualPage == undefined){
+                                selectedLayer.contextualPage = 1;
+                                selectedLayer.contextualListCount = null;
+                            }
+
+                            if (selectedLayer !== undefined && selectedLayer !== null) {
                                 LayersService.getField(selectedLayer.id,
                                     (selectedLayer.contextualPage - 1) * selectedLayer.contextualPageSize,
                                     selectedLayer.contextualPageSize, selectedLayer.contextualFilter).then(function (data) {
@@ -292,17 +298,21 @@
                         };
 
                         scope.updateStyle = function () {
-                            var selectedLayer = scope.selected.layer
-                            style = selectedLayer.style
-                            if ('default' == style) style = selectedLayer.defaultStyle
-                            if ('linear' == style) style = selectedLayer.defaultStyle + '_linear'
-                            if ('outline' == style) style = 'outline'
-                            if ('filled' == style) style = 'polygon'
-                            selectedLayer.leaflet.layerOptions.layers[0].layerParams.styles = style
-                            selectedLayer.leaflet.layerOptions.layers[0].legendurl = selectedLayer.leaflet.layerOptions.layers[0].legendurl.replace(/&style=[^&]*/, "&style=" + encodeURIComponent(style))
+                            var currentLayer = scope.selected.layer;
+                            var selectedStyle = currentLayer.style
+
+                            //Raster style
+                            if(selectedStyle == 'non-linear') selectedStyle = currentLayer.defaultStyle   //e.g geomacs_gmean
+                            if (selectedStyle == 'linear') selectedStyle = currentLayer.defaultStyle + '_linear'
+                            //Vector sytle
+                            if (selectedStyle == 'default') selectedStyle = currentLayer.defaultStyle  //e.g cl1084
+                            if (selectedStyle == 'outline') selectedStyle = 'outline'
+                            if (selectedStyle == 'filled') selectedStyle = 'polygon'
+                            currentLayer.leaflet.layerOptions.layers[0].layerParams.styles = selectedStyle
+                            currentLayer.leaflet.layerOptions.layers[0].legendurl = currentLayer.leaflet.layerOptions.layers[0].legendurl.replace(/&style=[^&]*/, "&style=" + encodeURIComponent(selectedStyle));
 
                             $timeout(function () {
-                                MapService.reloadLayer(selectedLayer)
+                                MapService.reloadLayer(currentLayer)
                             }, 0)
                         }
 
@@ -1084,7 +1094,7 @@
                         };
 
                         scope.scatterplotDownloadData = function () {
-                            Util.download(scope.selected.layer.scatterplotDataUrl, "scatterplotData.csv");
+                            Util.download(scope.selected.layer.scatterplotDataUrl, "scatterplotData.zip");
                         };
 
                         scope.scatterplotDownloadImage = function () {

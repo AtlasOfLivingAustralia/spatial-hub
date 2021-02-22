@@ -16,7 +16,7 @@ plugins {
     id 'com.bertramlabs.asset-pipeline' version '2.5.0'
 }
 
-version "0.3.11"
+version "0.3.12"
 group "au.org.ala"
 
 apply plugin:"eclipse"
@@ -62,11 +62,20 @@ dependencies {
     console "org.grails:grails-console"
     profile "org.grails.profiles:web"
 
+    testCompile "org.grails.plugins:geb"
+    testRuntime 'net.sourceforge.htmlunit:htmlunit:2.35.0'
+    testCompile "org.seleniumhq.selenium:htmlunit-driver:2.35.1"
+    testCompile "org.seleniumhq.selenium:selenium-remote-driver:3.141.59"
+    testCompile "org.seleniumhq.selenium:selenium-api:3.141.59"
+    testCompile "org.seleniumhq.selenium:selenium-support:3.141.59"
+    testRuntime "org.seleniumhq.selenium:selenium-chrome-driver:3.141.59"
+    testRuntime "org.seleniumhq.selenium:selenium-firefox-driver:3.141.59"
+
     testCompile "org.grails:grails-gorm-testing-support"
     testCompile "org.grails.plugins:geb"
     testCompile "org.grails:grails-web-testing-support"
     testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver:2.47.1"
-    testRuntime "net.sourceforge.htmlunit:htmlunit:2.18"
+    //testRuntime "net.sourceforge.htmlunit:htmlunit:2.18"
 
     // Additional Plugins
     compile 'org.grails.plugins:external-config:1.2.2'

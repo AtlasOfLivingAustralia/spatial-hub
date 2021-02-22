@@ -128,6 +128,9 @@ security:
         casServerUrlPrefix: 'https://auth.ala.org.au/cas'
         bypass: false # set to true for non-ALA deployment
         disableCAS: false
+        roleAttribute: authority
+        ignoreCase: true
+        authCookieName: ALA-Auth
 
 autocompleteUrl: 'https://bie.ala.org.au/ws/search/auto.jsonp'
 
