@@ -44,7 +44,7 @@ repositories {
 ext {
     drivers = ["firefox", "chrome", "chromeHeadless", "ie"]
     ext {
-        groovyVersion = '2.4.3'
+        groovyVersion = '2.4.10'
         gebVersion = '2.0'
         seleniumVersion = '3.6.0'
         chromeDriverVersion = '2.36'
