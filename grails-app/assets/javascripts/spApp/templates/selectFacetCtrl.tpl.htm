@@ -67,7 +67,9 @@
     <span>Page {{(offset / pageSize) + 1}} of {{activeFacet.maxPages}}</span>
 
     <div style="float:right">
-        <span style="color:red">{{activeFacet.selection.length}} facets selected</span>
+        <span style="color:red" span ng-if="activeFacet.selection.length ==0 || activeFacet.selection.length >1" >{{activeFacet.selection.length}} classes selected</span>
+        <span style="color:red" span ng-if="activeFacet.selection.length ==1" >{{activeFacet.selection.length}} class selected</span>
+
         <div class="btn-group btn-group-xs">
             <button i18n="120" ng-click="clearSelection()" class="btn btn-default">Clear selection</button>
         </div>

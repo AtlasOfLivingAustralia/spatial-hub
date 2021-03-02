@@ -17,6 +17,8 @@
                         _selectedFacet: '=selectedFacet',
                         _uniqueId: '=uniqueId'
                     },
+
+
                     link: function (scope, element, attrs) {
 
                         scope.facet = {};
@@ -24,11 +26,46 @@
                         scope.facetList = [];
                         scope.exportUrl = null;
                         scope.sortFacetsByName = false;
+                        scope.fqsOfSpeciesOptions=[];
 
 
                         FacetAutoCompleteService.search(BiocacheService.newQuery(["-*:*"])).then(function (data) {
                             scope.facets = data
                         });
+
+                        //Update special options
+                        //fq=geospatial_kosher:true&fq=-occurrence_status_s:absent
+                        scope.$on("speciesOptionsChange",function (event, value) {
+                            scope.fqsOfSpeciesOptions =[];
+                            if(value.spatiallyValid){
+                                scope.fqsOfSpeciesOptions.push("geospatial_kosher:true")
+                            }
+                            //if includeAbsences NOT selected
+                            if(!value.includeAbsences){
+                                scope.fqsOfSpeciesOptions.push("-occurrence_status_s:absent")
+                            }
+                            //if a facet has been selected, then refresch results
+                            if(scope.hasFacetSelected()){
+                                scope.update();
+                            }
+
+                        });
+
+                        scope.hasFacetSelected=function(){
+                            if($.isEmptyObject(scope.facet)){
+                                return false;
+                            }
+                            if(scope.facet == '' || scope.facet == 'search'){
+                                return false;
+                            }
+                            //Angular added $$hashkey to track object
+                            var keys = Object.keys(scope.facet);
+
+                            if (keys.length == 1 && keys[0] == "$$hashKey"){
+                                return false;
+                            }
+                            return true;
+                        }
 
                         scope.pageSize = 10;
                         scope.offset = 0;
@@ -203,6 +240,10 @@
                                 }
                             })
 
+                            $.each(scope.fqsOfSpeciesOptions, function(i){
+                                q.push(scope.fqsOfSpeciesOptions[i])
+                            })
+
                             var sortBy = 'count';
                             if(scope.sortFacetsByName){
                                 //Sort by name alphabetically
@@ -331,6 +372,9 @@
                         }
                     }
                 }
+
+
+
 
             }])
 }(angular));

@@ -8,8 +8,8 @@
      *    General occurrence layer filter toggles
      */
     angular.module('species-options-directive', ['map-service', 'lists-service'])
-        .directive('speciesOptions', ['MapService', 'ListsService', '$timeout', 'LayoutService',
-            function (MapService, ListsService, $timeout, LayoutService) {
+        .directive('speciesOptions', ['MapService', 'ListsService', '$timeout', 'LayoutService', '$rootScope',
+            function (MapService, ListsService, $timeout, LayoutService, $rootScope) {
 
                 return {
                     scope: {
@@ -44,6 +44,10 @@
 
                         //endemic includes
                         if (scope._value.includeEndemic === undefined) scope._value.includeEndemic = false;
+                        //Broadcast selected species options,  e.g selectFacets watch the changes and update the query.
+                        scope.$watch('_value', function(newValue, oldValue) {
+                            $rootScope.$broadcast('speciesOptionsChange', scope._value);
+                        }, true);
 
                         LayoutService.addToSave(scope);
 
