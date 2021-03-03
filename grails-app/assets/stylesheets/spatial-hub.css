@@ -1107,3 +1107,8 @@ ul.errors {
     width: 26px;
     height: 26px;
 }
+
+.warning {
+    padding-top: 10px;
+    color: red;
+}

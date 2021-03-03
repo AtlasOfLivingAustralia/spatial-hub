@@ -33,7 +33,7 @@
                             scope.facets = data
                         });
 
-                        //Update special options
+                        //Watch special options update
                         //fq=geospatial_kosher:true&fq=-occurrence_status_s:absent
                         scope.$on("speciesOptionsChange",function (event, value) {
                             scope.fqsOfSpeciesOptions =[];

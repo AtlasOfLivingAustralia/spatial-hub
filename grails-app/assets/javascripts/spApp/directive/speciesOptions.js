@@ -20,6 +20,7 @@
                         _endemicIncludes: '=?endemicIncludes',
                         _disabled: "=?disableCheck"
                     },
+
                     templateUrl: '/spApp/speciesOptionsContent.htm',
                     link: function (scope, element, attrs) {
 
@@ -48,6 +49,8 @@
                         scope.$watch('_value', function(newValue, oldValue) {
                             $rootScope.$broadcast('speciesOptionsChange', scope._value);
                         }, true);
+
+                        scope.showWarning = true;
 
                         LayoutService.addToSave(scope);
 
