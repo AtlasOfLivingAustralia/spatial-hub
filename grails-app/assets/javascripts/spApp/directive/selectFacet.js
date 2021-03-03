@@ -37,13 +37,43 @@
                         //fq=geospatial_kosher:true&fq=-occurrence_status_s:absent
                         scope.$on("speciesOptionsChange",function (event, value) {
                             scope.fqsOfSpeciesOptions =[];
-                            if(value.spatiallyValid){
-                                scope.fqsOfSpeciesOptions.push("geospatial_kosher:true")
+                            /*
+                            spatially-valid = geospatial_kosher:true
+                            spatially-suspect = geospatial_kosher:false
+                            spatially-unknown = -geospatial_kosher:*
+
+                            If we want include VALID and MISSING(UNKNOWN) spatial data
+                            fq=(geospatial_kosher:true OR -geospatial_kosher:*) BS(solr) does not support '-' in complicated query
+                            */
+
+                            if (value.spatiallyUnknown) { //include UNKNOWN (MISSING) spatial data records
+                                if (value.spatiallyValid && value.spatiallySuspect) {  //All selected
+                                    /* do nothing, returns all records */
+                                } else if (value.spatiallyValid){
+                                    //  spatially-unknown && spatiallyValid
+                                    //  Solution -> rule out of spatiallySuspect
+                                    scope.fqsOfSpeciesOptions.push('-geospatial_kosher:false');
+                                }else if (value.spatiallySuspect){
+                                    //  spatially-unknown && spatiallySuspect
+                                    //  -> rule out of spatiallyValid
+                                    scope.fqsOfSpeciesOptions.push('-geospatial_kosher:true');
+                                }
+                            } else {
+                                //spatially-valid and spatially-suspect
+                                if (value.spatiallyValid && value.spatiallySuspect) {
+                                    scope.fqsOfSpeciesOptions.push('geospatial_kosher:*');
+                                } else if (value.spatiallyValid){
+                                    scope.fqsOfSpeciesOptions.push('geospatial_kosher:true');
+                                } else if (value.spatiallySuspect){
+                                    scope.fqsOfSpeciesOptions.push('geospatial_kosher:false');
+                                }
                             }
+
                             //if includeAbsences NOT selected
                             if(!value.includeAbsences){
                                 scope.fqsOfSpeciesOptions.push("-occurrence_status_s:absent")
                             }
+
                             //if a facet has been selected, then refresch results
                             if(scope.hasFacetSelected()){
                                 scope.update();
