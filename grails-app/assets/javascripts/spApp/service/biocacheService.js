@@ -889,7 +889,7 @@
                                 return {
                                     q: $.merge([q], fq),
                                     wkt: wkt,
-                                    qid: "qid:" + data.qid,
+                                    qid: data.qid, //qid has been reformated to "qid:xxxxxx"
                                     bs: bs,
                                     ws: ws,
                                     name: name
