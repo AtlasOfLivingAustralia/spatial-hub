@@ -20,6 +20,7 @@
                 $scope.area = 'drawBoundingBox';
 
                 $scope.maxFileSize = $SH.maxUploadSize;
+                $scope.selectedAreaSize = 0;
 
                 if (inputData !== undefined && inputData.importArea === true) {
                     $scope.area = 'importShapefile';
@@ -198,9 +199,17 @@
 
                 $scope.selectShpArea = function () {
                     var selected = "";
+
                     var userSelectedArea = $scope.areaList.filter(function (area) {
                         return area.selected || false
                     });
+
+                    $scope.selectedAreaSize = 0;
+                    userSelectedArea.forEach(function(area){
+                        $scope.selectedAreaSize += area.values['AREA'] //Sum areas
+                    })
+
+
                     if (userSelectedArea.length === $scope.areaList.length) {
                         selected = "all";
                         $scope.checkAll = true;
@@ -217,6 +226,13 @@
                     angular.forEach($scope.areaList, function (area) {
                         area.selected = $scope.checkAll;
                     });
+                    $scope.selectedAreaSize = 0;
+                    if($scope.checkAll){
+                        $scope.areaList.forEach(function(area){
+                            $scope.selectedAreaSize += area.values['AREA'] //Sum areas
+                        })
+                    }
+
                     $scope.shpImg = LayersService.getShpImageUrl($scope.shapeId, "all");
                 };
 
