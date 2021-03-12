@@ -117,12 +117,29 @@
                                 return area.id
                             }).join();
 
-                            LayersService.createArea($scope.myAreaName, $scope.fileName, $scope.shapeId, featureIdxs).then(function (response) {
-                                if (response.data.error) {
-                                    bootbox.alert("No areas selected. Points cannot be imported from a shapefile. (Error: " + response.data.error + ")");
-                                } else
-                                    $scope.setPid(response.data.id, true)
-                            });
+                            LayersService.createArea($scope.myAreaName, $scope.fileName, $scope.shapeId, featureIdxs)
+                            .then(
+                                //Success
+                                function (response) {
+
+                                        if (response.data.error) {
+                                            bootbox.alert(
+                                                "No areas selected. Points cannot be imported from a shapefile. (Error: "
+                                                + response.data.error + ")");
+                                        } else {
+                                            $scope.setPid(response.data.id, true)
+                                        }
+                                },
+                                //Error
+                                function(response){
+                                    if(response.status == 403){
+                                        bootbox.alert('Authentication failed or login session expired, Please login again! <p/>' + response.data.error )
+                                    }else{
+                                        bootbox.alert("Error:" + response.data.error);
+                                    }
+
+                                }
+                            );
 
                             mapNow = false
                         } else if ($scope.area === 'importKML') {
@@ -300,7 +317,7 @@
                         file.result = response.data;
                         $scope.uploadingFile = false;
                     }, function (response) {
-                        $scope.errorMsg = response.status + ': ' + response.data;
+                        $scope.errorMsg = response.status + ': ' + response.data.error;
                         $scope.uploadingFile = false;
                         bootbox.alert($scope.errorMsg);
                     }, function (evt) {

@@ -317,14 +317,11 @@ class PortalController {
         if (!userId) {
             notAuthorised()
         } else {
-            def json = request.JSON as Map
-
-            json.api_key = grailsApplication.config.api_key
-
+            Map headers = [apiKey: grailsApplication.config.api_key]
             def url = "${grailsApplication.config.layersService.url}/shape/upload/wkt"
-            def r = hubWebService.urlResponse(HttpPost.METHOD_NAME, url, null, null,
+            def r = hubWebService.urlResponse(HttpPost.METHOD_NAME, url, null, headers,
                     new StringRequestEntity((json as JSON).toString()))
-
+            response.status = r.statusCode
             render JSON.parse(new String(r?.text ?: "")) as JSON
         }
     }
@@ -365,8 +362,10 @@ class PortalController {
                 render [:] as JSON
             } else if (r.error || r.statusCode > 299) {
                 log.error("failed ${type} upload: ${r}")
-                def resp = [error: "Upload failed. " + HttpStatus.getStatusText(r.statusCode)]
-                render resp as JSON
+                def msg = JSON.parse(new String(r?.text ?: "{}"))
+                Map error = [error: msg.error]
+                response.status = r.statusCode
+                render error as JSON
             } else {
                 def json = JSON.parse(new String(r?.text ?: "{}"))
                 def shapeFileId = json.id
@@ -399,7 +398,7 @@ class PortalController {
 
             def r = hubWebService.urlResponse(HttpPost.METHOD_NAME, url, null, null,
                     new StringRequestEntity((json as JSON).toString()))
-
+            response.status = r.statusCode
             render JSON.parse(new String(r?.text ?: "{}")) as JSON
         } else {
             render [:] as JSON
@@ -413,15 +412,14 @@ class PortalController {
             notAuthorised()
         } else {
             def json = request.JSON as Map
-
             json.api_key = grailsApplication.config.api_key
-
             def r = hubWebService.postUrl("${grailsApplication.config.layersService.url}/tasks/create?" +
-                    "userId=${userId}&sessionId=${params.sessionId}", json)
+                    "userId=${userId}&sessionId=${params.sessionId}", json,null)
 
             if (r == null) {
                 render [:] as JSON
             } else {
+                response.status = r.statusCode
                 render JSON.parse(new String(r?.text ?: "{}")) as JSON
             }
         }
