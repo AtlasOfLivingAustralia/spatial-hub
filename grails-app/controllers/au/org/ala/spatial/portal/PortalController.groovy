@@ -318,6 +318,7 @@ class PortalController {
             notAuthorised()
         } else {
             Map headers = [apiKey: grailsApplication.config.api_key]
+            def json = request.JSON as Map
             def url = "${grailsApplication.config.layersService.url}/shape/upload/wkt"
             def r = hubWebService.urlResponse(HttpPost.METHOD_NAME, url, null, headers,
                     new StringRequestEntity((json as JSON).toString()))
