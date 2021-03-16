@@ -37,18 +37,29 @@
                     m['name'] = uiScope.toolName;
 
                     var url = $SH.baseUrl + '/portal/postTask?sessionId=' + $SH.sessionId;
-                    $http.post(url, m, _httpDescription('executeRemote')).then(function (response) {
-                        uiScope.externalTaskId = response.data.id;
-                        uiScope.statusUrl = LayersService.url() + '/tasks/status/' + response.data.id;
+                    $http.post(url, m, _httpDescription('executeRemote')).then(
+                        function (response) {
+                            uiScope.externalTaskId = response.data.id;
+                            uiScope.statusUrl = LayersService.url() + '/tasks/status/' + response.data.id;
+                            // Create log entry for an external tool when the task is created with the taskId
+                            LoggerService.log('Tool', uiScope.toolName, '{ "taskId": "' + uiScope.externalTaskId + '"}')
 
-                        // Create log entry for an external tool when the task is created with the taskId
-                        LoggerService.log('Tool', uiScope.toolName, '{ "taskId": "' + uiScope.externalTaskId + '"}')
+                            $timeout(function () {
+                                 _checkStatus(uiScope);
+                                 }, 5000)
+                         },
+                        function (error) {
+                            var message = '';
+                            if(error.headers()['content-type'].indexOf('json')>0){
+                                 message = JSON.stringify((error.data))
+                            }else{
+                                 message = error.data;
+                            }
 
-                        $timeout(function () {
-                            _checkStatus(uiScope);
-                        }, 5000)
-                    });
-
+                            bootbox('Failed: ' + message);
+                            uiScope.status = 'Failed';
+                            uiScope.finished = true
+                        });
                     return $q.when(false)
                 }
 
