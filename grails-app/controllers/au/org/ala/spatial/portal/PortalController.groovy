@@ -317,13 +317,12 @@ class PortalController {
         if (!userId) {
             notAuthorised()
         } else {
-            def json = request.JSON as Map
-
             Map headers = [apiKey: grailsApplication.config.api_key]
+            def json = request.JSON as Map
             def url = "${grailsApplication.config.layersService.url}/shape/upload/wkt"
             def r = hubWebService.urlResponse(HttpPost.METHOD_NAME, url, null, headers,
                     new StringRequestEntity((json as JSON).toString()))
-
+            response.status = r.statusCode
             render JSON.parse(new String(r?.text ?: "")) as JSON
         }
     }
@@ -339,7 +338,6 @@ class PortalController {
         } catch (err) {
             log.error "failed to lookup object wkt: ${objectId}", err
         }
-
         wkt
     }
 
@@ -364,8 +362,10 @@ class PortalController {
                 render [:] as JSON
             } else if (r.error || r.statusCode > 299) {
                 log.error("failed ${type} upload: ${r}")
-                def resp = [error: "Upload failed. " + HttpStatus.getStatusText(r.statusCode)]
-                render resp as JSON
+                def msg = JSON.parse(new String(r?.text ?: "{}"))
+                Map error = [error: msg.error]
+                response.status = r.statusCode
+                render error as JSON
             } else {
                 def json = JSON.parse(new String(r?.text ?: "{}"))
                 def shapeFileId = json.id
@@ -387,20 +387,18 @@ class PortalController {
     def postArea() {
         def userId = authService.userId
 
-        if (userId) {
+        if (!userId) {
+            notAuthorised()
+        } else{
             def json = request.JSON as Map
             json.user_id = userId
             Map headers = [apiKey: grailsApplication.config.api_key]
-
             String url = "${grailsApplication.config.layersService.url}/shape/upload/shp/" +
                     "${json.shpId}/${json.featureIdx}"
-
             def r = hubWebService.urlResponse(HttpPost.METHOD_NAME, url, null, headers,
                     new StringRequestEntity((json as JSON).toString()))
-
+            response.status = r.statusCode
             render JSON.parse(new String(r?.text ?: "{}")) as JSON
-        } else {
-            render [:] as JSON
         }
     }
 
@@ -420,6 +418,7 @@ class PortalController {
             if (r == null) {
                 render [:] as JSON
             } else {
+                response.status = r.statusCode
                 render JSON.parse(new String(r?.text ?: "{}")) as JSON
             }
         }
