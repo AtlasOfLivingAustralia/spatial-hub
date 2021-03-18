@@ -48,7 +48,8 @@
 
                             if (value.spatiallyUnknown) { //include UNKNOWN (MISSING) spatial data records
                                 if (value.spatiallyValid && value.spatiallySuspect) {  //All selected
-                                    /* do nothing, returns all records */
+                                    //Do nothing, returns all records */
+                                    //scope.fqsOfSpeciesOptions.push('*:*')
                                 } else if (value.spatiallyValid){
                                     //  spatially-unknown && spatiallyValid
                                     //  Solution -> rule out of spatiallySuspect

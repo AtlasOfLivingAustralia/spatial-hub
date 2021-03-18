@@ -14,9 +14,7 @@
     <g:if test="${hub != null}">
         <asset:stylesheet href="hub/${hub}.css"/>
     </g:if>
-</head>
 
-<body>
 
 <script src="${config.grails.serverURL}/portal/messages.js?id=${messagesAge}" type="text/javascript" defer></script>
 <g:if test="${config.google?.apikey != null}">
@@ -239,7 +237,9 @@
 
 </script>
 <asset:javascript src="application.js"/>
+</head>
 
+<body>
 <sp-app></sp-app>
 
 </body>

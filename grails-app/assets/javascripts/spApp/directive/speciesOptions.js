@@ -45,9 +45,17 @@
 
                         //endemic includes
                         if (scope._value.includeEndemic === undefined) scope._value.includeEndemic = false;
+
                         //Broadcast selected species options,  e.g selectFacets watch the changes and update the query.
                         scope.$watch('_value', function(newValue, oldValue) {
-                            $rootScope.$broadcast('speciesOptionsChange', scope._value);
+                            if(!newValue.spatiallyValid && !newValue.spatiallySuspect && !newValue.spatiallyUnknown){
+                                alert("Select at least one spatial related options!")
+                                scope._value.spatiallyValid = oldValue.spatiallyValid;
+                                scope._value.spatiallySuspect = oldValue.spatiallySuspect;
+                                scope._value.spatiallyUnknown = oldValue.spatiallyUnknown;
+                            }else{
+                                $rootScope.$broadcast('speciesOptionsChange', scope._value);
+                            }
                         }, true);
 
                         scope.showWarning = true;

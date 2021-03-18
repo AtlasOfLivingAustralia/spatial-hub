@@ -4,19 +4,21 @@
             <input type="checkbox" ng-model="_value.spatiallyValid" ng-disabled="_disabled"><span
                 i18n="238">Include spatially-valid records</span>
         </label>
+        <i class="glyphicon glyphicon-question-sign text-warning" uib-popover="Refer to records considered spatially valid."  popover-placement="right"></i>
     </div>
     <div class="checkbox">
         <label>
             <input type="checkbox" ng-model="_value.spatiallySuspect" ng-disabled="_disabled"><span i18n="239">Include spatially-suspect records</span>
-        </label>
+           </label>
+        <i class="glyphicon glyphicon-question-sign text-warning" uib-popover="Records that have been supplied with coordinates but where there is something seriously wrong with the information provided."  popover-placement="right"></i>
     </div>
     <div class="checkbox">
         <label>
             <input type="checkbox" ng-model="_value.spatiallyUnknown" ng-disabled="_disabled"><span i18n="513">Include spatially-unknown records</span>
         </label>
+        <i class="glyphicon glyphicon-question-sign text-warning" uib-popover="Records that have NOT been supplied with coordinates."  popover-placement="right"></i>
     </div>
-    <p i18n="536"  class="warning" ng-show="!(_value.spatiallyValid || _value.spatiallySuspect || _value.spatiallyUnknown)" >WARNING: Check at least one spatial related options</p>
-    <hr/>
+    <p class="notice" ><i class="glyphicon glyphicon-info-sign text-warning"></i>Minimum one spatially related option is required! <hr/></p>
 </div>
 
 <div ng-show="_absentOption">

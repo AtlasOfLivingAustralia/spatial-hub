@@ -1112,3 +1112,8 @@ ul.errors {
     padding-top: 10px;
     color: red;
 }
+
+.notice {
+    padding-top: 20px;
+    font-style: italic;
+}

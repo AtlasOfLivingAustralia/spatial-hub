@@ -2,18 +2,25 @@
     <label>
         <input type="checkbox" ng-model="spatiallyValid" ng-change="setQ()"><span i18n="238">Include spatially-valid records</span>
     </label>
+    <i class="glyphicon glyphicon-question-sign text-warning" uib-popover="Refer to records considered spatially valid."  popover-placement="right"></i>
 </div>
 <div ng-show="_spatialValidity && !mappedLayerSelected" class="checkbox">
     <label>
         <input type="checkbox" ng-model="spatiallySuspect" ng-change="setQ()"><span i18n="239">Include spatially-suspect records</span>
     </label>
+    <i class="glyphicon glyphicon-question-sign text-warning" uib-popover="Records that have been supplied with coordinates but where there is something seriously wrong with the information provided."  popover-placement="right"></i>
 </div>
 <div ng-show="_spatialValidity && !mappedLayerSelected" class="checkbox">
     <label>
         <input type="checkbox" ng-model="spatiallyUnknown"
                ng-change="setQ()"><span i18n="525">Include spatially-undefined records</span>
     </label>
+    <i class="glyphicon glyphicon-question-sign text-warning" uib-popover="Records that have NOT been supplied with coordinates."  popover-placement="right"></i>
 </div>
+<p class="notice" ><i class="glyphicon glyphicon-info-sign text-warning"></i>Minimum one spatially related option is required! <hr/></p>
+
+
+
 <div ng-show="_absentOption && !mappedLayerSelected" class="checkbox">
     <label>
         <input type="checkbox" ng-model="includeAbsences" ng-change="setQ()"><span i18n="514">Include absences</span>
