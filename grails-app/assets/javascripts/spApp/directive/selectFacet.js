@@ -36,7 +36,7 @@
                         //Watch special options update
                         //fq=geospatial_kosher:true&fq=-occurrence_status_s:absent
                         scope.$on("speciesOptionsChange",function (event, value) {
-                            scope.fqsOfSpeciesOptions =[];
+                            scope.fqsOfSpeciesOptions = [];
                             /*
                             spatially-valid = geospatial_kosher:true
                             spatially-suspect = geospatial_kosher:false
@@ -50,11 +50,11 @@
                                 if (value.spatiallyValid && value.spatiallySuspect) {  //All selected
                                     //Do nothing, returns all records */
                                     //scope.fqsOfSpeciesOptions.push('*:*')
-                                } else if (value.spatiallyValid){
+                                } else if (value.spatiallyValid) {
                                     //  spatially-unknown && spatiallyValid
                                     //  Solution -> rule out of spatiallySuspect
                                     scope.fqsOfSpeciesOptions.push('-geospatial_kosher:false');
-                                }else if (value.spatiallySuspect){
+                                }else if (value.spatiallySuspect) {
                                     //  spatially-unknown && spatiallySuspect
                                     //  -> rule out of spatiallyValid
                                     scope.fqsOfSpeciesOptions.push('-geospatial_kosher:true');
@@ -63,9 +63,9 @@
                                 //spatially-valid and spatially-suspect
                                 if (value.spatiallyValid && value.spatiallySuspect) {
                                     scope.fqsOfSpeciesOptions.push('geospatial_kosher:*');
-                                } else if (value.spatiallyValid){
+                                } else if (value.spatiallyValid) {
                                     scope.fqsOfSpeciesOptions.push('geospatial_kosher:true');
-                                } else if (value.spatiallySuspect){
+                                } else if (value.spatiallySuspect) {
                                     scope.fqsOfSpeciesOptions.push('geospatial_kosher:false');
                                 }
                             }

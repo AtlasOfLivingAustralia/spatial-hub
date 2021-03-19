@@ -150,6 +150,7 @@
                         scope.addSpecies = function () {
                             LayoutService.openModal('tool', {processName: 'ToolAddSpeciesService'})
                         };
+
                         // Old values only has the change of 'changing' item in AngularJs<1.7
                         // thus cannot simply rollback to old values
                         // scope.$watchGroup(['spatiallyValid','spatiallySuspect','spatiallyUnknown'], function(newValues, oldValues) {
@@ -161,20 +162,20 @@
                         //     }
                         // });
 
-                        scope.$watch('spatiallyValid', function (newVal,oldVal){
-                            if ( !newVal && !scope.validateSpatiallyOptions()){
+                        scope.$watch('spatiallyValid', function (newVal,oldVal) {
+                            if (!newVal && !scope.validateSpatiallyOptions()) {
                                 alert("Select at least one spatial related options!")
                                 scope.spatiallyValid = true;
                             }
                         })
-                        scope.$watch('spatiallySuspect', function (newVal,oldVal){
-                            if ( !newVal && !scope.validateSpatiallyOptions()){
+                        scope.$watch('spatiallySuspect', function (newVal,oldVal) {
+                            if (!newVal && !scope.validateSpatiallyOptions()) {
                                 alert("Select at least one spatial related options!")
                                 scope.spatiallySuspect = true;
                             }
                         })
-                        scope.$watch('spatiallyUnknown', function (newVal,oldVal){
-                            if ( !newVal && !scope.validateSpatiallyOptions()){
+                        scope.$watch('spatiallyUnknown', function (newVal,oldVal) {
+                            if (!newVal && !scope.validateSpatiallyOptions()) {
                                 alert("elect at least one spatial related options!")
                                 scope.spatiallyUnknown = true;
                             }
@@ -185,11 +186,10 @@
                          * @param options
                          * @returns {boolean}
                          */
-                        scope.validateSpatiallyOptions = function (){
+                        scope.validateSpatiallyOptions = function () {
                             var options = [scope.spatiallyValid, scope.spatiallySuspect, scope.spatiallyUnknown]
                             return !options.every(function(x) { return !x; })
                         }
-
 
                         scope.setQ = function (query) {
                             var selection = scope._selectedQ;
@@ -244,27 +244,27 @@
                                 if (scope.spatiallyUnknown) { //include UNKNOWN (MISSING) spatial data records
                                     if (scope.spatiallyValid && scope.spatiallySuspect) {  //All selected
                                         //Returns all records
-                                        gs=["*:*"]
-                                    } else if (scope.spatiallyValid){
+                                        gs = ["*:*"]
+                                    } else if (scope.spatiallyValid) {
                                         //  spatially-unknown && spatiallyValid
                                         //  Solution -> rule out of spatiallySuspect
-                                        gs=['-geospatial_kosher:false'];
-                                    }else if (scope.spatiallySuspect){
+                                        gs = ['-geospatial_kosher:false'];
+                                    } else if (scope.spatiallySuspect) {
                                         //  spatially-unknown && spatiallySuspect
                                         //  -> rule out of spatiallyValid
-                                        gs=['-geospatial_kosher:true'];
-                                    }else{
+                                        gs = ['-geospatial_kosher:true'];
+                                    } else {
                                         //return records without spatial
-                                        gs=['-geospatial_kosher:*'];
+                                        gs = ['-geospatial_kosher:*'];
                                     }
                                 } else {
                                     //spatially-valid and spatially-suspect
                                     if (scope.spatiallyValid && scope.spatiallySuspect) {
-                                        gs=['geospatial_kosher:*'];
+                                        gs = ['geospatial_kosher:*'];
                                     } else if (scope.spatiallyValid){
-                                        gs=['geospatial_kosher:true'];
+                                        gs = ['geospatial_kosher:true'];
                                     } else if (scope.spatiallySuspect){
-                                        gs=['geospatial_kosher:false'];
+                                        gs = ['geospatial_kosher:false'];
                                     }else{
                                         // No records returned by default
                                     }
