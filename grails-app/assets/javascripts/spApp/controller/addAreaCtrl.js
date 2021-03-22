@@ -133,7 +133,7 @@
                                 //Error
                                 function(response){
                                     if(response.status == 403 || response.status == 401){
-                                        bootbox.alert('Authentication failed or login session expired, Please login again! <p/>' + response.data.error )
+                                        bootbox.alert($(i18n(539,"Authentication failed or login session expired, Please login again!")))
                                     }else{
                                         bootbox.alert("Error:" + response.data.error);
                                     }
@@ -189,7 +189,7 @@
                                     },
                                     function(error) {
                                         if(error.status == 403 || error.status == 401 ){
-                                            bootbox.alert($(i18n(536,"Authentication failed or login session expired, Please login again!")));
+                                            bootbox.alert($(i18n(539,"Authentication failed or login session expired, Please login again!")));
                                         }else{
                                             bootbox.alert("Error:" + error.data.error);
                                         }
