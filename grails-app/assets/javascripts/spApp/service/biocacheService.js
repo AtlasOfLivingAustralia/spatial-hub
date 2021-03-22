@@ -159,7 +159,7 @@
                         if (response == null) {
                             return null
                         }
-                        return query.bs + "/occurrences/facets/download?facets=names_and_lsid&lookup=true&count=true&lists=true&q=" + query.qid + fqList;
+                        return query.bs + "/occurrences/facets/download?facets=names_and_lsid&lookup=true&count=true&lists=true&q=" + response.qid + fqList;
                     })
                 },
                 /**
