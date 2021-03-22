@@ -160,7 +160,15 @@ userdetails:
     baseUrl: 'https://auth.ala.org.au/userdetails'
 
 favicon:
-    url: 'https://www.ala.org.au/wp-content/themes/ala2011/images/favicon.ico'
+  url: 'https://www.ala.org.au/wp-content/themes/ala2011/images/favicon.ico'
+
+skin:
+  header: true
+  footer: true
+  fluidLayout: true
+  layout: 'portal'
+  orgNameLong: 'Atlas of Living Australia'
+  favicon: 'https://www.ala.org.au/app/uploads/2019/01/cropped-favicon-32x32.png'
 
 layersService:
     url: 'https://localhost:8085/spatial-service/'
@@ -246,12 +254,7 @@ user_roles:
 # When using skin.layout='portal' enable google analytics by setting the googleAnalyticsId
 googleAnalyticsId:
 
-skin:
-    header: true
-    footer: true
-    fluidLayout: true
-    layout: 'portal'
-    orgNameLong: 'Atlas of Living Australia'
+
 
 speciesDotSize: 5
 speciesDotOpacity: 60
