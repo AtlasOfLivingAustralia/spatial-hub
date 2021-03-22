@@ -151,32 +151,22 @@
                             LayoutService.openModal('tool', {processName: 'ToolAddSpeciesService'})
                         };
 
-                        // Old values only has the change of 'changing' item in AngularJs<1.7
-                        // thus cannot simply rollback to old values
-                        // scope.$watchGroup(['spatiallyValid','spatiallySuspect','spatiallyUnknown'], function(newValues, oldValues) {
-                        //     if(newValues.every(function(x) { return !x; })){
-                        //         alert('Select at least one spatial related options!')
-                        //         scope.spatiallyValid = oldValues[0];
-                        //         scope.spatiallySuspect = oldValues[1];
-                        //         scope.spatiallyUnknown = oldValues[2];
-                        //     }
-                        // });
-
+                        // scope.$watchGroup(['spatiallyValid','spatiallySuspect','spatiallyUnknown']) cannot simply rollback to oldValues in AngularJs<1.7
                         scope.$watch('spatiallyValid', function (newVal,oldVal) {
                             if (!newVal && !scope.validateSpatiallyOptions()) {
-                                alert("Select at least one spatial related options!")
+                                alert( $i18n(538, "Select at least one spatial related options!"))
                                 scope.spatiallyValid = true;
                             }
                         })
                         scope.$watch('spatiallySuspect', function (newVal,oldVal) {
                             if (!newVal && !scope.validateSpatiallyOptions()) {
-                                alert("Select at least one spatial related options!")
+                                alert( $i18n(538, "Select at least one spatial related options!"))
                                 scope.spatiallySuspect = true;
                             }
                         })
                         scope.$watch('spatiallyUnknown', function (newVal,oldVal) {
                             if (!newVal && !scope.validateSpatiallyOptions()) {
-                                alert("elect at least one spatial related options!")
+                                alert( $i18n(538, "Select at least one spatial related options!"))
                                 scope.spatiallyUnknown = true;
                             }
                         })
@@ -265,7 +255,7 @@
                                         gs = ['geospatial_kosher:true'];
                                     } else if (scope.spatiallySuspect){
                                         gs = ['geospatial_kosher:false'];
-                                    }else{
+                                    } else {
                                         // No records returned by default
                                     }
                                 }

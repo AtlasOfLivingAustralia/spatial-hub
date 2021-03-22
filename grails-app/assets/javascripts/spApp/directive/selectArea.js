@@ -44,7 +44,7 @@
                                 }
                                 if (scope.layerAreas.length > numberOflayerAreas) {
                                     scope.isNewAreaCreated = true;
-                                }else{
+                                } else {
                                     scope.isNewAreaCreated = false;
                                 }
                             });
