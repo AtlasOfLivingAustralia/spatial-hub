@@ -132,7 +132,7 @@
                                 },
                                 //Error
                                 function(response){
-                                    if(response.status == 403){
+                                    if(response.status == 403 || response.status == 401){
                                         bootbox.alert('Authentication failed or login session expired, Please login again! <p/>' + response.data.error )
                                     }else{
                                         bootbox.alert("Error:" + response.data.error);
@@ -173,19 +173,27 @@
                                 MapService.add($scope.selectedArea);
                             } else {
                                 closingLater = true;
-                                LayersService.createFromWkt($scope.selectedArea.wkt, $scope.selectedArea.name, '').then(function (data) {
-                                    if (!data.data.id) {
-                                        bootbox.alert($i18n(479, "Invalid WKT"))
-                                    } else {
-                                        LayersService.getObject(data.data.id).then(function (data) {
-                                            data.data.layertype = 'area';
-                                            data.data.wkt = $scope.selectedArea.wkt;
-                                            MapService.zoomToExtents(data.data.bbox);
-                                            MapService.add(data.data);
-                                            $scope.$close()
-                                        })
-                                    }
-                                })
+                                LayersService.createFromWkt($scope.selectedArea.wkt, $scope.selectedArea.name, '').then(
+                                    function (data) {
+                                        if (!data.data.id) {
+                                            bootbox.alert($i18n(479, "Invalid WKT"))
+                                        } else {
+                                            LayersService.getObject(data.data.id).then(function (data) {
+                                                data.data.layertype = 'area';
+                                                data.data.wkt = $scope.selectedArea.wkt;
+                                                MapService.zoomToExtents(data.data.bbox);
+                                                MapService.add(data.data);
+                                                $scope.$close()
+                                            })
+                                        }
+                                    },
+                                    function(error) {
+                                        if(error.status == 403 || error.status == 401 ){
+                                            bootbox.alert($(i18n(536,"Authentication failed or login session expired, Please login again!")));
+                                        }else{
+                                            bootbox.alert("Error:" + error.data.error);
+                                        }
+                                    })
                             }
                         }
                     }

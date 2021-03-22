@@ -338,7 +338,6 @@ class PortalController {
         } catch (err) {
             log.error "failed to lookup object wkt: ${objectId}", err
         }
-
         wkt
     }
 
@@ -388,21 +387,18 @@ class PortalController {
     def postArea() {
         def userId = authService.userId
 
-        if (userId) {
+        if (!userId) {
+            notAuthorised()
+        } else{
             def json = request.JSON as Map
-
             json.user_id = userId
-            json.api_key = grailsApplication.config.api_key
-
+            Map headers = [apiKey: grailsApplication.config.api_key]
             String url = "${grailsApplication.config.layersService.url}/shape/upload/shp/" +
                     "${json.shpId}/${json.featureIdx}"
-
-            def r = hubWebService.urlResponse(HttpPost.METHOD_NAME, url, null, null,
+            def r = hubWebService.urlResponse(HttpPost.METHOD_NAME, url, null, headers,
                     new StringRequestEntity((json as JSON).toString()))
             response.status = r.statusCode
             render JSON.parse(new String(r?.text ?: "{}")) as JSON
-        } else {
-            render [:] as JSON
         }
     }
 
@@ -413,9 +409,11 @@ class PortalController {
             notAuthorised()
         } else {
             def json = request.JSON as Map
-            json.api_key = grailsApplication.config.api_key
+
+            Map headers = [apiKey: grailsApplication.config.api_key]
+
             def r = hubWebService.postUrl("${grailsApplication.config.layersService.url}/tasks/create?" +
-                    "userId=${userId}&sessionId=${params.sessionId}", json,null)
+                    "userId=${userId}&sessionId=${params.sessionId}", json, headers)
 
             if (r == null) {
                 render [:] as JSON
