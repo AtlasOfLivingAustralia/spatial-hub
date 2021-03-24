@@ -2,22 +2,22 @@
     <label>
         <input type="checkbox" ng-model="spatiallyValid" ng-change="setQ()"><span i18n="238">Include spatially-valid records</span>
     </label>
-    <i class="glyphicon glyphicon-question-sign text-warning" uib-popover="Refer to records considered spatially valid."  popover-placement="right"></i>
+    <i class="glyphicon glyphicon-question-sign text-warning" popover-trigger="mouseenter" uib-popover="Display records which have passed all the spatial data quality tests (see link below for more information)"  popover-placement="right"></i>
 </div>
 <div ng-show="_spatialValidity && !mappedLayerSelected" class="checkbox">
     <label>
         <input type="checkbox" ng-model="spatiallySuspect" ng-change="setQ()"><span i18n="239">Include spatially-suspect records</span>
     </label>
-    <i class="glyphicon glyphicon-question-sign text-warning" uib-popover="Records that have been supplied with coordinates but where there is something seriously wrong with the information provided."  popover-placement="right"></i>
+    <i class="glyphicon glyphicon-question-sign text-warning" popover-trigger="mouseenter" uib-popover="Display records which have failed one or more spatial data quality tests (see link below for more information)"  popover-placement="right"></i>
 </div>
 <div ng-show="_spatialValidity && !mappedLayerSelected" class="checkbox">
     <label>
         <input type="checkbox" ng-model="spatiallyUnknown"
                ng-change="setQ()"><span i18n="525">Include spatially-undefined records</span>
     </label>
-    <i class="glyphicon glyphicon-question-sign text-warning" uib-popover="Records that have NOT been supplied with coordinates."  popover-placement="right"></i>
+    <i class="glyphicon glyphicon-question-sign text-warning" popover-trigger="mouseenter" uib-popover="Include records that have NOT been supplied with coordinates (note they will not appear on map but will be included in download file)" popover-placement="right"></i>
 </div>
-<p class="notice" ><i class="glyphicon glyphicon-info-sign text-warning"></i>Minimum one spatially related option is required! <hr/></p>
+<p class="notice" ><i class="glyphicon glyphicon-info-sign text-warning"></i>Minimum one spatially related option is required! See this <a href="https://support.ala.org.au/support/solutions/articles/6000236981-what-does-the-spatially-valid-flag-geospatial-kosher-mean-" target="_blank" >support article</a> for more information<hr/></p>
 
 
 
