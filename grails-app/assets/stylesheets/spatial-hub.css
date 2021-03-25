@@ -1108,9 +1108,8 @@ ul.errors {
     height: 26px;
 }
 
-.warning {
-    padding-top: 10px;
-    color: red;
+.text-warning {
+    color: #c44d34;
 }
 
 .notice {
