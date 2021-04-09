@@ -280,6 +280,8 @@ character:
     encoding: UTF-8
 
 http:
+    so:
+      timeout: 10000
     timeout: 10000
 
 biocollect:

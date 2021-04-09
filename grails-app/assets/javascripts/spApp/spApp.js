@@ -407,9 +407,6 @@ if ($SH.biocollectLoginUrl) {
     authWorkaround($SH.biocollectLoginUrl);
 }
 
-if ($SH.layersServiceUrl) {
-    authWorkaround($SH.layersServiceUrl + "/log");
-}
 
 // // Override Leaflet to fix map locking up when using different EPSGs
 L.oldLatLng = L.LatLng;

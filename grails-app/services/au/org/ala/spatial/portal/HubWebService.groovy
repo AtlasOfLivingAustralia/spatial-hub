@@ -78,17 +78,27 @@ class HubWebService {
 
         try {
             if (type == HttpPost.METHOD_NAME) {
-                call = new PostMethod()
+                call = new PostMethod(url)
                 if (inputStream) {
                     call.setRequestEntity(new InputStreamRequestEntity(inputStream))
                 }
             } else {
                 //GET
-                call = new GetMethod()
+                call = new GetMethod(url)
             }
             if (contentType) {
                 call.setRequestHeader(HttpHeaders.CONTENT_TYPE, contentType)
             }
+            //Todo Test of supporting UserPrincipal
+            def user = authService.userId
+            if (user) {
+                call.addRequestHeader((String) grailsApplication.config.app.http.header.userId, user)
+                call.addRequestHeader("apiKey", (String) grailsApplication.config.api_key)
+                call.addRequestHeader(HttpHeaders.COOKIE, 'ALA-Auth=' +
+                        URLEncoder.encode(authService.userDetails().email,
+                                (String) grailsApplication.config.character.encoding))
+            }
+
             client.executeMethod(call)
         } catch (IOException e) {
             log.error url, e

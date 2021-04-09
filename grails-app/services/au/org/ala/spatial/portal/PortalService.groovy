@@ -156,6 +156,8 @@ class PortalService {
         (url =~/${pattern}/).find() | predefined
     }
 
+
+
     def getAppConfig(hub) {
         if (hub) {
             def hubConfig = getConfig("app", false, hub)
