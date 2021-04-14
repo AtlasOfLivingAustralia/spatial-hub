@@ -146,8 +146,8 @@ headerAndFooter:
     baseURL: 'https://www.ala.org.au/commonui-bs3-2019'
     version: '2'
 
-ala:
-    baseURL: 'https://www.ala.org.au'
+#ala:
+#    baseURL: 'https://www.ala.org.au'
 
 bie:
     baseURL: 'https://bie.ala.org.au'
