@@ -132,10 +132,13 @@
                                 },
                                 //Error
                                 function(response){
-                                    if(response.status == 403 || response.status == 401){
+                                    if (response.status == 403 || response.status == 401) {
                                         bootbox.alert($(i18n(539,"Authentication failed or login session expired, Please login again!")))
-                                    }else{
+                                    } else if (response.data.error) {
                                         bootbox.alert("Error:" + response.data.error);
+                                    } else {
+                                        bootbox.alert("Unexpected error. Please check logs for more information")
+                                        console.log(response.data)
                                     }
 
                                 }
@@ -186,8 +189,7 @@
                                                 $scope.$close()
                                             })
                                         }
-                                    },
-                                    function(error) {
+                                    }, function(error) {
                                         if(error.status == 403 || error.status == 401 ){
                                             bootbox.alert($(i18n(539,"Authentication failed or login session expired, Please login again!")));
                                         }else{
@@ -324,8 +326,14 @@
                         $scope.selectionDone = true;
                         file.result = response.data;
                         $scope.uploadingFile = false;
-                    }, function (response) {
-                        $scope.errorMsg = response.status + ': ' + response.data.error;
+                    }, function (error) {
+                        if (error.data.error) {
+                            $scope.errorMsg = error.status + ': ' + error.data.error;
+                        } else {
+                            $scope.errorMsg = "Unexpected error: the uploaded file may be broken or unrecognised.";
+                            console.log("Error: " + error.data)
+                        }
+
                         $scope.uploadingFile = false;
                         bootbox.alert($scope.errorMsg);
                     }, function (evt) {
