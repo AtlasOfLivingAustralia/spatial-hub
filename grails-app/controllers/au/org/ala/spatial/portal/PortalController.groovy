@@ -292,16 +292,21 @@ class PortalController {
     @ApiImplicitParams([])
     def session(Long id) {
         def userId = getValidUserId(params)
-
-        if (request.method == 'POST') {
-            //save
-            render sessionService.put(sessionService.newId(userId), userId, request.JSON, true) as JSON
-        } else if (request.method == 'DELETE') {
-            //delete
-            render sessionService.updateUserSave(id, userId, SessionService.DELETE, null, null) as JSON
-        } else if (request.method == 'GET') {
-            //retrieve
-            render sessionService.get(id) as JSON
+        if (userId){
+            if (request.method == 'POST') {
+                //save
+                render sessionService.put(sessionService.newId(userId), userId, request.JSON, true) as JSON
+            } else if (request.method == 'DELETE') {
+                //delete
+                render sessionService.updateUserSave(id, userId, SessionService.DELETE, null, null) as JSON
+            } else if (request.method == 'GET') {
+                //retrieve
+                render sessionService.get(id) as JSON
+            }
+        } else {
+            response.status = 403
+            Map error = [error : "Login required!"]
+            render error as JSON
         }
     }
 
@@ -326,6 +331,7 @@ class PortalController {
             render JSON.parse(new String(r?.text ?: "")) as JSON
         }
     }
+
 
     private String getWkt(objectId) {
         String wkt = null
@@ -563,7 +569,7 @@ class PortalController {
             } else {
                 def stream = hubWebService.getStream(url, HttpPost.METHOD_NAME, request.contentType, request.inputStream)
 
-                def contentType = stream.call.getResponseHeader(HttpHeaders.CONTENT_TYPE).value
+                def contentType = stream.call.getResponseHeader(HttpHeaders.CONTENT_TYPE)?.value
                 if (contentType) {
                     response.setContentType(contentType)
                 }
@@ -648,6 +654,7 @@ class PortalController {
             }
         }
     }
+
 
     def ping() {
         response.addHeader("content-type", "application/json")

@@ -47,8 +47,7 @@
                   uiScope.statusUrl = LayersService.url() + '/tasks/status/'
                       + response.data.id;
                   // Create log entry for an external tool when the task is created with the taskId
-                  LoggerService.log('Tool', uiScope.toolName,
-                      '{ "taskId": "' + uiScope.externalTaskId + '"}')
+                  LoggerService.log('Tool', uiScope.toolName,{"taskId":  uiScope.externalTaskId })
 
                   $timeout(function () {
                     _checkStatus(uiScope);

@@ -73,7 +73,7 @@
                         }
 
                         this._errors.push({msg: msg, config: config, layout: this._layout});
-                        LoggerService.log('httpService', msg, config.url);
+                        LoggerService.log('httpService', "error", {"error": msg, "url": config.url});
                     }
                 },
 

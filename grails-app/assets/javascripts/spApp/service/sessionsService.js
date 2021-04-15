@@ -178,9 +178,17 @@
                                     name = $i18n(403, "My saved session")
                                 }
                                 data.name = name;
-                                return $http.post($SH.baseUrl + "/portal/session/" + $SH.sessionId, data, _httpDescription('save')).then(function (response) {
-                                    bootbox.alert('<h3>' + $i18n(404, "Session Saved") + '</h3><br/><br/>' + $i18n(405, "URL to retrived this saved session") + '<br/><br/><a target="_blank" href="' + response.data.url + '">' + response.data.url + '</a>')
-                                });
+                                return $http.post($SH.baseUrl + "/portal/session/" + $SH.sessionId, data, _httpDescription('save')).then(
+                                    function (response) {
+                                         bootbox.alert('<h3>' + $i18n(404, "Session Saved") + '</h3><br/><br/>' + $i18n(405, "URL to retrived this saved session") + '<br/><br/><a target="_blank" href="' + response.data.url + '">' + response.data.url + '</a>')
+                                    },
+                                    function (error) {
+                                        if (error.status == 403 || error.status == 401) {
+                                            bootbox.alert($(i18n(539,"Authentication failed or login session expired, Please login again!")));
+                                        } else {
+                                            bootbox.alert("Error:" + error.data);
+                                        }
+                                    });
                             }
                         }
                     });
