@@ -198,7 +198,6 @@ class PortalController {
 
         if (!userId) {
             // redirect to login page
-            // redirect to login page
             login()
         } else if (!adminUserId) {
             render status: HttpURLConnection.HTTP_UNAUTHORIZED, model: [config: grailsApplication.config]
@@ -309,8 +308,6 @@ class PortalController {
             Map error = [error : "Login required!"]
             render error as JSON
         }
-
-
     }
 
     private def notAuthorised() {
