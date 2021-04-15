@@ -121,6 +121,12 @@ spApp.config(['$httpProvider', function ($httpProvider) {
                     //Ignore invalid urls
                     //HTTP interceptor can decorate the promise rejection with a property handled to indicate whether it's handled the error.
                     rejection.handled = true;
+                    if (rejection.data) {
+                        if (rejection.data.message){
+                            rejection.data.error = reject.data.message;
+                        }
+
+                    }
                 }
                 return $q.reject(rejection);
             }
@@ -403,9 +409,9 @@ var authWorkaround = function (url) {
 };
 
 // This is to fix auth issues with ajax calls to other ala applications
-if ($SH.biocollectLoginUrl) {
-    authWorkaround($SH.biocollectLoginUrl);
-}
+ if ($SH.biocollectLoginUrl) {
+     authWorkaround($SH.biocollectLoginUrl);
+ }
 
 
 // // Override Leaflet to fix map locking up when using different EPSGs

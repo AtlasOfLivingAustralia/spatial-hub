@@ -121,7 +121,6 @@
                             .then(
                                 //Success
                                 function (response) {
-
                                         if (response.data.error) {
                                             bootbox.alert(
                                                 "No areas selected. Points cannot be imported from a shapefile. (Error: "
@@ -292,7 +291,6 @@
                     $scope.uploadingFile = true;
 
                     LayersService.uploadAreaFile(file, $scope.area, $scope.myAreaName, file.name).then(function (response) {
-
                         if (response.data.error) {
                             $scope.errorMsg = response.data.error
                             $scope.uploadingFile = false;
@@ -336,8 +334,8 @@
                         if (error.status == 500) {
                             $scope.errorMsg = "Unexpected error: the uploaded file may be broken or unrecognised.";
                         } else {
-                            if (error.message) {
-                                $scope.errorMsg = error.message;
+                            if (error.data.error) {
+                                $scope.errorMsg = error.data.error;
                             }else {
                                 $scope.errorMsg = "Unexpected error. Check logs for more information";
                             }
