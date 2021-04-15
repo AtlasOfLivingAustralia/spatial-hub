@@ -11,27 +11,25 @@ class LogController {
 
     def index() {
         String url = "${grailsApplication.config.layersService.url}/log/"
-        def json = request.JSON as Map
-
         def headers = [:]
         headers.put("apiKey",grailsApplication.config.api_key)
         request.headerNames.each { name -> headers.put(name, request.getHeader(name)) }
+        def params = [:]
+        request.parameterNames.each {name -> params.put(name, request.getParameter(name)) }
 
-        def r = hubWebService.urlResponse(HttpPost.METHOD_NAME, url, null, headers,
-                new StringRequestEntity((json as JSON).toString()))
+        def r = hubWebService.urlResponse(HttpPost.METHOD_NAME, url, params, headers,
+                new StringRequestEntity(request.JSON.toString()))
         render status: r.statusCode
     }
 
     def search() {
         String url = "${grailsApplication.config.layersService.url}/log/search"
-        def json = request.JSON as Map
-
         def headers = [:]
         headers.put("apiKey",grailsApplication.config.api_key)
         request.headerNames.each { name -> headers.put(name, request.getHeader(name)) }
 
         def r = hubWebService.urlResponse(HttpGet.METHOD_NAME, url, null, headers,
-                new StringRequestEntity((json as JSON).toString()))
+                new StringRequestEntity(request.JSON.toString()))
 
         response.status = r.statusCode
         render JSON.parse(new String(r?.text ?: "")) as JSON

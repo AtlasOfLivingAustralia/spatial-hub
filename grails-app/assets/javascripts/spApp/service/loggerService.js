@@ -41,13 +41,14 @@
                     if (layerId) {
                         outputs.push(layerId)
                     }
+                    var params = '?category1=' + encodeURIComponent(category1) +
+                        '&category2=' + encodeURIComponent(category2) +
+                        '&sessionId=' + encodeURIComponent($SH.sessionId) +
+                        '&userId=' + encodeURIComponent($SH.userId);
 
                     history.push({category1: category1, category2: category2, data: data, outputs: outputs})
-                    data["category1"] = encodeURIComponent(category1)
-                    data["category2"] = encodeURIComponent(category2)
-                    data["sessionId"] = encodeURIComponent($SH.sessionId)
 
-                    return $http.post( $SH.baseUrl + "/log", data, _httpDescription('log', {
+                    return $http.post( $SH.baseUrl + "/log"+ params, data, _httpDescription('log', {
                         withCredentials: true,
                         ignoreErrors: true
                         }))
