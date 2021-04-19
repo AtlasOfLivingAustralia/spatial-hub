@@ -108,7 +108,12 @@ spApp.config(['$httpProvider', function ($httpProvider) {
                 var httpService = angular.element(document.querySelector('sp-app')).injector().get('HttpService');
                 if (httpService) httpService.pop(rejection, 'responseError');
 
-                if (rejection.status == -1) {
+                if (rejection.status == 500) {
+                    bootbox.alert("Unexpected error! Please check logs for more information.");
+                    rejection.handled = true;
+                } else if ( rejection.status == 403 || rejection.status == 401) {
+                    bootbox.alert($(i18n(539,"Authentication failed or login session expired, Please login again!")))
+                } else if (rejection.status == -1) {
                     // urls not accessible are ignored.
                 } else if (rejection.status === 0) {
                     if (window.isInWrapper) {
@@ -121,13 +126,8 @@ spApp.config(['$httpProvider', function ($httpProvider) {
                     //Ignore invalid urls
                     //HTTP interceptor can decorate the promise rejection with a property handled to indicate whether it's handled the error.
                     rejection.handled = true;
-                    if (rejection.data) {
-                        if (rejection.data.message){
-                            rejection.data.error = reject.data.message;
-                        }
-
-                    }
                 }
+                console.log(JSON.stringify(rejection.data))
                 return $q.reject(rejection);
             }
         };

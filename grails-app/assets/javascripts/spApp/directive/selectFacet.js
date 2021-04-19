@@ -282,10 +282,13 @@
                             }
 
                             if (scope.facet !== 'search' && scope.facet !== '') {
+                                //Biocache returns error message as plain text
+                                var config = {headers: {"Accept": "text/plain, */*",
+                                           }};
                                 BiocacheService.facetGeneral(scope.facet, {
                                     q: q,
                                     bs: $SH.biocacheServiceUrl
-                                }, pageSize, offset, scope.facetFilter, sortBy, scope.config).then(function (data) {
+                                }, pageSize, offset, scope.facetFilter, sortBy, config).then(function (data) {
                                     if (data.length > 0) {
                                         scope.activeFacet.facetList = data[0].fieldResult;
                                         scope.activeFacet.exportUrl = BiocacheService.facetDownload(scope.facet);
@@ -298,8 +301,14 @@
                                     }
                                     scope.updateSel();
                                     scope.updateCheckmarks();
-
                                     scope.updatingPage = false;
+                                }, function (error) {
+                                    scope.updatingPage = false;
+                                     if (error.data){
+                                         bootbox.alert("Error: " + error.data.errorType +"<br/>Check logs for more information!")
+                                     } else {
+                                         bootbox.alert("Unexpected error! Please check logs for more information!")
+                                     }
                                 })
                             }
                         };
