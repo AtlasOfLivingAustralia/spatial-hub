@@ -136,8 +136,7 @@
                                     } else if (response.data.error) {
                                         bootbox.alert("Error:" + response.data.error);
                                     } else {
-                                        bootbox.alert("Unexpected error. Please check logs for more information")
-                                        console.log(response.data)
+                                        bootbox.alert("An error occurred. Please try again and if the same error occurs, send an email to support@ala.org.au and include the URL to this page, the error message and what steps you performed that triggered this error.")
                                     }
 
                                 }

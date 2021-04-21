@@ -307,7 +307,7 @@
                                      if (error.data){
                                          bootbox.alert("Error: " + error.data.errorType +"<br/>Check logs for more information!")
                                      } else {
-                                         bootbox.alert("Unexpected error! Please check logs for more information!")
+                                         bootbox.alert("An error occurred. Please try again and if the same error occurs, send an email to support@ala.org.au and include the URL to this page, the error message and what steps you performed that triggered this error.")
                                      }
                                 })
                             }
