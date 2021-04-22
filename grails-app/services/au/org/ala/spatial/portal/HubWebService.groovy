@@ -25,6 +25,9 @@ import org.apache.commons.httpclient.params.HttpClientParams
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.client.methods.HttpPut
+import org.apache.http.client.methods.HttpRequestBase
+import org.apache.http.client.utils.URIBuilder
+import org.apache.http.message.BasicNameValuePair
 import org.springframework.web.multipart.MultipartFile
 
 //import org.codehaus.groovy.grails.web.servlet.HttpHeaders
@@ -134,35 +137,39 @@ class HubWebService {
 
             HttpClientParams httpParams = client.params
             httpParams.setConnectionManagerTimeout((int) grailsApplication.config.http.timeout)
-
-            if (type == HttpGet.METHOD_NAME) {
-                call = new GetMethod(url)
-            } else {
-                if (type == HttpPut.METHOD_NAME) {
-                    call = new PutMethod(url)
-                } else if (type == HttpPost.METHOD_NAME) {
-                    call = new PostMethod(url)
-
-                    if (nameValues) {
-                        nameValues.each { k, v ->
-                            String key = String.valueOf(k)
-                            String value = String.valueOf(v)
-                            if (key != null && value != null) {
-                                if (v instanceof List) {
-                                    v.each { i ->
-                                        String item = String.valueOf(i)
-                                        if (item) {
-                                            ((PostMethod) call).addParameter(key, item)
-                                        }
-                                    }
-                                } else {
-                                    ((PostMethod) call).addParameter(key, value)
+            List nameValuePairs = new ArrayList();
+            if (nameValues) {
+                nameValues.each { k, v ->
+                    String key = String.valueOf(k)
+                    String value = String.valueOf(v)
+                    if (key != null && value != null) {
+                        if (v instanceof List) {
+                            v.each { i ->
+                                String item = String.valueOf(i)
+                                if (item) {
+                                    nameValuePairs.add(new BasicNameValuePair(key, value));
                                 }
                             }
+                        } else {
+                            nameValuePairs.add(new BasicNameValuePair(key, value));
                         }
                     }
                 }
+            }
 
+            HttpGet httpGet = new HttpGet(url);
+            URI uri = new URIBuilder(httpGet.getURI())
+                    .addParameters(nameValuePairs)
+                    .build();
+
+            if (type == HttpGet.METHOD_NAME) {
+                call = new GetMethod(uri.toString())
+            } else {
+                if (type == HttpPut.METHOD_NAME) {
+                    call = new PutMethod(uri.toString())
+                } else if (type == HttpPost.METHOD_NAME) {
+                    call = new PostMethod(uri.toString())
+                }
                 if (entity) {
                     ((EntityEnclosingMethod) call).setRequestEntity(entity)
                 }
@@ -180,7 +187,13 @@ class HubWebService {
 
             if (headers) {
                 headers.each { k, v ->
+                    /*
+                    //Why excludes default headers, like Accept
                     if (k != null && !excludedHeaders.contains(k.toString().toLowerCase()) && !HttpHeaders.COOKIE.equalsIgnoreCase(k.toString())) {
+                        call.addRequestHeader(String.valueOf(k), String.valueOf(v))
+                    }
+                    */
+                    if (k != null && !HttpHeaders.COOKIE.equalsIgnoreCase(k.toString())) {
                         call.addRequestHeader(String.valueOf(k), String.valueOf(v))
                     }
                 }
@@ -200,7 +213,7 @@ class HubWebService {
                     responseBody = new String(responseBody, 'UTF-8')
                 }
             } catch (Exception e) {
-
+                log.error(e.getMessage())
             }
 
             [statusCode : call.statusCode, text: responseBody, headers: responseHeaders,
