@@ -331,7 +331,7 @@
                             } else {
                                 if (error.data.error) {
                                     $scope.errorMsg = error.data.error;
-                                }else {
+                                } else {
                                     $scope.errorMsg = $i18n(540,"An error occurred. Please try again and if the same error occurs, send an email to support@ala.org.au and include the URL to this page, the error message and what steps you performed that triggered this error.");
                                 }
                             }
