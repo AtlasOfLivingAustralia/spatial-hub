@@ -139,7 +139,7 @@ class PortalService {
     }
     // In ala.org.au domain
     def isInternalServer(url) {
-        return url ==~ /^(http(s)?(:\/\/))?([a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.)?ala\.org\.au(\/.*)?$/
+        return url ==~ ~ /^(http(s)?(:\/\/))?([a-zA-Z0-9_-]{1,61}[a-zA-Z0-9]\.)?ala\.org\.au(:\d{1,5})?(\/.*)?$/
     }
 
     def canProxy(url) {
