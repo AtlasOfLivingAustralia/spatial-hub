@@ -16,9 +16,6 @@ class LogController {
         headers.put("apiKey",grailsApplication.config.api_key)
         headers.put("userId", authService.userId)
         request.headerNames.each { name -> headers.put(name, request.getHeader(name)) }
-        def params = [:]
-        request.parameterNames.each {name -> params.put(name, request.getParameter(name)) }
-
         def r = hubWebService.urlResponse(HttpPost.METHOD_NAME, url, params, headers,
                 new StringRequestEntity(request.JSON.toString()))
         render status: r.statusCode
@@ -31,8 +28,6 @@ class LogController {
         headers.put("userId", authService.userId)
         headers.put("Accept", "application/json")
         request.headerNames.each { name -> headers.put(name, request.getHeader(name)) }
-        def params = [:]
-        request.parameterNames.each {name -> params.put(name, request.getParameter(name)) }
 
         def r = hubWebService.urlResponse(HttpGet.METHOD_NAME, url, params, headers,
                 new StringRequestEntity(request.JSON.toString()))

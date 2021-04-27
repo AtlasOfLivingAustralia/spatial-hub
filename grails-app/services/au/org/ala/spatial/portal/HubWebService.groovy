@@ -137,7 +137,7 @@ class HubWebService {
 
             HttpClientParams httpParams = client.params
             httpParams.setConnectionManagerTimeout((int) grailsApplication.config.http.timeout)
-            List nameValuePairs = new ArrayList();
+            List nvList = new ArrayList();
             if (nameValues) {
                 nameValues.each { k, v ->
                     String key = String.valueOf(k)
@@ -147,11 +147,11 @@ class HubWebService {
                             v.each { i ->
                                 String item = String.valueOf(i)
                                 if (item) {
-                                    nameValuePairs.add(new BasicNameValuePair(key, value));
+                                    nvList.add(new BasicNameValuePair(key, value));
                                 }
                             }
                         } else {
-                            nameValuePairs.add(new BasicNameValuePair(key, value));
+                            nvList.add(new BasicNameValuePair(key, value));
                         }
                     }
                 }
@@ -159,7 +159,7 @@ class HubWebService {
 
             HttpGet httpGet = new HttpGet(url);
             URI uri = new URIBuilder(httpGet.getURI())
-                    .addParameters(nameValuePairs)
+                    .addParameters(nvList)
                     .build();
 
             if (type == HttpGet.METHOD_NAME) {
