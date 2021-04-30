@@ -1,7 +1,7 @@
 <div name="divMappedLayers" style="height:100%;overflow:auto;margin-left: -15px;padding-top:10px">
     <ul ui-sortable="sortableOptions" ng-model="list" class="list-group layer-list">
         <li ng-repeat="item in list" class="list-group-item" ng-class="{ 'layer-selected' : isSelected(item)}"
-            ng-click="select(item)">
+            ng-click="select(item)" testTag="layer-list">
             <input type="checkbox" ng-model="item.visible" ng-change="updateVisibility(item);"
                    ng-click="$event.stopPropagation();">
             <img ng-src="{{baseUrl}}/assets/icon_{{item.layertype}}-layer.png">

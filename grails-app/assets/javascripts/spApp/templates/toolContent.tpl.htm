@@ -1,6 +1,6 @@
 <div class="modal-header">
     <button i18n="1" type="button" class="close" ng-click="close()">×</button>
-    <h4 class="modal-title">{{spec.description}}</h4>
+    <h4 class="modal-title" testTag="modal_{{spec.description}}">{{spec.description}}</h4>
 </div>
 
 <div class="modal-body">
@@ -168,9 +168,9 @@
 </div>
 
 <div class="modal-footer">
-    <button i18n="45" class="btn btn-default" type="button" ng-click="close()">Cancel</button>
+    <button i18n="45" class="btn btn-default" type="button" ng-click="close()" name="cancel">Cancel</button>
     <button i18n="39" class="btn btn-primary" type="button" ng-click="finish()" ng-hide="finished"
-            ng-disabled="isDisabled() || (stage != 'input' && stage != 'edit')">Next &gt;
+            ng-disabled="isDisabled() || (stage != 'input' && stage != 'edit')" name="next">Next &gt;
     </button>
 
     <a download ng-href="{{downloadUrl}}" style="float:left" ng-show="finished && downloadUrl">

@@ -89,7 +89,8 @@
                     {{x.displayName}}
                 </option>
 
-                <option ng-repeat="x in selected.layer.groupedFacets" value="{{x.facet}}" ng-disabled="x.separator">
+                <option ng-repeat="x in selected.layer.groupedFacets" value="{{x.facet}}" ng-disabled="x.separator" 5
+                >
                     {{x.name}}
                 </option>
             </select>
@@ -350,7 +351,7 @@
                         class="progress-striped" ng-class="{ active: true }" value="100"
                         type='info' title="Updating">loading...
                 </uib-progressbar>
-                <table class="table table-striped" style="width:370px;overflow:auto;display:block">
+                <table class="table table-striped" style="width:370px;overflow:auto;display:block" >
                     <tr ng-repeat="x in selected.layer.contextualList"
                         ng-click="contextualHighlight(x.name, x.pid, x)">
                         <td style="width:20px">

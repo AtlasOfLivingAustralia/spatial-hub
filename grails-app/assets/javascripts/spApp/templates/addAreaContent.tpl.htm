@@ -1,9 +1,9 @@
 <div class="modal-header">
     <button i18n="1" type="button" class="close" ng-click="$close()">×</button>
-    <h4 i18n="2" class="modal-title">Add area</h4>
+    <h4 i18n="2" class="modal-title" testTag="modal_Add area">Add area</h4>
 </div>
 
-<div class="modal-body">
+<div class="modal-body" testTag="addAreaModal">
     <div class="row">
         <div class="col-md-12">
             <form class="form-horizontal">
@@ -254,6 +254,7 @@
                                             class="btn btn-default"
                                             ngf-select="uploadFile($newFiles)"
                                             ngf-max-size="maxFileSize"
+                                            testTag = "uploadFile"
                                     >Choose file
                                     </button>
                                 </div>
@@ -289,7 +290,7 @@
 </div>
 
 <div class="modal-footer">
-    <button i18n="45" class="btn btn-default" type="button" ng-click="$close()">Cancel</button>
-    <button i18n="39" class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="isDisabled()">Next &gt;
+    <button i18n="45" class="btn btn-default" type="button" ng-click="$close()" name="cancel">Cancel</button>
+    <button i18n="39" class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="isDisabled()" name="next">Next &gt;
     </button>
 </div>
