@@ -201,7 +201,7 @@
                             <div ng-show="step == 'importShapefile' && fileName.length > 0">
                                 <label i18n="34" style="width: 100px" for="myAreaName">Area Name</label>
                                 <input type="text" style="width:50%" id="myAreaName" ng-model="myAreaName"
-                                       value="My Area">
+                                       value="My Area" testTag="importAreaName">
                             </div>
 
                             <p i18n="288">Only areas can be imported. Points and lines cannot be imported.</p>
@@ -226,10 +226,10 @@
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                <tr ng-repeat="area in areaList">
+                                                <tr ng-repeat="area in areaList" >
                                                     <td align="center"><input type="checkbox" ng-click="selectShpArea()"
-                                                                              ng-model="area.selected"></td>
-                                                    <td ng-repeat="header in areaHeader">
+                                                                              ng-model="area.selected" testTag="newAreaInList"></td>
+                                                    <td ng-repeat="header in areaHeader" >
                                                         {{area.values[header]}}
                                                     </td>
                                                 </tr>
