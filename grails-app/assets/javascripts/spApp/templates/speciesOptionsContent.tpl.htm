@@ -1,20 +1,24 @@
-<div ng-show="_spatialValidity" class="checkbox">
+<div ng-show="_spatialValidity" >
     <div class="checkbox">
         <label>
             <input type="checkbox" ng-model="_value.spatiallyValid" ng-disabled="_disabled"><span
                 i18n="238">Include spatially-valid records</span>
         </label>
+        <i class="glyphicon glyphicon-question-sign text-warning" popover-trigger="mouseenter" uib-popover="Display records which have passed all the spatial data quality tests (see link below for more information)"  popover-placement="right"></i>
     </div>
     <div class="checkbox">
         <label>
             <input type="checkbox" ng-model="_value.spatiallySuspect" ng-disabled="_disabled"><span i18n="239">Include spatially-suspect records</span>
-        </label>
+           </label>
+        <i class="glyphicon glyphicon-question-sign text-warning" popover-trigger="mouseenter" uib-popover="Display records which have failed one or more spatial data quality tests (see link below for more information)"  popover-placement="right"></i>
     </div>
     <div class="checkbox">
         <label>
             <input type="checkbox" ng-model="_value.spatiallyUnknown" ng-disabled="_disabled"><span i18n="513">Include spatially-unknown records</span>
         </label>
+        <i class="glyphicon glyphicon-question-sign text-warning" popover-trigger="mouseenter" uib-popover="Include records that have NOT been supplied with coordinates (note they will not appear on map but will be included in download file)"  popover-placement="right"></i>
     </div>
+    <p class="notice" ><i class="glyphicon glyphicon-info-sign text-warning"></i>Minimum one spatially related option is required! See this <a href="https://support.ala.org.au/support/solutions/articles/6000236981-what-does-the-spatially-valid-flag-geospatial-kosher-mean-" target="_blank" >support article</a> for more information<hr/></p>
 </div>
 
 <div ng-show="_absentOption">

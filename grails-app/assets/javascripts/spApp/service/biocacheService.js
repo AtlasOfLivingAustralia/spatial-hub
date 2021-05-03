@@ -159,7 +159,7 @@
                         if (response == null) {
                             return null
                         }
-                        return query.bs + "/occurrences/facets/download?facets=names_and_lsid&lookup=true&count=true&lists=true&q=" + query.qid + fqList;
+                        return query.bs + "/occurrences/facets/download?facets=names_and_lsid&lookup=true&count=true&lists=true&q=" + response.qid + fqList;
                     })
                 },
                 /**
@@ -781,13 +781,14 @@
                         fq = fq.concat(query.fqs)
                     }
                     var wkt = undefined;
+
                     if (area !== undefined && area instanceof Array && area.length > 0 && area[0] !== undefined) {
-                        if (area[0].pid && (area[0].pid.length > 0) && area[0].pid.indexOf('~') < 0) {
+                        //Area created from layer: cl1023:Tas
+                        if (area[0].q !== undefined && area[0].q.length > 0){
+                            fq = fq.concat(area[0].q)
+                        } else if (area[0].pid && (area[0].pid.length > 0) && area[0].pid.indexOf('~') < 0) {
+                            //~ stands for mulitple pids
                             wkt = area[0].pid
-                        } else if (area[0].q !== undefined) {
-                            if (area[0].q.length > 0) {
-                                fq = fq.concat(area[0].q)
-                            }
                         } else if (area[0].wkt && (area[0].wkt.length) > 0) {
                             wkt = area[0].wkt
                         }

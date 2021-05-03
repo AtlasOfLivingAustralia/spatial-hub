@@ -100,6 +100,12 @@ class SessionService {
 
     def list(userId) {
         def sessions = userFile(userId).exists() ? JSON.parse(FileUtils.readFileToString(userFile(userId))) : []
+        //Calculate urls for legacy sessions.
+        sessions.each {
+            if (!it.url) {
+                it.url = grailsApplication.config.grails.serverURL + SAVED_SESSION_PARAM + it.id
+            }
+        }
         sessions
     }
 }

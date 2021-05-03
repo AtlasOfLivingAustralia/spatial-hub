@@ -22,13 +22,13 @@
                     link: function (scope, element, attrs) {
 
                         scope.selected = '';
+                        scope.layerAreas = []; // new area created ONLY
+                        scope.isNewAreaCreated = false; //check if new area is created
                         LayoutService.addToSave(scope);
-
-                        scope.create = 'create';
 
                         scope.addLayerAreas = function () {
                             $.map(MapService.areaLayers(), function (x, idx) {
-
+                                var numberOflayerAreas = scope.layerAreas.length;
                                 // Incompatible areas have area.pid.contains(':') or '~'
                                 if (x.pid /* || ((x.pid + '').indexOf(':') < 0 && (x.pid + '').indexOf('~')) < 0 */) {
                                     scope.layerAreas.push({
@@ -42,9 +42,14 @@
                                         type: x.type
                                     })
                                 }
+                                if (scope.layerAreas.length > numberOflayerAreas) {
+                                    scope.isNewAreaCreated = true;
+                                } else {
+                                    scope.isNewAreaCreated = false;
+                                }
                             });
                         };
-                        scope.layerAreas = [];
+
 
                         scope.change = function (select) {
                             scope._selectedArea.area[0] = select
@@ -73,8 +78,8 @@
 
                         $timeout(function () {
                             scope.addLayerAreas();
-                            if (scope.selected === '' || scope.selected === scope.create) {
-                                if (scope.layerAreas.length > 0) {
+                            if (scope.selected === '' ||  scope.isNewAreaCreated) {
+                                if (scope.isNewAreaCreated && scope.layerAreas.length > 0) {
                                     scope._selectedArea.area[0] = scope.layerAreas[0];
                                     scope.selected = scope._selectedArea.area[0].uid
                                 } else {

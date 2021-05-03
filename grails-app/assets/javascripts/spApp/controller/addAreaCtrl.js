@@ -20,6 +20,7 @@
                 $scope.area = 'drawBoundingBox';
 
                 $scope.maxFileSize = $SH.maxUploadSize;
+                $scope.selectedAreaSize = 0;
 
                 if (inputData !== undefined && inputData.importArea === true) {
                     $scope.area = 'importShapefile';
@@ -116,12 +117,31 @@
                                 return area.id
                             }).join();
 
-                            LayersService.createArea($scope.myAreaName, $scope.fileName, $scope.shapeId, featureIdxs).then(function (response) {
-                                if (response.data.error) {
-                                    bootbox.alert("No areas selected. Points cannot be imported from a shapefile. (Error: " + response.data.error + ")");
-                                } else
-                                    $scope.setPid(response.data.id, true)
-                            });
+                            LayersService.createArea($scope.myAreaName, $scope.fileName, $scope.shapeId, featureIdxs)
+                            .then(
+                                //Success
+                                function (response) {
+                                        if (response.data.error) {
+                                            bootbox.alert(
+                                                "No areas selected. Points cannot be imported from a shapefile. (Error: "
+                                                + response.data.error + ")");
+                                        } else {
+                                            $scope.setPid(response.data.id, true)
+                                        }
+                                },
+                                //Error
+                                function(response){
+                                    if (response.status == 403 || response.status == 401) {
+                                        bootbox.alert($(i18n(539,"Authentication failed or login session expired, Please login again!")))
+                                    } else if (response.data.error) {
+                                        bootbox.alert("Error:" + response.data.error);
+                                    } else {
+                                        bootbox.alert("Unexpected error. Please check logs for more information")
+                                        console.log(response.data)
+                                    }
+
+                                }
+                            );
 
                             mapNow = false
                         } else if ($scope.area === 'importKML') {
@@ -155,19 +175,32 @@
                                 MapService.add($scope.selectedArea);
                             } else {
                                 closingLater = true;
-                                LayersService.createFromWkt($scope.selectedArea.wkt, $scope.selectedArea.name, '').then(function (data) {
-                                    if (!data.data.id) {
-                                        bootbox.alert($i18n(479, "Invalid WKT"))
-                                    } else {
-                                        LayersService.getObject(data.data.id).then(function (data) {
-                                            data.data.layertype = 'area';
-                                            data.data.wkt = $scope.selectedArea.wkt;
-                                            MapService.zoomToExtents(data.data.bbox);
-                                            MapService.add(data.data);
-                                            $scope.$close()
-                                        })
-                                    }
-                                })
+                                LayersService.createFromWkt($scope.selectedArea.wkt, $scope.selectedArea.name, '').then(
+                                    function (data) {
+                                        if (!data.data.id) {
+                                            bootbox.alert($i18n(479, "Invalid WKT"))
+                                        } else {
+                                            LayersService.getObject(data.data.id).then(function (data) {
+                                                data.data.layertype = 'area';
+                                                data.data.wkt = $scope.selectedArea.wkt;
+                                                MapService.zoomToExtents(data.data.bbox);
+                                                MapService.add(data.data);
+                                                $scope.$close()
+                                            })
+                                        }
+                                    }, function(error) {
+                                        if(error.status == 403 || error.status == 401 ){
+                                            bootbox.alert($(i18n(539,"Authentication failed or login session expired, Please login again!")));
+                                        }else if (error.status == 500) {
+                                            bootbox.alert("Unexpected error: the uploaded file may be broken or unrecognised.");
+                                        }else {
+                                            if (error.data.error) {
+                                                bootbox.alert("Error:" + error.data.error);
+                                            } else {
+                                                bootbox.alert(JSON.stringify(error.data))
+                                            }
+                                        }
+                                    })
                             }
                         }
                     }
@@ -198,9 +231,17 @@
 
                 $scope.selectShpArea = function () {
                     var selected = "";
+
                     var userSelectedArea = $scope.areaList.filter(function (area) {
                         return area.selected || false
                     });
+
+                    $scope.selectedAreaSize = 0;
+                    userSelectedArea.forEach(function(area){
+                        $scope.selectedAreaSize += area.values['AREA'] //Sum areas
+                    })
+
+
                     if (userSelectedArea.length === $scope.areaList.length) {
                         selected = "all";
                         $scope.checkAll = true;
@@ -217,6 +258,13 @@
                     angular.forEach($scope.areaList, function (area) {
                         area.selected = $scope.checkAll;
                     });
+                    $scope.selectedAreaSize = 0;
+                    if($scope.checkAll){
+                        $scope.areaList.forEach(function(area){
+                            $scope.selectedAreaSize += area.values['AREA'] //Sum areas
+                        })
+                    }
+
                     $scope.shpImg = LayersService.getShpImageUrl($scope.shapeId, "all");
                 };
 
@@ -243,7 +291,6 @@
                     $scope.uploadingFile = true;
 
                     LayersService.uploadAreaFile(file, $scope.area, $scope.myAreaName, file.name).then(function (response) {
-
                         if (response.data.error) {
                             $scope.errorMsg = response.data.error
                             $scope.uploadingFile = false;
@@ -283,8 +330,17 @@
                         $scope.selectionDone = true;
                         file.result = response.data;
                         $scope.uploadingFile = false;
-                    }, function (response) {
-                        $scope.errorMsg = response.status + ': ' + response.data;
+                    }, function (error) {
+                        if (error.status == 500) {
+                            $scope.errorMsg = "Unexpected error: the uploaded file may be broken or unrecognised.";
+                        } else {
+                            if (error.data.error) {
+                                $scope.errorMsg = error.data.error;
+                            }else {
+                                $scope.errorMsg = "Unexpected error. Check logs for more information";
+                            }
+                        }
+                        console.log("Error: " + JSON.stringify(error.data))
                         $scope.uploadingFile = false;
                         bootbox.alert($scope.errorMsg);
                     }, function (evt) {

@@ -17,6 +17,8 @@
                         _selectedFacet: '=selectedFacet',
                         _uniqueId: '=uniqueId'
                     },
+
+
                     link: function (scope, element, attrs) {
 
                         scope.facet = {};
@@ -24,11 +26,77 @@
                         scope.facetList = [];
                         scope.exportUrl = null;
                         scope.sortFacetsByName = false;
+                        scope.fqsOfSpeciesOptions=[];
 
 
                         FacetAutoCompleteService.search(BiocacheService.newQuery(["-*:*"])).then(function (data) {
                             scope.facets = data
                         });
+
+                        //Watch special options update
+                        //fq=geospatial_kosher:true&fq=-occurrence_status_s:absent
+                        scope.$on("speciesOptionsChange",function (event, value) {
+                            scope.fqsOfSpeciesOptions = [];
+                            /*
+                            spatially-valid = geospatial_kosher:true
+                            spatially-suspect = geospatial_kosher:false
+                            spatially-unknown = -geospatial_kosher:*
+
+                            If we want include VALID and MISSING(UNKNOWN) spatial data
+                            fq=(geospatial_kosher:true OR -geospatial_kosher:*) BS(solr) does not support '-' in complicated query
+                            */
+
+                            if (value.spatiallyUnknown) { //include UNKNOWN (MISSING) spatial data records
+                                if (value.spatiallyValid && value.spatiallySuspect) {
+                                    //Do nothing, returns all records
+                                    //scope.fqsOfSpeciesOptions.push('*:*')
+                                } else if (value.spatiallyValid) {
+                                    //spatially-unknown && spatiallyValid
+                                    //-> rule out of spatiallySuspect
+                                    scope.fqsOfSpeciesOptions.push('-geospatial_kosher:false');
+                                }else if (value.spatiallySuspect) {
+                                    //spatially-unknown && spatiallySuspect
+                                    //-> rule out of spatiallyValid
+                                    scope.fqsOfSpeciesOptions.push('-geospatial_kosher:true');
+                                }
+                            } else {
+                                //spatially-valid and spatially-suspect
+                                if (value.spatiallyValid && value.spatiallySuspect) {
+                                    scope.fqsOfSpeciesOptions.push('geospatial_kosher:*');
+                                } else if (value.spatiallyValid) {
+                                    scope.fqsOfSpeciesOptions.push('geospatial_kosher:true');
+                                } else if (value.spatiallySuspect) {
+                                    scope.fqsOfSpeciesOptions.push('geospatial_kosher:false');
+                                }
+                            }
+
+                            //if includeAbsences NOT selected
+                            if (!value.includeAbsences) {
+                                scope.fqsOfSpeciesOptions.push("-occurrence_status_s:absent")
+                            }
+
+                            //if a facet has been selected, then refresch results
+                            if(scope.hasFacetSelected()){
+                                scope.update();
+                            }
+
+                        });
+
+                        scope.hasFacetSelected=function(){
+                            if($.isEmptyObject(scope.facet)){
+                                return false;
+                            }
+                            if(scope.facet == '' || scope.facet == 'search'){
+                                return false;
+                            }
+                            //Angular added $$hashkey to track object
+                            var keys = Object.keys(scope.facet);
+
+                            if (keys.length == 1 && keys[0] == "$$hashKey"){
+                                return false;
+                            }
+                            return true;
+                        }
 
                         scope.pageSize = 10;
                         scope.offset = 0;
@@ -203,6 +271,10 @@
                                 }
                             })
 
+                            $.each(scope.fqsOfSpeciesOptions, function(i){
+                                q.push(scope.fqsOfSpeciesOptions[i])
+                            })
+
                             var sortBy = 'count';
                             if(scope.sortFacetsByName){
                                 //Sort by name alphabetically
@@ -331,6 +403,5 @@
                         }
                     }
                 }
-
             }])
 }(angular));

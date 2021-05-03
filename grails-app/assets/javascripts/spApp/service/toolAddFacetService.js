@@ -28,12 +28,13 @@
                             "description": "Species options",
                             "type": "speciesOptions",
                             "constraints": {
-                                "optional": true,
+                                "min": 1,
+                                "optional": false,
                                 "absentOption": true
                             }
                         },
                         {
-                            "description": "Select facet (counts ignore species options)",
+                            "description": "Select facet",
                             "type": "facet",
                             "constraints": {
                                 "min": 1,

@@ -8,8 +8,8 @@
      *    General occurrence layer filter toggles
      */
     angular.module('species-options-directive', ['map-service', 'lists-service'])
-        .directive('speciesOptions', ['MapService', 'ListsService', '$timeout', 'LayoutService',
-            function (MapService, ListsService, $timeout, LayoutService) {
+        .directive('speciesOptions', ['MapService', 'ListsService', '$timeout', 'LayoutService', '$rootScope',
+            function (MapService, ListsService, $timeout, LayoutService, $rootScope) {
 
                 return {
                     scope: {
@@ -20,6 +20,7 @@
                         _endemicIncludes: '=?endemicIncludes',
                         _disabled: "=?disableCheck"
                     },
+
                     templateUrl: '/spApp/speciesOptionsContent.htm',
                     link: function (scope, element, attrs) {
 
@@ -45,8 +46,20 @@
                         //endemic includes
                         if (scope._value.includeEndemic === undefined) scope._value.includeEndemic = false;
 
-                        LayoutService.addToSave(scope);
+                        //Broadcast selected species options,  e.g selectFacets watch the changes and update the query.
+                        scope.$watch('_value', function(newValue, oldValue) {
+                            if (!newValue.spatiallyValid && !newValue.spatiallySuspect && !newValue.spatiallyUnknown) {
+                                alert("Select at least one spatial related options!")
+                                scope._value.spatiallyValid = oldValue.spatiallyValid;
+                                scope._value.spatiallySuspect = oldValue.spatiallySuspect;
+                                scope._value.spatiallyUnknown = oldValue.spatiallyUnknown;
+                            } else {
+                                $rootScope.$broadcast('speciesOptionsChange', scope._value);
+                            }
+                        }, true);
 
+                        scope.showWarning = true;
+                        LayoutService.addToSave(scope);
                         //TODO: include _value.fq
                     }
                 }

@@ -313,7 +313,7 @@
         <div class="form-group row"
              ng-show="selected.layer.layertype == 'grid'">
             <label i18n="529" style=";width:70px">Style</label>
-            <select style=";width:300px" id='style' ng-model="selected.layer.style"
+            <select style=";width:300px" id='gridStyle' ng-model="selected.layer.style"
                     ng-change="updateStyle()">
                 <option i18n="530" value="default">non-linear</option>
                 <option i18n="531" value="linear">linear</option>
@@ -323,7 +323,7 @@
         <div class="form-group row"
              ng-show="selected.layer.layertype == 'contextual'">
             <label i18n="529" style=";width:70px">Style</label>
-            <select style=";width:300px" id='style' ng-model="selected.layer.style"
+            <select style=";width:300px" id='contextualStyle' ng-model="selected.layer.style"
                     ng-change="updateStyle()">
                 <option i18n="535" value="default">default</option>
                 <option i18n="533" value="outline">outline</option>

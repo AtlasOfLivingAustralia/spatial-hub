@@ -1107,3 +1107,12 @@ ul.errors {
     width: 26px;
     height: 26px;
 }
+
+.text-warning {
+    color: #c44d34;
+}
+
+.notice {
+    padding-top: 20px;
+    font-style: italic;
+}
