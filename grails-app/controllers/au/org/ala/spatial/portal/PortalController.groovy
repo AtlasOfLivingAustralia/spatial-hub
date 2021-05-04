@@ -514,6 +514,16 @@ class PortalController {
         }
     }
 
+    /**
+     * Status code returned from proxied url will be stored in response body
+     *
+     * For example:
+     *
+     * if a proxied server return status code 401, the status code will be wrapped into  statusCode field in body
+     * and returned to client with status 200
+     *
+     * @return
+     */
     def proxy() {
         def userId = getValidUserId(params)
 
@@ -537,6 +547,10 @@ class PortalController {
             }
 
             response.addHeader(HttpHeaders.CACHE_CONTROL, (String) grailsApplication.config.cache.headers.control)
+            // If url is in domain of 'ala.org.au', attach apiKey
+            if ( portalService.isInternalServer(url) ){
+                response.addHeader("apiKey",grailsApplication.config.api_key)
+            }
 
             //use caching for GET requests
             if (request.method == HttpGet.METHOD_NAME) {
