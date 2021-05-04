@@ -147,7 +147,7 @@ class HubWebService {
                             v.each { i ->
                                 String item = String.valueOf(i)
                                 if (item) {
-                                    nvList.add(new BasicNameValuePair(key, value));
+                                    nvList.add(new BasicNameValuePair(key, item));
                                 }
                             }
                         } else {
