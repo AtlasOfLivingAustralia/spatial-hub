@@ -98,6 +98,7 @@ spApp.config(['$httpProvider', function ($httpProvider) {
             },
 
             'responseError': function (rejection, a, c) {
+                // Todo should remove this bit code after authentication issue solved
                 // For auth redirect issue, retry once when status == -1 and withCredentials == true
                 if (rejection.status == -1 && rejection.config.withCredentials && rejection.config.retried === undefined) {
                     var $http = angular.element(document.querySelector('sp-app')).injector().get('$http');
@@ -108,8 +109,13 @@ spApp.config(['$httpProvider', function ($httpProvider) {
                 var httpService = angular.element(document.querySelector('sp-app')).injector().get('HttpService');
                 if (httpService) httpService.pop(rejection, 'responseError');
 
-                if (rejection.status == -1) {
+                if ( rejection.status == 403 || rejection.status == 401) {
+                    bootbox.alert("Authentication failed or login session expired, Please login again!")
+                    rejection.handled = true;
+                } else if (rejection.status == -1) {
                     // urls not accessible are ignored.
+                    // Mainly caused by network/connection, or CORS
+                    console.log("Cannot connect to: " + rejection.config.url +" due to network/connection problems, for example: CORS")
                 } else if (rejection.status === 0) {
                     if (window.isInWrapper) {
                         //Logout if in an app;
@@ -117,17 +123,8 @@ spApp.config(['$httpProvider', function ($httpProvider) {
                     } else {
                         window.location.reload();
                     }
-                } else if (rejection.status !== 404) {
-                    //Ignore invalid urls
-                    //HTTP interceptor can decorate the promise rejection with a property handled to indicate whether it's handled the error.
-                    rejection.handled = true;
-                    if (rejection.data) {
-                        if (rejection.data.message){
-                            rejection.data.error = reject.data.message;
-                        }
-
-                    }
                 }
+                console.log(JSON.stringify(rejection.data))
                 return $q.reject(rejection);
             }
         };
@@ -409,9 +406,9 @@ var authWorkaround = function (url) {
 };
 
 // This is to fix auth issues with ajax calls to other ala applications
- if ($SH.biocollectLoginUrl) {
-     authWorkaround($SH.biocollectLoginUrl);
- }
+//  if ($SH.biocollectLoginUrl) {
+//      authWorkaround($SH.biocollectLoginUrl);
+//  }
 
 
 // // Override Leaflet to fix map locking up when using different EPSGs
