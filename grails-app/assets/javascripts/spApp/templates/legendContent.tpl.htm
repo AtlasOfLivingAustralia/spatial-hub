@@ -78,7 +78,7 @@
              ng-show="selected.layer.layertype == 'species' && selected.layer.colorType != 'grid'">
             <label i18n="127" style=";width:70px">Facet</label>
             <select style=";width:300px" id='facet' ng-model="selected.layer.facet"
-                    ng-change="updateFacet()">
+                    ng-change="updateFacet()" testTag="facetInLegend">
                 <option i18n="128" value="-1">User defined colour</option>
                 <option i18n="503" value="search">Search facets...</option>
                 <option ng-repeat="filter in workflowFilters" value="{{filter.workflowId}}">{{filter.name}}</option>
