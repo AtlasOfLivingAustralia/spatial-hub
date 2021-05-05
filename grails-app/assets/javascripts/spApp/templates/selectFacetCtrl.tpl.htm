@@ -21,12 +21,12 @@
 <div style="height:320px">
     <hr/>
     <span i18n="505">Facet begins with (case sensitive):</span>
-    <input style="width:200px" type="text" ng-model="activeFacet.facetFilter"/>
+    <input style="width:200px" type="text" ng-model="activeFacet.facetFilter" testTag="applyFacetFilter"/>
     <div class="btn-group btn-group-xs">
-        <button i18n="141" ng-click="offset = 0; applyFilter()" class="btn btn-default">
+        <button i18n="141" ng-click="offset = 0; applyFilter()" class="btn btn-default" testTag="applyFacetFilter">
             apply filter
         </button>
-        <button i18n="129" ng-click="clearFilter()" class="btn btn-default">clear filter
+        <button i18n="129" ng-click="clearFilter()" class="btn btn-default" testTag="cleaFacetFilter">clear filter
         </button>
 
     </div>

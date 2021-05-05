@@ -315,7 +315,7 @@
              ng-show="selected.layer.layertype == 'grid'">
             <label i18n="529" style=";width:70px">Style</label>
             <select style=";width:300px" id='gridStyle' ng-model="selected.layer.style"
-                    ng-change="updateStyle()">
+                    ng-change="updateStyle()" testTag="layerStyleInLegend">
                 <option i18n="530" value="default">non-linear</option>
                 <option i18n="531" value="linear">linear</option>
             </select>
