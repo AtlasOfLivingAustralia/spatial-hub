@@ -61,7 +61,8 @@
                     message = error.data;
                   }
 
-                  bootbox('Failed: ' + message);
+                  bootbox.alert('Failed: ' + error.status);
+                  console.log(error)
                   uiScope.status = 'Failed';
                   uiScope.finished = true
                 });
