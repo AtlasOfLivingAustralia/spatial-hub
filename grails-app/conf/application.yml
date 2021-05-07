@@ -416,16 +416,16 @@ qc: ""
 projection:
     default: '3857'
 projections:
-    3857:
+    '3857':
       label: 'Pseudo-Mercator -- Spherical Mercator'
       definition:
         code: 'EPSG:3857' # leaflet supported, uses startup lat,lon,zoom
 # Uncomment to include these additional projections
-    4326:
+    '4326':
       label: 'World Geodetic System 1984'
       definition:
         code: 'EPSG:4326' # leaflet supported, uses startup lat,lon,zoom
-    3031:
+    '3031':
       label: 'Antarctic Polar Stereographic'
       definition:
         code: 'EPSG:3031'
@@ -435,7 +435,7 @@ projections:
         latitude: -80
         longitude: 0
         zoom: 1
-    3575:
+    '3575':
       label: 'North Pole LAEA Europe'
       definition:
         code: 'EPSG:3575'
@@ -589,8 +589,8 @@ workflow.enabled: true
 #
 # These workflows will be forced to operate on the selected layer and should be public.
 #
-#workflow.speciesFilters: [ { name: 'CSDM default filter', workflowId: 52 } ]
-workflow.speciesFilters: []
+workflow.speciesFilters: [ { name: 'CSDM default filter', workflowId: 52 } ]
+#workflow.speciesFilters: []
 
 ## spring-session config
 spring:
