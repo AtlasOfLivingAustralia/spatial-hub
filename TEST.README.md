@@ -1,0 +1,45 @@
+## Description
+
+It uses  Spock and JUnit 4 tests to Spatial Hub / Spatial Service
+
+The build is setup to work with Firefox and Chrome. Have a look at the `build.gradle` and the `src/test/resources/GebConfig.groovy` files.
+
+##Prerequisite 
+Layers required to be imported to Spatial Service:
+`Koppen Climate Classification (Major Classes)`
+`Precipitation - annual (Bio12)`
+`Temperature - annual mean (Bio01)`
+`GEOMACS - geometric mean`
+`ASGS Australian States and Territories`
+
+
+## Samples for tests
+
+Resource files for test should be put in `/data/spatial-hub/test`
+
+koppen.kml
+koppen.shp
+
+
+## Todo
+the latest Chrome driver > 89 is not working yet.
+
+Use npm to set the chrome driver version and reference the lib path from node_modules
+
+    In ./gebConfig.groovy
+
+    if (!System.getProperty("webdriver.chrome.driver")) {
+        System.setProperty("webdriver.chrome.driver", "node_modules/chromedriver/bin/chromedriver")
+    } 
+
+
+## Usage
+
+The following commands will launch the tests with the individual browsers:
+
+    ./gradlew chromeTest
+    ./gradlew firefoxTest
+
+To run with all, you can run:
+
+    ./gradlew test
