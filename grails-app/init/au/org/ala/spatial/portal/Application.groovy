@@ -2,14 +2,11 @@ package au.org.ala.spatial.portal
 
 import grails.boot.GrailsApp
 import grails.boot.config.GrailsAutoConfiguration
-import groovy.transform.CompileStatic
 import org.springframework.context.EnvironmentAware
 import org.springframework.core.env.Environment
 import org.springframework.core.env.PropertiesPropertySource
 
 class Application extends GrailsAutoConfiguration implements EnvironmentAware {
-
-
     static void main(String[] args) {
         GrailsApp.run(Application, args)
     }

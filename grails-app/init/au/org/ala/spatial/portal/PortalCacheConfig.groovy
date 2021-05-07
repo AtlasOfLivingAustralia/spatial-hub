@@ -1,4 +1,4 @@
-
+package au.org.ala.spatial.portal
 
 config {
             diskStore {
