@@ -22,9 +22,10 @@ koppen.shp
 
 
 ## Todo
-the latest Chrome driver > 89 is not working yet.
-
+Chrome driver > 89 is not available for webdirver
 Use npm to set the chrome driver version and reference the lib path from node_modules
+Add `"chromedriver": "89.0.0"` to package.json
+Run `npm install`
 
     In ./gebConfig.groovy
 

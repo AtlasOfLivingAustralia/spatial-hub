@@ -15,12 +15,20 @@ waiting {
 	timeout = 2
 }
 
+if (!System.getProperty("webdriver.chrome.driver")) {
+	System.setProperty("webdriver.chrome.driver", "node_modules/chromedriver/bin/chromedriver")
+}
+
 environments {
 	
 	// run via “./gradlew chromeTest”
 	// See: http://code.google.com/p/selenium/wiki/ChromeDriver
 	chrome {
-		driver = { new ChromeDriver() }
+		driver = {
+			def chrome = new ChromeDriver()
+			chrome.manage().window().fullscreen()
+			chrome
+		}
 	}
 
 	// run via “./gradlew chromeHeadlessTest”
@@ -29,7 +37,9 @@ environments {
 		driver = {
 			ChromeOptions o = new ChromeOptions()
 			o.addArguments('headless')
-			new ChromeDriver(o)
+			def chrome = new ChromeDriver(o)
+			chrome.manage().window().fullscreen()
+			chrome
 		}
 	}
 	
