@@ -15,7 +15,7 @@ class AddAreaSpec extends GebSpec {
             authModule.login()
 
         then:
-        waitFor 20, { menuModule.addToMapMenu.displayed }
+        waitFor 20, { menuModule.isReady() }
     }
 
     def "Draw BBox, circle and merge areas, log check"(){
@@ -23,8 +23,8 @@ class AddAreaSpec extends GebSpec {
 
         //Open log history and read count if bbox
         when:
-        menuModule.addToMapMenu.click()
-        menuModule.historyMenuitem.click()
+        menuModule.clickMenu("Add to map ") //NOTICE: space
+        menuModule.clickMenuitem("History")
 
         then:
         waitFor 10, { historyModule.title == "History"}
@@ -36,8 +36,8 @@ class AddAreaSpec extends GebSpec {
 
         and:
         Thread.sleep(pause)
-        menuModule.addToMapMenu.click()
-        menuModule.areaMenuitem.click()
+        menuModule.clickMenu("Add to map ")
+        menuModule.clickMenuitem("Area")
 
         //Add BBox
         then:
@@ -64,8 +64,8 @@ class AddAreaSpec extends GebSpec {
 
         //Open log again
         when:
-        menuModule.addToMapMenu.click()
-        menuModule.historyMenuitem.click()
+        menuModule.clickMenu("Add to map ")
+        menuModule.clickMenuitem("History")
 
         then:
         waitFor 10, { historyModule.title == "History"}
@@ -74,8 +74,8 @@ class AddAreaSpec extends GebSpec {
 
         //Add Circle
         when:
-        menuModule.addToMapMenu.click()
-        menuModule.areaMenuitem.click()
+        menuModule.clickMenu("Add to map ")
+        menuModule.clickMenuitem("Area")
 
         then:
         waitFor 20, { addAreaModule.title == "Add area" }
@@ -101,8 +101,8 @@ class AddAreaSpec extends GebSpec {
 
         //Merge
         when:
-        menuModule.addToMapMenu.click()
-        menuModule.areaMenuitem.click()
+        menuModule.clickMenu("Add to map ")
+        menuModule.clickMenuitem("Area")
 
         then:
         waitFor 20, { addAreaModule.title == "Add area" }
@@ -132,8 +132,8 @@ class AddAreaSpec extends GebSpec {
     def "Import Gazetteer"() {
 
         when:
-        menuModule.addToMapMenu.click()
-        menuModule.areaMenuitem.click()
+        menuModule.clickMenu("Add to map ")
+        menuModule.clickMenuitem("Area")
 
         then:
         waitFor 20, { addAreaModule.title == "Add area" }
@@ -159,8 +159,8 @@ class AddAreaSpec extends GebSpec {
 
     def "Import KML"() {
         when:
-        menuModule.addToMapMenu.click()
-        menuModule.areaMenuitem.click()
+        menuModule.clickMenu("Add to map ")
+        menuModule.clickMenuitem("Area")
 
         then:
         waitFor 20, { addAreaModule.title == "Add area" }
@@ -181,8 +181,8 @@ class AddAreaSpec extends GebSpec {
         def shpFile = '/data/spatial-hub/test/koppen.zip'
 
         when:
-        menuModule.addToMapMenu.click()
-        menuModule.areaMenuitem.click()
+        menuModule.clickMenu("Add to map ")
+        menuModule.clickMenuitem("Area")
 
         then:
         waitFor 20, { addAreaModule.title == "Add area" }
@@ -222,8 +222,8 @@ class AddAreaSpec extends GebSpec {
         String wktName = "New WKT"
 
         when:
-        menuModule.addToMapMenu.click()
-        menuModule.areaMenuitem.click()
+        menuModule.clickMenu("Add to map ")
+        menuModule.clickMenuitem("Area")
 
         then:
         waitFor 20, { addAreaModule.title == "Add area" }

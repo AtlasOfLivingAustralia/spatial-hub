@@ -15,15 +15,15 @@ class AddLayerSpec extends GebSpec {
             authModule.login()
 
         then:
-        waitFor 20, { menuModule.addToMapMenu.displayed }
+        waitFor 20, { menuModule.isReady()}
 
     }
 
     def "Add layer"(){
 
         when:
-        menuModule.addToMapMenu.click()
-        menuModule.layerMenuitem.click()
+        menuModule.clickMenu("Add to map ") //NOTICE: space
+        menuModule.clickMenuitem("Layer")
 
         //Add BBox
         then:

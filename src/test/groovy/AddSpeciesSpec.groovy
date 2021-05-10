@@ -14,13 +14,13 @@ class AddSpeciesSpec extends GebSpec {
             authModule.login()
 
         then:
-        waitFor 20, { menuModule.addToMapMenu.displayed }
+        waitFor 20, { menuModule.isReady() }
     }
 
     def "Add species to Australia"() {
         when:
-        menuModule.addToMapMenu.click()
-        menuModule.speciesMenuitem.click()
+        menuModule.clickMenu("Add to map ") //NOTICE: space
+        menuModule.clickMenuitem("Species")
 
         then:
         waitFor 20, {  addSpeciesModule.title == "Add a species layer to the map"}

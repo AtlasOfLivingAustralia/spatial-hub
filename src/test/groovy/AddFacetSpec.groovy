@@ -15,13 +15,13 @@ class AddFacetSpec extends GebSpec {
             authModule.login()
 
         then:
-        waitFor 20, { menuModule.addToMapMenu.displayed }
+        waitFor 20, { menuModule.isReady()  }
     }
 
     def "Add facet"(){
         when:
-        menuModule.addToMapMenu.click()
-        menuModule.facetMenuitem.click()
+        menuModule.clickMenu("Add to map ") //NOTICE: space
+        menuModule.clickMenuitem("Facet")
 
         //Add BBox
         then:

@@ -6,25 +6,28 @@ The build is setup to work with Firefox and Chrome. Have a look at the `build.gr
 
 ##Prerequisite 
 Layers required to be imported to Spatial Service:
-`Koppen Climate Classification (Major Classes)`
-`Precipitation - annual (Bio12)`
-`Temperature - annual mean (Bio01)`
-`GEOMACS - geometric mean`
-`ASGS Australian States and Territories`
+
+    Koppen Climate Classification (Major Classes) 
+    Precipitation - annual (Bio12)
+    Temperature - annual mean (Bio01)
+    GEOMACS - geometric mean
+    ASGS Australian States and Territories
 
 
 ## Samples for tests
 
 Resource files for test should be put in `/data/spatial-hub/test`
 
-koppen.kml
-koppen.shp
+    koppen.kml
+    koppen.shp
 
 
 ## Todo
 Chrome driver > 89 is not available for webdirver
-Use npm to set the chrome driver version and reference the lib path from node_modules
+Use npm to set the chrome driver version and reference the lib path from node_modules.
+
 Add `"chromedriver": "89.0.0"` to package.json
+
 Run `npm install`
 
     In ./gebConfig.groovy
