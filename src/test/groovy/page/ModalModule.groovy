@@ -18,7 +18,7 @@ class ModalModule extends Module {
 
 
         //areas
-        australiaRadioInput(required:false) {$("input[value='Australia']")}
+        //australiaRadioInput(required:false) {$("input[value='Australia']")}
         defineNewAreaBtn(required:false) { $("button[testTag='createArea']") }
 
         //facets
@@ -28,6 +28,11 @@ class ModalModule extends Module {
         //Shared the modal buttons
         nextBtn { $("button[name='next']") }
         cancelBtn { $("button[name='cancel']") }
+    }
+
+    //Support: Current extent, Australia, World
+    def selectArea(name){
+        $("input[testTag='selectArea']", value: name).click()
     }
 
     def scrollToAreaBlock(){

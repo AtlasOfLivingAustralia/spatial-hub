@@ -6,6 +6,9 @@ import page.SpatialHubHomePage
 class AddAreaSpec extends GebSpec {
 
     int pause = 3000
+    String kmlFile = "/data/spatial-hub/test/koppen.kml"
+    String shpFile = "/data/spatial-hub/test/koppen.zip"
+
 
     def setup() {
         when:
@@ -130,7 +133,6 @@ class AddAreaSpec extends GebSpec {
     }
 
     def "Import Gazetteer"() {
-
         when:
         menuModule.clickMenu("Add to map ")
         menuModule.clickMenuitem("Area")
@@ -169,7 +171,7 @@ class AddAreaSpec extends GebSpec {
         waitFor 10, { addAreaModule.uploadFileBtn.displayed }
 
         when:
-        addAreaModule.uploadTextFile('/data/spatial-hub/test/koppen.kml')
+        addAreaModule.uploadTextFile(kmlFile)
 
         then:
         waitFor 10, { layerListModule.getLayer("new area").displayed }
@@ -178,7 +180,6 @@ class AddAreaSpec extends GebSpec {
 
 
     def "Import SHP"(){
-        def shpFile = '/data/spatial-hub/test/koppen.zip'
 
         when:
         menuModule.clickMenu("Add to map ")

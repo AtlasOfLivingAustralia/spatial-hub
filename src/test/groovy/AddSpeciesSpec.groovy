@@ -38,7 +38,7 @@ class AddSpeciesSpec extends GebSpec {
         when:
         interact {
             addSpeciesModule.scrollToAreaBlock()
-            addSpeciesModule.australiaRadioInput.click()
+            addSpeciesModule.selectArea("Australia")
         }
 
         then:

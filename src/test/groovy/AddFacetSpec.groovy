@@ -29,7 +29,7 @@ class AddFacetSpec extends GebSpec {
 
         when:
         interact {
-            addFacetModule.australiaRadioInput.click()
+            addFacetModule.selectArea("Australia")
             moveToElement(addFacetModule.facetModule.facetListDropdown)
             addFacetModule.facetModule.clickFacetInput()
         }

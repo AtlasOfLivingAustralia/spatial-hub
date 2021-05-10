@@ -2,9 +2,6 @@ package page
 
 class AddAreaModule extends ModalModule {
     static content = {
-        //Draw on Map
-//        mapPanel { module(MapModule)}
-//        layerListPanel { module( LayerListModule) }
 
         addAreaLegend { $("div[testTag='createAreaLegend']") }
 

@@ -23,6 +23,9 @@ class SpatialHubHomePage extends Page {
         addFacetModule { module(AddFacetModule) }
         historyModule { module(HistoryModule) }
 
+        //Module for tools
+        toolReportModule { module(ToolReportModule)}
+
     }
 
 
