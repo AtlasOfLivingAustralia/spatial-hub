@@ -4,17 +4,18 @@ import geb.spock.GebSpec
 import page.SpatialHubHomePage
 
 class AddSpeciesSpec extends GebSpec {
-    int pause =  2000
+
+    int pause = 3000
 
     def setup() {
         when:
         via SpatialHubHomePage
-        //Login if not logged in
+
         if (title.startsWith("ALA | Login"))
             authModule.login()
 
         then:
-        waitFor 20, { menuModule.isReady() }
+        waitFor 20, { menuModule.isReady()  }
     }
 
     def "Add species to Australia"() {
@@ -73,5 +74,6 @@ class AddSpeciesSpec extends GebSpec {
             legendModule.checkRecordOfSelectedFacet(i)
         }
     }
+
 
 }
