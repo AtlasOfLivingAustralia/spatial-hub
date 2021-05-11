@@ -4,6 +4,9 @@ class ToolReportModule extends ModalModule {
 
     static content = {
         reportName  { $("h4.modal-title").text() }
+
+        //Only for downloading pdf
+        status { $("textarea.logText").text() }
     }
 
     def getCount(name) {

@@ -10,7 +10,7 @@
 
                 <div ng-show="stepView && (stage == 'input' || stage == 'edit')">
                     <div id="tool-items" ng-repeat="(key, sv) in stepView" ng-init="idx = $index"
-                         class="panel panel-default">
+                         class="panel panel-default" testTag="step{{$index}}">
                         <div ng-repeat="i in sv.inputArr"
                              ng-init="v=spec.input[i]; status_open = $first" ng-if="v.type != 'auto'"
                              heading="{{v.description}}" is-open="status_open" class="panel-default">

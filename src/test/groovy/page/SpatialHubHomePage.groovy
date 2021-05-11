@@ -15,6 +15,7 @@ class SpatialHubHomePage extends Page {
         legendModule { module(LegendModule)}
         mapModule { module(MapModule) }
         layerListModule { module(LayerListModule) }
+        modalModule { module(ModalModule) }
 
         //Individual module for tests
         addSpeciesModule { module(AddSpeciesModule) }
@@ -25,7 +26,7 @@ class SpatialHubHomePage extends Page {
 
         //Module for tools
         toolReportModule { module(ToolReportModule)}
-
+        toolScatterPlotModule { module(ToolScatterPlotModule)}
     }
 
 

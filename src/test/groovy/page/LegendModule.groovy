@@ -15,6 +15,9 @@ class LegendModule extends Module {
 
         facetContentTable (required:false){ $("table[testTag='facetContent']") }
         recordsOfSelectedFacetInContentTable(required:false){ $("table[testTag='facetContent'] tbody tr[testTag='recordsOfSelectedFacet']") }
+
+        //chart
+        chart (required:false) { $("div#chartDiv") }
     }
 
     void selectStyle (String name) {

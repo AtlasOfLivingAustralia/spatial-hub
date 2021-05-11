@@ -16,7 +16,6 @@ class AddLayerSpec extends GebSpec {
 
         then:
         waitFor 20, { menuModule.isReady()}
-
     }
 
     def "Add layer"(){
@@ -48,8 +47,6 @@ class AddLayerSpec extends GebSpec {
 
         then:
         Thread.sleep(pause)
-
-
     }
 
 
