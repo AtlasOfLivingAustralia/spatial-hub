@@ -181,7 +181,10 @@ class ToolScatterPlotSpec extends GebSpec {
         then:
         waitFor 120, { toolScatterPlotModule.openNewWindow.displayed }
         waitFor 10, { toolScatterPlotModule.outputDoc.displayed }
-        Thread.sleep(puase)
-        toolScatterPlotModule.close()
+
+        //Need to switch iFrame before access an element in iFrame
+        driver.switchTo().frame("outputDocs")
+
+        Thread.sleep(pause)
     }
 }

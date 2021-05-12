@@ -7,6 +7,9 @@ class ToolScatterPlotModule extends ModalModule {
 
         //Only for multiple scalletplot
         openNewWindow { $("a", text: "open in new window") }
+
+        //Need to switch iFrame before access an element in iFrame
+        //e.g  driver.switchTo().frame("outputDocs")
         outputDoc { $("iframe[testTag='outputDocs'") }
     }
 

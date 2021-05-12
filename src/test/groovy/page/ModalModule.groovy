@@ -33,6 +33,10 @@ class ModalModule extends Module {
         //display status of the task
         status { $("textarea.logText").text() }
 
+        // CSV report table
+        reportName {$("h4.modal-title[testTag='reportName']").text()}
+        reportCSVTable { $("Table[testTag='reportCSVTable']") }
+
         //Shared the modal buttons
         nextBtn { $("button[name='next']") }
         cancelBtn { $("button[name='cancel']") }
@@ -80,6 +84,16 @@ class ModalModule extends Module {
         return !nextBtn.is(":disabled")
     }
 
+    //Get cell in CSV report table
+    def getCellInCSVTable(int row, int col) {
+      def rols =  reportCSVTable.find("tr")
+      return  rols[row].find("td")[col].text()
+    }
+
+    def getSizeOfCSVTable() {
+        def rols =  reportCSVTable.find("tr")
+        return  rols.size()
+    }
 
 
 }

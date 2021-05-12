@@ -25,8 +25,9 @@ class SpatialHubHomePage extends Page {
         historyModule { module(HistoryModule) }
 
         //Module for tools
-        toolReportModule { module(ToolReportModule)}
-        toolScatterPlotModule { module(ToolScatterPlotModule)}
+        toolReportModule { module(ToolReportModule) }
+        toolScatterPlotModule { module(ToolScatterPlotModule) }
+        toolTabulateModule { module(ToolTabulateModule) }
     }
 
 
