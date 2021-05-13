@@ -37,7 +37,7 @@ class ToolTabulateSpec extends GebSpec {
         waitFor 10, {modalModule.speciesAutocompleteList.first().text().startsWith("Eucalyptus gunnii")}
 
         and:
-        toolScatterPlotModule.speciesAutocompleteList.first().click()
+        modalModule.speciesAutocompleteList.first().click()
 
         //ignore step 3
         when:
@@ -98,12 +98,13 @@ class ToolTabulateSpec extends GebSpec {
         modalModule.nextBtn.click()
 
         then:
-        waitFor 10, { toolTabulateModule.reportIframe.displayed }
+        waitFor 20, { toolTabulateModule.reportIframe.displayed }
 
         //Need to switch iFrame before access an element in iFrame
         driver.switchTo().frame("outputDocs")
 
         //moveToElement(toolTabulateModule.reportTable)  //not working? why
+        waitFor 10, { toolTabulateModule.reportDisplayed() }
         toolTabulateModule.getTableSize() > 2
         toolTabulateModule.getCellInReport(1,0) == "New South Wales"
         Float.parseFloat(toolTabulateModule.getCellInReport(1,1)) > 111100

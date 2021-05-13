@@ -18,6 +18,7 @@ class ModalModule extends Module {
         // species autocomplete list
         speciesAutocompleteList(required:false) {$("ul li.ui-menu-item a")}
 
+        lifeformRadioBtn(required: false) { $("input[type='radio'][value='lifeform']") }
 
         //areas
         //australiaRadioInput(required:false) {$("input[value='Australia']")}
@@ -42,7 +43,7 @@ class ModalModule extends Module {
 
         //Need to switch iFrame before access an element in iFrame
         //e.g  driver.switchTo().frame("outputDocs")
-        outputDoc { $("iframe[testTag='outputDocs'") }
+        outputDoc { $("iframe#outputDocs") }
 
         //Shared the modal buttons
         nextBtn { $("button[name='next']") }
@@ -67,6 +68,14 @@ class ModalModule extends Module {
         $("ul li.ui-menu-item").find { return it.displayed }.click()
     }
 
+    void selectLayer(name) {
+        def td = $("tr[testTag='availableLayers'] td[testTag='layerName']", text: name)
+        td.siblings().children("input[type='checkbox']").click()
+    }
+
+    void selectLifeform(name) {
+        $("lifeform-select select").find("option", text: name).click()
+    }
 
     //Move to step n
     void moveToStep(n) {
@@ -75,10 +84,7 @@ class ModalModule extends Module {
         js.exec(q )
     }
 
-    void selectLayer(name) {
-        def td = $("tr[testTag='availableLayers'] td[testTag='layerName']", text: name)
-        td.siblings().children("input[type='checkbox']").click()
-    }
+
 
     @Deprecated
     def scrollToAreaBlock() {

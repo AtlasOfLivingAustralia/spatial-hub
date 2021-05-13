@@ -35,7 +35,7 @@ class AddAreaModule extends ModalModule {
         wktAreaDataTextarea {$("textarea[testTag='wktAreaData']")}
 
         //Option modal
-        createdAreasCheckbox { $("input[type='checkbox'][testTag='createdArea']")}
+        createdAreasCheckbox { $("input[type='checkbox'][testTag='selectArea']")}
 
 
     }

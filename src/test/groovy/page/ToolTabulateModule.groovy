@@ -11,8 +11,8 @@ class ToolTabulateModule extends ModalModule {
         reportType { $("select[ng-model='type']")}
 
         //csv report
-        reportIframe {$("iFrame[testTag='outputDocs']")}
-        reportTable { $("table[name='layersTable']") }
+        reportIframe {$("iFrame#outputDocs")}
+        //reportTable { $("table[name='layersTable']") } // does not work?
     }
 
     def selectLayer1(name) {
@@ -32,13 +32,17 @@ class ToolTabulateModule extends ModalModule {
         reportType.find("option", text: name).click()
     }
 
+    def reportDisplayed() {
+        $("table[name='layersTable']").displayed
+    }
+
     def getCellInReport(row, col){
-        def rols =  reportTable.find("tr")
+        def rols =   $("table[name='layersTable']").find("tr")
         return  rols[row].find("td")[col].text()
     }
 
     def getTableSize() {
-        def rols =  reportTable.find("tr")
+        def rols =  $("table[name='layersTable']").find("tr")
         return  rols.size()
     }
 
