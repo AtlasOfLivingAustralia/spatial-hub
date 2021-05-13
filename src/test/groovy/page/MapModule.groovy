@@ -26,5 +26,18 @@ class MapModule extends ModalModule {
         }
     }
 
+    /**
+     * Draw a point after pan x,y
+     * @param x
+     * @param y
+     * @return
+     */
+    def drawPoint(x, y) {
+        interact {
+            moveToElement($('.angular-leaflet-map'))
+            moveByOffset(x, y)
+            click()
+        }
+    }
 
 }

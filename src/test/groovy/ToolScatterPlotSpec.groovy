@@ -63,7 +63,7 @@ class ToolScatterPlotSpec extends GebSpec {
         waitFor 10, {modalModule.speciesAutocompleteList.first().text().startsWith("Eucalyptus gunnii")}
 
         and:
-        toolScatterPlotModule.speciesAutocompleteList.first().click()
+        modalModule.speciesAutocompleteList.first().click()
 
         //ignore step 3
         when:
@@ -137,7 +137,7 @@ class ToolScatterPlotSpec extends GebSpec {
         waitFor 10, {modalModule.speciesAutocompleteList[0].first().text().startsWith("Eucalyptus gunnii")}
 
         and:
-        toolScatterPlotModule.speciesAutocompleteList[0].first().click()
+        modalModule.speciesAutocompleteList[0].first().click()
 
         //ignore step 3
         when:
@@ -179,8 +179,8 @@ class ToolScatterPlotSpec extends GebSpec {
         //waitFor 20, { modalModule.status.includes("running")}
 
         then:
-        waitFor 120, { toolScatterPlotModule.openNewWindow.displayed }
-        waitFor 10, { toolScatterPlotModule.outputDoc.displayed }
+        waitFor 180, { modalModule.openNewWindow.displayed }
+        waitFor 10, { modalModule.outputDoc.displayed }
 
         //Need to switch iFrame before access an element in iFrame
         driver.switchTo().frame("outputDocs")

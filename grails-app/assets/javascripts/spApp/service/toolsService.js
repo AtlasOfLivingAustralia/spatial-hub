@@ -54,15 +54,17 @@
                   }, 5000)
                 },
                 function (error) {
-                  var message = '';
-                  if (error.headers()['content-type'].indexOf('json') > 0) {
-                    message = JSON.stringify((error.data))
-                  } else {
-                    message = error.data;
+                  if (!error.handled) {
+                    var message = '';
+                    if (error.headers()['content-type'].indexOf('json') > 0) {
+                      message = JSON.stringify((error.data))
+                    } else {
+                      message = error.data;
+                    }
+
+                    bootbox.alert('Failed: ' + error.status);
                   }
 
-                  bootbox.alert('Failed: ' + error.status);
-                  console.log(error)
                   uiScope.status = 'Failed';
                   uiScope.finished = true
                 });

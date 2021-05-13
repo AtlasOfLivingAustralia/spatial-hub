@@ -26,8 +26,8 @@ class SpatialHubHomePage extends Page {
 
         //Module for tools
         toolReportModule { module(ToolReportModule) }
-        toolScatterPlotModule { module(ToolScatterPlotModule) }
         toolTabulateModule { module(ToolTabulateModule) }
+        toolComparePointsModule { module(ToolComparePointsModule) }
     }
 
 

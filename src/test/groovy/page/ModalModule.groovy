@@ -37,6 +37,13 @@ class ModalModule extends Module {
         reportName {$("h4.modal-title[testTag='reportName']").text()}
         reportCSVTable { $("Table[testTag='reportCSVTable']") }
 
+        //scatterplot, taxon frequency etc
+        openNewWindow { $("a", text: "open in new window") }
+
+        //Need to switch iFrame before access an element in iFrame
+        //e.g  driver.switchTo().frame("outputDocs")
+        outputDoc { $("iframe[testTag='outputDocs'") }
+
         //Shared the modal buttons
         nextBtn { $("button[name='next']") }
         cancelBtn { $("button[name='cancel']") }
