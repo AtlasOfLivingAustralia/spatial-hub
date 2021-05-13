@@ -15,7 +15,7 @@
                              ng-init="v=spec.input[i]; status_open = $first" ng-if="v.type != 'auto'"
                              heading="{{v.description}}" is-open="status_open" class="panel-default">
 
-                            <div ng-if="i == sv.inputArr[0]" class="panel-heading">
+                            <div ng-if="i == sv.inputArr[0]" class="panel-heading" testTag="step{{stepCount[idx - 1] + $index + 1}}">
                                 <h3 class="panel-title">{{stepCount[idx - 1] + $index + 1}}.&nbsp{{sv.name !== undefined
                                     ? sv.name : v.description}}
                                 </h3>

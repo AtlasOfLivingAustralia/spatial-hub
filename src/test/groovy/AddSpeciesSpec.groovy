@@ -38,8 +38,8 @@ class AddSpeciesSpec extends GebSpec {
 
         when:
         interact {
-            addSpeciesModule.scrollToAreaBlock()
-            addSpeciesModule.selectArea("Australia")
+            modalModule.moveToStep(3)
+            modalModule.selectArea("Australia")
         }
 
         then:

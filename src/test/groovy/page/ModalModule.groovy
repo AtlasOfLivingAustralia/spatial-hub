@@ -86,12 +86,12 @@ class ModalModule extends Module {
 
 
 
-    @Deprecated
-    def scrollToAreaBlock() {
-        //moveToElement(addSpeciesModule.createNewAreaButton) does not work
-        //Have to run JS to scroll to this radio button and make it clickable
-        js.exec( "\$(\"input[value='Australia']\").get(0).scrollIntoView()")
-    }
+//    @Deprecated
+//    def scrollToAreaBlock() {
+//        //moveToElement(addSpeciesModule.createNewAreaButton) does not work
+//        //Have to run JS to scroll to this radio button and make it clickable
+//        js.exec( "\$(\"input[value='Australia']\").get(0).scrollIntoView()")
+//    }
 
     def isNextBtnEnabled() {
         return !nextBtn.is(":disabled")
