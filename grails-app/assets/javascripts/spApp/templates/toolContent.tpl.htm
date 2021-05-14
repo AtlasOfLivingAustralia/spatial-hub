@@ -88,7 +88,7 @@
                                     <input type="checkbox" ng-model="values[i]">
                                     <label style="margin-bottom:0px">{{v.description}}</label>
                                 </div>
-                                <div ng-if="v.type == 'int'">
+                                <div ng-if="v.type == 'int'" testTag="otherInput">
                                     <label ng-if="sv.name !== undefined && sv.name !== v.description">{{v.description}}</label>
                                     <input style="width:300px" type="number" max="{{v.constraints.max}}"
                                            min="{{v.constraints.min}}"

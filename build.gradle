@@ -202,6 +202,7 @@ drivers.each { driver ->
 test {
     dependsOn drivers.collect { tasks["${it}Test"] }
     enabled = false
+    systemProperties("baseUrl": System.getProperty("baseUrl"))  // pass test server from args
 }
 
 tasks.withType(Test) {

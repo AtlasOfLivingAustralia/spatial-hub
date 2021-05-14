@@ -96,10 +96,13 @@ class ModalModule extends Module {
     }
 
     void setStartDate(date) {
-        $("input[type='date'][ng-model='dateStart']").value(date)
+        //$("input[type='date'][ng-model='dateStart']").value(date)
+        String q = "\$(\"input[type='date'][ng-model='dateStart'\").val(\""+ date+"\")"
+        js.exec(q)
     }
     void setEndDate(date) {
-        $("input[type='date'][ng-model='dateEnd']").value(date)
+        String q = "\$(\"input[type='date'][ng-model='dateEnd'\").val(\""+ date+"\")"
+        js.exec(q)
     }
 
 

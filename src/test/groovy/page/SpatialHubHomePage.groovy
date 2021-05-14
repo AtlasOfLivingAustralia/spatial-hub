@@ -3,9 +3,6 @@ package page
 import geb.Page
 
 class SpatialHubHomePage extends Page {
-    //static url = "https://spatial-test.ala.org.au";
-    static url = "http://devt.ala.org.au:8087";
-    // login or after-login page
     static at = { title == "ALA | Login" || title.startsWith("Spatial Portal") }
 
     static content = {
