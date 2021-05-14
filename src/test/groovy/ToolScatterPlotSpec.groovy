@@ -126,7 +126,7 @@ class ToolScatterPlotSpec extends GebSpec {
         waitFor 5, { modalModule.title == "Scatterplot list."  }
 
         when:
-        modalModule.moveToStep(1)
+        modalModule.moveToStep(2)
 
         and:
         //This tool has multiple species selection
@@ -141,7 +141,7 @@ class ToolScatterPlotSpec extends GebSpec {
 
         //ignore step 3
         when:
-        modalModule.moveToStep(2)
+        modalModule.moveToStep(3)
 
         then:
         waitFor 10, {modalModule.availableLayers.size() > 0 }
@@ -154,7 +154,7 @@ class ToolScatterPlotSpec extends GebSpec {
 
         //Select another species
         and:
-        modalModule.moveToStep(3)
+        modalModule.moveToStep(4)
 
         and:
         modalModule.searchSpeciesRadioBtn[1].click()

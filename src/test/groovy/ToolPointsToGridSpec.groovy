@@ -1,7 +1,7 @@
 import geb.spock.GebSpec
 import page.SpatialHubHomePage
 
-class TooPointsToGridSpec extends GebSpec {
+class ToolPointsToGridSpec extends GebSpec {
 
     int pause = 3000
 
@@ -25,7 +25,6 @@ class TooPointsToGridSpec extends GebSpec {
         waitFor 10, { modalModule.title == "Create grids from points." }
 
         when:
-        modalModule.selectArea("Australia")
         modalModule.moveToStep(0)
         modalModule.defineNewAreaBtn.click()
 
@@ -50,7 +49,6 @@ class TooPointsToGridSpec extends GebSpec {
         waitFor 5, { modalModule.title == "Create grids from points."  }
 
         when:
-        modalModule.selectArea("Tasmania")
         modalModule.moveToStep(1)
 
         then:
@@ -80,6 +78,7 @@ class TooPointsToGridSpec extends GebSpec {
 
         then:
         waitFor 10, { modalModule.title == "Create grids from points." }
+        waitFor 30, { modalModule.status.contains("running") }
 
         waitFor 120, { modalModule.openNewWindow.displayed }
         waitFor 10, { modalModule.outputDoc.displayed }
@@ -87,7 +86,7 @@ class TooPointsToGridSpec extends GebSpec {
         //Need to switch iFrame before access an element in iFrame
         driver.switchTo().frame("outputDocs")
 
-        waitFor 10, { $("img[src='occurrence_density.jpeg']").displayed }
+        waitFor 10, { $("img[src='occurrence_density.png'], img[src='species_richness.jpeg']").displayed }
 
         Thread.sleep(pause)
 

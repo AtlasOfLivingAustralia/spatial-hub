@@ -32,7 +32,7 @@ class ModalModule extends Module {
         availableLayers (required:false) { $("tr[testTag='availableLayers'] td[testTag='layerName']")}
 
         //display status of the task
-        status { $("textarea.logText").text() }
+        status {  $("textarea.logText").value() }
 
         // CSV report table
         reportName {$("h4.modal-title[testTag='reportName']").text()}
@@ -41,6 +41,7 @@ class ModalModule extends Module {
         //scatterplot, taxon frequency etc
         openNewWindow { $("a", text: "open in new window") }
 
+
         //Need to switch iFrame before access an element in iFrame
         //e.g  driver.switchTo().frame("outputDocs")
         outputDoc { $("iframe#outputDocs") }
@@ -48,6 +49,7 @@ class ModalModule extends Module {
         //Shared the modal buttons
         nextBtn { $("button[name='next']") }
         cancelBtn { $("button[name='cancel']") }
+        closeBtn { $("button.btn",text:"Close") }
     }
 
     //Support: Current extent, Australia, World, and new created area
