@@ -2,13 +2,13 @@
     <div ng-repeat="x in layerAreas" class="radio">
         <label>
             <input type="radio" ng-click="change(x)" ng-model="selected"
-                    name="{{_uniqueId}}"  testTag="selectArea" value="{{x.name}}" >{{x.name}}</label><br/>
+                   ng-value="x.uid" name="{{_uniqueId}}"  testTag="selectArea">{{x.name}}</label><br/>
     </div>
     <br ng-show="layerAreas.length > 0"/>
     <div ng-repeat="x in defaultAreas" class="radio">
         <label>
             <input type="radio" ng-click="change(x)" ng-model="selected"
-                   ng-value="x.name" name="{{_uniqueId}}" testTag="selectArea">{{x.name}}</label><br/>
+                   ng-value="x.name"  name="{{_uniqueId}}" testTag="selectArea" >{{x.name}}</label><br/>
     </div>
     <br ng-show="defaultAreas.length > 0" class="radio"/>
 

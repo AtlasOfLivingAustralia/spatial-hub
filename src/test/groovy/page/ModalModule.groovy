@@ -50,9 +50,11 @@ class ModalModule extends Module {
         cancelBtn { $("button[name='cancel']") }
     }
 
-    //Support: Current extent, Australia, World
+    //Support: Current extent, Australia, World, and new created area
     void selectArea(name) {
-        $("input[testTag='selectArea']", value: name).click()
+        def label = $("input[testTag='selectArea']").parent("label", text: name)
+        label.children("input").click()
+        //$("input[testTag='selectArea']", value: name).click()
     }
 
     //Todo make it work
@@ -84,14 +86,17 @@ class ModalModule extends Module {
         js.exec(q )
     }
 
+    // Param is an input box
+    void setInputParam(name, value) {
+        def label = $("div[testTag='otherInput'] label", text: name)
+        label.siblings("input").value(value)
+    }
 
-
-//    @Deprecated
-//    def scrollToAreaBlock() {
-//        //moveToElement(addSpeciesModule.createNewAreaButton) does not work
-//        //Have to run JS to scroll to this radio button and make it clickable
-//        js.exec( "\$(\"input[value='Australia']\").get(0).scrollIntoView()")
-//    }
+    // Param is a selection
+    void setSelectionParam(name, value) {
+        def label = $("div[testTag='otherInput'] label", text: name)
+        label.siblings("select").value(value)
+    }
 
     def isNextBtnEnabled() {
         return !nextBtn.is(":disabled")

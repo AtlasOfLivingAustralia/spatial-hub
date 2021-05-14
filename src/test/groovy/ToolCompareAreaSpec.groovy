@@ -24,7 +24,7 @@ class ToolCompareAreaSpec extends GebSpec {
         then:
         waitFor 10, { modalModule.title == "Compare areas." }
 
-        //Move to TAS
+        //Add Ben Lomond
         when:
         modalModule.moveToStep(0)
 

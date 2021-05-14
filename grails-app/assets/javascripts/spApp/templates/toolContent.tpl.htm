@@ -56,14 +56,14 @@
                                 <div ng-if="v.type == 'date'">
                                     <div select-date_range selected-date-range="values[i]" unique-id="i"></div>
                                 </div>
-                                <div ng-if="v.type == 'double'">
+                                <div ng-if="v.type == 'double'" testTag="otherInput">
                                     <label ng-if="sv.name !== undefined && sv.name !== v.description"
                                            style="margin-bottom:0px">{{v.description}}</label>
                                     <input style="width:300px" type="number" max="v.constraints.max"
                                            min="v.constraints.min"
                                            ng-model="values[i]">
                                 </div>
-                                <div ng-if="v.type == 'percent'">
+                                <div ng-if="v.type == 'percent'" testTag="otherInput">
                                     <label ng-if="sv.name !== undefined && sv.name !== v.description"
                                            ng-bind="v.description"></label>
                                     <div class="col-sm-2 input-group">
@@ -84,7 +84,7 @@
                                          unique-id="i"
                                     ></div>
                                 </div>
-                                <div ng-if="v.type == 'boolean'">
+                                <div ng-if="v.type == 'boolean'" testTag="otherInput" >
                                     <input type="checkbox" ng-model="values[i]">
                                     <label style="margin-bottom:0px">{{v.description}}</label>
                                 </div>
@@ -95,7 +95,7 @@
                                            ng-model="values[i]">
                                     <label ng-if="v.constraints.header !== undefined">{{v.constraints.header}}</label>
                                 </div>
-                                <div ng-if="v.type == 'list' && v.constraints.selection == 'single'">
+                                <div ng-if="v.type == 'list' && v.constraints.selection == 'single'" testTag="otherInput">
                                     <label ng-if="sv.name !== undefined && sv.name !== v.description">{{v.description}}</label>
                                     <br ng-if="sv.name !== undefined && sv.name !== v.description"/>
                                     <select ng-model="values[i]"
@@ -103,7 +103,7 @@
                                     </select>
                                     <label ng-if="v.constraints.header !== undefined">{{v.constraints.header}}</label>
                                 </div>
-                                <div ng-if="v.type == 'list' && v.constraints.selection != 'single'">
+                                <div ng-if="v.type == 'list' && v.constraints.selection != 'single'" testTag="otherInput">
                                     <label ng-if="sv.name !== undefined && sv.name !== v.description">{{v.description}}</label>
                                     <br ng-if="sv.name !== undefined && sv.name !== v.description"/>
                                     <div class='list-multiple' ng-repeat="item in v.constraints._list">
@@ -116,11 +116,11 @@
                                     <div style="height:300px;overflow:auto;display:block"
                                          select-phylo selected-phylo="values[i]"></div>
                                 </div>
-                                <div ng-if="v.type == 'text'">
+                                <div ng-if="v.type == 'text'" testTag="otherInput">
                                     <label ng-if="sv.name !== undefined && sv.name !== v.description">{{v.description}}</label>
                                     <textarea class="form-control" rows="3" ng-model="values[i]"></textarea>
                                 </div>
-                                <div ng-if="v.type == 'string'">
+                                <div ng-if="v.type == 'string'" testTag="otherInput">
                                     <label ng-if="sv.name !== undefined && sv.name !== v.description">{{v.description}}</label>
                                     <input type="text" class="form-control" ng-model="values[i]"/>
                                 </div>

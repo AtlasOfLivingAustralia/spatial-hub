@@ -24,7 +24,6 @@ class ToolComparePointsSpec extends GebSpec {
         then:
         waitFor 10, { toolComparePointsModule.pointsComparisonDiv.displayed }
 
-        //Move to TAS
         when:
         toolComparePointsModule.addPoint()
         mapModule.drawPoint(0,0)

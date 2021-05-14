@@ -24,7 +24,6 @@ class ToolTaxonFreqSpec extends GebSpec {
         then:
         waitFor 10, { modalModule.title == "Taxon Frequency" }
 
-        //Move to TAS
         when:
         modalModule.moveToStep(0)
         modalModule.selectArea("Current extent")

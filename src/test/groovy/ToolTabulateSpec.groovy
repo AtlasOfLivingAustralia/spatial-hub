@@ -24,7 +24,6 @@ class ToolTabulateSpec extends GebSpec {
         then:
         waitFor 10, { modalModule.title == "Tabulate - 1D" }
 
-        //Move to TAS
         when:
         modalModule.moveToStep(0)
 
