@@ -13,6 +13,9 @@ Layers required to be imported to Spatial Service:
     GEOMACS - geometric mean
     ASGS Australian States and Territories
 
+Libs
+
+    GDAL: gdal_translate
 
 ## Samples for tests
 
@@ -43,6 +46,8 @@ The following commands will launch the tests with the individual browsers:
 
     ./gradlew chromeTest
     ./gradlew firefoxTest
+
+    ./gradlew firefoxTest -DbaseUrl=http://spatial-test.ala.org.au
 
 To run with all, you can run:
 

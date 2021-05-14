@@ -56,6 +56,6 @@ environments {
 }
 
 // To run the tests with all browsers just run “./gradlew firefoxTest”
-// ./gradlew firefoxTest -DbaseUrl="https://spatial-test.ala.org.au" --tests="AddFacetSpec"
-baseUrl = "http://devt.ala.org.au:8087"
-//baseUrl = "https://spatial-test.ala.org.au"
+// ./gradlew firefoxTest -baseUrl="https://spatial-test.ala.org.au" --tests="AddFacetSpec"
+// baseUrl = "http://devt.ala.org.au:8087"
+// baseUrl = "https://spatial-test.ala.org.au"
