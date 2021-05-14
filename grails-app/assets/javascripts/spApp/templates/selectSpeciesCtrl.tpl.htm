@@ -43,7 +43,7 @@
     </div>
 </div>
 <div ng-show="_dateRangeOption && !mappedLayerSelected">
-    <select-date-range selected-date-range="dateRange" on-custom="setQ()"></select-date-range>
+    <select-date-range selected-date-range="dateRange" on-custom="setQ()" testTag="otherInput"></select-date-range>
 </div>
 
 <div ng-if="_min == 0 && !multiselect" class="radio">

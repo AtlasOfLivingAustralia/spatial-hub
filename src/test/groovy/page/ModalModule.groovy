@@ -18,7 +18,9 @@ class ModalModule extends Module {
         // species autocomplete list
         speciesAutocompleteList(required:false) {$("ul li.ui-menu-item a")}
 
+        //others
         lifeformRadioBtn(required: false) { $("input[type='radio'][value='lifeform']") }
+
 
         //areas
         //australiaRadioInput(required:false) {$("input[value='Australia']")}
@@ -87,6 +89,19 @@ class ModalModule extends Module {
         String q = "\$(\""+qTag+"\").get(0).scrollIntoView()"
         js.exec(q )
     }
+
+    //select checkbox,e.g date range
+    void selectCheckbox(name) {
+        $("input[type='checkbox']").siblings("span", text: name).siblings("input").click()
+    }
+
+    void setStartDate(date) {
+        $("input[type='date'][ng-model='dateStart']").value(date)
+    }
+    void setEndDate(date) {
+        $("input[type='date'][ng-model='dateEnd']").value(date)
+    }
+
 
     // Param is an input box
     void setInputParam(name, value) {
