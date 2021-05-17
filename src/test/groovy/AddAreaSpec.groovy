@@ -203,11 +203,11 @@ class AddAreaSpec extends GebSpec {
         addAreaModule.nextBtn.click()
 
         then:
-        waitFor 10, {layerListModule.getLayer(shpFile).displayed}
+        waitFor 10, {layerListModule.getLayer("koppen.zip").displayed}
         Thread.sleep(pause)
 
         when:
-        layerListModule.deleteArea(shpFile)
+        layerListModule.deleteArea("koppen.zip")
 
         then:
         Thread.sleep(pause)
