@@ -67,7 +67,7 @@ class ToolPhylogeneticDiversitySpec extends GebSpec {
 
         modalModule.getCellInCSVTable(1,0) == "Tasmania"
         Float.parseFloat(modalModule.getCellInCSVTable(1,2)) > 1.2
-        Float.parseFloat(modalModule.getCellInCSVTable(1,3)) >=38
+        Float.parseFloat(modalModule.getCellInCSVTable(1,3)) >= 0
 
     }
 
