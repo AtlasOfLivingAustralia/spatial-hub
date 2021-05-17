@@ -5,7 +5,6 @@ import page.SpatialHubHomePage
  *  ./gradlew firefoxTest -DbaseUrl=https://spatial.ala.org.au --tests "ToolPredictSpec.predict"
  */
 class ToolPredictSpec extends GebSpec {
-
     int pause = 3000
     def setup() {
         when:

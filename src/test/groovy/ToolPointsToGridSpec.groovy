@@ -86,7 +86,7 @@ class ToolPointsToGridSpec extends GebSpec {
         //Need to switch iFrame before access an element in iFrame
         driver.switchTo().frame("outputDocs")
 
-        waitFor 10, { $("img[src='occurrence_density.png'], img[src='species_richness.jpeg']").displayed }
+//        waitFor 10, { $("img[src='occurrence_density.png'], img[src='species_richness.jpeg']").displayed }
 
         Thread.sleep(pause)
 

@@ -73,6 +73,24 @@ class ModalModule extends Module {
     def selectFirstSpeciesInAutocomplete() {
         $("ul li.ui-menu-item").find { return it.displayed }.click()
     }
+   //Todo
+    def scrollToLayer(name) {
+       // js.exec( "\$(\"li[testTag='layer-list'] span\").get(0).scrollIntoView()")
+        def q = "\$(\"tr[testTag='availableLayers'] td[testTag='layerName']\").filter(function() {\n" +
+                "            return \$(this).text() === \"" + name+" \";\n" +
+                "        }).scrollIntoView()"
+        js.exec(q)
+
+       //return $("tr[testTag='availableLayers'] td[testTag='layerName']", text: name)
+    }
+
+    void scrollToLayerBottom(){
+        js.exec("\$(\"label[testTag='countSelectedLayers']\").get(0).scrollIntoView()")
+    }
+
+    def locateLayer(name){
+        return $("tr[testTag='availableLayers'] td[testTag='layerName']", text: name)
+    }
 
     void selectLayer(name) {
         def td = $("tr[testTag='availableLayers'] td[testTag='layerName']", text: name)

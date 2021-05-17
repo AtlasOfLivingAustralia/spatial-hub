@@ -62,7 +62,7 @@ class ToolGeneratePointsSpec extends GebSpec {
         then:
         waitFor 10, { modalModule.title == "Generate points." }
 
-        waitFor 100, { layerListModule.getLayer("Points in [Ben Lomond] on 0.1 degree grid").displayed }
+        waitFor 120, { layerListModule.getLayer("Points in [Ben Lomond] on 0.1 degree grid").displayed }
 
         Thread.sleep(pause)
     }

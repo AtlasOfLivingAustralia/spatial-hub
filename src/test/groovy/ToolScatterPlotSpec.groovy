@@ -73,6 +73,7 @@ class ToolScatterPlotSpec extends GebSpec {
         waitFor 10, {modalModule.availableLayers.size() > 0 }
 
         when:
+        modalModule.scrollToLayerBottom()
         modalModule.selectLayer("Precipitation - annual (Bio12)")
         modalModule.selectLayer("Temperature - annual mean (Bio01)")
 
