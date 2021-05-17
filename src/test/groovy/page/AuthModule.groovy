@@ -10,8 +10,33 @@ class AuthModule extends Module {
     }
 
     void login() {
-        username = "qifeng.bai@csiro.au"
-        password = "q1w2e3r4"
-        submit.click()
+        String user =""
+        String passwd = ""
+
+        Properties properties = new Properties()
+        File propertiesFile = new File(System.getProperty("configFile"))
+        propertiesFile.withInputStream {
+            properties.load(it)
+        }
+
+        if ( System.getProperty("username")) {
+           user = System.getProperty("username")
+        } else {
+            user = properties["username"]
+        }
+
+        if ( System.getProperty("password")) {
+            passwd = System.getProperty("password")
+        } else {
+            passwd = properties["password"]
+        }
+
+        if ( user && passwd) {
+            username =  user
+            password =  passwd
+            submit.click()
+        } else {
+            throw new Exception( "Username and password is not supplied!")
+        }
     }
 }

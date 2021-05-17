@@ -1,10 +1,12 @@
-/*
-	This is the Geb configuration file.
-	
-	See: http://www.gebish.org/manual/current/#configuration
-*/
-
-
+/**
+ * To run the tests with all browsers just run “./gradlew firefoxTest”
+ *
+ * ./gradlew firefoxTest -baseUrl="https://spatial-test.ala.org.au" --tests="AddFacetSpec" -Dusername=xxxx -Dpassword=xxxxx
+ *
+ * Username and password can be stored in default config file: /data/spatial-hub/test/default.properties
+ * We can also point to another property file by passing --DconfigFile=xxxxxx
+ *
+ */
 import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.chrome.ChromeOptions
 import org.openqa.selenium.firefox.FirefoxDriver
@@ -55,7 +57,5 @@ environments {
 		}
 }
 
-// To run the tests with all browsers just run “./gradlew firefoxTest”
-// ./gradlew firefoxTest -baseUrl="https://spatial-test.ala.org.au" --tests="AddFacetSpec"
-// baseUrl = "http://devt.ala.org.au:8087"
-// baseUrl = "https://spatial-test.ala.org.au"
+
+
