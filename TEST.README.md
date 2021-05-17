@@ -21,12 +21,18 @@ Libs
 
     GDAL: gdal_translate
 
+## Samples
+
+    Koppen.kml and Koppen.zip are stored in ./test/resources
+
+
+## Module Structure
+
+Code structure of functional tests:
+
+    ./test/resources/Functional_Test_Module.png
+
 ## Samples for tests
-
-Resource files for test should be put in `/data/spatial-hub/test`
-
-    koppen.kml
-    koppen.shp
 
 
 ## Todo

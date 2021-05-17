@@ -1,5 +1,7 @@
 package page
 
+import org.apache.commons.io.IOUtils
+
 class AddAreaModule extends ModalModule {
     static content = {
 
@@ -55,8 +57,11 @@ class AddAreaModule extends ModalModule {
         //file = new File(['koppen.kml'], '/data/spatial-hub/test/koppen.kml', {type: 'text/plain'});
         //angular.element("div[testTag='addAreaModal']").scope().uploadFile([file])
 
-        String fileContents = new File(file).text
-        return js.exec( fileContents, file, "file = new File([arguments[0]], arguments[1]);" +
+        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+        InputStream is = classloader.getResourceAsStream(file);
+        String result = IOUtils.toString(is, "UTF-8");
+
+        return js.exec( result, file, "file = new File([arguments[0]], arguments[1]);" +
                 "angular.element(\"div[testTag='addAreaModal']\").scope().uploadFile([file]);")
     }
 
@@ -68,7 +73,11 @@ class AddAreaModule extends ModalModule {
      * @return
      */
     def uploadRawFile(file, type) {
-        byte[] fileContents = new File(file).bytes
+        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+        InputStream is = classloader.getResourceAsStream(file);
+        byte[] fileContents = IOUtils.toByteArray(is);
+
+        //byte[] fileContents = new File(file).bytes
         return js.exec( fileContents, file, type, "file = new File([new Blob([new Uint8Array(arguments[0])])], arguments[1], {type: arguments[2]});" +
                 "angular.element(\"div[testTag='addAreaModal']\").scope().uploadFile([file]);")
 

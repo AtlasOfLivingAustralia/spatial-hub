@@ -4,11 +4,7 @@ import geb.spock.GebSpec
 import page.SpatialHubHomePage
 
 class AddAreaSpec extends GebSpec {
-
     int pause = 3000
-    String kmlFile = "/data/spatial-hub/test/koppen.kml"
-    String shpFile = "/data/spatial-hub/test/koppen.zip"
-
 
     def setup() {
         when:
@@ -171,7 +167,7 @@ class AddAreaSpec extends GebSpec {
         waitFor 10, { addAreaModule.uploadFileBtn.displayed }
 
         when:
-        addAreaModule.uploadTextFile(kmlFile)
+        addAreaModule.uploadTextFile("koppen.kml")
 
         then:
         waitFor 10, { layerListModule.getLayer("new area").displayed }
@@ -192,7 +188,7 @@ class AddAreaSpec extends GebSpec {
         waitFor 10, { addAreaModule.uploadFileBtn.displayed }
 
         when:
-        addAreaModule.uploadRawFile(shpFile, 'application/zip')
+        addAreaModule.uploadRawFile("koppen.zip", 'application/zip')
 
         then:
         waitFor 10, { addAreaModule.importAreaName("koppen.zip").displayed }

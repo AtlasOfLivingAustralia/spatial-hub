@@ -93,6 +93,7 @@ dependencies {
     // Additional Plugins
     compile 'org.grails.plugins:external-config:1.2.2'
     compile group: 'commons-httpclient', name: 'commons-httpclient', version: '3.1'
+    implementation group: 'commons-io', name: 'commons-io', version: '2.6'
 
     compile "org.grails.plugins:ala-auth:3.1.3"
     compile "org.grails.plugins:ala-admin-plugin:2.1"
