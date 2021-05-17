@@ -1,4 +1,4 @@
-<select ng-model='mode' ng-change='changeSelectedItem(mode)'>
+<select ng-model='mode' ng-change='changeSelectedItem(mode)' testTag="predefinedLayers">
     <option i18n="223" value="">Search layers</option>
     <option i18n="224" value="pasteLayers">Paste a layer set</option>
     <option i18n="225" value="uploadLayers">Upload a layer set</option>
@@ -121,7 +121,7 @@
                             <i class="glyphicon glyphicon-download-alt"></i>Export
                         </a>
                         <label style="padding-left:20px;"
-                               class="{{validLayerSelection ? '' : 'red-text' }}">{{_selection.layers.length}} of
+                               class="{{validLayerSelection ? '' : 'red-text' }}" testTag="countSelectedLayers">{{_selection.layers.length}} of
                             {{layers.length}} layers
                             selected</label>
                     </div>

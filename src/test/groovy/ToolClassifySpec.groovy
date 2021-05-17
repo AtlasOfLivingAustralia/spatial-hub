@@ -56,11 +56,13 @@ class ToolClassifySpec extends GebSpec {
         waitFor 10, {modalModule.availableLayers.size() > 0 }
 
         when:
-        modalModule.selectLayer("Precipitation - annual (Bio12)")
-        modalModule.selectLayer("Temperature - annual mean (Bio01)")
+        modalModule.selectPredefiendLayers("Williams 2030 best 5")
 
-        and:
-        modalModule.moveToStep(2)
+        then:
+        waitFor 10, { modalModule.sizeOfSelectedLayers().startsWith("5 ")   }
+
+        when:
+        modalModule.moveToStep(3)
         modalModule.setInputParam("Number of groups to produce (2-30)", 20)
 
         then:
@@ -69,22 +71,6 @@ class ToolClassifySpec extends GebSpec {
 
         then:
         waitFor 10, { modalModule.title == title}
-
-//        waitFor 120, { modalModule.openNewWindow.displayed }
-//        waitFor 10, { modalModule.outputDoc.displayed }
-//
-//        //Need to switch iFrame before access an element in iFrame
-//        driver.switchTo().frame("outputDocs")
-//
-//
-//
-//        when:
-//        driver.switchTo().defaultContent()
-//        modalModule.closeBtn.click()
-//
-//        then:
-//        //waitFor 10, { layerListModule.getLayer("Area of occupancy (area): Eucalyptus gunnii").displayed}
-//        Thread.sleep(pause)
 
     }
 

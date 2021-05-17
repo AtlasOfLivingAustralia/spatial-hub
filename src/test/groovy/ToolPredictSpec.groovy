@@ -1,6 +1,9 @@
 import geb.spock.GebSpec
 import page.SpatialHubHomePage
 
+/**
+ *  ./gradlew firefoxTest -DbaseUrl=https://spatial.ala.org.au --tests "ToolPredictSpec.predict"
+ */
 class ToolPredictSpec extends GebSpec {
 
     int pause = 3000
@@ -65,7 +68,6 @@ class ToolPredictSpec extends GebSpec {
         and:
         modalModule.speciesAutocompleteList.first().click()
 
-        //ignore step 3
         when:
         modalModule.moveToStep(3)
 
@@ -73,9 +75,12 @@ class ToolPredictSpec extends GebSpec {
         waitFor 10, {modalModule.availableLayers.size() > 0 }
 
         when:
-        modalModule.selectLayer("Precipitation - annual (Bio12)")
+        modalModule.selectPredefiendLayers("Williams 2030 best 5")
 
-        and:
+        then:
+        waitFor 10, { modalModule.sizeOfSelectedLayers().startsWith("5 ")   }
+
+        when:
         modalModule.moveToStep(4)
         modalModule.setSelectionParam("The layer resolution to use.", "string:0.1")
 
@@ -84,22 +89,17 @@ class ToolPredictSpec extends GebSpec {
 
         then:
         waitFor 10, { modalModule.title == title}
+        waitFor 10, { modalModule.status.contains("running")}
 
-//        waitFor 120, { modalModule.openNewWindow.displayed }
-//        waitFor 10, { modalModule.outputDoc.displayed }
-//
-//        //Need to switch iFrame before access an element in iFrame
-//        driver.switchTo().frame("outputDocs")
-//
-//
-//
-//        when:
-//        driver.switchTo().defaultContent()
-//        modalModule.closeBtn.click()
-//
-//        then:
-//        //waitFor 10, { layerListModule.getLayer("Area of occupancy (area): Eucalyptus gunnii").displayed}
-//        Thread.sleep(pause)
+        waitFor 120, { modalModule.openNewWindow.displayed }
+        waitFor 10, { modalModule.outputDoc.displayed }
+
+        //Need to switch iFrame before access an element in iFrame
+        driver.switchTo().frame("outputDocs")
+
+        $("img[src='plots/species_omission.png']").displayed
+
+        Thread.sleep(pause)
 
     }
 

@@ -79,6 +79,15 @@ class ModalModule extends Module {
         td.siblings().children("input[type='checkbox']").click()
     }
 
+    void selectPredefiendLayers(name) {
+        def select = $("select[testTag='predefinedLayers']")
+        select.find("option",text: name).click()
+    }
+
+    def sizeOfSelectedLayers() {
+        $("label[testTag='countSelectedLayers']").text()
+    }
+
     void selectLifeform(name) {
         $("lifeform-select select").find("option", text: name).click()
     }

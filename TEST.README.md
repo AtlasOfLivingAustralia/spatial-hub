@@ -13,6 +13,10 @@ Layers required to be imported to Spatial Service:
     GEOMACS - geometric mean
     ASGS Australian States and Territories
 
+Williams 2030 best 5  - for predict and classify
+
+    el1002, el1019, el1037, el1036, el1013
+
 Libs
 
     GDAL: gdal_translate
