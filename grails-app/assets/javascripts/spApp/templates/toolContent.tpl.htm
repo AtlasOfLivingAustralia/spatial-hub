@@ -112,7 +112,7 @@
                                     </div>
                                     <label ng-if="v.constraints.header !== undefined">{{v.constraints.header}}</label>
                                 </div>
-                                <div ng-if="v.type == 'phylogeneticTree'">
+                                <div ng-if="v.type == 'phylogeneticTree'" testTag="phylogeneticTree">
                                     <div style="height:300px;overflow:auto;display:block"
                                          select-phylo selected-phylo="values[i]"></div>
                                 </div>

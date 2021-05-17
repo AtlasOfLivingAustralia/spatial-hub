@@ -2,7 +2,7 @@
                  ng-class="{ active: true }" value="100" type='info' title="Updating"><span i18n="47">Loading...</span>
 </uib-progressbar>
 
-<table class="table table-striped" ng-if="!loading">
+<table class="table table-striped" ng-if="!loading" testTag="phylogeneticList">
     <thead>
     <td></td>
     <td i18n="233">Group</td>
@@ -16,7 +16,7 @@
         <td>{{tree.group}}</td>
         <td>{{tree.leaves}}</td>
         <td>{{tree.name}}</td>
-        <td>{{tree.id}}</td>
+        <td testTag="studyId">{{tree.id}}</td>
     </tr>
     </tbody>
 </table>

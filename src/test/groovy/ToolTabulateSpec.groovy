@@ -54,7 +54,7 @@ class ToolTabulateSpec extends GebSpec {
         modalModule.nextBtn.click()
 
         waitFor 10, { modalModule.title == "Tabulate - 1D" }
-        //waitFor 30, { modalModule.status.includes("running")}  //Could be too quick to capture
+        //waitFor 30, { modalModule.status.contains("running")}  //Could be too quick to capture
 
         then:
         waitFor 30, { modalModule.reportName == "SpeciesByLayer (species_by_layer.csv)" }

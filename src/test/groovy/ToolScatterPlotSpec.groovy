@@ -81,7 +81,7 @@ class ToolScatterPlotSpec extends GebSpec {
         modalModule.nextBtn.click()
 
         waitFor 10, { modalModule.title == "Create a scatterplot." }
-        // waitFor 20, { modalModule.status.includes("running")}  //too quick to capture
+        // waitFor 20, { modalModule.status.contains("running")}  //too quick to capture
 
         then:
         waitFor 20, { layerListModule.getLayer("Eucalyptus gunnii").displayed }
@@ -176,7 +176,7 @@ class ToolScatterPlotSpec extends GebSpec {
         modalModule.nextBtn.click()
 
         waitFor 10, { modalModule.title == "Scatterplot list." }
-        //waitFor 20, { modalModule.status.includes("running")}
+        //waitFor 20, { modalModule.status.contains("running")}
 
         then:
         waitFor 180, { modalModule.openNewWindow.displayed }

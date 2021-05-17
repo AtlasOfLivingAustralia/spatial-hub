@@ -47,6 +47,8 @@ The following commands will launch the tests with the individual browsers:
     ./gradlew chromeTest
     ./gradlew firefoxTest
 
+Test another server:
+
     ./gradlew firefoxTest -DbaseUrl=http://spatial-test.ala.org.au
 
 To run with all, you can run:

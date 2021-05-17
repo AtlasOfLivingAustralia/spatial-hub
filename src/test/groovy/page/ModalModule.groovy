@@ -9,7 +9,7 @@ import geb.Module
 class ModalModule extends Module {
 
     static content = {
-        title { $("h4.modal-title[testTag='modalTitle']").text() }
+        title (required: false) { $("h4.modal-title[testTag='modalTitle']").text() }
 
         //species option
         //Some tools may contain multiple copy, etc scatterplot
