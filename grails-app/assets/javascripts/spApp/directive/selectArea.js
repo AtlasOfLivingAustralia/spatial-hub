@@ -27,27 +27,33 @@
                         LayoutService.addToSave(scope);
 
                         scope.addLayerAreas = function () {
+                            var numberOflayerAreas = scope.layerAreas.length;
                             $.map(MapService.areaLayers(), function (x, idx) {
-                                var numberOflayerAreas = scope.layerAreas.length;
                                 // Incompatible areas have area.pid.contains(':') or '~'
                                 if (x.pid /* || ((x.pid + '').indexOf(':') < 0 && (x.pid + '').indexOf('~')) < 0 */) {
-                                    scope.layerAreas.push({
-                                        name: x.name,
-                                        q: x.q,
-                                        wkt: x.wkt,
-                                        bbox: x.bbox,
-                                        pid: x.pid,
-                                        area_km: x.area_km,
-                                        uid: x.uid,
-                                        type: x.type
-                                    })
-                                }
-                                if (scope.layerAreas.length > numberOflayerAreas) {
-                                    scope.isNewAreaCreated = true;
-                                } else {
-                                    scope.isNewAreaCreated = false;
+                                    //check if pid exists
+                                    if (!scope.layerAreas.some(area=>area.pid == x.pid) ) {
+                                        //Add the new layer on the top (the top one should be selected by default)
+                                        scope.layerAreas.unshift({
+                                            name: x.name,
+                                            q: x.q,
+                                            wkt: x.wkt,
+                                            bbox: x.bbox,
+                                            pid: x.pid,
+                                            area_km: x.area_km,
+                                            uid: x.uid,
+                                            type: x.type
+                                        })
+                                    }
+
                                 }
                             });
+
+                            if (scope.layerAreas.length > numberOflayerAreas) {
+                                scope.isNewAreaCreated = true;
+                            } else {
+                                scope.isNewAreaCreated = false;
+                            }
                         };
 
 

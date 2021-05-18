@@ -50,7 +50,6 @@ class ToolPhylogeneticDiversitySpec extends GebSpec {
         waitFor 5, { modalModule.title == title  }
 
         when:
-        //Should not needed
         modalModule.selectArea("Tasmania")
         modalModule.moveToStep(2)
         toolPhylogeneticModule.selectStudy("92")  //Australian Wattles

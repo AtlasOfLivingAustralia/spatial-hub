@@ -1,14 +1,14 @@
 <div ng-repeat="x in layerAreas" class="checkbox">
     <label>
     <input type="checkbox" ng-model="x.selected" ng-change="updateSelection(x)"
-           ng-value="x"    testTag="selectArea" >{{x.name}}
+           value="{{x.name}}"    testTag="selectArea" >{{x.name}}
    </label>
 </div>
 
 <div ng-repeat="x in defaultAreas" class="checkbox">
     <label>
     <input type="checkbox" ng-model="x.selected" ng-change="updateSelection(x)"
-           ng-value="x"   testTag="selectArea">{{x.name}}
+           value="{{x.name}}"   testTag="selectArea">{{x.name}}
     </label>
 </div>
 
