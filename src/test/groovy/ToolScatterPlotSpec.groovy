@@ -73,8 +73,9 @@ class ToolScatterPlotSpec extends GebSpec {
         waitFor 10, {modalModule.availableLayers.size() > 0 }
 
         when:
-        modalModule.scrollToLayerBottom()
+        modalModule.filterLayer("Bio12")
         modalModule.selectLayer("Precipitation - annual (Bio12)")
+        modalModule.filterLayer("Bio01")
         modalModule.selectLayer("Temperature - annual mean (Bio01)")
 
         then:
@@ -148,8 +149,11 @@ class ToolScatterPlotSpec extends GebSpec {
         waitFor 10, {modalModule.availableLayers.size() > 0 }
 
         when:
+        modalModule.filterLayer("Bio12")
         modalModule.selectLayer("Precipitation - annual (Bio12)")
+        modalModule.filterLayer("Bio01")
         modalModule.selectLayer("Temperature - annual mean (Bio01)")
+        modalModule.filterLayer("GEOMACS")
         modalModule.selectLayer("GEOMACS - geometric mean")
 
 

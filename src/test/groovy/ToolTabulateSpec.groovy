@@ -46,6 +46,7 @@ class ToolTabulateSpec extends GebSpec {
         waitFor 10, {modalModule.availableLayers.size() > 0 }
 
         when:
+        modalModule.filterLayer("Koppen")
         modalModule.selectLayer("Koppen Climate Classification (Major Classes)")
 
 

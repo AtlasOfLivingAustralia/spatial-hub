@@ -88,6 +88,11 @@ class ModalModule extends Module {
         js.exec("\$(\"label[testTag='countSelectedLayers']\").get(0).scrollIntoView()")
     }
 
+    void filterLayer(name) {
+        $("input[placeholder='Filter layers']").value(name)
+    }
+
+
     def locateLayer(name){
         return $("tr[testTag='availableLayers'] td[testTag='layerName']", text: name)
     }
