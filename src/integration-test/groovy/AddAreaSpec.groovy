@@ -4,7 +4,7 @@ import geb.spock.GebSpec
 import page.SpatialHubHomePage
 
 class AddAreaSpec extends GebSpec {
-    int pause = 3000
+    int pause = 1000
 
     def setup() {
         when:

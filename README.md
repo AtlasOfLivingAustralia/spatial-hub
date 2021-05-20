@@ -153,13 +153,26 @@ From line 200 in build.gradle, you will find how we pass different test servers 
 
 ### Usage
 
-The following commands will launch the tests with the individual browsers:
+## Usage
 
-    ./gradlew firefoxTest
+### Run with Firefox (default):
 
-**Run on Chrome**
+    ./gradlew :integrationTest -Dusername=xxxx -Dpassword=xxxxx
 
-    ./gradlew chromeTest
+Or 
+
+    ./gradlew :integrationTest
+
+when authentication is stored into the default file:
+
+    /data/spatial-hub/test/default.properties
+
+
+**See more: [How to pass authentication](#Authentication)**
+
+### run with Chrome:
+
+    ./gradlew :integrationTest -Ddriver=chrome
 
 Chrome driver > 89 is not available for webdirver
 Use npm to set the chrome driver version and reference the lib path from node_modules.
@@ -174,27 +187,28 @@ Run `npm install`
         System.setProperty("webdriver.chrome.driver", "node_modules/chromedriver/bin/chromedriver")
     } 
 
+### Test other servers:
 
-**Test on other servers:**
+    ./gradlew :integrationTest -DbaseUrl=http://spatial-test.ala.org.au/ws
 
-    ./gradlew firefoxTest -DbaseUrl=http://spatial-test.ala.org.au
 
-**Authentication info** 
+### Authentication
 
-Pass through with -Dusername and -Dpassword
+Authentication info can be passed through with -Dusername and -Dpassword
 
-    /gradlew firefoxTest -Dusername=xxxx -Dpassword=xxxxx
+    /gradlew :integrationTest -Dusername=xxxx -Dpassword=xxxxx
 
 Or stored in a config file. The default config file is located in
 
-    /data/spatial-hub/test/default.properties
+    /data/spatial-service/test/default.properties
     
     username="xxxx@csiro.au"
     password="xxxxx"
 
 We can change the config file with -DconfigFile
 
-    /gradlew firefoxTest -DconfigFile="myconfig.properties"
+    /gradlew :integrationTest -DconfigFile="myconfig.properties"
+
 
 ### Prerequisite
 Layers required to be imported to Spatial Service:
