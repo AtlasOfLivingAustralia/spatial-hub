@@ -151,9 +151,8 @@ Have a look at the `build.gradle` and the `src/test/resources/GebConfig.groovy` 
 
 From line 200 in build.gradle, you will find how we pass different test servers and authentication into tests.
 
-### Usage
 
-## Usage
+### Usage
 
 ### Run with Firefox (default):
 

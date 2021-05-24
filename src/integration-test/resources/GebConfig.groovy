@@ -22,9 +22,7 @@ if (!System.getProperty("webdriver.chrome.driver")) {
 }
 
 environments {
-	
-	// run via “./gradlew chromeTest”
-	// See: http://code.google.com/p/selenium/wiki/ChromeDriver
+	// run via “./gradlew :integrationTest -Ddriver=chrome”
 	chrome {
 		driver = {
 			def chrome = new ChromeDriver()
@@ -33,8 +31,6 @@ environments {
 		}
 	}
 
-	// run via “./gradlew chromeHeadlessTest”
-	// See: http://code.google.com/p/selenium/wiki/ChromeDriver
 	chromeHeadless {
 		driver = {
 			ChromeOptions o = new ChromeOptions()
@@ -44,9 +40,7 @@ environments {
 			chrome
 		}
 	}
-	
-	// run via “./gradlew firefoxTest”
-	// See: http://code.google.com/p/selenium/wiki/FirefoxDriver
+
 	firefox {
 		atCheckWaiting = 1
 		driver = {

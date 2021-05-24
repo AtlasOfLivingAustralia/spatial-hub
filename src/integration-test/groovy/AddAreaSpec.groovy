@@ -1,10 +1,8 @@
-
-
 import geb.spock.GebSpec
 import page.SpatialHubHomePage
 
 class AddAreaSpec extends GebSpec {
-    int pause = 1000
+    //int pause = 1000
 
     def setup() {
         when:
@@ -125,7 +123,6 @@ class AddAreaSpec extends GebSpec {
         layerListModule.hideArea("My Circle")
         layerListModule.zoomInArea("my merged area")
         Thread.sleep(pause)
-
     }
 
     def "Import Gazetteer"() {
@@ -211,7 +208,6 @@ class AddAreaSpec extends GebSpec {
 
         then:
         Thread.sleep(pause)
-
     }
 
     def "Add via WKT"(){
@@ -263,7 +259,6 @@ class AddAreaSpec extends GebSpec {
 
         then:
         Thread.sleep(pause)
-
     }
 
 }
