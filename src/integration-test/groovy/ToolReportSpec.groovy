@@ -76,9 +76,9 @@ class ToolReportSpec extends GebSpec {
         waitFor 5, {toolReportModule.reportName == "Area report - Tasmania" }
 
         waitFor 10, { toolReportModule.getCount("Area (sq km)") >=  354347}
-        waitFor 10, { toolReportModule.getCount("Number of species") >= 26600 }
-        waitFor 10, { toolReportModule.getCount("Occurrences") >= 3004936 }
-        waitFor 10, { toolReportModule.getCount("Invasive Species") >= 1630 }
+        waitFor 10, { toolReportModule.getCount("Number of species") >= 20000 }
+        waitFor 10, { toolReportModule.getCount("Occurrences") >= 2000000 }
+        waitFor 10, { toolReportModule.getCount("Invasive Species") >= 1000 }
 
         and:
         Thread.sleep(pause)

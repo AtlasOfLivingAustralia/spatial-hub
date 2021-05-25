@@ -32,7 +32,7 @@
                                 // Incompatible areas have area.pid.contains(':') or '~'
                                 if (x.pid /* || ((x.pid + '').indexOf(':') < 0 && (x.pid + '').indexOf('~')) < 0 */) {
                                     //check if pid exists
-                                    if (!scope.layerAreas.some(area=>area.pid == x.pid) ) {
+                                    if ( scope.layerAreas.filter(function(layer) {return layer.pid == x.pid} ).length == 0 ) {
                                         //Add the new layer on the top (the top one should be selected by default)
                                         scope.layerAreas.unshift({
                                             name: x.name,

@@ -26,7 +26,8 @@ class AddAreaModule extends ModalModule {
 
         //gaz
         gazInput {$("input#gazAutoComplete")}
-        gazAutocompleteList(required:false) {$("li.autocomplete-item.ui-menu-item a")}
+
+        gazAutocompleteList(required:false) { $("li.autocomplete-item.ui-menu-item a") }
 
         //SHP
         importAreaName {$("input[testTag='importAreaName']")}
@@ -43,7 +44,7 @@ class AddAreaModule extends ModalModule {
     }
 
     def gazAutoList(name) {
-        return $("li.autocomplete-item.ui-menu-item a" , text : startsWith(name) )
+        return $("li.autocomplete-item.ui-menu-item a").find("text": startsWith(name))[0]
     }
 
     /**

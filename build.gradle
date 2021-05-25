@@ -31,7 +31,7 @@ ext {
     }
 }
 
-version "0.4.1_SNAPSHOT"
+version "0.4.2_SNAPSHOT"
 group "au.org.ala"
 
 apply plugin:"eclipse"
@@ -183,6 +183,8 @@ assets {
     minifyJs = true
     minifyCss = true
 }
+
+
 
 webdriverBinaries {
     chromedriver "$chromeDriverVersion"

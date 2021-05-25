@@ -31,12 +31,11 @@ class AddSpeciesSpec extends GebSpec {
         addSpeciesModule.speciesTextInput.value("Eucalyptus gunnii")
 
         then:
-        waitFor 10, {addSpeciesModule.speciesAutocompleteList.first().text().startsWith("Eucalyptus gunnii")}
-
-        and:
-        addSpeciesModule.speciesAutocompleteList.first().click()
+        waitFor 20, {addSpeciesModule.speciesAutocompleteList.first().text().contains("Eucalyptus gunnii")}
 
         when:
+        addSpeciesModule.selectSpeciesInAutocomplete("Eucalyptus gunnii")
+
         interact {
             modalModule.moveToStep(3)
             modalModule.selectArea("Australia")
@@ -64,7 +63,7 @@ class AddSpeciesSpec extends GebSpec {
         waitFor 10, { legendModule.facetListOptions.first().displayed}
 
         when:
-        legendModule.selectFacet("taxon_name").click()
+        legendModule.selectFacet("Scientific name").click()
 
         then:
         waitFor 10, { legendModule.facetContentTable.displayed }

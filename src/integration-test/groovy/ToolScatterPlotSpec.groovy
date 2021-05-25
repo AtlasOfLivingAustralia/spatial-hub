@@ -1,4 +1,5 @@
 import geb.spock.GebSpec
+import groovy.time.TimeDuration
 import page.SpatialHubHomePage
 
 class ToolScatterPlotSpec extends GebSpec {
@@ -60,13 +61,10 @@ class ToolScatterPlotSpec extends GebSpec {
         modalModule.speciesTextInput[0].value("Eucalyptus gunnii")
 
         then:
-        waitFor 10, {modalModule.speciesAutocompleteList.first().text().startsWith("Eucalyptus gunnii")}
+        waitFor 10, {modalModule.speciesAutocompleteList.first().text().contains("Eucalyptus gunnii")}
 
-        and:
-        modalModule.speciesAutocompleteList.first().click()
-
-        //ignore step 3
         when:
+        modalModule.selectSpeciesInAutocomplete("Eucalyptus gunnii")
         modalModule.moveToStep(3)
 
         then:
@@ -82,11 +80,11 @@ class ToolScatterPlotSpec extends GebSpec {
         waitFor 10, { modalModule.isNextBtnEnabled() }
         modalModule.nextBtn.click()
 
-        waitFor 10, { modalModule.title == "Create a scatterplot." }
-        // waitFor 20, { modalModule.status.contains("running")}  //too quick to capture
+        waitFor 20, { modalModule.title == "Create a scatterplot." }
 
         then:
-        waitFor 20, { layerListModule.getLayer("Eucalyptus gunnii").displayed }
+        waitFor 1600, { layerListModule.getLayer("Eucalyptus gunnii").displayed }
+
         waitFor 20, { legendModule.title == "Eucalyptus gunnii"}
         waitFor 20, { legendModule.chart.displayed}
     }
@@ -136,13 +134,12 @@ class ToolScatterPlotSpec extends GebSpec {
         modalModule.speciesTextInput[0].value("Eucalyptus gunnii")
 
         then:
-        waitFor 10, {modalModule.speciesAutocompleteList[0].first().text().startsWith("Eucalyptus gunnii")}
+        waitFor 10, {modalModule.speciesAutocompleteList[0].first().text().contains("Eucalyptus gunnii")}
 
-        and:
-        modalModule.speciesAutocompleteList[0].first().click()
-
-        //ignore step 3
         when:
+        //modalModule.speciesAutocompleteList[0].first().click()
+        modalModule.selectSpeciesInAutocomplete("Eucalyptus gunnii")
+
         modalModule.moveToStep(3)
 
         then:
@@ -174,7 +171,7 @@ class ToolScatterPlotSpec extends GebSpec {
 
         //select the first species
         when:
-        modalModule.selectFirstSpeciesInAutocomplete()
+        modalModule.selectSpeciesInAutocomplete("Eucalyptus")
 
         then:
         waitFor 10, { modalModule.isNextBtnEnabled() }
@@ -184,7 +181,7 @@ class ToolScatterPlotSpec extends GebSpec {
         //waitFor 20, { modalModule.status.contains("running")}
 
         then:
-        waitFor 180, { modalModule.openNewWindow.displayed }
+        waitFor 500, { modalModule.openNewWindow.displayed }
         waitFor 10, { modalModule.outputDoc.displayed }
 
         //Need to switch iFrame before access an element in iFrame

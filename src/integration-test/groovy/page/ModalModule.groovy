@@ -61,18 +61,11 @@ class ModalModule extends Module {
         //$("input[testTag='selectArea']", value: name).click()
     }
 
-    //Todo make it work
-    def selectSpeciesInAutocomplete(name) {
-        def target = $("ul li.ui-menu-item a").find {
-            return it.text() == name
-        }
-        return target
+    //Select first if multiple
+    void selectSpeciesInAutocomplete(name) {
+        $("ul li.ui-menu-item a").find("text":startsWith(name))[0].click()
     }
 
-    //Todo
-    def selectFirstSpeciesInAutocomplete() {
-        $("ul li.ui-menu-item").find { return it.displayed }.click()
-    }
    //Todo
     def scrollToLayer(name) {
        // js.exec( "\$(\"li[testTag='layer-list'] span\").get(0).scrollIntoView()")
@@ -82,10 +75,6 @@ class ModalModule extends Module {
         js.exec(q)
 
        //return $("tr[testTag='availableLayers'] td[testTag='layerName']", text: name)
-    }
-
-    void scrollToLayerBottom(){
-        js.exec("\$(\"label[testTag='countSelectedLayers']\").get(0).scrollIntoView()")
     }
 
     void filterLayer(name) {

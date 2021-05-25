@@ -38,10 +38,10 @@ class ToolTaxonFreqSpec extends GebSpec {
         modalModule.speciesTextInput[0].click()
         modalModule.speciesTextInput[0].value("Eucalyptus gunnii")
 
-        waitFor 10, {modalModule.speciesAutocompleteList.first().text().startsWith("Eucalyptus gunnii")}
+        waitFor 10, {modalModule.speciesAutocompleteList.first().text().contains("Eucalyptus gunnii")}
 
-        and:
-        modalModule.speciesAutocompleteList.first().click()
+        when:
+        modalModule.selectSpeciesInAutocomplete("Eucalyptus gunnii")
 
         //ignore step 3
         // Be aware of the second species selection in implementation

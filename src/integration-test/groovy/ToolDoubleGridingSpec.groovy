@@ -56,12 +56,10 @@ class ToolDoubleGridingSpec extends GebSpec {
         modalModule.speciesTextInput[0].click()
         modalModule.speciesTextInput[0].value("Eucalyptus gunnii")
 
-        waitFor 10, {modalModule.speciesAutocompleteList.first().text().startsWith("Eucalyptus gunnii")}
-
-        and:
-        modalModule.speciesAutocompleteList.first().click()
+        waitFor 10, {modalModule.speciesAutocompleteList.first().text().contains("Eucalyptus gunnii")}
 
         when:
+        modalModule.selectSpeciesInAutocomplete("Eucalyptus gunnii")
         modalModule.moveToStep(2)
 
         and:

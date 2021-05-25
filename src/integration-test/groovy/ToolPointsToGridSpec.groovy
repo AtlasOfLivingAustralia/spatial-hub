@@ -56,16 +56,11 @@ class ToolPointsToGridSpec extends GebSpec {
         modalModule.speciesTextInput[0].click()
         modalModule.speciesTextInput[0].value("Eucalyptus gunnii")
 
-        waitFor 10, {modalModule.speciesAutocompleteList.first().text().startsWith("Eucalyptus gunnii")}
-
-        and:
-        modalModule.speciesAutocompleteList.first().click()
-
-        //ignore step 3
-        // Be aware of the second species selection in implementation
-        // refer to ToolScatterPlotSpec
+        waitFor 10, {modalModule.speciesAutocompleteList.first().text().contains("Eucalyptus gunnii")}
 
         when:
+        modalModule.selectSpeciesInAutocomplete("Eucalyptus gunnii")
+
         modalModule.moveToStep(2)
         modalModule.setInputParam("grid cell size", 0.1)
         modalModule.setInputParam("Produce sites by species matrix.", true)

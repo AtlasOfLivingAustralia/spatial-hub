@@ -59,16 +59,11 @@ class ToolAooEooSpec extends GebSpec {
         modalModule.speciesTextInput[0].click()
         modalModule.speciesTextInput[0].value("Eucalyptus gunnii")
 
-        waitFor 10, {modalModule.speciesAutocompleteList.first().text().startsWith("Eucalyptus gunnii")}
-
-        and:
-        modalModule.speciesAutocompleteList.first().click()
-
-        //ignore step 3
-        // Be aware of the second species selection in implementation
-        // refer to ToolScatterPlotSpec
+        waitFor 20, {modalModule.speciesAutocompleteList.first().text().contains("Eucalyptus gunnii")}
 
         when:
+        modalModule.selectSpeciesInAutocomplete("Eucalyptus gunnii")
+
         modalModule.moveToStep(3)
         modalModule.setInputParam("Grid resolution (decimal degrees)", 0.2)
 
@@ -87,7 +82,7 @@ class ToolAooEooSpec extends GebSpec {
         waitFor 10, { $("div.aooeoo").displayed }
 
         $("div.aooeoo table tr")[0].find("td")[0].text().contains("Number of records used for the calculations")
-        Integer.parseInt($("div.aooeoo table tr")[0].find("td")[1].text()) > 1500
+        Integer.parseInt($("div.aooeoo table tr")[0].find("td")[1].text()) > 200
 
         when:
         driver.switchTo().defaultContent()

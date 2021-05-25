@@ -33,13 +33,11 @@ class ToolTabulateSpec extends GebSpec {
         modalModule.speciesTextInput[0].value("Eucalyptus gunnii")
 
         then:
-        waitFor 10, {modalModule.speciesAutocompleteList.first().text().startsWith("Eucalyptus gunnii")}
+        waitFor 10, {modalModule.speciesAutocompleteList.first().text().contains("Eucalyptus gunnii")}
 
-        and:
-        modalModule.speciesAutocompleteList.first().click()
-
-        //ignore step 3
         when:
+        modalModule.selectSpeciesInAutocomplete("Eucalyptus gunnii")
+
         modalModule.moveToStep(1)
 
         then:

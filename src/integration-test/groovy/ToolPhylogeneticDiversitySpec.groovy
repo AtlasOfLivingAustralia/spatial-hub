@@ -59,13 +59,13 @@ class ToolPhylogeneticDiversitySpec extends GebSpec {
 
         then:
         waitFor 10, { modalModule.title == title}
-        waitFor 30, { modalModule.status.contains("running")}
-        waitFor 60, { modalModule.status.contains("Loading species in Tasmania")}
+        waitFor 120, { modalModule.status.contains("running")}
+        waitFor 60, { modalModule.status.contains("Fetching species in Tasmania")}
 
-        waitFor 120, {modalModule.reportName == "PhylogeneticDiversity (phylogeneticDiversity.csv)" }
+        waitFor 600, {modalModule.reportName == "PhylogeneticDiversity (phylogeneticDiversity.csv)" }
 
         modalModule.getCellInCSVTable(1,0) == "Tasmania"
-        Float.parseFloat(modalModule.getCellInCSVTable(1,2)) > 1.2
+        Float.parseFloat(modalModule.getCellInCSVTable(1,2)) > 0
         Float.parseFloat(modalModule.getCellInCSVTable(1,3)) >= 0
 
     }

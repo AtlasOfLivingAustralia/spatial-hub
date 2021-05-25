@@ -28,8 +28,8 @@ class AddFacetSpec extends GebSpec {
         waitFor 20, { addFacetModule.title == "Add species using a facet." }
 
         when:
+        addFacetModule.selectArea("Australia")
         interact {
-            addFacetModule.selectArea("Australia")
             moveToElement(addFacetModule.facetModule.facetListDropdown)
             addFacetModule.facetModule.clickFacetInput()
         }
@@ -39,7 +39,8 @@ class AddFacetSpec extends GebSpec {
 
         when:
         Thread.sleep(pause) //Waiting
-        addFacetModule.facetModule.selectFacet("taxon_name").click()
+        addFacetModule.facetModule.facetListDropdown.click()
+        addFacetModule.facetModule.selectFacet("Scientific name").click()
         waitFor 10, {addFacetModule.facetModule.facetContentTable.displayed}
         waitFor 10, {addFacetModule.facetModule.recordsOfSelectedFacetInContentTable.size() > 0}
 

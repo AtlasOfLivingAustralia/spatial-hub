@@ -23,7 +23,7 @@ class FacetSubmodule extends Module {
 
 
     def selectFacet(name) {
-        return $("select#facet option", value : name )
+        return $("select#facet option", text : name )
     }
 
     void clickFacetInput() {

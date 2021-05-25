@@ -25,7 +25,7 @@ class LegendModule extends Module {
     }
 
     def selectFacet(name) {
-        return facetListDropdown.find("option", value : name )
+        return facetListDropdown.find("option", text : name )
     }
 
 //    void clickFacetInput() {
