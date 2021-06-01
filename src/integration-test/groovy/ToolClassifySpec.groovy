@@ -71,6 +71,9 @@ class ToolClassifySpec extends GebSpec {
 
         then:
         waitFor 10, { modalModule.title == title}
+        waitFor 120, { modalModule.openNewWindow.displayed }
+        waitFor 10, { modalModule.outputDoc.displayed }
+        Thread.sleep(pause*2)
 
     }
 

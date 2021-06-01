@@ -66,7 +66,7 @@ class ToolCompareAreaSpec extends GebSpec {
         then:
         waitFor 10, { modalModule.title == "Compare areas." }
 
-        waitFor 120, { modalModule.openNewWindow.displayed }
+        waitFor 240, { modalModule.openNewWindow.displayed }
         waitFor 10, { modalModule.outputDoc.displayed }
 
         //Need to switch iFrame before access an element in iFrame

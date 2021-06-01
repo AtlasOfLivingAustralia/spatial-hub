@@ -22,6 +22,7 @@ import org.apache.commons.httpclient.SimpleHttpConnectionManager
 import org.apache.commons.httpclient.methods.*
 import org.apache.commons.httpclient.methods.multipart.*
 import org.apache.commons.httpclient.params.HttpClientParams
+import org.apache.commons.io.IOUtils
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.client.methods.HttpPut
@@ -29,6 +30,8 @@ import org.apache.http.client.methods.HttpRequestBase
 import org.apache.http.client.utils.URIBuilder
 import org.apache.http.message.BasicNameValuePair
 import org.springframework.web.multipart.MultipartFile
+
+import java.util.zip.GZIPInputStream
 
 //import org.codehaus.groovy.grails.web.servlet.HttpHeaders
 /**
@@ -175,10 +178,14 @@ class HubWebService {
                 }
             }
 
+            /**
+             * X-ALA-userId won't trigger CAS on service end
+             */
             if (doAuthentication) {
                 def user = authService.userId
                 if (user) {
                     call.addRequestHeader((String) grailsApplication.config.app.http.header.userId, user)
+                    call.addRequestHeader("apiKey",grailsApplication.config.api_key)
                     call.addRequestHeader(HttpHeaders.COOKIE, 'ALA-Auth=' +
                             URLEncoder.encode(authService.userDetails().email,
                                     (String) grailsApplication.config.character.encoding))
@@ -204,19 +211,25 @@ class HubWebService {
             def responseHeaders = [:]
             call.responseHeaders.each { h -> responseHeaders.put(h.name, h.value) }
 
-            // use responseBodyAsString for text (UTF-8)
-            def responseBody = call.responseBody
+            def data
             try {
                 def ct = responseHeaders['Content-Type']
                 if (ct && !ct.toString().startsWith('image') &&
                         (ct.toString().startsWith("text") || ct.toString().startsWith("application/json"))) {
-                    responseBody = new String(responseBody, 'UTF-8')
+
+                    def is
+                    if (responseHeaders["Content-Encoding"] == "gzip") {
+                        is = new GZIPInputStream(new ByteArrayInputStream(call.getResponseBody()))
+                    } else{
+                        is  = new ByteArrayInputStream(call.getResponseBody())
+                    }
+                    data = IOUtils.toString(is, 'UTF-8')
                 }
             } catch (Exception e) {
                 log.error(e.getMessage())
             }
 
-            [statusCode : call.statusCode, text: responseBody, headers: responseHeaders,
+            [statusCode : call.statusCode, text: data, headers: responseHeaders,
              contentType: call.getResponseHeader(HttpHeaders.CONTENT_TYPE)?.value]
         } catch (IOException e) {
             log.error url, e

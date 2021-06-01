@@ -25,7 +25,7 @@ class AddAreaSpec extends GebSpec {
 
         then:
         waitFor 10, { historyModule.title == "History"}
-        //waitFor 10, { historyModule.shouldHaveLogs() }
+        waitFor 10, { historyModule.shouldHaveLogs() }
 
         when:
         logCount = historyModule.getLogCount("drawBoundingBox")
@@ -66,7 +66,7 @@ class AddAreaSpec extends GebSpec {
 
         then:
         waitFor 10, { historyModule.title == "History"}
-        //historyModule.getLogCount("drawBoundingBox") == logCount + 1
+        historyModule.getLogCount("drawBoundingBox") == logCount + 1
         historyModule.close()
 
         //Add Circle
