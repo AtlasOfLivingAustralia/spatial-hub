@@ -527,6 +527,9 @@ rangeDataTypes:
   - 'tdouble'
   - 'tfloat'
   - 'tdate'
+  - 'float'
+  - 'double'
+  - 'date'
 
 numberOfIntervalsForRangeData: 7
 #
@@ -537,7 +540,7 @@ numberOfIntervalsForRangeData: 7
 
 date.facet: 'occurrence_date'
 date.min: '1780-01-01'
-date.max: '2020-01-01'
+date.max: '2030-01-01'
 
 #
 # Override the list of grouped facets from biocache-service (biocacheService.url/search/grouped/facets).
