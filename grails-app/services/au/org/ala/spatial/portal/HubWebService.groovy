@@ -179,16 +179,16 @@ class HubWebService {
             }
 
             /**
-             * X-ALA-userId won't trigger CAS on service end
+             * HttpHeaders.COOKIE, 'ALA-Auth=   will trigger CAS redirect to login page.
              */
             if (doAuthentication) {
                 def user = authService.userId
                 if (user) {
                     call.addRequestHeader((String) grailsApplication.config.app.http.header.userId, user)
                     call.addRequestHeader("apiKey",grailsApplication.config.api_key)
-                    call.addRequestHeader(HttpHeaders.COOKIE, 'ALA-Auth=' +
-                            URLEncoder.encode(authService.userDetails().email,
-                                    (String) grailsApplication.config.character.encoding))
+//                    call.addRequestHeader(HttpHeaders.COOKIE, 'ALA-Auth=' +
+//                            URLEncoder.encode(authService.userDetails().email,
+//                                    (String) grailsApplication.config.character.encoding))
                 }
             }
 

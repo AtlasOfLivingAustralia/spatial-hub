@@ -45,7 +45,7 @@ class ToolAooEooSpec extends GebSpec {
         addAreaModule.nextBtn.click()
 
         then:
-        waitFor 10, { layerListModule.getLayer("Tasmania").displayed }
+        waitFor 30, { layerListModule.getLayer("Tasmania").displayed }
         waitFor 5, { modalModule.title == "Area of Occupancy, Extent of Occurrence and Alpha Hull"  }
 
         when:

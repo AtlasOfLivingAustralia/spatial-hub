@@ -83,7 +83,7 @@ class ToolScatterPlotSpec extends GebSpec {
         waitFor 20, { modalModule.title == "Create a scatterplot." }
 
         then:
-        waitFor 160, { layerListModule.getLayer("Eucalyptus gunnii").displayed }
+        waitFor 480, { layerListModule.getLayer("Eucalyptus gunnii").displayed }
 
         waitFor 20, { legendModule.title == "Eucalyptus gunnii"}
         waitFor 20, { legendModule.chart.displayed}
@@ -181,7 +181,7 @@ class ToolScatterPlotSpec extends GebSpec {
         //waitFor 20, { modalModule.status.contains("running")}
 
         then:
-        waitFor 160, { modalModule.openNewWindow.displayed }
+        waitFor 360, { modalModule.openNewWindow.displayed }
         waitFor 10, { modalModule.outputDoc.displayed }
 
         //Need to switch iFrame before access an element in iFrame

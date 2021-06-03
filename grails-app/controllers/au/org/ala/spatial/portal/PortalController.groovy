@@ -441,10 +441,10 @@ class PortalController {
             def url = grailsApplication.config.lists.url
 
             def header = [:]
-            if (!Holders.config.security.cas.disableCAS) {
-                header.put(grailsApplication.config.app.http.header.userId, userId)
-                header.put('Cookie', 'ALA-Auth=' + URLEncoder.encode(authService.email, 'UTF-8'))
-            }
+//            if (!Holders.config.security.cas.disableCAS) {
+//                header.put(grailsApplication.config.app.http.header.userId, userId)
+//                header.put('Cookie', 'ALA-Auth=' + URLEncoder.encode(authService.email, 'UTF-8'))
+//            }
 
             def r = hubWebService.urlResponse(HttpPost.METHOD_NAME, "${url}/ws/speciesList/", null, header,
                     new StringRequestEntity((json as JSON).toString()), true)

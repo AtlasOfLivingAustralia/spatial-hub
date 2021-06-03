@@ -46,4 +46,17 @@ class ToolTabulateModule extends ModalModule {
         return  rols.size()
     }
 
+    /**
+     * Example:
+     * In tabulation of species by layers
+     * Area,    sqkm,    number of occurrences
+     * Desert   2068     50
+     * @param name
+     * @param col
+     */
+    def getCellByName(String name, int col) {
+        def rols =  $("Table[name='layersTable']").find("tr td", text: name).parent()
+        return  rols.find("td")[col].text()
+    }
+
 }

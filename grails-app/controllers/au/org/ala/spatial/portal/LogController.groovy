@@ -23,10 +23,8 @@ class LogController {
         String url = "${grailsApplication.config.layersService.url}/log/search"
         def headers = [:]
         headers.put("Accept", "application/json")
-        headers.put("apiKey",grailsApplication.config.api_key)
-        headers.put("userId", authService.userId)
 
-        def r = hubWebService.urlResponse(HttpGet.METHOD_NAME, url, params, headers)
+        def r = hubWebService.urlResponse(HttpGet.METHOD_NAME, url, params, headers, null, true)
         response.status = r.statusCode
         render JSON.parse(new String(r?.text ?: "")) as JSON
     }

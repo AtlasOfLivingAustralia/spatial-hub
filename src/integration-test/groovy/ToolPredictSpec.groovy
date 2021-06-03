@@ -87,7 +87,7 @@ class ToolPredictSpec extends GebSpec {
 
         then:
         waitFor 10, { modalModule.title == title}
-        waitFor 10, { modalModule.status.contains("running")}
+        waitFor 20, { modalModule.status.contains("running")}
 
         waitFor 120, { modalModule.openNewWindow.displayed }
         waitFor 10, { modalModule.outputDoc.displayed }

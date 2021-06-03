@@ -63,7 +63,7 @@ class ToolTabulateSpec extends GebSpec {
         modalModule.getCellInCSVTable(0,1) ==  "Eucalyptus gunnii"
         modalModule.getCellInCSVTable(1,1) ==  "Koppen Climate Classification (Major Classes)"
 
-        Float.parseFloat(modalModule.getCellInCSVTable(5,2)) >= 1600
+        Float.parseFloat(modalModule.getCellByName("Temperate",2)) >= 1600
 
         Thread.sleep(pause)
     }
@@ -105,7 +105,8 @@ class ToolTabulateSpec extends GebSpec {
         waitFor 10, { toolTabulateModule.reportDisplayed() }
         toolTabulateModule.getTableSize() > 2
         toolTabulateModule.getCellInReport(1,0) == "New South Wales"
-        Float.parseFloat(toolTabulateModule.getCellInReport(1,1)) > 111100
+
+        Float.parseFloat(toolTabulateModule.getCellByName("New South Wales",1)) > 111100
 
         Thread.sleep(pause)
     }

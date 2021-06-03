@@ -74,10 +74,6 @@ class ToolDoubleGridingSpec extends GebSpec {
         modalModule.closeBtn.click()
         //Need to switch iFrame before access an element in iFrame
         //driver.switchTo().frame("outputDocs")
-
-
-
-
     }
 
 }
