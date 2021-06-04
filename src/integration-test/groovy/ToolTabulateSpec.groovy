@@ -71,6 +71,9 @@ class ToolTabulateSpec extends GebSpec {
     /**
      * If no data,  Check if "records.*.csv exist in /data/spatial-data/sample
      * records.*.csv generation is scheduled by Travis
+     *
+     * Develop environment has different layers/data with spatial-test and prod
+     * So choose different layers to test
      * @return
      */
     def "2-D tabulation"() {
@@ -78,12 +81,19 @@ class ToolTabulateSpec extends GebSpec {
         menuModule.clickMenu("Tools ") //NOTICE: space
         menuModule.clickMenuitem("Tabulate - 2D")
 
+        def env = driver.currentUrl.contains("spatial")?"server":"dev"
+
         then:
         waitFor 10, { modalModule.title == "Tabulate - 2D" }
 
         when:
         toolTabulateModule.layer1.click()
-        toolTabulateModule.selectLayer1("ASGS Australian States and Territories")
+        if (env == "server") {
+            toolTabulateModule.selectLayer1("IBRA 7 Subregions")
+        } else {
+            toolTabulateModule.selectLayer1("ASGS Australian States and Territories")
+        }
+
 
         toolTabulateModule.layer2.click()
         toolTabulateModule.selectLayer2("Koppen Climate Classification (Major Classes)")
@@ -104,9 +114,11 @@ class ToolTabulateSpec extends GebSpec {
         //moveToElement(toolTabulateModule.reportTable)  //not working? why
         waitFor 10, { toolTabulateModule.reportDisplayed() }
         toolTabulateModule.getTableSize() > 2
-        toolTabulateModule.getCellInReport(1,0) == "New South Wales"
-
-        Float.parseFloat(toolTabulateModule.getCellByName("New South Wales",1)) > 111100
+        if (env == "server") {
+            Float.parseFloat(toolTabulateModule.getCellByName("Starke Coastal Lowlands", 2)) > 5000
+        } else {
+            Float.parseFloat(toolTabulateModule.getCellByName("New South Wales",1)) > 111100
+        }
 
         Thread.sleep(pause)
     }
