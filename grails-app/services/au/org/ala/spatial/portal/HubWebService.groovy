@@ -165,6 +165,7 @@ class HubWebService {
                     .addParameters(nvList)
                     .build();
 
+
             if (type == HttpGet.METHOD_NAME) {
                 call = new GetMethod(uri.toString())
             } else {
@@ -180,13 +181,13 @@ class HubWebService {
 
             /**
              * HttpHeaders.COOKIE, 'ALA-Auth=   will trigger CAS redirect to login page.
+             * Disabling CORS may break it
              */
             if (doAuthentication) {
                 def user = authService.userId
                 if (user) {
-                    call.addRequestHeader((String) grailsApplication.config.app.http.header.userId, user)
-                    call.addRequestHeader("apiKey",grailsApplication.config.api_key)
-//                    call.addRequestHeader(HttpHeaders.COOKIE, 'ALA-Auth=' +
+                    call.setRequestHeader((String) grailsApplication.config.app.http.header.userId, user)
+//                    call.setRequestHeader(HttpHeaders.COOKIE, 'ALA-Auth=' +
 //                            URLEncoder.encode(authService.userDetails().email,
 //                                    (String) grailsApplication.config.character.encoding))
                 }
@@ -201,7 +202,7 @@ class HubWebService {
                     }
                     */
                     if (k != null && !HttpHeaders.COOKIE.equalsIgnoreCase(k.toString())) {
-                        call.addRequestHeader(String.valueOf(k), String.valueOf(v))
+                        call.setRequestHeader(String.valueOf(k), String.valueOf(v))
                     }
                 }
             }
