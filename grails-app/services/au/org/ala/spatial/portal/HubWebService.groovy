@@ -50,17 +50,27 @@ class HubWebService {
         new String(urlResponse(HttpGet.METHOD_NAME, url, null, headers, null, doAuthentication)?.text ?: "")
     }
 
-    Map postUrl(String url, Map nameValues = null, Map headers = null, MultipartFile mFile = null,
+    /**
+     * Params of queryString needs be combined into url
+     *
+     * @param url
+     * @param nameValuesInFrom
+     * @param headers
+     * @param mFile
+     * @param doAuthentication
+     * @return
+     */
+    Map postUrl(String url, Map nameValuesInFrom = null, Map headers = null, MultipartFile mFile = null,
                 Boolean doAuthentication = null) {
         def entity = null
-        def nv = nameValues
+        def nv = nameValuesInFrom
 
         if (mFile) {
             PartSource ps = new ByteArrayPartSource(mFile.originalFilename, mFile.getBytes())
             Part part = new FilePart('files', ps, mFile.getContentType(), 'UTF-8')
 
             PostMethod postMethod = new PostMethod(url)
-            nameValues.each { key, value ->
+            nameValuesInFrom.each { key, value ->
                 if (value) {
                     postMethod.setParameter(String.valueOf(key), String.valueOf(value))
                 }
