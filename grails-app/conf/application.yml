@@ -399,7 +399,7 @@ wms:
     intersect: true
 
 fq:
-    excludeAbsent: "-occurrence_status_s:absent"
+    excludeAbsent: "-occurrence_status:absent"
 
 # fq applied to every biocache-service query
 qc: ""
