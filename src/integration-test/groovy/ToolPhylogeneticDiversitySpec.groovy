@@ -65,8 +65,8 @@ class ToolPhylogeneticDiversitySpec extends GebSpec {
         waitFor 600, {modalModule.reportName == "PhylogeneticDiversity (phylogeneticDiversity.csv)" }
 
         modalModule.getCellInCSVTable(1,0) == "Tasmania"
-        Float.parseFloat(modalModule.getCellInCSVTable(1,2)) > 0
-        Float.parseFloat(modalModule.getCellInCSVTable(1,3)) >= 0
+        Float.parseFloat(modalModule.getCellInCSVTable(1,2)) > 1.0
+        Float.parseFloat(modalModule.getCellInCSVTable(1,3)) >= 0.1
 
     }
 

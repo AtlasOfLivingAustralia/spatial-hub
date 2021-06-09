@@ -362,7 +362,7 @@ class PortalController {
             def r = hubWebService.postUrl("${grailsApplication.config.layersService.url}/shape/upload/${type}?" +
                     "name=${URLEncoder.encode((String) params.name, ce)}&" +
                     "description=${URLEncoder.encode((String) params.description, ce)}&" +
-                    "api_key=${grailsApplication.config.api_key}", (Map) settings, null, mFile);
+                    "api_key=${grailsApplication.config.api_key}", null, settings, mFile);
 
             if (!r) {
                 render [:] as JSON

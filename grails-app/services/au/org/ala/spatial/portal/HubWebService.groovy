@@ -18,6 +18,7 @@ package au.org.ala.spatial.portal
 import grails.web.http.HttpHeaders
 import org.apache.commons.httpclient.HttpClient
 import org.apache.commons.httpclient.HttpMethodBase
+import org.apache.commons.httpclient.NameValuePair
 import org.apache.commons.httpclient.SimpleHttpConnectionManager
 import org.apache.commons.httpclient.methods.*
 import org.apache.commons.httpclient.methods.multipart.*
@@ -26,14 +27,13 @@ import org.apache.commons.io.IOUtils
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.client.methods.HttpPut
-import org.apache.http.client.methods.HttpRequestBase
 import org.apache.http.client.utils.URIBuilder
 import org.apache.http.message.BasicNameValuePair
+import org.springframework.util.MultiValueMap
 import org.springframework.web.multipart.MultipartFile
+import org.springframework.web.util.UriComponentsBuilder
 
 import java.util.zip.GZIPInputStream
-
-//import org.codehaus.groovy.grails.web.servlet.HttpHeaders
 /**
  * Helper class for invoking other ALA web services.
  */
@@ -130,6 +130,17 @@ class HubWebService {
         it.get(org.apache.http.HttpHeaders).toLowerCase()
     }) as Set
 
+
+    /**
+     *
+     * @param type
+     * @param url
+     * @param nameValues It is passed as queryString in GET , but pass via BODY in POST
+     * @param headers
+     * @param entity normally only used for binary content, like file, image etc
+     * @param doAuthentication
+     * @return
+     */
     def urlResponse(String type, String url, Map nameValues = null, Map headers = null,
                     RequestEntity entity = null, Boolean doAuthentication = null) {
 
@@ -140,12 +151,14 @@ class HubWebService {
 
             HttpClientParams httpParams = client.params
             httpParams.setConnectionManagerTimeout((int) grailsApplication.config.http.timeout)
-            List nvList = new ArrayList();
+
+            //nvList will be added into queryString in GET
+            //but in body when POST
+            List<BasicNameValuePair> nvList = new ArrayList();
             if (nameValues) {
                 nameValues.each { k, v ->
                     String key = String.valueOf(k)
-                    String value = String.valueOf(v)
-                    if (key != null && value != null) {
+                    if (key != null && v != null) {
                         if (v instanceof List) {
                             v.each { i ->
                                 String item = String.valueOf(i)
@@ -154,25 +167,64 @@ class HubWebService {
                                 }
                             }
                         } else {
-                            nvList.add(new BasicNameValuePair(key, value));
+                            nvList.add(new BasicNameValuePair(key, String.valueOf(v)));
                         }
                     }
                 }
             }
 
-            HttpGet httpGet = new HttpGet(url);
-            URI uri = new URIBuilder(httpGet.getURI())
-                    .addParameters(nvList)
-                    .build();
+            //Parse target url
+            List<BasicNameValuePair> queryParams = new ArrayList();
+            def targetUriBuilder = UriComponentsBuilder.fromUriString(url).build()
+            MultiValueMap<String, String> targetParams = targetUriBuilder.getQueryParams()
+            //remove requestQuery from url
+            String targetUrl = new URI(targetUriBuilder.getScheme() ,targetUriBuilder.getUserInfo(), targetUriBuilder.getHost(), targetUriBuilder.getPort(),targetUriBuilder.getPath(),null, null).toString()
+
+            Iterator<String> it = targetParams.keySet().iterator()
+            while(it.hasNext()){
+                String key = (String)it.next()
+                //list always
+                //Support: fq=a&fq=b etc
+                def value = targetParams.get(key)
+
+                value.each { i ->
+                    String item = String.valueOf(i)
+                    if (item) {
+                        queryParams.add(new BasicNameValuePair(key, URLDecoder.decode(item, "UTF-8")));
+                    }
+                }
+            }
 
             if (type == HttpGet.METHOD_NAME) {
+                HttpGet httpGet = new HttpGet(targetUrl);
+                queryParams.addAll(nvList) //Combine name: value
+                URI uri = new URIBuilder(httpGet.getURI())
+                        .setParameters(queryParams)
+                        .build();
                 call = new GetMethod(uri.toString())
+            } else if (type == "DELETE") {
+                HttpGet httpGet = new HttpGet(targetUrl);
+                queryParams.addAll(nvList) //Combine name: value
+                java.net.URI uri = new URIBuilder(httpGet.getURI())
+                        .setParameters(queryParams)
+                        .build();
+                call = new DeleteMethod(uri.toString())
             } else {
+                HttpPut httpGet = new HttpPut(targetUrl);
+                URI uri = new URIBuilder(httpGet.getURI())
+                        .setParameters(queryParams)
+                        .build();
                 if (type == HttpPut.METHOD_NAME) {
                     call = new PutMethod(uri.toString())
                 } else if (type == HttpPost.METHOD_NAME) {
                     call = new PostMethod(uri.toString())
+                    NameValuePair[] nvs =  new NameValuePair[nvList.size()]
+                    for (int i=0; i< nvList.size(); i++){
+                        nvs[i]= new NameValuePair(nvList.get(i).name, nvList.get(i).value)
+                    }
+                    ((PostMethod)call).addParameters(nvs)
                 }
+
                 if (entity) {
                     ((EntityEnclosingMethod) call).setRequestEntity(entity)
                 }
@@ -180,15 +232,12 @@ class HubWebService {
 
             /**
              * HttpHeaders.COOKIE, 'ALA-Auth=   will trigger CAS redirect to login page.
+             * Disabling CORS may break it
              */
             if (doAuthentication) {
                 def user = authService.userId
                 if (user) {
-                    call.addRequestHeader((String) grailsApplication.config.app.http.header.userId, user)
-                    call.addRequestHeader("apiKey",grailsApplication.config.api_key)
-//                    call.addRequestHeader(HttpHeaders.COOKIE, 'ALA-Auth=' +
-//                            URLEncoder.encode(authService.userDetails().email,
-//                                    (String) grailsApplication.config.character.encoding))
+                    call.setRequestHeader((String) grailsApplication.config.app.http.header.userId, user)
                 }
             }
 
@@ -201,7 +250,7 @@ class HubWebService {
                     }
                     */
                     if (k != null && !HttpHeaders.COOKIE.equalsIgnoreCase(k.toString())) {
-                        call.addRequestHeader(String.valueOf(k), String.valueOf(v))
+                        call.setRequestHeader(String.valueOf(k), String.valueOf(v))
                     }
                 }
             }

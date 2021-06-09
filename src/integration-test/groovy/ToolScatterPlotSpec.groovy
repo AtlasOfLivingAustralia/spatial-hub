@@ -87,6 +87,7 @@ class ToolScatterPlotSpec extends GebSpec {
 
         waitFor 20, { legendModule.title == "Eucalyptus gunnii"}
         waitFor 20, { legendModule.chart.displayed}
+        Thread.sleep(pause)
     }
 
 
