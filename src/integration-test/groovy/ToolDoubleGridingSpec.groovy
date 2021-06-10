@@ -68,7 +68,7 @@ class ToolDoubleGridingSpec extends GebSpec {
         then:
         waitFor 10, { modalModule.title == "Double gridding sites by species" }
 
-        waitFor 120, { modalModule.openNewWindow.displayed }
+        waitFor 200, { modalModule.openNewWindow.displayed }
         waitFor 10, { modalModule.outputDoc.displayed }
         Thread.sleep(pause)
         modalModule.closeBtn.click()

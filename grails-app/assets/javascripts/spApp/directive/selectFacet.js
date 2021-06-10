@@ -34,7 +34,7 @@
                         });
 
                         //Watch special options update
-                        //fq=geospatial_kosher:true&fq=-occurrence_status_s:absent
+                        //fq=geospatial_kosher:true&fq=-occurrence_status:absent
                         scope.$on("speciesOptionsChange",function (event, value) {
                             scope.fqsOfSpeciesOptions = [];
                             /*
@@ -72,7 +72,7 @@
 
                             //if includeAbsences NOT selected
                             if (!value.includeAbsences) {
-                                scope.fqsOfSpeciesOptions.push("-occurrence_status_s:absent")
+                                scope.fqsOfSpeciesOptions.push("-occurrence_status:absent")
                             }
 
                             //if a facet has been selected, then refresch results

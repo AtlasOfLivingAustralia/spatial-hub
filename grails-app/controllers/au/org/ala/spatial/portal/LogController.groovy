@@ -10,12 +10,16 @@ class LogController {
     def authService
     static allowedMethods = [index:'POST', search:'GET']
 
+    /**
+     * Post log
+     * @return
+     */
     def index() {
         String url = "${grailsApplication.config.layersService.url}/log/"
         def headers = [:]
         headers.put ("apiKey",grailsApplication.config.api_key)
         request.headerNames.each { name -> headers.put(name, request.getHeader(name)) }
-        def r = hubWebService.urlResponse(HttpPost.METHOD_NAME, url, params, headers,
+        def r = hubWebService.urlResponse(HttpPost.METHOD_NAME, url, null, headers,
                 new StringRequestEntity(request.JSON.toString()), true)
         render status: r.statusCode
     }
