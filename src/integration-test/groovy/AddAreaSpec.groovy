@@ -261,4 +261,35 @@ class AddAreaSpec extends GebSpec {
         Thread.sleep(pause)
     }
 
+    def "Select area from polygonal layer"() {
+
+        //Open log history and read count if bbox
+        when:
+        menuModule.clickMenu("Add to map ") //NOTICE: space
+        menuModule.clickMenuitem("Area")
+
+        //Add BBox
+        then:
+        waitFor 20, { addAreaModule.title == "Add area" }
+        addAreaModule.pointOnLayerRadioBtn.click()
+
+        and:
+        addAreaModule.nextBtn.click()
+
+        then:
+        addAreaModule.addAreaLegend.displayed
+
+        when:
+        legendModule.searchLayerInput.value("Koppen")
+        Thread.sleep(pause)
+        legendModule.selectLayerInAutocomplete("Koppen")
+
+        and:
+        mapModule.drawPoint(100,100)
+        legendModule.nextBtn.click()
+
+        then:
+        Thread.sleep(pause)
+
+    }
 }

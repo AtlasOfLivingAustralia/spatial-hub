@@ -16,6 +16,7 @@ class AddAreaModule extends ModalModule {
         bboxRadioBtn {$("input[type='radio'][value='drawBoundingBox']")}
         polygonRadioBtn {$("input[type='radio'][value='drawPolygon']")}
         circleRadioBtn {$("input[type='radio'][value='drawPointRadius']")}
+        pointOnLayerRadioBtn {$("input[type='radio'][value='pointOnLayer']")}
 
         importKmlRadioBtn{$("input[type='radio'][value='importKML']")}
         importShapefileRadioBtn{$("input[type='radio'][value='importShapefile']")}

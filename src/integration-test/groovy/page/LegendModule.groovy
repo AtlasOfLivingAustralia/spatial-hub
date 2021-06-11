@@ -18,6 +18,11 @@ class LegendModule extends Module {
 
         //chart
         chart (required:false) { $("div#chartDiv") }
+
+        //search layer in legend
+        searchLayerInput(required: false) { $("div#searchDiv input")}
+
+        nextBtn(required: false) {$("button.btn[testTag='nextInNewAreaLegend']")}
     }
 
     void selectStyle (String name) {
@@ -28,12 +33,12 @@ class LegendModule extends Module {
         return facetListDropdown.find("option", text : name )
     }
 
-//    void clickFacetInput() {
-//        js.exec( " \$(\"select#facet\").click()")
-//    }
+    void selectLayerInAutocomplete(name) {
+        $("ul li.ui-menu-item a").find("text":startsWith(name))[0].click()
+    }
+
     // check/click the Nth record
     def checkRecordOfSelectedFacet (n) {
         recordsOfSelectedFacetInContentTable[n].children()[0].click()
     }
-
 }
