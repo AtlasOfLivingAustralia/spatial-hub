@@ -289,7 +289,7 @@ class AddAreaSpec extends GebSpec {
         legendModule.nextBtn.click()
 
         then:
-        Thread.sleep(pause)
+        thread.sleep(pause)
 
     }
 }
