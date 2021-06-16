@@ -42,6 +42,7 @@ class ModalModule extends Module {
 
         //scatterplot, taxon frequency etc
         openNewWindow { $("a", text: "open in new window") }
+        closeNewWindow { $("button[name='closeNewWindow']") }
 
 
         //Need to switch iFrame before access an element in iFrame

@@ -6,6 +6,10 @@ class LegendModule extends Module {
     static content = {
         title { $("div#legend").find('h3.panel-title').find("[testTag='legendTitle']").text() }
 
+        envelopeLegend(required: false)  { $("div[name='envelope']") }
+        searchEnvelopeLayer(required: false)  { $("input[testTag='searchLayer']") }
+        nextEnvelopeBtn(required: false) {$("button.btn[testTag='next']")}
+
         //Style
         styleSelection { $("select[testTag='layerStyleInLegend']") }
 

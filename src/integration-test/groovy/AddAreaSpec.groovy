@@ -261,14 +261,50 @@ class AddAreaSpec extends GebSpec {
         Thread.sleep(pause)
     }
 
-    def "Select area from polygonal layer"() {
-
-        //Open log history and read count if bbox
+    def "Define environmental envelope"() {
         when:
         menuModule.clickMenu("Add to map ") //NOTICE: space
         menuModule.clickMenuitem("Area")
 
-        //Add BBox
+        then:
+        waitFor 20, { addAreaModule.title == "Add area" }
+        addAreaModule.environmentalEnvelopeRadioBtn.click()
+
+        and:
+        addAreaModule.nextBtn.click()
+
+        then:
+        legendModule.envelopeLegend.displayed
+
+        when:
+        legendModule.searchEnvelopeLayer.value("GEOMACS")
+        Thread.sleep(pause)
+        legendModule.selectLayerInAutocomplete("GEOMACS")
+
+        and:
+        legendModule.nextEnvelopeBtn.click()
+
+        then:
+        waitFor 10, { modalModule.title == "Create a layer from an environmental envelope definition." }
+        waitFor 120, { modalModule.openNewWindow.displayed }
+        waitFor 10, { modalModule.outputDoc.displayed }
+
+        //Need to switch iFrame before access an element in iFrame
+        //driver.switchTo().frame("outputDocs")
+        Thread.sleep(pause)
+
+        modalModule.closeNewWindow.click()
+
+        then:
+        waitFor 10, { layerListModule.getLayer("Envelope (Environmental envelope)").displayed}
+        Thread.sleep(pause)
+    }
+
+    def "Select area from polygonal layer"() {
+        when:
+        menuModule.clickMenu("Add to map ") //NOTICE: space
+        menuModule.clickMenuitem("Area")
+
         then:
         waitFor 20, { addAreaModule.title == "Add area" }
         addAreaModule.pointOnLayerRadioBtn.click()
@@ -289,7 +325,9 @@ class AddAreaSpec extends GebSpec {
         legendModule.nextBtn.click()
 
         then:
-        thread.sleep(pause)
-
+        Thread.sleep(pause)
     }
+
+
+
 }
