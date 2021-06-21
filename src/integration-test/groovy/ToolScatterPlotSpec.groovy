@@ -61,7 +61,7 @@ class ToolScatterPlotSpec extends GebSpec {
         modalModule.speciesTextInput[0].value("Eucalyptus gunnii")
 
         then:
-        waitFor 10, {modalModule.speciesAutocompleteList.first().text().contains("Eucalyptus gunnii")}
+        waitFor 20, {modalModule.speciesAutocompleteList.first().text().contains("Eucalyptus gunnii")}
 
         when:
         modalModule.selectSpeciesInAutocomplete("Eucalyptus gunnii")
@@ -135,7 +135,7 @@ class ToolScatterPlotSpec extends GebSpec {
         modalModule.speciesTextInput[0].value("Eucalyptus gunnii")
 
         then:
-        waitFor 10, {modalModule.speciesAutocompleteList[0].first().text().contains("Eucalyptus gunnii")}
+        waitFor 20, {modalModule.speciesAutocompleteList[0].first().text().contains("Eucalyptus gunnii")}
 
         when:
         //modalModule.speciesAutocompleteList[0].first().click()
