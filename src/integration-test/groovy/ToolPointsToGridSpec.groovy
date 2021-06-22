@@ -75,7 +75,7 @@ class ToolPointsToGridSpec extends GebSpec {
         waitFor 10, { modalModule.title == "Create grids from points." }
         waitFor 40, { modalModule.status.contains("running") }
 
-        waitFor 150, { modalModule.openNewWindow.displayed }
+        waitFor 200, { modalModule.openNewWindow.displayed }
         waitFor 10, { modalModule.outputDoc.displayed }
 
         //Need to switch iFrame before access an element in iFrame

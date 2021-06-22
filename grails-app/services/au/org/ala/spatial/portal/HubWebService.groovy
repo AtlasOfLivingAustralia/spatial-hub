@@ -228,11 +228,13 @@ class HubWebService {
                     call = new PutMethod(uri.toString())
                 } else if (type == HttpPost.METHOD_NAME) {
                     call = new PostMethod(uri.toString())
-                    NameValuePair[] nvs =  new NameValuePair[nvList.size()]
-                    for (int i=0; i< nvList.size(); i++){
-                        nvs[i]= new NameValuePair(nvList.get(i).name, nvList.get(i).value)
+                    if (!nvList.isEmpty()) {
+                        NameValuePair[] nvs =  new NameValuePair[nvList.size()]
+                        for (int i=0; i< nvList.size(); i++){
+                            nvs[i]= new NameValuePair(nvList.get(i).name, nvList.get(i).value)
+                        }
+                        ((PostMethod)call).addParameters(nvs)
                     }
-                    ((PostMethod)call).addParameters(nvs)
                 }
 
                 if (entity) {
