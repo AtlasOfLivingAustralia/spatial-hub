@@ -466,16 +466,29 @@
                 };
 
                 $scope.list = function (item) {
-                    BiocacheService.speciesList(item.query, item.extraQ).then(function (data) {
-                        LayoutService.openModal('csv', {
-                            title: item.name,
-                            csv: data,
-                            columnOrder: [],
-                            info: item.name + ' csv',
-                            filename: item.name.replace(' ', '') + '.csv',
-                            display: {size: 'full'}
-                        }, true)
-                    })
+                    if (item.endemic !== undefined){
+                        BiocacheService.speciesListEndemic(item.query, item.extraQ, {}).then(function (data) {
+                            LayoutService.openModal('csv', {
+                                title: item.name,
+                                csv: data,
+                                columnOrder: [],
+                                info: item.name + ' csv',
+                                filename: item.name.replace(' ', '') + '.csv',
+                                display: {size: 'full'}
+                            }, true)
+                        })
+                    } else {
+                        BiocacheService.speciesList(item.query, item.extraQ, {}).then(function (data) {
+                            LayoutService.openModal('csv', {
+                                title: item.name,
+                                csv: data,
+                                columnOrder: [],
+                                info: item.name + ' csv',
+                                filename: item.name.replace(' ', '') + '.csv',
+                                display: {size: 'full'}
+                            }, true)
+                        })
+                    }
                 };
 
                 $scope.map = function (event, item) {
