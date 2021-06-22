@@ -188,7 +188,7 @@
                  *  ```
                  */
                 speciesListEndemic: function (query, fqs, config) {
-                    this.speciesListEndemicUrl(query, fqs).then(function (url) {
+                    return this.speciesListEndemicUrl(query, fqs).then(function (url) {
                         if (url == null) {
                             return $q.when('')
                         }
