@@ -188,7 +188,7 @@ Run `npm install`
 
 ### Test other servers:
 
-    ./gradlew :integrationTest -DbaseUrl=http://spatial-test.ala.org.au/ws
+    ./gradlew :integrationTest -DbaseUrl=http://spatial-test.ala.org.au/
 
 
 ### Authentication
@@ -199,7 +199,7 @@ Authentication info can be passed through with -Dusername and -Dpassword
 
 Or stored in a config file. The default config file is located in
 
-    /data/spatial-service/test/default.properties
+    /data/spatial-hub/test/default.properties
     
     username="xxxx@csiro.au"
     password="xxxxx"

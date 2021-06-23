@@ -547,6 +547,10 @@ class PortalController {
             }
 
             response.addHeader(HttpHeaders.CACHE_CONTROL, (String) grailsApplication.config.cache.headers.control)
+            // If url is in domain of 'ala.org.au', attach apiKey
+            if ( portalService.isInternalServer(url) ){
+                response.addHeader("apiKey",grailsApplication.config.api_key)
+            }
 
             //use caching for GET requests
             if (request.method == HttpGet.METHOD_NAME) {
