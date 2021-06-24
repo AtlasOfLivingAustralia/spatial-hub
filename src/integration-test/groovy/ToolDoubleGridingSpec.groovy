@@ -38,6 +38,8 @@ class ToolDoubleGridingSpec extends GebSpec {
         addAreaModule.gazInput.value("Tasmania")
 
         then:
+        waitFor 10, {addAreaModule.gazAutoListCheckbox("ASGS").displayed}
+        addAreaModule.gazAutoListCheckbox("ASGS").click()
         waitFor 10, {addAreaModule.gazAutoList("Tasmania").displayed}
         addAreaModule.gazAutoList("Tasmania").click()
 
@@ -45,7 +47,7 @@ class ToolDoubleGridingSpec extends GebSpec {
         addAreaModule.nextBtn.click()
 
         then:
-        waitFor 10, { layerListModule.getLayer("Tasmania").displayed }
+        waitFor 30, { layerListModule.getLayer("Tasmania").displayed }
         waitFor 5, { modalModule.title == "Double gridding sites by species"  }
 
         when:

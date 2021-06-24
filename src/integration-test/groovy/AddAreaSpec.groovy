@@ -137,9 +137,12 @@ class AddAreaSpec extends GebSpec {
         waitFor 10, { addAreaModule.gazInput.displayed }
 
         and:
-        addAreaModule.gazInput.value("Ben")
+        addAreaModule.gazInput.value("Ben Lomond")
 
         then:
+        waitFor 10, {addAreaModule.gazAutoListCheckbox("IBRA 7 Subregions").displayed}
+        addAreaModule.gazAutoListCheckbox("IBRA 7 Subregions").click()
+
         waitFor 10, {addAreaModule.gazAutoList("Ben Lomond").displayed}
         addAreaModule.gazAutoList("Ben Lomond").click()
 
@@ -229,16 +232,16 @@ class AddAreaSpec extends GebSpec {
         addAreaModule.wktAreaDataTextarea.value(wkt)
 
         then:
-        waitFor 10, { addAreaModule.nextBtn.displayed }
+        waitFor 20, { addAreaModule.nextBtn.displayed }
         addAreaModule.nextBtn.click()
 
         then:
-        waitFor 10, {layerListModule.getLayer(wktName).displayed}
+        waitFor 20, {layerListModule.getLayer(wktName).displayed}
 
         //click info btn
         layerListModule.displayAreaInfo(wktName)
 
-        waitFor 10, {layerListModule.areaInfoTable().displayed}
+        waitFor 30, {layerListModule.areaInfoTable().displayed}
         layerListModule.areaSize() == '309653.29'
         Thread.sleep(pause)
 

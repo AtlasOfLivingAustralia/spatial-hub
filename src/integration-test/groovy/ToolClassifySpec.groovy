@@ -39,6 +39,8 @@ class ToolClassifySpec extends GebSpec {
         addAreaModule.gazInput.value("Tasmania")
 
         then:
+        waitFor 10, {addAreaModule.gazAutoListCheckbox("ASGS").displayed}
+        addAreaModule.gazAutoListCheckbox("ASGS").click()
         waitFor 10, {addAreaModule.gazAutoList("Tasmania").displayed}
         addAreaModule.gazAutoList("Tasmania").click()
 

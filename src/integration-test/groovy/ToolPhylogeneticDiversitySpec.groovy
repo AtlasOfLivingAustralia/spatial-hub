@@ -39,6 +39,8 @@ class ToolPhylogeneticDiversitySpec extends GebSpec {
         addAreaModule.gazInput.value("Tasmania")
 
         then:
+        waitFor 10, {addAreaModule.gazAutoListCheckbox("ASGS").displayed}
+        addAreaModule.gazAutoListCheckbox("ASGS").click()
         waitFor 10, {addAreaModule.gazAutoList("Tasmania").displayed}
         addAreaModule.gazAutoList("Tasmania").click()
 
@@ -59,10 +61,10 @@ class ToolPhylogeneticDiversitySpec extends GebSpec {
 
         then:
         waitFor 10, { modalModule.title == title}
-        waitFor 120, { modalModule.status.contains("running")}
-        waitFor 60, { modalModule.status.contains("Fetching species in Tasmania")}
+//        waitFor 120, { modalModule.status.contains("running")}
+//        waitFor 60, { modalModule.status.contains("Fetching species in Tasmania")}
 
-        waitFor 600, {modalModule.reportName == "PhylogeneticDiversity (phylogeneticDiversity.csv)" }
+        waitFor 200, {modalModule.reportName == "PhylogeneticDiversity (phylogeneticDiversity.csv)" }
 
         modalModule.getCellInCSVTable(1,0) == "Tasmania"
         Float.parseFloat(modalModule.getCellInCSVTable(1,2)) > 1.0

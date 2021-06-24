@@ -37,9 +37,11 @@ class ToolCompareAreaSpec extends GebSpec {
         waitFor 10, { addAreaModule.gazInput.displayed }
 
         and:
-        addAreaModule.gazInput.value("Ben")
+        addAreaModule.gazInput.value("Ben Lomond")
 
         then:
+        waitFor 10, {addAreaModule.gazAutoListCheckbox("IBRA 7 Subregions").displayed}
+        addAreaModule.gazAutoListCheckbox("IBRA 7 Subregions").click()
         waitFor 10, {addAreaModule.gazAutoList("Ben Lomond").displayed}
         addAreaModule.gazAutoList("Ben Lomond").click()
 

@@ -61,6 +61,8 @@ class ToolReportSpec extends GebSpec {
         addAreaModule.gazInput.value("Tasmania")
 
         then:
+        waitFor 10, {addAreaModule.gazAutoListCheckbox("ASGS").displayed}
+        addAreaModule.gazAutoListCheckbox("ASGS").click()
         waitFor 10, {addAreaModule.gazAutoList("Tasmania").displayed}
         addAreaModule.gazAutoList("Tasmania").click()
 
@@ -75,7 +77,7 @@ class ToolReportSpec extends GebSpec {
         then:
         waitFor 5, {toolReportModule.reportName == "Area report - Tasmania" }
 
-        waitFor 10, { toolReportModule.getCount("Area (sq km)") >=  354347}
+        waitFor 10, { toolReportModule.getCount("Area (sq km)") >=  68000}
         waitFor 10, { toolReportModule.getCount("Number of species") >= 20000 }
         waitFor 10, { toolReportModule.getCount("Occurrences") >= 2000000 }
         waitFor 10, { toolReportModule.getCount("Invasive Species") >= 1000 }

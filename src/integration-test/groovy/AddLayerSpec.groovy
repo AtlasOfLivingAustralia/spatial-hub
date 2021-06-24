@@ -26,7 +26,8 @@ class AddLayerSpec extends GebSpec {
 
         //Add BBox
         then:
-        waitFor 20, { addLayerModule.title == "Add environmental and contextual layers to the map." }
+        waitFor 10, { addLayerModule.title == "Add environmental and contextual layers to the map." }
+        Thread.sleep(pause)
         addLayerModule.availableLayers.size() > 2
         addLayerModule.clickLayer("GEOMACS - geometric mean")
         waitFor 10, { addLayerModule.isNextBtnEnabled() }

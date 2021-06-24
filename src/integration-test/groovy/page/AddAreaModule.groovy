@@ -45,8 +45,12 @@ class AddAreaModule extends ModalModule {
 
     }
 
+    def gazAutoListCheckbox(name) {
+        $("li.autocomplete-item.ui-menu-item[isField] a").find("text": startsWith(name))[0]
+    }
+
     def gazAutoList(name) {
-        return $("li.autocomplete-item.ui-menu-item a").find("text": startsWith(name))[0]
+        return $("li.autocomplete-item.ui-menu-item[field] a").find("text": startsWith(name))[0]
     }
 
     /**
