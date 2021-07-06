@@ -362,7 +362,7 @@ class PortalController {
             def r = hubWebService.postUrl("${grailsApplication.config.layersService.url}/shape/upload/${type}?" +
                     "name=${URLEncoder.encode((String) params.name, ce)}&" +
                     "description=${URLEncoder.encode((String) params.description, ce)}&" +
-                    "api_key=${grailsApplication.config.api_key}", (Map) settings, null, mFile);
+                    "api_key=${grailsApplication.config.api_key}", null, settings, mFile);
 
             if (!r) {
                 render [:] as JSON
@@ -441,10 +441,10 @@ class PortalController {
             def url = grailsApplication.config.lists.url
 
             def header = [:]
-            if (!Holders.config.security.cas.disableCAS) {
-                header.put(grailsApplication.config.app.http.header.userId, userId)
-                header.put('Cookie', 'ALA-Auth=' + URLEncoder.encode(authService.email, 'UTF-8'))
-            }
+//            if (!Holders.config.security.cas.disableCAS) {
+//                header.put(grailsApplication.config.app.http.header.userId, userId)
+//                header.put('Cookie', 'ALA-Auth=' + URLEncoder.encode(authService.email, 'UTF-8'))
+//            }
 
             def r = hubWebService.urlResponse(HttpPost.METHOD_NAME, "${url}/ws/speciesList/", null, header,
                     new StringRequestEntity((json as JSON).toString()), true)
@@ -547,10 +547,6 @@ class PortalController {
             }
 
             response.addHeader(HttpHeaders.CACHE_CONTROL, (String) grailsApplication.config.cache.headers.control)
-            // If url is in domain of 'ala.org.au', attach apiKey
-            if ( portalService.isInternalServer(url) ){
-                response.addHeader("apiKey",grailsApplication.config.api_key)
-            }
 
             //use caching for GET requests
             if (request.method == HttpGet.METHOD_NAME) {

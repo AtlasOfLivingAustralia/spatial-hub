@@ -1,4 +1,4 @@
-<select ng-model='mode' ng-change='changeSelectedItem(mode)'>
+<select ng-model='mode' ng-change='changeSelectedItem(mode)' testTag="predefinedLayers">
     <option i18n="223" value="">Search layers</option>
     <option i18n="224" value="pasteLayers">Paste a layer set</option>
     <option i18n="225" value="uploadLayers">Upload a layer set</option>
@@ -90,7 +90,7 @@
                         </thead>
                         <tbody style="height:300px;overflow:auto">
                         <tr ng-repeat="layer in layers | orderBy:sortType:sortReverse | filter:searchLayer"
-                            name={{layer.id}}>
+                            name={{layer.id}} testTag="availableLayers">
                             <td style="width:20px"><input type="checkbox" ng-model="layer.selected"
                                                           ng-click="toggle(layer)">
                             </td>
@@ -98,7 +98,7 @@
                                     ng-src="{{baseUrl}}/assets/icon_{{layer.type == 'e' ? 'grid':'contextual'}}-layer.png">
                             </td>
                             <td style="width:300px">{{ layer.classification}}</td>
-                            <td style="width:300px">{{ layer.name }}</td>
+                            <td style="width:300px" testTag="layerName">{{ layer.name }}</td>
                             <td style="float:right">
                                 <div i18n="109" class="glyphicon glyphicon-info-sign" ng-click="info(layer)">&nbsp;
                                 </div>
@@ -121,7 +121,7 @@
                             <i class="glyphicon glyphicon-download-alt"></i>Export
                         </a>
                         <label style="padding-left:20px;"
-                               class="{{validLayerSelection ? '' : 'red-text' }}">{{_selection.layers.length}} of
+                               class="{{validLayerSelection ? '' : 'red-text' }}" testTag="countSelectedLayers">{{_selection.layers.length}} of
                             {{layers.length}} layers
                             selected</label>
                     </div>

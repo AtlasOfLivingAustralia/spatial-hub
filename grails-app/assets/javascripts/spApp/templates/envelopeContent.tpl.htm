@@ -22,7 +22,7 @@
                 <div class="input-sm">
                     <label i18n="226">Search</label>
                     <input style="width:230px" layer-auto-complete environmental="true" contextual="false"
-                           on-custom="addLayer">
+                           on-custom="addLayer" testTag="searchLayer">
                 </div>
             </div>
 
@@ -70,7 +70,7 @@
     </div>
     <div class="modal-footer">
         <button i18n="45" class="btn btn-default" ng-click="cancel()">Cancel</button>
-        <button i18n="39" class="btn btn-primary" ng-click="save()" ng-disabled="getFq().length == 0">Next &gt;
+        <button i18n="39" class="btn btn-primary" ng-click="save()" ng-disabled="getFq().length == 0" testTag="next">Next &gt;
         </button>
 
         <uib-progressbar ng-show="loading" class="progress-striped"

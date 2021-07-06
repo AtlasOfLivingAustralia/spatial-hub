@@ -137,31 +137,23 @@ class PortalService {
 
         return result
     }
-    // In ala.org.au domain
-    def isInternalServer(url) {
-        return url ==~ ~ /^(http(s)?(:\/\/))?([a-zA-Z0-9_-]{1,61}[a-zA-Z0-9]\.)?ala\.org\.au(:\d{1,5})?(\/.*)?$/
-    }
 
     def canProxy(url) {
-        if (isInternalServer(url)) {
-            return true
-        } else {
-            def predefined = url.toString().startsWith(Holders.config.layersService.url) ||
-                    url.toString().startsWith(Holders.config.phylolink.url) ||
-                    url.toString().startsWith(Holders.config.sampling.url)
-            //REGEXP: ^(https:|http:)\/\/data.auscover.org.au\/*
-            def proxies = Holders.config.allowProxy.server? Holders.config.allowProxy.server.split(";|,"):[];
-            //def proxies = (Holders.config.allowProxy as grails.converters.JSON).toString().encodeAsRaw()
-            def patterns = []
-            def mode = '((^(https:|http:)\\/\\/)?SERVER\\/*)'
-            for( proxy in proxies){
-                patterns.add(mode.replace('SERVER',proxy))
-            }
-            def pattern =  patterns.join('|');
-            print("Proxy regex pattern: " + pattern)
-
-            (url =~/${pattern}/).find() | predefined
+        def predefined = url.toString().startsWith(Holders.config.layersService.url) ||
+                url.toString().startsWith(Holders.config.phylolink.url) ||
+                url.toString().startsWith(Holders.config.sampling.url)
+        //REGEXP: ^(https:|http:)\/\/data.auscover.org.au\/*
+        def proxies = Holders.config.allowProxy.server? Holders.config.allowProxy.server.split(";|,"):[];
+        //def proxies = (Holders.config.allowProxy as grails.converters.JSON).toString().encodeAsRaw()
+        def patterns = []
+        def mode = '((^(https:|http:)\\/\\/)?SERVER\\/*)'
+        for( proxy in proxies){
+            patterns.add(mode.replace('SERVER',proxy))
         }
+        def pattern =  patterns.join('|');
+        print("Proxy regex pattern: " + pattern)
+
+        (url =~/${pattern}/).find() | predefined
     }
 
     def getAppConfig(hub) {

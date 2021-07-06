@@ -357,10 +357,10 @@
                             }
 
                             bootbox.alert("<b>Area</b><br/><br/>" +
-                                "<table class='table-striped table table-bordered'>" +
+                                "<table class='table-striped table table-bordered' testTag='displayAreaInfo'>" +
                                 "<tr><td style='width:100px'>" + $i18n("Name") + "</td><td>" + item.name + "</td></tr>" +
                                 "<tr><td>" + $i18n(347, "Description") + "</td><td>" + item.description + "</td></tr>" +
-                                "<tr><td>" + $i18n(348, "Area (sq km)") + "</td><td>" + item.area_km.toFixed(2) + "</td></tr>" +
+                                "<tr><td>" + $i18n(348, "Area (sq km)") + "</td><td testTag='areaSize'>" + item.area_km.toFixed(2) + "</td></tr>" +
                                 "<tr><td>" + $i18n(349, "Extents") + "</td><td>" + b[0][0] + " " + b[0][1] + ", " +
                                 b[1][0] + " " + b[1][1] + "</td></tr>" + metadata + "</table>")
                         } else {
