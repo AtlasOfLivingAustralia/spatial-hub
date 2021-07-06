@@ -3,27 +3,16 @@
         <div class="panel-heading">
             <h3 class="panel-title" style="margin-bottom: 0px">
                 <button i18n="1" type="button" class="close" ng-click="cancel()">×</button>
-                <div i18n="145" testTag="createAreaLegend">Create area</div>
+                <div i18n="145">Create area</div>
             </h3>
         </div>
         <div class="panel-body">
             <div class="alert alert-ala-success alert-success" role="alert">
-                <div class="container">
-                    <p style="display:inline;">
-                    <div ng-show="type == 'pointOnLayer'">
-                        <span i18n="71">Select or search for a contextual layer and click on the map to set the coordinates.</span>
-                    </div>
-                    <div ng-show="type != 'pointOnLayer'">
-                        <span i18n="74"
-                              ng-hide="selectedArea.wkt.length > 0">Draw on the map to create the new area.</span>
-                        <div class="btn-group btn-group-sm" ng-show="selectedArea.wkt.length > 0">
-                            <button i18n="77" class="btn btn-default" ng-click="enableDrawing()"
-                                    ng-show="type != 'pointOnLayer'"
-                            >Delete and redraw
-                            </button>
-                        </div>
-                    </div>
-                    </p>
+                <div ng-show="type == 'pointOnLayer'">
+                    <span i18n="71">Select or search for a contextual layer and click on the map to set the coordinates.</span>
+                </div>
+                <div ng-show="type != 'pointOnLayer'">
+                    <span i18n="74">Draw on the map to create the new area.</span>
                 </div>
             </div>
 
@@ -68,7 +57,8 @@
             </div>
 
             <div ng-show="type != 'pointOnLayer'">
-                <span i18n="75">Area name&nbsp;</span><input ng-model="areaName" testTag="newAreaName"></input>
+                <label for="areaNameInput" i18n="75">Area name&nbsp;</label>
+                <input ng-model="areaName" id="areaNameInput" class="input-md"></input>
                 <br/>
                 <br/>
                 <div ng-show="type == 'drawPolyline'">
@@ -77,10 +67,16 @@
                     <br/>
                     <br/>
                 </div>
-                <span i18n="76">WKT</span>
+                <label for="wktTextArea" i18n="76">Well Known Text (WKT)</label>
                 <br/>
-                <textarea ng-model="selectedArea.wkt" testTag="newAreaWKT" style="width:350px;height:200px;margin-left:10px"
+                <textarea id="wktTextArea" ng-model="selectedArea.wkt" style="width:350px;height:200px;"
                           readonly></textarea>
+            </div>
+
+            <div class="btn-group btn-group-sm" ng-show="selectedArea.wkt.length > 0">
+                <button i18n="77" class="btn btn-default" ng-click="enableDrawing()"
+                        ng-show="type != 'pointOnLayer'">Delete and redraw
+                </button>
             </div>
 
         </div>
@@ -89,7 +85,7 @@
         <div class="btn-group btn-group-sm">
             <button i18n="38" class="btn btn-default" ng-click="cancel()" ng-disabled="loading">Close</button>
             <button i18n="39" class="btn btn-primary" ng-click="ok()"
-                    ng-disabled="!isNextEnabled()" testTag="nextInNewAreaLegend">Next &gt;
+                    ng-disabled="!isNextEnabled()">Next &gt;
             </button>
         </div>
         <uib-progressbar ng-show="loading" class="progress-striped"
