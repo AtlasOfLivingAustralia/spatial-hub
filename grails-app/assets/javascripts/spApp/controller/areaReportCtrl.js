@@ -209,16 +209,9 @@
                         var name = $SH.biocollectReport[idx].name
                         var countUrl = $SH.biocollectReport[idx].count.replace('_geoSearchJSON_', geoSearchJSON).replace('_geoSearchEncoded', geoSearchEncoded)
                         var linkUrl = $SH.biocollectReport[idx].link.replace('_geoSearchJSON_', geoSearchJSON).replace('_geoSearchEncoded', geoSearchEncoded)
-
-                        var urlProxy = $SH.baseUrl + "/portal/proxy?url=" + encodeURIComponent(countUrl)
-                        // Status code returned via proxy is wrapped into response body in normal situation
+                        var urlProxy = $SH.baseUrl + "/biocollect?url=" + encodeURIComponent(countUrl)
                         return $http.get(urlProxy, $scope._httpDescription('biocollectCounts')).then(function (response) {
-                            if (response.data.statusCode == 200 ) {
-                                return {count: response.data.hits.total, link: linkUrl, linkName: 'list', name: name}
-                            } else {
-                                console.log("Failed to get data from Biocollect: " + countUrl)
-                                console.log (response.data)
-                            }
+                            return {count: response.data.hits.total, link: linkUrl, linkName: 'list', name: name}
                         });
                     } else {
                         return $q.when({})

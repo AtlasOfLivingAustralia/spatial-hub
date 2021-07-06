@@ -33,5 +33,4 @@ class LogController {
         response.status = r.statusCode
         render JSON.parse(new String(r?.text ?: "")) as JSON
     }
-
 }

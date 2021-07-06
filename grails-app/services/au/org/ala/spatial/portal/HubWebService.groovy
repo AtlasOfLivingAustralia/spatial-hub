@@ -285,6 +285,8 @@ class HubWebService {
                         is  = new ByteArrayInputStream(call.getResponseBody())
                     }
                     data = IOUtils.toString(is, 'UTF-8')
+                } else {
+                    data = call.responseBody
                 }
             } catch (Exception e) {
                 log.error(e.getMessage())
