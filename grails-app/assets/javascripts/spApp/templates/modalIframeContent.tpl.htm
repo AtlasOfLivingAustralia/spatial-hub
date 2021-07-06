@@ -1,7 +1,7 @@
 <div class="modal-header">
     <div style="float:right">
-        <a style="padding-right:30px" href="{{src}}" target="_blank">open in new window</a>
-        <button i18n="38" class="btn btn-primary" type="button" ng-click="$close()">Close</button>
+        <a style="padding-right:30px" href="{{src}}" target="_blank"  >open in new window</a>
+        <button i18n="38" class="btn btn-primary" type="button" ng-click="$close()" name="closeNewWindow">Close</button>
     </div>
 
     <div>
@@ -10,6 +10,6 @@
     </div>
 </div>
 <div class="modal-body" style="height:{{height}}px" ng-if="src != undefined">
-    <iframe src="{{src}}" style="height:100%;width:100%">
+    <iframe src="{{src}}" style="height:100%;width:100%" id="outputDocs">
     </iframe>
 </div>

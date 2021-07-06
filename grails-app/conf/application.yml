@@ -20,8 +20,8 @@ grails:
             events: false
     controllers:
         upload:
-            maxFileSize: 6000000
-            maxRequestSize: 6000000
+            maxFileSize: 10000000
+            maxRequestSize: 10000000
 info:
     app:
         name: '@info.app.name@'
@@ -121,7 +121,7 @@ security:
         casServerName: 'https://auth.ala.org.au'
         uriFilterPattern: '/alaAdmin,/alaAdmin.*'
         uriExclusionFilterPattern: '/portal/q.*,/portal/messages.*,/portal/sessionCache.*,/static.*,/assets.*'
-        authenticateOnlyIfLoggedInPattern: '/portal.*,/,,/portal/config.*,/portal/i18n.*,/hub/[a-zA-Z0-9]+'
+        authenticateOnlyIfLoggedInPattern: '/portal.*,/,/portal/config.*,/portal/i18n.*,/hub/[a-zA-Z0-9]+'
         loginUrl: 'https://auth.ala.org.au/cas/login'
         logoutUrl: 'https://auth.ala.org.au/cas/logout'
         gateway: false
@@ -399,7 +399,7 @@ wms:
     intersect: true
 
 fq:
-    excludeAbsent: "-occurrence_status_s:absent"
+    excludeAbsent: "-occurrence_status:absent"
 
 # fq applied to every biocache-service query
 qc: ""
@@ -527,6 +527,9 @@ rangeDataTypes:
   - 'tdouble'
   - 'tfloat'
   - 'tdate'
+  - 'float'
+  - 'double'
+  - 'date'
 
 numberOfIntervalsForRangeData: 7
 #
@@ -537,7 +540,7 @@ numberOfIntervalsForRangeData: 7
 
 date.facet: 'occurrence_date'
 date.min: '1780-01-01'
-date.max: '2020-01-01'
+date.max: '2030-01-01'
 
 #
 # Override the list of grouped facets from biocache-service (biocacheService.url/search/grouped/facets).

@@ -1,7 +1,7 @@
 <div>
     <label i18n="127" style=";width:70px">Facet</label>
     <select style=";width:300px" id='facet' ng-model="facet"
-            ng-change="changeFacet()">
+            ng-change="changeFacet()" testTag="facetInModal">
 
         <option i18n="503" value="search">Search facets...</option>
 
@@ -21,12 +21,12 @@
 <div style="height:320px">
     <hr/>
     <span i18n="505">Facet begins with (case sensitive):</span>
-    <input style="width:200px" type="text" ng-model="activeFacet.facetFilter"/>
+    <input style="width:200px" type="text" ng-model="activeFacet.facetFilter" testTag="applyFacetFilter"/>
     <div class="btn-group btn-group-xs">
-        <button i18n="141" ng-click="offset = 0; applyFilter()" class="btn btn-default">
+        <button i18n="141" ng-click="offset = 0; applyFilter()" class="btn btn-default" testTag="applyFacetFilter">
             apply filter
         </button>
-        <button i18n="129" ng-click="clearFilter()" class="btn btn-default">clear filter
+        <button i18n="129" ng-click="clearFilter()" class="btn btn-default" testTag="cleaFacetFilter">clear filter
         </button>
 
     </div>
@@ -40,7 +40,7 @@
     </div>
     <table id="facetList" ng-hide="updatingPage" class="table layers-table table-striped"
            style="margin-top:10px;width:100%;height:250px;overflow:auto;display:block">
-        <tr ng-repeat="x in activeFacet.facetList">
+        <tr ng-repeat="x in activeFacet.facetList" testTag="recordsOfSelectedFacet">
             <td style="width:20px"><input type="checkbox" ng-model="x.selected"
                                           ng-change="applySelection()"></td>
             <td style="width:330px;display: block;word-wrap:break-word;">{{x.displaylabel}}</td>

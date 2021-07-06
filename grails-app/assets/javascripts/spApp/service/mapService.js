@@ -591,7 +591,7 @@
                             var sld_body = undefined;
 
                             if (id.layertype === 'area') {
-                                if (id.id && id.id.includes(":")){
+                                if (id.id && ( isNaN(id.id)? id.id.includes(":") : false )){
                                     //qs does not parse full url, it ignores the first param after ?
                                     var wmsurl = id.wmsurl.split('?')[1]
                                     var qs = new URLSearchParams(wmsurl)
@@ -611,10 +611,7 @@
                                             transparent: true
                                         }
                                     }
-
-
                                 }else{
-
                                     if (id.type === 'envelope') {
                                         newLayer = {
                                             name: uid + ': ' + id.name,

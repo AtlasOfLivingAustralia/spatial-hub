@@ -78,7 +78,7 @@
              ng-show="selected.layer.layertype == 'species' && selected.layer.colorType != 'grid'">
             <label i18n="127" style=";width:70px">Facet</label>
             <select style=";width:300px" id='facet' ng-model="selected.layer.facet"
-                    ng-change="updateFacet()">
+                    ng-change="updateFacet()" testTag="facetInLegend">
                 <option i18n="128" value="-1">User defined colour</option>
                 <option i18n="503" value="search">Search facets...</option>
                 <option ng-repeat="filter in workflowFilters" value="{{filter.workflowId}}">{{filter.name}}</option>
@@ -314,7 +314,7 @@
              ng-show="selected.layer.layertype == 'grid'">
             <label i18n="529" style=";width:70px">Style</label>
             <select style=";width:300px" id='gridStyle' ng-model="selected.layer.style"
-                    ng-change="updateStyle()">
+                    ng-change="updateStyle()" testTag="layerStyleInLegend">
                 <option i18n="530" value="default">non-linear</option>
                 <option i18n="531" value="linear">linear</option>
             </select>
@@ -350,7 +350,7 @@
                         class="progress-striped" ng-class="{ active: true }" value="100"
                         type='info' title="Updating">loading...
                 </uib-progressbar>
-                <table class="table table-striped" style="width:370px;overflow:auto;display:block">
+                <table class="table table-striped" style="width:370px;overflow:auto;display:block" >
                     <tr ng-repeat="x in selected.layer.contextualList"
                         ng-click="contextualHighlight(x.name, x.pid, x)">
                         <td style="width:20px">

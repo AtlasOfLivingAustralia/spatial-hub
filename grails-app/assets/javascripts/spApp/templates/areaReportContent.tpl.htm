@@ -9,9 +9,9 @@
 
     <table class="table table-striped">
         <tbody>
-        <tr ng-repeat="item in items">
-            <td style="width:250px;vertical-align: middle;">{{item.name}}</td>
-            <td style="text-align:right;width:80px;vertical-align: middle;">
+        <tr ng-repeat="item in items" testTag="reportItem">
+            <td style="width:250px;vertical-align: middle;" testTag="name">{{item.name}}</td>
+            <td style="text-align:right;width:80px;vertical-align: middle;" testTag="count" >
                 <i ng-hide="item.value !== undefined && item.value !== ''" style="width:16px;height:16px"
                    class="species-spinner"></i>
                 <span ng-show="item.value !== undefined && item.value !== ''">&nbsp;{{item.value}}</span>
