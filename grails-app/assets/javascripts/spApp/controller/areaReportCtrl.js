@@ -423,10 +423,9 @@
                             } else {
                                 $scope.countNextItem(items, index + 1)
                             }
-                        } else {
-                            $scope.makeCSV()
                         }
                     }
+                    $scope.makeCSV()
                 }
 
                 $scope.count = function (item, promise) {
