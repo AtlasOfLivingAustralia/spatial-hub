@@ -2,7 +2,7 @@ language: groovy
 jdk:
 - openjdk8
 node_js:
-  - 10
+  - "15"
 sudo: false
 branches:
   only:
