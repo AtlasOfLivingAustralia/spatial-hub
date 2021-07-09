@@ -4,10 +4,11 @@
 </div>
 <div class="modal-body">
     <span i18n="69" ng-if="truncated">Partial results</span>
+    <!-- if $scope.species = true, hide the first column: names_and_lsid -->
     <div style="height:300px;overflow:auto">
-        <table class="table table-striped csv-table" testTag="reportCSVTable">
+        <table class="table table-striped csv-table" testTag="reportCSVTable" ng-if="species === true">
             <thead>
-                <tr>
+                <tr >
                     <th ng-repeat="x in summary[0] track by $index" ng-if="$index > 0">
                          {{ x }}
                     </th>
@@ -18,10 +19,30 @@
                     <button i18n="70" class="btn btn-xs" ng-if="mappable" ng-click="addToMap(x)">
                         Add to map
                     </button>
-                    <td ng-repeat="i in x track by $index">
+                    <td ng-repeat="i in x track by $index" ng-if="$index > 0">
                         {{i}}
                     </td>
                 </tr>
+            </tbody>
+        </table>
+        <!-- if $scope.species = false, show all columns -->
+        <table class="table table-striped csv-table" testTag="reportCSVTable" ng-if="species === false">
+            <thead>
+            <tr >
+                <th ng-repeat="x in summary[0] track by $index">
+                    {{ x }}
+                </th>
+            </tr>
+            </thead>
+            <tbody style="height:300px;overflow:auto;">
+            <tr ng-repeat="x in summary track by $index" ng-if="$index > 0">
+                <button i18n="70" class="btn btn-xs" ng-if="mappable" ng-click="addToMap(x)">
+                    Add to map
+                </button>
+                <td ng-repeat="i in x track by $index">
+                    {{i}}
+                </td>
+            </tr>
             </tbody>
         </table>
     </div>
