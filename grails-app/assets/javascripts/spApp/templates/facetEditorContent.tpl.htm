@@ -22,7 +22,7 @@
                  type='info' title="Updating">{{ facet.progress || 'loading...'}}
 </uib-progressbar>
 <table class="table table-striped" style="min-width:370px;max-height:200px;overflow:auto;display:none"
-       ng-style="{display: _settings.tableStyle || 'block'}" ng-show="!_facet.loading">
+       ng-style="{display: _settings.tableStyle || 'block'}" ng-show="!_facet.loading" testTag="facetContent">
     <thead>
     <tr>
         <th style="min-width:20px; width: 5%;"><input type="checkbox" ng-model="_facet.isAllFacetsSelected"
@@ -48,9 +48,9 @@
     </tr>
     </thead>
     <tbody>
-    <tr ng-repeat="x in _facet.data | orderBy:getPredicateField():_facet.sortReverse |filter:_facet.filter" ng-if="facetDisplay === 'table'">
+    <tr ng-repeat="x in _facet.data | orderBy:getPredicateField():_facet.sortReverse |filter:_facet.filter" ng-if="facetDisplay === 'table'" testTag="recordsOfSelectedFacet">
         <td style="min-width:20px; width: 5%;"><input type="checkbox" ng-model="x.selected" ng-change="updateSelection()"></td>
-        <td style="min-width:215px; width: 62%;">{{x.displayname}}</td>
+        <td style="min-width:215px; width: 62%;" >{{x.displayname}}</td>
         <td style="min-width:100px; width: 27%;">{{x.count}}</td>
         <td i18n="130" style="background-color:#{{formatColor(x)}};min-width:35px; width: 5%;">&nbsp;</td>
     </tr>

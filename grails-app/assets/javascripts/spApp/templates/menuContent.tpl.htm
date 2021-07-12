@@ -4,14 +4,14 @@
         <div class="btn-group" role="group" ng-repeat="menu in menuConfig">
             <button ng-style='{ width:"{{ menu.width }}px" }' id="menu-{{ $index }}" type="button"
                     class="btn btn-default dropdown-toggle"
-                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-disabled="disabled">
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-disabled="disabled" testTag="menu">
                 {{ menu.name }}&nbsp;<span class="caret"></span>
             </button>
             <ul class="dropdown-menu" role="menu" aria-labelledby="menu-{{ $index }}">
                 <li role="menuitem" ng-repeat="button in menu.items"
                     class="ng-class: !button['separator'] || 'separator'">
                     <a ng-if="!button['separator'] && button['open'].match('^https?://.*') == null" href="#"
-                       ng-click="run(button)">{{
+                       ng-click="run(button)" testTag="menuItem">{{
                         button.name }}</a>
                     <a ng-if="!button['separator'] && button['open'].match('^https?://.*') != null" target="_blank"
                        href="{{ button.open }}">{{

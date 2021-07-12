@@ -34,7 +34,7 @@
                         });
 
                         //Watch special options update
-                        //fq=geospatial_kosher:true&fq=-occurrence_status_s:absent
+                        //fq=geospatial_kosher:true&fq=-occurrence_status:absent
                         scope.$on("speciesOptionsChange",function (event, value) {
                             scope.fqsOfSpeciesOptions = [];
                             /*
@@ -72,7 +72,7 @@
 
                             //if includeAbsences NOT selected
                             if (!value.includeAbsences) {
-                                scope.fqsOfSpeciesOptions.push("-occurrence_status_s:absent")
+                                scope.fqsOfSpeciesOptions.push("-occurrence_status:absent")
                             }
 
                             //if a facet has been selected, then refresch results
@@ -282,10 +282,13 @@
                             }
 
                             if (scope.facet !== 'search' && scope.facet !== '') {
+                                //Biocache returns error message as plain text
+                                var config = {headers: {"Accept": "text/plain, */*",
+                                           }};
                                 BiocacheService.facetGeneral(scope.facet, {
                                     q: q,
                                     bs: $SH.biocacheServiceUrl
-                                }, pageSize, offset, scope.facetFilter, sortBy, scope.config).then(function (data) {
+                                }, pageSize, offset, scope.facetFilter, sortBy, config).then(function (data) {
                                     if (data.length > 0) {
                                         scope.activeFacet.facetList = data[0].fieldResult;
                                         scope.activeFacet.exportUrl = BiocacheService.facetDownload(scope.facet);
@@ -298,8 +301,14 @@
                                     }
                                     scope.updateSel();
                                     scope.updateCheckmarks();
-
                                     scope.updatingPage = false;
+                                }, function (error) {
+                                    scope.updatingPage = false;
+                                     if (error.data){
+                                         bootbox.alert("Error: " + error.data.errorType +"<br/>Check logs for more information!")
+                                     } else {
+                                         bootbox.alert("An error occurred. Please try again and if the same error occurs, send an email to support@ala.org.au and include the URL to this page, the error message and what steps you performed that triggered this error.")
+                                     }
                                 })
                             }
                         };

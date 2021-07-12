@@ -67,13 +67,14 @@
                 };
 
                 if ($scope.summary.length > 0 && $scope.summary[0].length > 0) {
-                    $.each($scope.summary[0], function (fieldName) {
+                    $.each($scope.summary[0], function (i) {
+                        var fieldName = $scope.summary[0][i];
                         if (fieldName === 'spcode') {
                             $scope.mappable = true;
                             $scope.distributions = true
                         } else if (fieldName === 'names_and_lsid') {
                             $scope.mappable = true;
-                            $scope.species = true
+                            $scope.species = true; // csvContent.tpl.htm hides the names_lsid
                         }
                     });
 

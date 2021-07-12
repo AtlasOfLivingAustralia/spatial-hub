@@ -1,6 +1,6 @@
 <div class="modal-header">
     <button i18n="1" type="button" class="close" ng-click="$close()">×</button>
-    <h3 i18n="515" class="modal-title">History</h3>
+    <h3 i18n="515" class="modal-title" testTag="logs">History</h3>
 </div>
 
 <div class="modal-body">
@@ -9,7 +9,7 @@
     <br/>
     <br/>
     <a ng-if="back.length > 0" ng-click="goBack()">< back</a>
-    <table class="table table-striped csv-table">
+    <table class="table table-striped csv-table" testTag="logs">
         <thead>
         <th ng-repeat="(key, value) in content[0] track by $index">
             {{$index < header.length ? header[$index] : (headerOrder.length == 0 ? lookup(key) : '')}}

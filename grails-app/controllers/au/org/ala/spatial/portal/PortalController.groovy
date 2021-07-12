@@ -362,7 +362,7 @@ class PortalController {
             def r = hubWebService.postUrl("${grailsApplication.config.layersService.url}/shape/upload/${type}?" +
                     "name=${URLEncoder.encode((String) params.name, ce)}&" +
                     "description=${URLEncoder.encode((String) params.description, ce)}&" +
-                    "api_key=${grailsApplication.config.api_key}", (Map) settings, null, mFile);
+                    "api_key=${grailsApplication.config.api_key}", null, settings, mFile);
 
             if (!r) {
                 render [:] as JSON
@@ -441,10 +441,10 @@ class PortalController {
             def url = grailsApplication.config.lists.url
 
             def header = [:]
-            if (!Holders.config.security.cas.disableCAS) {
-                header.put(grailsApplication.config.app.http.header.userId, userId)
-                header.put('Cookie', 'ALA-Auth=' + URLEncoder.encode(authService.email, 'UTF-8'))
-            }
+//            if (!Holders.config.security.cas.disableCAS) {
+//                header.put(grailsApplication.config.app.http.header.userId, userId)
+//                header.put('Cookie', 'ALA-Auth=' + URLEncoder.encode(authService.email, 'UTF-8'))
+//            }
 
             def r = hubWebService.urlResponse(HttpPost.METHOD_NAME, "${url}/ws/speciesList/", null, header,
                     new StringRequestEntity((json as JSON).toString()), true)
@@ -514,6 +514,16 @@ class PortalController {
         }
     }
 
+    /**
+     * Status code returned from proxied url will be stored in response body
+     *
+     * For example:
+     *
+     * if a proxied server return status code 401, the status code will be wrapped into  statusCode field in body
+     * and returned to client with status 200
+     *
+     * @return
+     */
     def proxy() {
         def userId = getValidUserId(params)
 

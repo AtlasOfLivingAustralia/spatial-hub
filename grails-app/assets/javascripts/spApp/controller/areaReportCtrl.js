@@ -118,6 +118,7 @@
                     for (k in areas) {
                         areaCount++
                     }
+
                     for (k in $scope.items) {
                         if ($scope.items.hasOwnProperty(k)) {
                             if ($i18n(358, "Checklist species distributions") === $scope.items[k].name) {
@@ -208,7 +209,8 @@
                         var name = $SH.biocollectReport[idx].name
                         var countUrl = $SH.biocollectReport[idx].count.replace('_geoSearchJSON_', geoSearchJSON).replace('_geoSearchEncoded', geoSearchEncoded)
                         var linkUrl = $SH.biocollectReport[idx].link.replace('_geoSearchJSON_', geoSearchJSON).replace('_geoSearchEncoded', geoSearchEncoded)
-                        return $http.get(countUrl, $scope._httpDescription('biocollectCounts')).then(function (response) {
+                        var urlProxy = $SH.baseUrl + "/biocollect?url=" + encodeURIComponent(countUrl)
+                        return $http.get(urlProxy, $scope._httpDescription('biocollectCounts')).then(function (response) {
                             return {count: response.data.hits.total, link: linkUrl, linkName: 'list', name: name}
                         });
                     } else {
@@ -377,7 +379,9 @@
                         if ($SH.biocollectReport) {
                             $.each($SH.biocollectReport, function (i, v) {
                                 $scope.biocollectCounts(i).then(function (data) {
-                                    $scope.items.push(data)
+                                    if (data) {
+                                        $scope.items.push(data)
+                                    }
                                 })
                             })
                         }
@@ -399,28 +403,29 @@
                 };
 
                 $scope.countNextItem = function(items, index) {
-                    if (index < items.length) {
-                        if (items[index].query !== undefined) {
-                            items[index].value = '';
-                            if (items[index].occurrences !== undefined && items[index].occurrences) {
-                                $scope.count(items[index], BiocacheService.count(items[index].query, items[index].extraQ)).then(function (count) {
+                    if (items[index]) {
+                        if (index < items.length) {
+                            if (items[index].query !== undefined) {
+                                items[index].value = '';
+                                if (items[index].occurrences !== undefined && items[index].occurrences) {
+                                    $scope.count(items[index], BiocacheService.count(items[index].query, items[index].extraQ)).then(function (count) {
+                                        $scope.countNextItem(items, index + 1)
+                                    })
+                                } else if (items[index].name.indexOf('endemic') >= 0) {
+                                    $scope.count(items[index], BiocacheService.speciesCountEndemic(items[index].query, items[index].extraQ))
+                                    // endemic counts are slow, do not wait
                                     $scope.countNextItem(items, index + 1)
-                                })
-                            } else if (items[index].name.indexOf('endemic') >= 0) {
-                                $scope.count(items[index], BiocacheService.speciesCountEndemic(items[index].query, items[index].extraQ))
-                                // endemic counts are slow, do not wait
-                                $scope.countNextItem(items, index + 1)
+                                } else {
+                                    $scope.count(items[index], BiocacheService.speciesCount(items[index].query, items[index].extraQ)).then(function (count) {
+                                        $scope.countNextItem(items, index + 1)
+                                    })
+                                }
                             } else {
-                                $scope.count(items[index], BiocacheService.speciesCount(items[index].query, items[index].extraQ)).then(function (count) {
-                                    $scope.countNextItem(items, index + 1)
-                                })
+                                $scope.countNextItem(items, index + 1)
                             }
-                        } else {
-                            $scope.countNextItem(items, index + 1)
                         }
-                    } else {
-                        $scope.makeCSV()
                     }
+                    $scope.makeCSV()
                 }
 
                 $scope.count = function (item, promise) {

@@ -3,7 +3,7 @@
         <div class="panel-heading">
             <h3 class="panel-title" style="margin-bottom: 0px">
                 <button i18n="1" type="button" class="close" ng-click="cancel()">×</button>
-                <div i18n="145">Create area</div>
+                <div i18n="145" testTag="createAreaLegend">Create area</div>
             </h3>
         </div>
         <div class="panel-body">
@@ -58,7 +58,7 @@
 
             <div ng-show="type != 'pointOnLayer'">
                 <label for="areaNameInput" i18n="75">Area name&nbsp;</label>
-                <input ng-model="areaName" id="areaNameInput" class="input-md"></input>
+                <input ng-model="areaName" id="areaNameInput" class="input-md" testTag="newAreaName"></input>
                 <br/>
                 <br/>
                 <div ng-show="type == 'drawPolyline'">
@@ -69,7 +69,7 @@
                 </div>
                 <label for="wktTextArea" i18n="76">Well Known Text (WKT)</label>
                 <br/>
-                <textarea id="wktTextArea" ng-model="selectedArea.wkt" style="width:350px;height:200px;"
+                <textarea id="wktTextArea" ng-model="selectedArea.wkt" testTag="newAreaWKT" style="width:350px;height:200px;"
                           readonly></textarea>
             </div>
 
@@ -85,7 +85,7 @@
         <div class="btn-group btn-group-sm">
             <button i18n="38" class="btn btn-default" ng-click="cancel()" ng-disabled="loading">Close</button>
             <button i18n="39" class="btn btn-primary" ng-click="ok()"
-                    ng-disabled="!isNextEnabled()">Next &gt;
+                    ng-disabled="!isNextEnabled()" testTag="nextInNewAreaLegend">Next &gt;
             </button>
         </div>
         <uib-progressbar ng-show="loading" class="progress-striped"
