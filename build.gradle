@@ -31,7 +31,7 @@ ext {
     }
 }
 
-version "0.4.2_SNAPSHOT"
+version "0.4.3-SNAPSHOT"
 group "au.org.ala"
 
 apply plugin:"eclipse"
@@ -43,7 +43,6 @@ apply plugin:"org.grails.grails-gsp"
 apply plugin:'com.bertramlabs.asset-pipeline'
 
 apply plugin:"com.energizedwork.webdriver-binaries"
-
 apply from: 'https://raw.githubusercontent.com/AtlasOfLivingAustralia/travis-build-configuration/master/travis_grails_publish.gradle'
 
 sourceCompatibility = 1.8
