@@ -400,7 +400,7 @@ class PortalController {
             json.user_id = userId
             Map headers = [apiKey: grailsApplication.config.api_key]
             String url = "${grailsApplication.config.layersService.url}/shape/upload/shp/" +
-                    "${json.shpId}/${json.featureIdx}"
+                    "${json.shpId}/featureIndex"
             def r = hubWebService.urlResponse(HttpPost.METHOD_NAME, url, null, headers,
                     new StringRequestEntity((json as JSON).toString()))
             response.status = r.statusCode
