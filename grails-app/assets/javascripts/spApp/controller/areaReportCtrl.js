@@ -340,7 +340,8 @@
                                     q: areaQ.q.concat([$SH.threatenedQ]),
                                     bs: areaQ.bs,
                                     ws: areaQ.ws,
-                                    wkt: areaQ.wkt
+                                    wkt: areaQ.wkt,
+                                    qid: areaQ.qid
                                 },
                                 extraQ: [$SH.threatenedQ],
                                 ignore: $SH.listsUrl === '' || $SH.threatenedQ === ''
