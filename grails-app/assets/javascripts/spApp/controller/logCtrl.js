@@ -123,7 +123,7 @@
 
                 $scope.lookup = function (value) {
                     // lookup category2 (tool name) and sessionId (date/time)
-                    if (value === undefined || value === 0) {
+                    if (value == undefined || value === 0) {
                         return ''
                     } else if (('' + value).match('^[1-9][0-9]{12}$')) {
                         return $filter('date')(value, 'yyyy-dd-MM hh:mm:ss')
