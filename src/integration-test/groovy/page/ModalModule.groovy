@@ -14,6 +14,7 @@ class ModalModule extends Module {
         //species option
         //Some tools may contain multiple copy, etc scatterplot
         searchSpeciesRadioBtn (required: false) { $("input[type='radio'][value='searchSpecies']") }
+        importSpeciesListRadioBtn (required: false) { $("input[type='radio'][value='importList']") }
         speciesTextInput (required:false) {$("input#speciesAutoComplete")}
         // species autocomplete list
         speciesAutocompleteList(required:false) {$("ul li.ui-menu-item a")}
