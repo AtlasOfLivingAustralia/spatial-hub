@@ -135,15 +135,19 @@
     </div>
 </div>
 
-<div ng-show="listsEnabled() && _importList" class="radio"><label>
+<div ng-show="listsEnabled() && _importList" class="radio" name="createSpeciesList">
+    <label>
     <input i18n="248" type="radio" ng-model="speciesOption" value="importList"
            ng-change="changeOption('importList')" ng-disabled="isNotLoggedIn" name="{{_uniqueId}}">Create new species
     list</label>
+
     <div ng-show="speciesOption == 'importList'" style="margin-left:15px">
-        <span i18n="249">List:</span><span class="strong"> {{speciesListName}}</span>
-        <button i18n="250" style="margin-left:30px" type="button" class="btn btn-default btn-xs"
+        <div ng-show="speciesListName" style="margin-left:5px">
+            <span>Current List: </span><b>{{speciesListName}}</b>
+        </div>
+        <button  style="margin-left:5px" type="button" class="btn btn-default btn-xs"
                 ng-click="openSpeciesList()">
-            Import species list
+            Import another species list
         </button>
         <hr>
     </div>

@@ -30,7 +30,6 @@
                         _importPoints: '=?importPoints',
                         _searchSpecies: '=?searchSpecies',
                         _allSpecies: '=?allSpecies',
-
                     },
                     templateUrl: '/spApp/selectSpeciesCtrl.htm',
                     link: function (scope, element, attrs) {
@@ -105,10 +104,17 @@
                         scope.multiNewQ = {q: [], name: ''};
 
                         scope.sandboxName = '';
-                        scope.speciesListName = '';
+
+
                         scope.doiEnabled = DoiService.isEnabled();
 
                         LayoutService.addToSave(scope);
+                        //Have to call behind addToSave, otherwise lost
+                        scope.speciesListName = '';
+                        //check if a user defined species list is created
+                        if (scope._selectedQ && scope._selectedQ.speciesListName) {
+                            scope.speciesListName = scope._selectedQ.speciesListName
+                        }
 
                         scope.speciesLayers = scope._includeLayers ? MapService.speciesLayers() : [];
 
@@ -134,9 +140,9 @@
                         };
 
                         scope.setSpeciesListQ = function (query) {
+                            // scope.speciesListName = query.name //won't work. Overwritten by init process
+                            query.speciesListName = query.name
                             scope.setQ(query);
-
-                            scope.speciesListName = query.name
                         };
 
                         scope.sandboxEnabled = function () {
@@ -183,6 +189,13 @@
 
                         scope.setQ = function (query) {
                             var selection = scope._selectedQ;
+                            //If a species list created by a user, then assign name of list
+                            if (query && query.speciesListName) {
+                                selection.speciesListName = query.name
+                            } else {
+                                selection.speciesListName = ''
+                            }
+
                             if (query && query.q && query.q.length === 0) {
                                 // clear the selection
                                 if (!scope.multiselect) {
@@ -268,6 +281,7 @@
 
                                 // apply date range option
                                 var dateRange = angular.merge([], scope.dateRange.fq);
+
 
                                 selection.species_list = query.species_list;
                                 selection.wkt = query.wkt;
