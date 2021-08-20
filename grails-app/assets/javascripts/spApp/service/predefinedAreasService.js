@@ -29,6 +29,7 @@
                             } else if (area.wkt && area.wkt.length > 0) {
                                 geoArea = LGeo.area(wellknown.parse(area.wkt))
                             }
+
                             defaultAreas.push(MapService.newArea($i18n(area.name),
                                 area.fqs,
                                 area.wkt,
