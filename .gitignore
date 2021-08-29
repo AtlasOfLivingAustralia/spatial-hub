@@ -14,3 +14,5 @@ node_modules
 grails-app/assets/compile/
 
 grails-app/conf/application-backup.yml
+/package-lock.json
+/.asscache
