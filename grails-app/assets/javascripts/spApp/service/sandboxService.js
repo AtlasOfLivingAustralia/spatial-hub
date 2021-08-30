@@ -34,7 +34,8 @@
                  *  [TODO: example]
                  */
                 list: function (userId) {
-                    return $http.get($SH.collectionsUrl + "/ws/tempDataResource?alaId=" + userId, _httpDescription('list', {withCredentials: true})).then(function (response) {
+                    var urlProxy = $SH.baseUrl + "/collection/list?alaId=" + userId
+                    return $http.get(urlProxy, _httpDescription('list', {})).then(function (response) {
                         return response.data;
                     });
                 }
