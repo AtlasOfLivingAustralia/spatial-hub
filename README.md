@@ -5,6 +5,43 @@ Replacement for spatial-portal with Grails, AngularJS and Leaflet.
 
 **_See also:_ [Integration Tests](#Tests)**
 
+## Setup production
+
+Modify configurations in
+
+    /data/spatial-hub/config/spatial-hub-config.yml
+
+The default production url is https://spatial.ala.org.au
+
+The default develop url is http://devt.ala.org.au:8079
+
+The dependent services point to other production servers by default
+
+### Minimum configurations in external config file:
+
+        api_key: xxxxxxxxx-d184-4276-afc2-6ece17176d7c
+        google:
+            apikey: xxxxxxxx
+
+### Check the following configurations if deployed on different servers.
+   
+####Example:
+    grails.serverURL: "https://spatial-test.ala.org.au"
+    grails.app.context: "/"
+    
+    googleAnalyticsId: "xxxxxxxx"
+    google:
+        apikey: "xxxxxxxxxxxxxx"
+    
+    api_key: xxxxxxxxxxxxxxxxx
+    
+    layersService:
+        url: "https://spatial-test.ala.org.au/ws"
+    
+    geoserver:
+        url: "https://spatial-test.ala.org.au/geoserver"
+
+
 ## How to customise
 ### menu-config.json
 * The main menu is overridden with `/data/spatial-hub/menu-config.json`.

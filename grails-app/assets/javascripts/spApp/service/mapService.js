@@ -784,7 +784,13 @@
                                     } else if (id.sld_body) {
                                         newLayer.legendurl += "&service=WMS&request=GetLegendGraphic&format=image/png&sld_body=" + encodeURIComponent(id.sld_body)
                                     } else if (id.style) {
-                                        newLayer.legendurl += "&service=WMS&request=GetLegendGraphic&format=image/png&style=" + encodeURIComponent(style)
+                                        //newLayer.legendurl += "&service=WMS&request=GetLegendGraphic&format=image/png&style=" + encodeURIComponent(style)
+                                        if(style) {
+                                            newLayer.legendurl += "&service=WMS&request=GetLegendGraphic&format=image/png&style=" + encodeURIComponent(style);
+                                        } else {
+                                            newLayer.legendurl += "&service=WMS&request=GetLegendGraphic&format=image/png&style=" + id.layer.id;
+                                        }
+
                                     } else {
                                         newLayer.legendurl += "&service=WMS&REQUEST=GetLegendGraphic&FORMAT=image/png"
                                     }

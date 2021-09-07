@@ -1,63 +1,49 @@
-
 buildscript {
     repositories {
-        mavenLocal()
-        maven { url "https://nexus.ala.org.au/content/groups/public/" }
         maven { url "https://repo.grails.org/grails/core" }
+        maven { url "https://nexus.ala.org.au/content/groups/public/" }
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
-//        classpath "org.grails.plugins:hibernate5:${gormVersion-".RELEASE"}"
-        classpath 'com.bertramlabs.plugins:asset-pipeline-gradle:2.14.6'
-        classpath "gradle.plugin.com.energizedwork.webdriver-binaries:webdriver-binaries-gradle-plugin:1.4"
+        classpath "gradle.plugin.com.github.erdi.webdriver-binaries:webdriver-binaries-gradle-plugin:2.0"
+        classpath "com.bertramlabs.plugins:asset-pipeline-gradle:3.0.10"
     }
 }
 
-plugins {
-    id "com.gorylenko.gradle-git-properties" version "1.4.17"
-    id 'com.bertramlabs.asset-pipeline' version '2.5.0'
-    //id "com.energizedwork.webdriver-binaries" version "1.1"
-}
 
-ext {
-    // The drivers we want to use
-    drivers = ["firefox", "chrome", "chromeHeadless"]
-
-    ext {
-        gebVersion = '2.3'
-        seleniumVersion = '3.14.0'
-        chromeDriverVersion = '2.44'
-        geckoDriverVersion = '0.26.0'
-    }
-}
-
-version "0.4.3-SNAPSHOT"
+version "1.0.0-SNAPSHOT"
 group "au.org.ala"
 
 apply plugin:"eclipse"
 apply plugin:"idea"
 apply plugin:"war"
 apply plugin:"org.grails.grails-web"
-apply plugin:"asset-pipeline"
+apply plugin:"com.github.erdi.webdriver-binaries"
 apply plugin:"org.grails.grails-gsp"
-apply plugin:'com.bertramlabs.asset-pipeline'
+//Angular assert wrapper needs
+apply plugin:"com.bertramlabs.asset-pipeline"
+apply plugin:"asset-pipeline"
 
-apply plugin:"com.energizedwork.webdriver-binaries"
-apply from: 'https://raw.githubusercontent.com/AtlasOfLivingAustralia/travis-build-configuration/master/travis_grails_publish.gradle'
+war {
+    enabled=true
+}
+
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 repositories {
     mavenLocal()
-    mavenCentral()
-    maven { url "https://nexus.ala.org.au/content/groups/public/" }
     maven { url "https://repo.grails.org/grails/core" }
+    maven { url "https://nexus.ala.org.au/content/groups/public/" }
     maven { url 'https://jitpack.io' }
 }
 
-
 configurations {
+    developmentOnly
+    runtimeClasspath {
+        extendsFrom developmentOnly
+    }
     all {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
         exclude group: 'ch.qos.logback', module: 'logback-classic'
@@ -66,6 +52,8 @@ configurations {
 }
 
 dependencies {
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
+    compile "org.springframework.boot:spring-boot-starter-logging"
     compile "org.springframework.boot:spring-boot-autoconfigure"
     compile "org.grails:grails-core"
     compile "org.springframework.boot:spring-boot-starter-actuator"
@@ -82,64 +70,52 @@ dependencies {
     compile "org.grails.plugins:async"
     compile "org.grails.plugins:scaffolding"
     compile "org.grails.plugins:events"
-
-    compile "org.hibernate:hibernate-validator:5.2.3.Final"
     compile "org.grails.plugins:gsp"
+    compileOnly "io.micronaut:micronaut-inject-groovy"
     console "org.grails:grails-console"
     profile "org.grails.profiles:web"
+    runtime "org.glassfish.web:el-impl:2.1.2-b03"
+    runtime "com.h2database:h2"
+    runtime "org.apache.tomcat:tomcat-jdbc"
+    runtime "javax.xml.bind:jaxb-api:2.3.0"
+    runtime "com.bertramlabs.plugins:asset-pipeline-grails:3.0.10"
 
+    testCompile "org.mockito:mockito-core"
+    testCompile "org.grails:grails-web-testing-support"
+    testCompile "org.grails.plugins:geb"
+    testCompile "org.seleniumhq.selenium:selenium-remote-driver:3.14.0"
+    testCompile "org.seleniumhq.selenium:selenium-api:3.14.0"
+    testCompile "org.seleniumhq.selenium:selenium-support:3.14.0"
+    testRuntime "org.seleniumhq.selenium:selenium-chrome-driver:3.14.0"
+    testRuntime "org.seleniumhq.selenium:selenium-firefox-driver:3.14.0"
 
     // Additional Plugins
-    compile 'org.grails.plugins:external-config:1.2.2'
-    compile group: 'commons-httpclient', name: 'commons-httpclient', version: '3.1'
-    implementation group: 'commons-io', name: 'commons-io', version: '2.6'
+    implementation 'org.grails.plugins:external-config:2.0.0'
+    implementation group: 'commons-httpclient', name: 'commons-httpclient', version: '3.1'
+    implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.4'
+    compile group: 'commons-io', name: 'commons-io', version: '2.6'
+    implementation group: 'commons-lang', name: 'commons-lang', version: '2.6'
 
-    compile "org.grails.plugins:ala-auth:3.1.3"
-    compile "org.grails.plugins:ala-admin-plugin:2.1"
-    compile "org.grails.plugins:ala-bootstrap3:3.2.3"
-    compile "au.org.ala.plugins.grails:ala-charts-plugin:2.1-ANGULAR"
-
-    runtime 'org.grails.plugins:sandbox-hub:1.0'
-
-    compile 'org.grails.plugins:cache'
-//    compile 'org.grails.plugins:cache-ehcache:3.0.0.M1' // check https://github.com/AtlasOfLivingAustralia/userdetails/blob/9d5d76fda0954a92dd379eb6f3a9061d576d95fd/build.gradle
-
-    compile 'org.grails.plugins:swagger:1.0.0'
-    compile 'org.webjars:swagger-ui:2.2.8'
-
+    implementation group: 'io.swagger', name: 'swagger-annotations', version: '1.6.2'
+    implementation group: 'org.jasig.cas.client', name: 'cas-client-core', version: '3.6.2'
+    implementation group: "com.bertramlabs.plugins", name: "asset-pipeline-gradle", version: "3.0.10"
+    //Angular profile wrapper needs
     assets 'com.craigburke.angular:angular-annotate-asset-pipeline:2.4.1'
     assets "com.craigburke.angular:angular-template-asset-pipeline:2.4.0"
 
     compile('com.github.ziplet:ziplet:2.0.0') {
         exclude group: 'org.slf4j', module: 'slf4j-nop'
     }
-
-    compile 'org.springframework.boot:spring-boot-starter-data-redis:2.0.0.RELEASE'
-    compile 'org.springframework.session:spring-session:1.3.5.RELEASE'
-
-    // If using Spock, need to depend on geb-spock
-    testCompile "org.gebish:geb-spock:$gebVersion"
-    testCompile("org.spockframework:spock-core:1.3-groovy-2.4") {
-        exclude group: "org.codehaus.groovy"
-    }
-
-    // If using JUnit, need to depend on geb-junit (3 or 4)
-    testCompile "org.gebish:geb-junit4:$gebVersion"
-
-    // Drivers
-    testCompile "org.seleniumhq.selenium:selenium-chrome-driver:$seleniumVersion"
-    testCompile "org.seleniumhq.selenium:selenium-firefox-driver:$seleniumVersion"
-
-    testCompile "org.seleniumhq.selenium:selenium-remote-driver:$seleniumVersion"
-    testCompile "org.seleniumhq.selenium:selenium-api:$seleniumVersion"
-    testCompile "org.seleniumhq.selenium:selenium-support:$seleniumVersion"
-
-
+    implementation "org.grails.plugins:ala-auth:3.2.3"
+    compile "org.grails.plugins:ala-admin-plugin:2.2"
+    compile "org.grails.plugins:ala-bootstrap3:3.2.4"
+    implementation "au.org.ala:ala-cas-client:2.4"
+    runtime "au.org.ala.plugins.grails:ala-charts-plugin:2.1-ANGULAR-4"
+    runtime 'org.grails.plugins:sandbox-hub:1.0'
 }
 
 // Set to true it needed only for development
 boolean inplace = false
-
 
 if (inplace) {
     grails {
@@ -158,46 +134,42 @@ task _Events {
     }
 }
 
-//compileTestGroovy.enabled = false
-
 // the tasks used here for dependsOn may be incomplete/incorrect
 assetCompile.dependsOn(_Events)
 compileGroovy.dependsOn(_Events)
 bootRun.dependsOn(_Events)
 
 bootRun {
-    jvmArgs('-Dspring.output.ansi.enabled=always', '-Xmx4G')
-    addResources = true
+    jvmArgs(
+        '-Dspring.output.ansi.enabled=always', 
+        '-noverify', 
+        '-XX:TieredStopAtLevel=1',
+        '-Xmx1024m')
+    sourceResources sourceSets.main
+    String springProfilesActive = 'spring.profiles.active'
+    systemProperty springProfilesActive, System.getProperty(springProfilesActive)
 }
 
-
-bootRepackage {
-    enabled = true
-    executable = true
-    classifier = 'exec'
+tasks.withType(GroovyCompile) {
+    configure(groovyOptions.forkOptions) {
+        memoryMaximumSize = '4g'
+        jvmArgs = ['-Xms2g', '-Xmx4g']
+    }
 }
 
-assets {
-    //developmentRuntime = false
-    minifyJs = true
-    minifyCss = true
+ext {
+    // The drivers we want to use
+    drivers = ["firefox", "chrome", "chromeHeadless"]
 }
-
-
 
 webdriverBinaries {
-    chromedriver "$chromeDriverVersion"
-    geckodriver "$geckoDriverVersion"
+    chromedriver '2.45.0'
+    geckodriver '0.26.0'
 }
-
 
 tasks.getByName("integrationTest") {
     group JavaBasePlugin.VERIFICATION_GROUP
-
-    //outputs.upToDateWhen { false }  // Always run tests
-
     systemProperty "geb.build.reportsDir", reporting.file("geb/$name")
-
     systemProperty "geb.env",  System.properties['driver']?:"firefox"  // firefox by default
     // pass test server by -DbaseUrl
     systemProperty "geb.build.baseUrl", System.properties['baseUrl'] ?: "http://devt.ala.org.au:8087"
@@ -211,13 +183,48 @@ tasks.getByName("integrationTest") {
 
 tasks.withType(Test) {
     maxHeapSize = "1g"
-    jvmArgs '-XX:MaxMetaspaceSize=128m'
+    jvmArgs '-XX:MaxMetaspaceSize=512m'
     testLogging {
         exceptionFormat = 'full'
         showStandardStreams = true
     }
 }
 
-tasks.withType(GroovyCompile) {
-    groovyOptions.forkOptions.memoryMaximumSize = '256m'
+assets {
+    minifyJs = true
+    minifyCss = true
+}
+
+// Refer to FieldCapture: https://github.com/AtlasOfLivingAustralia/fieldcapture/blob/feature/grails4/gradle/publish.gradle
+apply plugin:"maven-publish"
+publishing {
+    repositories {
+        maven {
+            name 'Nexus'
+            url "https://nexus.ala.org.au/content/repositories/${project.version.endsWith('-SNAPSHOT') ? 'snapshots' : 'releases'}"
+            credentials {
+                username = System.getenv('TRAVIS_DEPLOY_USERNAME')
+                password = System.getenv('TRAVIS_DEPLOY_PASSWORD')
+            }
+        }
+    }
+    publications {
+        mavenJar(MavenPublication) {
+
+            pom.withXml {
+                def pomNode = asNode()
+                pomNode.dependencyManagement.replaceNode {}
+
+                // simply remove dependencies without a version
+                // version-less dependencies are handled with dependencyManagement
+                // see https://github.com/spring-gradle-plugins/dependency-management-plugin/issues/8 for more complete solutions
+                pomNode.dependencies.dependency.findAll {
+                    it.version.text().isEmpty()
+                }.each {
+                    it.replaceNode {}
+                }
+            }
+            artifact bootJar
+        }
+    }
 }
