@@ -79,7 +79,7 @@ class PortalService {
         }
     }
 
-   //@Cacheable('configCache')
+   @Cacheable('configCache')
     def getConfig(type, showDefault, hub) {
         def config
         def defaultFile = type + '-config.json'
