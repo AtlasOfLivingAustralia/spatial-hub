@@ -28,7 +28,9 @@ war {
     enabled=true
 }
 
-
+buildProperties {
+    inputs.property("info.app.build.date", new Date().format('yyyy-MM-dd HH:mm:ss'))
+}
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
