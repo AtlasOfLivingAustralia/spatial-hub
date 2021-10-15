@@ -96,7 +96,7 @@
                 nameLookup: function (names) {
                     return $http.post($SH.bieServiceUrl + "/species/lookup/bulk", {
                         names: names,
-                        vernacular: false
+                        vernacular: true
                     }, _httpDescription('nameLookup')).then(function (response) {
                         var list = response.data;
                         for (var i in list) {
