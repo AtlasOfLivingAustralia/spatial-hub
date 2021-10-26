@@ -124,7 +124,6 @@ spApp.config(['$httpProvider', function ($httpProvider) {
                         window.location.reload();
                     }
                 }
-                console.log(JSON.stringify(rejection.data))
                 return $q.reject(rejection);
             }
         };
