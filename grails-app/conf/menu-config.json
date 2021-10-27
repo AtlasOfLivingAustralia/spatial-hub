@@ -1,110 +1,145 @@
 [
   {
-    "name": "Add to map",
-    "width": 110,
+    "name": "Hinzufügen",
+    "i18nNr": 533,
+    "width": 200,
     "items": [
       {
-        "name": "Species",
+        "name": "Arten",
+        "i18nNr": 538,
         "open": "ToolAddSpeciesService"
       },
       {
-        "name": "Area",
+        "name": "Gebiete",
+        "i18nNr": 539,
         "open": "addArea"
       },
       {
         "name": "Layer",
+        "i18nNr": 540,
         "open": "ToolAddLayerService"
       },
       {
-        "name": "Facet",
+        "name": "Lebensraumtypen",
+        "i18nNr": 541,
+        "open": "ToolHabitats"
+      },
+      {
+        "name": "Eigenschaften",
+        "i18nNr": 542,
         "open": "ToolAddFacetService"
       }
     ]
   },
   {
-    "name": "Tools",
-    "width": 70,
+    "name": "Analysetools",
+    "i18nNr": 534,
+    "width": 130,
     "items": [
       {
-        "name": "Area Report - interactive",
+        "name": "Ökosystemleistungen",
+        "i18nNr": 543,
+        "open": "ToolEcoSystemService"
+      },
+      {
+        "name": "Gebietsbericht - interaktiv",
+        "i18nNr": 544,
         "open": "ToolAreaReportService"
       },
       {
-        "name": "Area Report - PDF",
+        "name": "Gebietsbericht - PDF",
+        "i18nNr": 545,
         "open": "AreaReport"
       },
       {
-        "name": "Scatterplot - single",
+        "name": "Scatterplot",
+        "i18nNr": 546,
         "open": "ScatterplotCreate"
       },
       {
-        "name": "Scatterplot - multiple",
+        "name": "Scatterplot - matrix",
+        "i18nNr": 547,
         "open": "ScatterplotList"
       },
       {
-        "name": "Taxon Frequency",
+        "name": "Artenhäufigkeit",
+        "i18nNr": 548,
         "open": "TaxonFrequency"
       },
       {
-        "name": "Tabulate",
+        "name": "Vektorlayer vergleichen",
+        "i18nNr": 549,
         "open": "tabulate"
       },
       {
-        "name": "Species by Layer",
+        "name": "Arten von Layern",
+        "i18nNr": 550,
         "open": "SpeciesByLayer"
       },
       {
-        "name": "Compare Points",
+        "name": "Punkte vergleichen",
+        "i18nNr": 551,
         "open": "pointComparison"
       },
       {
-        "name": "Compare Areas",
+        "name": "Gebiete vergleichen",
+        "i18nNr": 552,
         "open": "CompareAreas"
       },
       {
-        "name": "Generate Points",
+        "name": "Punktraster generieren",
+        "i18nNr": 553,
         "open": "GeneratePoints"
       },
       {
-        "name": "Points to Grid",
+        "name": "Punkte zu Raster",
+        "i18nNr": 554,
         "open": "PointsToGrid"
       },
       {
-        "name": "Calculate AOO and EOO",
+        "name": "Verbreitung (EOO) & Vorkommen (AOO)",
+        "i18nNr": 555,
         "open": "AooEoo"
       },
       {
-        "name": "Predict",
+        "name": "Potenzielle Verbreitung (MaxEnt)",
+        "i18nNr": 556,
         "open": "Maxent"
       },
       {
-        "name": "Classify",
+        "name": "Klassifikation",
+        "i18nNr": 557,
         "open": "Classification"
       },
       {
-        "name": "Phylogenetic Diversity",
+        "name": "Phylogenetische Diversität",
+        "i18nNr": 558,
         "open": "PhylogeneticDiversity"
       },
       {
-        "name": "Nearest Locality",
+        "name": "Nächstgelegene Gebiete",
+        "i18nNr": 559,
         "open": "nearestLocality"
       },
       {
         "separator": true
       },
       {
-        "name": "Restore Prior Analysis",
+        "name": "Vorherige Analyse wiederherstellen",
+        "i18nNr": 560,
         "open": "analysis"
       }
 
     ]
   },
   {
-    "name": "Import",
-    "width": 78,
+    "name": "Importieren",
+    "i18nNr": 535,
+    "width": 110,
     "items": [
       {
-        "name": "Points",
+        "name": "Fundpunkte",
+        "i18nNr": 561,
         "open": "sandBox",
         "params": {
           "display": {
@@ -113,7 +148,8 @@
         }
       },
       {
-        "name": "Species List",
+        "name": "Artenliste",
+        "i18nNr": 562,
         "open": "createSpeciesList",
         "params": {
           "speciesOption": "speciesList",
@@ -121,7 +157,8 @@
         }
       },
       {
-        "name": "Areas",
+        "name": "Gebiete",
+        "i18nNr": 563,
         "open": "addArea",
         "params": {
           "importArea": true
@@ -131,59 +168,72 @@
         "separator": true
       },
       {
-        "name": "Restore prior analysis",
+        "name": "Vorherige Analyse wiederherstellen",
+        "i18nNr": 560,
         "open": "analysis"
       }
     ]
   },
   {
-    "name": "Export",
-    "width": 77,
+    "name": "Exportieren",
+    "i18nNr": 536,
+    "width": 110,
     "items": [
       {
-        "name": "Map",
+        "name": "Karte",
+        "i18nNr": 565,
         "open": "exportMap"
       },
       {
-        "name": "Area Checklist",
+        "name": "Artencheckliste",
+        "i18nNr": 566,
         "open": "ToolExportChecklistService"
       },
       {
-        "name": "Points",
+        "name": "Fundpunkte",
+        "i18nNr": 561,
         "open": "ToolExportSampleService"
       },
       {
-        "name": "Areas",
+        "name": "Gebiete",
+        "i18nNr": 564,
         "open": "ToolExportAreaService"
       },
       {
-        "name": "Points to BCCVL",
+        "name": "Punkte zu BCCVL",
+        "i18nNr": 567,
         "open": "exportBccvl"
       }
     ]
   },
   {
-    "name": "Help",
-    "width": 69,
+    "name": "Hilfe",
+    "i18nNr": 537,
+    "width": 82,
     "items": [
       {
-        "name": "Getting Started",
+        "name": "Erste Schritte",
+        "i18nNr": 568,
         "open": "https://www.ala.org.au/spatial-portal-help/getting-started"
       },
       {
-        "name": "Add To Map",
+        "name": "Hinzufügen",
+        "i18nNr": 569,
         "open": "https://www.ala.org.au/spatial-portal-help/add-to-map"
       },
       {
-        "name": "Tools",
+        "name": "Analysetools",
+        "i18nNr": 570,
         "open": "https://www.ala.org.au/spatial-portal-help/tools"
       },
       {
-        "name": "Import",
+        "name": "Importieren",
+        "i18nNr": 571,
         "open": "https://www.ala.org.au/spatial-portal-help/import"
       },
       {
-        "name": "Export",
+        "name": "Exportieren",
+        "i18nNr": 572,
         "open": "https://www.ala.org.au/spatial-portal-help/export"
       }
     ]
