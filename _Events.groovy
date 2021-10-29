@@ -7,7 +7,18 @@ def build(String baseDir) {
     final workdir = new File(baseDir, '')
     final proc = new ProcessBuilder().inheritIO()
     // npm for UNIX, npm.cmd for Windows
-    final exec = proc.command('npm.cmd', '-dd', 'install').start()
+    final exec = null;
+    if (OperatingSystem.current().isLinux()) {
+        exec = proc.command('npm', '-dd', 'install').start()
+    } else if (OperatingSystem.current().isUnix()) {
+        exec = proc.command('npm', '-dd', 'install').start()
+    } else if (OperatingSystem.current().isWindows()) {
+        exec = proc.command('npm.cmd', '-dd', 'install').start()
+    } else if (OperatingSystem.current().isMacOsX()) {
+        exec = proc.command('npm', '-dd', 'install').start()
+    } else {
+        exec = proc.command('npm', '-dd', 'install').start()
+    }
     def exitValue = exec.waitFor()
     if (exitValue) {
         println '*****************************************************'
@@ -65,7 +76,18 @@ def build(String baseDir) {
 
     // jsdoc
     println 'Starting JSDoc'
-    final exec2 = proc.command('npm.cmd', 'run', 'jsdoc').start()
+    final exec2 = null;
+    if (OperatingSystem.current().isLinux()) {
+        exec2 = proc.command('npm', 'run', 'jsdoc').start()
+    } else if (OperatingSystem.current().isUnix()) {
+        exec2 = proc.command('npm', 'run', 'jsdoc').start()
+    } else if (OperatingSystem.current().isWindows()) {
+        exec2 = proc.command('npm.cmd', 'run', 'jsdoc').start()
+    } else if (OperatingSystem.current().isMacOsX()) {
+        exec2 = proc.command('npm', 'run', 'jsdoc').start()
+    } else {
+        exec2 = proc.command('npm', 'run', 'jsdoc').start()
+    }
     def exitValue2 = exec2.waitFor()
     if (exitValue2) {
         println '*****************************************************'
