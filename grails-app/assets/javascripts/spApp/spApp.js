@@ -172,7 +172,14 @@ function fetchData() {
             }
         });
     }
-
+    /*
+    if(window.getCookie('lang') === 'en') {
+        $SH.i18n = "default";
+    }
+    if(window.getCookie('lang') === 'de_AT') {
+        $SH.i18n = "de_AT";
+    }
+     */
     promises.push($http.get($SH.baseUrl + "/portal/i18n?lang=" + $SH.i18n, _httpDescription('geti18n')).then(function (result) {
         for (k in result.data) {
             gMessages[k + ""] = result.data[k]

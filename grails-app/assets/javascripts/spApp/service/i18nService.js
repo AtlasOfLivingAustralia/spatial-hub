@@ -66,18 +66,11 @@
                     k = ('' + k).replace(" ", "_");
 
                     map[k] = v;
-                    if(window.getCookie('lang') == 'en') {
-                        $http.post($SH.baseUrl + "/portal/i18n?lang=en&hub=" + $SH.hub, {
-                            key: k,
-                            value: v
-                        }, _httpDescription('commit'))
-                    }
-                    if(window.getCookie('lang') != 'en') {
-                        $http.post($SH.baseUrl + "/portal/i18n?lang=default&hub=" + $SH.hub, {
-                            key: k,
-                            value: v
-                        }, _httpDescription('commit'))
-                    }
+
+                    $http.post($SH.baseUrl + "/portal/i18n?lang=" + $SH.i18n + "&hub=" + $SH.hub, {
+                        key: k,
+                        value: v
+                    }, _httpDescription('commit'))
                 }
             };
 
