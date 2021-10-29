@@ -15,7 +15,7 @@
                 spec: {
                     "input": [
                         {
-                            "description": $i18n("Select area."),
+                            "description": $i18n(352),
                             "type": "area",
                             "constraints": {
                                 "min": 1,
@@ -23,7 +23,7 @@
                                 "optional": false
                             }
                         }],
-                    "description": $i18n("Area Report")
+                    "description": $i18n(353)
                 },
 
                 execute: function (inputs) {

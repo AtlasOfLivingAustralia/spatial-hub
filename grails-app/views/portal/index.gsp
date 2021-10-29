@@ -27,6 +27,13 @@
 <g:set var="sandboxUrl" value="${config.sandbox.uiUrl}"></g:set>
 
 <script type="text/javascript" asset-defer="false">
+    var langSwitch = "";
+    if(window.getCookie('lang') == 'en') {
+        langSwitch = 'default';
+    }
+    if(window.getCookie('lang') == 'de_AT') {
+        langSwitch = 'de';
+    }
     $SH = {
         hub: '${hub}',
         enviroment:'${grails.util.Environment.current}',
@@ -144,7 +151,7 @@
             , '${config.doiService.url}/**'
             </g:if>
         ],
-        i18n: '${config.i18n?.region?:"default"}',
+        i18n: langSwitch,
         editable: ${params.edit?:'false'},
         wmsIntersect: ${config.wms.intersect},
         projections: ${(config.projections as grails.converters.JSON).toString().encodeAsRaw()},

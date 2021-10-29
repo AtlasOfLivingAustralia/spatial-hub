@@ -233,7 +233,7 @@ def build(String baseDir) {
             print(label)
             def newCount = 0
 
-            String input = FileUtils.readFileToString(f)
+        String input = FileUtils.readFileToString(f)
 
             def output = new StringBuilder()
 
@@ -325,6 +325,7 @@ def findLastIndex(directory, startString, endString) {
                         last_idx = Math.max(last_idx, Integer.parseInt(value))
                     }
                 }
+            }
 
                 start = next + 1
             } else {

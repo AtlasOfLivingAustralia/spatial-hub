@@ -23,7 +23,7 @@
                         "input": [
                             {
                                 "name": "area",
-                                "description": "Select area.",
+                                "description": $i18n(420),
                                 "type": "area",
                                 "constraints": {
                                     "min": 1,
@@ -34,7 +34,7 @@
                             },
                             {
                                 "name": "species",
-                                "description": "Select species.",
+                                "description": $i18n(416),
                                 "type": "species",
                                 "constraints": {
                                     "min": 1,
@@ -46,7 +46,7 @@
                             },
                             {
                                 "name": "layers",
-                                "description": "Select layers.",
+                                "description": $i18n(414),
                                 "type": "layer",
                                 "constraints": {
                                     "min": 1,
@@ -54,7 +54,7 @@
                                 }
                             }
                         ],
-                        "description": "Export points."
+                        "description": "Punkte exportieren."
                     },
 
                     execute: function (inputs) {
