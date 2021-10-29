@@ -1,9 +1,9 @@
 <div class="modal-header">
     <button i18n="1" type="button" class="close" ng-click="$close()">×</button>
-    <h4 i18n="2" class="modal-title">Add area</h4>
+    <h4 i18n="2" class="modal-title" testTag="modalTitle">Add area</h4>
 </div>
 
-<div class="modal-body">
+<div class="modal-body" testTag="addAreaModal">
     <div class="row">
         <div class="col-md-12">
             <form class="form-horizontal">
@@ -36,6 +36,10 @@
                                 <div class="checkbox"><label><input type="radio" ng-model="area" name="addArea_area"
                                                                     ng-change="selectArea('pointOnLayer')"
                                                                     value="pointOnLayer"><span i18n="8">Select area from polygonal layer</span></label>
+                                </div>
+                                <div class="checkbox"><label><input type="radio" ng-model="area" name="addArea_area"
+                                                                    ng-change="selectArea('drawPolyline')"
+                                                                    value="drawPolyline"><span i18n="494">Draw polyline with buffer</span></label>
                                 </div>
                             </div>
 
@@ -139,7 +143,7 @@
                 <div class="panel panel-default" ng-show="step == 'pointRadius'">
                     <div class="panel-default">
                         <div class="panel-heading">
-                            <h3 i18n="26" class="panel-title">Search for an address<.</h3>
+                            <h3 i18n="11" class="panel-title">Area from point and radius</h3>
                         </div>
 
                         <div class="panel-body">
@@ -197,7 +201,7 @@
                             <div ng-show="step == 'importShapefile' && fileName.length > 0">
                                 <label i18n="34" style="width: 100px" for="myAreaName">Area Name</label>
                                 <input type="text" style="width:50%" id="myAreaName" ng-model="myAreaName"
-                                       value="My Area">
+                                       value="My Area" testTag="importAreaName">
                             </div>
 
                             <p i18n="288">Only areas can be imported. Points and lines cannot be imported.</p>
@@ -208,7 +212,7 @@
                                         <div class="col-lg-6">
                                             <p i18n="35">Areas for merging</p>
                                             <table class="table table-striped panel panel-default"
-                                                   style="height:400px;overflow:scroll;display:block">
+                                                   style="height:400px;overflow:auto;display:block">
                                                 <thead>
                                                 <tr>
                                                     <th align="center"><input type="checkbox"
@@ -222,15 +226,16 @@
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                <tr ng-repeat="area in areaList">
+                                                <tr ng-repeat="area in areaList" >
                                                     <td align="center"><input type="checkbox" ng-click="selectShpArea()"
-                                                                              ng-model="area.selected"></td>
-                                                    <td ng-repeat="header in areaHeader">
+                                                                              ng-model="area.selected" testTag="newAreaInList"></td>
+                                                    <td ng-repeat="header in areaHeader" >
                                                         {{area.values[header]}}
                                                     </td>
                                                 </tr>
                                                 </tbody>
                                             </table>
+                                            <div ng-if="selectedAreaSize>0">Total areas of selected: {{selectedAreaSize | number}}</div>
                                         </div>
                                         <div class="col-lg-6" style="height:400px">
                                             <p i18n="36">Preview</p>
@@ -247,7 +252,10 @@
                                 <div class="btn-group btn-group-sm">
                                     <button i18n="37" ng-show="!uploadingFile && uploadProgress == 0"
                                             class="btn btn-default"
-                                            ngf-select="uploadFile($file)">Choose file
+                                            ngf-select="uploadFile($newFiles)"
+                                            ngf-max-size="maxFileSize"
+                                            testTag = "uploadFile"
+                                    >Choose file
                                     </button>
                                 </div>
 
@@ -268,10 +276,10 @@
 
                         <div class="panel-body">
                             <label i18n="29" style="width: 100px">Area name</label><label><input
-                                ng-model="selectedArea.name">
+                                ng-model="selectedArea.name" testTag="wktAreaName">
                             <br/>WKT</label><textarea
                                 style="width:250px;height:300px"
-                                ng-model="selectedArea.wkt"></textarea>
+                                ng-model="selectedArea.wkt" testTag="wktAreaData"></textarea>
                         </div>
                     </div>
                 </div>
@@ -282,7 +290,7 @@
 </div>
 
 <div class="modal-footer">
-    <button i18n="45" class="btn btn-default" type="button" ng-click="$close()">Cancel</button>
-    <button i18n="39" class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="isDisabled()">Next &gt;
+    <button i18n="45" class="btn btn-default" type="button" ng-click="$close()" name="cancel">Cancel</button>
+    <button i18n="39" class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="isDisabled()" name="next">Next &gt;
     </button>
 </div>

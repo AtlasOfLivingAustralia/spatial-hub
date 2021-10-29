@@ -1,35 +1,58 @@
 <div class="modal-header">
     <button i18n="1" type="button" class="close" ng-click="$close()">×</button>
-    <h3 class="modal-title">{{data.title}}</h3>
+    <h4 class="modal-title" testTag="reportName">{{data.title}}</h4>
 </div>
-
 <div class="modal-body">
-    <div>
-        {{data.info}}
-        <br/>
-        <br/>
-        <span i18n="69" ng-if="truncated">Partial results</span>
-        <div style="height:300px;overflow:scroll">
-            <table class="table table-striped csv-table">
-                <tbody style="height:300px;overflow:scroll;display:block">
-                <tr ng-repeat="x in summary track by $index">
+    <span i18n="69" ng-if="truncated">Partial results</span>
+    <!-- if $scope.species = true, hide the first column: names_and_lsid -->
+    <div style="height:300px;overflow:auto">
+        <table class="table table-striped csv-table" testTag="reportCSVTable" ng-if="species === true">
+            <thead>
+                <tr >
+                    <th ng-repeat="x in summary[0] track by $index" ng-if="$index > 0">
+                         {{ x }}
+                    </th>
+                </tr>
+            </thead>
+            <tbody style="height:300px;overflow:auto;">
+                <tr ng-repeat="x in summary track by $index" ng-if="$index > 0">
                     <button i18n="70" class="btn btn-xs" ng-if="mappable" ng-click="addToMap(x)">
                         Add to map
                     </button>
-                    <td ng-repeat="i in x track by $index">
+                    <td ng-repeat="i in x track by $index" ng-if="$index > 0">
                         {{i}}
                     </td>
                 </tr>
-                </tbody>
-            </table>
-        </div>
+            </tbody>
+        </table>
+        <!-- if $scope.species = false, show all columns -->
+        <table class="table table-striped csv-table" testTag="reportCSVTable" ng-if="species === false">
+            <thead>
+            <tr >
+                <th ng-repeat="x in summary[0] track by $index">
+                    {{ x }}
+                </th>
+            </tr>
+            </thead>
+            <tbody style="height:300px;overflow:auto;">
+            <tr ng-repeat="x in summary track by $index" ng-if="$index > 0">
+                <button i18n="70" class="btn btn-xs" ng-if="mappable" ng-click="addToMap(x)">
+                    Add to map
+                </button>
+                <td ng-repeat="i in x track by $index">
+                    {{i}}
+                </td>
+            </tr>
+            </tbody>
+        </table>
     </div>
-    <a ng-show="summary.length > 0" download="{{data.filename}}"
-       ng-href="{{exportUrl}}" ng-disabled="exportUrl == null">
-        <i class="glyphicon glyphicon-download-alt"></i><span i18n="51">Download</span>
-    </a>
 </div>
-
 <div class="modal-footer">
+    <div class="pull-left">
+        <a ng-show="summary.length > 0" download="{{data.filename}}"
+           ng-href="{{exportUrl}}" ng-disabled="exportUrl == null" class="btn btn-default">
+            <i class="glyphicon glyphicon-download-alt"></i><span i18n="51">Download</span>
+        </a>
+    </div>
     <button i18n="38" class="btn btn-primary" type="button" ng-click="$close()">Close</button>
 </div>

@@ -34,6 +34,9 @@
                      *  - ```species_lsid```: LSID for occurrences layer to add. e.g. ```species_lsid=urn:lsid:biodiversity.org.au:afd.taxon:e6aff6af-ff36-4ad5-95f2-2dfdcca8caff```
                      *  - ```fq```: biocache-service fq term for occurrences layer to add. e.g. ```fq=geospatial_kosher:true```
                      *  - ```qc```: biocache-service fq term for occurrences layer to add. e.g. ```qc=data_hub_uid:dh1```
+                     *  - ```qualityProfile```: biocache-service qualityProfile param for data quality profile to apply
+                     *  - ```disableAllQualityFilters```: biocache-service disableAllQualityFilters param to disable all data quality filters on this request
+                     *  - ```disableQualityFilter```: biocache-service disableQualityFilter param to disable individual data quality filters on this request
                      *  - ```wkt```: WKT value for the occurrences layer to add. e.g. ```wkt=POLYGON((...))```
                      *  - ```psize```: integer value specifying the default occurrence layer point size (pixel radius) for
                      *  layer to add. e.g. ```psize=10```
@@ -80,6 +83,9 @@
                         var s = "";
                         var qname;
                         var qc;
+                        var qualityProfile;
+                        var disableAllQualityFilters;
+                        var disableQualityFilter = [];
                         var wkt;
                         var size;
                         var opacity;
@@ -95,13 +101,16 @@
                         var toolParameters;
                         var geospatialKosher = null;
                         var sbList = [];
-                        var savedsession;
+                        var savedsession; //load map from stored session
+                        var workflow;
 
                         for (var key in params) {
                             if (params.hasOwnProperty(key)) {
 
                                 var value = params[key];
-
+                                if ("workflow" == key) {
+                                    workflow = value;
+                                }
                                 if ("wmscache" === key) {
                                     useSpeciesWMSCache = value;
                                 }
@@ -117,10 +126,6 @@
                                     sbList.push("lsid:" + value);
                                 } else if ("q" === key) {
                                     s = value;
-
-                                    if (value.match(/^\(/g) != null && value.match(/\)$/g) != null && !value.include(" ")) {
-                                        s = value.substring(1, value.length() - 2);
-                                    }
 
                                     if (s && s !== undefined) {
                                         sbList.push(s);
@@ -139,6 +144,21 @@
                                     }
                                 } else if ("wkt" === key) {
                                     wkt = value;
+                                } else if ("qualityProfile" === key) {
+                                    qualityProfile = value;
+                                } else if ("disableAllQualityFilters" === key) {
+                                    disableAllQualityFilters = value === 'true';
+                                } else if ("disableQualityFilter" === key) {
+                                    if ($.isArray(value)) {
+                                        for (var a in value) {
+                                            if (value.hasOwnProperty(a)) {
+                                                disableQualityFilter.push(value[a])
+                                            }
+                                        }
+                                    } else {
+                                        disableQualityFilter.push(value)
+                                    }
+
                                 } else if ("psize" === key) {
                                     size = parseInt(value);
                                 } else if ("popacity" === key) {
@@ -175,14 +195,26 @@
 
                         var promises = [];
 
+                        if (!tool && workflow) {
+                            tool = 'workflow'
+                            toolParameters = JSON.stringify({workflowId: workflow})
+                        }
+
                         if (sbList.length > 0 || (s !== null && s !== undefined && s.length > 0)) {
                             var query = {q: sbList, bs: bs, ws: ws};
                             if (wkt !== undefined && wkt !== null) query.wkt = wkt;
+                            if (qualityProfile !== undefined && qualityProfile !== null && qualityProfile) query.qualityProfile = qualityProfile;
+                            if (disableAllQualityFilters !== undefined && disableAllQualityFilters !== null && disableAllQualityFilters) query.disableAllQualityFilters = disableAllQualityFilters;
+                            if (Array.isArray(disableQualityFilter) && disableQualityFilter.length) query.disableQualityFilter = disableQualityFilter;
 
                             promises.push(BiocacheService.queryTitle(query).then(function (response) {
                                 query.name = response;
                                 if (qname !== undefined) newLayerResp.displayname = qname;
                                 return BiocacheService.newLayer(query, undefined, response).then(function (newLayerResp) {
+                                    if (newLayerResp == null) {
+                                        return $q.when(false)
+                                    }
+
                                     if (colourBy !== undefined) newLayerResp.facet = colourBy;
                                     if (pointtype !== undefined) newLayerResp.pointtype = pointtype;
                                     if (size !== undefined) newLayerResp.size = size;
@@ -216,10 +248,26 @@
                             if (tool !== null && tool !== undefined) {
                                 _this.mapToolParams(tool, toolParameters)
                             }
-                            if (bb === undefined) {
+                            //If no BBox and not loaded from session
+                            else if (bb === undefined && savedsession == undefined ) {
                                 MapService.zoomToAll()
                             }
                         })
+                    },
+                    parseSearchParams: function(url) {
+                        var parser = document.createElement('a');
+                        parser.href = url;
+                        var query = parser.search.substr(1); // Remove the '?' from the query string
+                        var result = {};
+                        var paramList = query.split("&");
+                        for (var i=0; i<paramList.length; i++) {
+                            var param = paramList[i].split("=");
+                            if (param[0]) { // bie search queries sometimes start with ?& so an empty parameter is possible
+                                result[param[0]] = decodeURIComponent(param[1]);
+                            }
+                        }
+                        return result;
+
                     },
                     mapToolParams: function (tool, toolParameters) {
                         var map = {};
@@ -287,6 +335,10 @@
                                         (function () {
                                             var style = params[key + ".s"];
                                             promises.push(BiocacheService.newLayer(multiQuery, undefined, layerName).then(function (newLayerResp) {
+                                                if (newLayerResp == null) {
+                                                    return $q.when(false)
+                                                }
+
                                                 newLayerResp.color = style;
                                                 MapService.add(newLayerResp)
                                             }));
@@ -309,26 +361,6 @@
                             }));
                         }
                         return promises;
-                    },
-                    parseGeospatialKosher: function (facet) {
-                        var geospatialKosher = null;
-                        if (facet !== null && facet !== undefined) {
-                            var f = facet.replace('"', "").replace("(", "").replace(")", "");
-                            if ("geospatial_kosher:true" === f) {
-                                geospatialKosher = [true, false, false];
-                            } else if ("geospatial_kosher:false" === f) {
-                                geospatialKosher = [false, true, false];
-                            } else if ("-geospatial_kosher:*" === f) {
-                                geospatialKosher = [false, false, true];
-                            } else if ("geospatial_kosher:*" === f) {
-                                geospatialKosher = [true, true, false];
-                            } else if ("-geospatial_kosher:false" === f) {
-                                geospatialKosher = [true, false, true];
-                            } else if ("-geospatial_kosher:true" === f) {
-                                geospatialKosher = [false, true, true];
-                            }
-                        }
-                        return geospatialKosher;
                     },
                     createCircle: function (longitude, latitude, radius) {
                         var belowMinus180 = false;

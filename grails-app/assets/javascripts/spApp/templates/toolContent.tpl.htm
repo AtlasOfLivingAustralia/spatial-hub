@@ -1,6 +1,6 @@
 <div class="modal-header">
     <button i18n="1" type="button" class="close" ng-click="close()">×</button>
-    <h4 class="modal-title">{{spec.description}}</h4>
+    <h4 class="modal-title" testTag="modalTitle">{{spec.description}}</h4>
 </div>
 
 <div class="modal-body">
@@ -8,14 +8,14 @@
         <div class="col-md-12">
             <form class="form-horizontal" ng-init="stepCount = []">
 
-                <div ng-show="stepView && stage == 'input'">
+                <div ng-show="stepView && (stage == 'input' || stage == 'edit')">
                     <div id="tool-items" ng-repeat="(key, sv) in stepView" ng-init="idx = $index"
-                         class="panel panel-default">
+                         class="panel panel-default" testTag="step{{$index}}">
                         <div ng-repeat="i in sv.inputArr"
                              ng-init="v=spec.input[i]; status_open = $first" ng-if="v.type != 'auto'"
                              heading="{{v.description}}" is-open="status_open" class="panel-default">
 
-                            <div ng-if="i == sv.inputArr[0]" class="panel-heading">
+                            <div ng-if="i == sv.inputArr[0]" class="panel-heading" testTag="step{{stepCount[idx - 1] + $index + 1}}">
                                 <h3 class="panel-title">{{stepCount[idx - 1] + $index + 1}}.&nbsp{{sv.name !== undefined
                                     ? sv.name : v.description}}
                                 </h3>
@@ -42,19 +42,28 @@
                                     <div select-species selected-q="values[i]" unique-id="i" min="v.constraints.min"
                                          area-includes="v.constraints.areaIncludes"
                                          spatial-validity="v.constraints.spatialValidity"
-                                         species-option="v.constraints.speciesOption"></div>
+                                         species-option="v.constraints.speciesOption"
+                                         absent-option="v.constraints.absentOption"
+                                         can-add-species="v.constraints.canAddSpecies"
+                                         date-range-option="v.constraints.dateRangeOption"
+                                         lifeforms="v.constraints.lifeforms"
+                                         import-list="v.constraints.importList"
+                                         import-points="v.constraints.importPoints"
+                                         search-species="v.constraints.searchSpecies"
+                                         all-species="v.constraints.allSpecies">
+                                    </div>
                                 </div>
                                 <div ng-if="v.type == 'date'">
-                                    <div select-date_range selected-date-range="values[i]" unique-id="i"></div>
+                                    <div select-date_range selected-date-range="values[i]" unique-id="i" testTag="otherInput"></div>
                                 </div>
-                                <div ng-if="v.type == 'double'">
+                                <div ng-if="v.type == 'double'" testTag="otherInput">
                                     <label ng-if="sv.name !== undefined && sv.name !== v.description"
                                            style="margin-bottom:0px">{{v.description}}</label>
                                     <input style="width:300px" type="number" max="v.constraints.max"
                                            min="v.constraints.min"
                                            ng-model="values[i]">
                                 </div>
-                                <div ng-if="v.type == 'percent'">
+                                <div ng-if="v.type == 'percent'" testTag="otherInput">
                                     <label ng-if="sv.name !== undefined && sv.name !== v.description"
                                            ng-bind="v.description"></label>
                                     <div class="col-sm-2 input-group">
@@ -75,42 +84,43 @@
                                          unique-id="i"
                                     ></div>
                                 </div>
-                                <div ng-if="v.type == 'boolean'">
+                                <div ng-if="v.type == 'boolean'" testTag="otherInput" >
                                     <input type="checkbox" ng-model="values[i]">
                                     <label style="margin-bottom:0px">{{v.description}}</label>
                                 </div>
-                                <div ng-if="v.type == 'int'">
+                                <div ng-if="v.type == 'int'" testTag="otherInput">
                                     <label ng-if="sv.name !== undefined && sv.name !== v.description">{{v.description}}</label>
                                     <input style="width:300px" type="number" max="{{v.constraints.max}}"
                                            min="{{v.constraints.min}}"
                                            ng-model="values[i]">
                                     <label ng-if="v.constraints.header !== undefined">{{v.constraints.header}}</label>
                                 </div>
-                                <div ng-if="v.type == 'list' && v.constraints.selection == 'single'">
+                                <div ng-if="v.type == 'list' && v.constraints.selection == 'single'" testTag="otherInput">
                                     <label ng-if="sv.name !== undefined && sv.name !== v.description">{{v.description}}</label>
                                     <br ng-if="sv.name !== undefined && sv.name !== v.description"/>
-                                    <select ng-model="values[i]" ng-init="values[i] = v.constraints._list[0].value"
+                                    <select ng-model="values[i]"
                                             ng-options="item.value as item.label for item in v.constraints._list">
                                     </select>
                                     <label ng-if="v.constraints.header !== undefined">{{v.constraints.header}}</label>
                                 </div>
-                                <div ng-if="v.type == 'list' && v.constraints.selection != 'single'">
+                                <div ng-if="v.type == 'list' && v.constraints.selection != 'single'" testTag="otherInput">
                                     <label ng-if="sv.name !== undefined && sv.name !== v.description">{{v.description}}</label>
                                     <br ng-if="sv.name !== undefined && sv.name !== v.description"/>
-                                    <select ng-model="values[i]" multiple ng-init="values[i] = values[i]"
-                                            ng-options="item.value as item.label for item in v.constraints._list">
-                                    </select>
+                                    <div class='list-multiple' ng-repeat="item in v.constraints._list">
+                                        <input class="list-multiple-checkbox" type='checkbox' value="item.value"
+                                               ng-model="item.selected"><label class="list-multiple-label">{{item.label}}</label>
+                                    </div>
                                     <label ng-if="v.constraints.header !== undefined">{{v.constraints.header}}</label>
                                 </div>
-                                <div ng-if="v.type == 'phylogeneticTree'">
-                                    <div style="height:300px;overflow:scroll;display:block"
+                                <div ng-if="v.type == 'phylogeneticTree'" testTag="phylogeneticTree">
+                                    <div style="height:300px;overflow:auto;display:block"
                                          select-phylo selected-phylo="values[i]"></div>
                                 </div>
-                                <div ng-if="v.type == 'text'">
+                                <div ng-if="v.type == 'text'" testTag="otherInput">
                                     <label ng-if="sv.name !== undefined && sv.name !== v.description">{{v.description}}</label>
                                     <textarea class="form-control" rows="3" ng-model="values[i]"></textarea>
                                 </div>
-                                <div ng-if="v.type == 'string'">
+                                <div ng-if="v.type == 'string'" testTag="otherInput">
                                     <label ng-if="sv.name !== undefined && sv.name !== v.description">{{v.description}}</label>
                                     <input type="text" class="form-control" ng-model="values[i]"/>
                                 </div>
@@ -118,12 +128,16 @@
                                     <div species-options value="values[i]"
                                          area-includes="v.constraints.areaIncludes"
                                          spatial-validity="v.constraints.spatialValidity"
+                                         absent-option="v.constraints.absentOption"
                                          endemic-includes="v.constraints.endemicIncludes"
                                          disable-check="v.constraints.disable"
                                     ></div>
                                 </div>
                                 <div ng-if="v.type == 'facet'">
                                     <div select-facet selected-facet="values[i]"></div>
+                                </div>
+                                <div ng-if="v.type == 'annotation'">
+                                    <div workflow-annotation value="values[i]"></div>
                                 </div>
                             </div>
                         </div>
@@ -154,9 +168,9 @@
 </div>
 
 <div class="modal-footer">
-    <button i18n="45" class="btn btn-default" type="button" ng-click="close()">Cancel</button>
+    <button i18n="45" class="btn btn-default" type="button" ng-click="close()" name="cancel">Cancel</button>
     <button i18n="39" class="btn btn-primary" type="button" ng-click="finish()" ng-hide="finished"
-            ng-disabled="isDisabled() || stage != 'input'">Next &gt;
+            ng-disabled="isDisabled() || (stage != 'input' && stage != 'edit')" name="next">Next &gt;
     </button>
 
     <a download ng-href="{{downloadUrl}}" style="float:left" ng-show="finished && downloadUrl">

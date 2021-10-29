@@ -20,7 +20,7 @@
                                 "constraints": {
                                     "min": 1,
                                     "max": 1,
-                                    "defaultToWorld": false
+                                    "defaultToWorld": true
                                 }
                             },
                             {
@@ -29,7 +29,8 @@
                                 "constraints": {
                                     "areaIncludes": false,
                                     "kosherIncudes": true,
-                                    "endemicIncludes": true
+                                    "endemicIncludes": true,
+                                    "absentOption": true
                                 }
                             }],
                         "description": $i18n(426)
@@ -56,10 +57,19 @@
                             wkt = area[0].wkt;
                         }
 
-                        if (speciesOptions.spatiallyValid && speciesOptions.spatiallySuspect) q = q.concat(["geospatial_kosher:*"]);
-                        else if (speciesOptions.spatiallyValid) q = q.concat(["geospatial_kosher:true"]);
-                        else if (speciesOptions.spatiallySuspect) q = q.concat(["geospatial_kosher:false"]);
-                        else q = q.concat(["-geospatial_kosher:*"]);
+                        if (speciesOptions.spatiallyUnknown) {
+                            if (speciesOptions.spatiallyValid && speciesOptions.spatiallySuspect) { /* do nothing */
+                            } else if (speciesOptions.spatiallyValid) q.push('-geospatial_kosher:false');
+                            else if (speciesOptions.spatiallySuspect) q.push('-geospatial_kosher:true');
+                        } else {
+                            if (speciesOptions.spatiallyValid && speciesOptions.spatiallySuspect) q.push('geospatial_kosher:*');
+                            else if (speciesOptions.spatiallyValid) q.push('geospatial_kosher:true');
+                            else if (speciesOptions.spatiallySuspect) q.push('geospatial_kosher:false');
+                        }
+
+                        if (!speciesOptions.includeAbsences) {
+                            q.push($SH.fqExcludeAbsent)
+                        }
 
                         var query = BiocacheService.newQuery(q, '', wkt);
 
@@ -92,7 +102,7 @@
                                 BiocacheService.speciesListUrl(query);
 
                             future.then(function (url) {
-                                Util.download(url);
+                                Util.download(url, 'speciesList.csv');
                             })
                         }
                     },

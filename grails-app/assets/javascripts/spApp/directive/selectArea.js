@@ -18,40 +18,44 @@
                         _includeDefaultAreas: '=includeDefaultAreas',
                         _uniqueId: '=uniqueId',
                         _defaultToWorld: '=?defaultToWorld'
-                        // ,
-                        // maxAreas: '=maxAreas',
-                        // minAreas: '=minAreas'
                     },
                     link: function (scope, element, attrs) {
 
-                        // if (scope.selectedArea.area.length == 0) scope.selectedArea.area = [{}]
-                        // if (!scope.minAreas) scope.minAreas = 1
-                        // if (!scope.maxAreas) scope.maxAreas = 1
-
                         scope.selected = '';
+                        scope.layerAreas = []; // new area created ONLY
+                        scope.isNewAreaCreated = false; //check if new area is created
                         LayoutService.addToSave(scope);
 
-                        scope.create = 'create';
-
                         scope.addLayerAreas = function () {
+                            var numberOflayerAreas = scope.layerAreas.length;
                             $.map(MapService.areaLayers(), function (x, idx) {
+                                // Incompatible areas have area.pid.contains(':') or '~'
+                                if (x.pid /* || ((x.pid + '').indexOf(':') < 0 && (x.pid + '').indexOf('~')) < 0 */) {
+                                    //check if pid exists
+                                    if ( scope.layerAreas.filter(function(layer) {return layer.pid == x.pid} ).length == 0 ) {
+                                        //Add the new layer on the top (the top one should be selected by default)
+                                        scope.layerAreas.unshift({
+                                            name: x.name,
+                                            q: x.q,
+                                            wkt: x.wkt,
+                                            bbox: x.bbox,
+                                            pid: x.pid,
+                                            area_km: x.area_km,
+                                            uid: x.uid,
+                                            type: x.type
+                                        })
+                                    }
 
-                                // Incompatible areas have area.pid.contains(':')
-                                if (x.pid !== undefined || !x.pid.contain(':')) {
-                                    scope.layerAreas.push({
-                                        name: x.name,
-                                        q: x.q,
-                                        wkt: x.wkt,
-                                        bbox: x.bbox,
-                                        pid: x.pid,
-                                        area_km: x.area_km,
-                                        uid: x.uid,
-                                        type: x.type
-                                    })
                                 }
                             });
+
+                            if (scope.layerAreas.length > numberOflayerAreas) {
+                                scope.isNewAreaCreated = true;
+                            } else {
+                                scope.isNewAreaCreated = false;
+                            }
                         };
-                        scope.layerAreas = [];
+
 
                         scope.change = function (select) {
                             scope._selectedArea.area[0] = select
@@ -80,8 +84,8 @@
 
                         $timeout(function () {
                             scope.addLayerAreas();
-                            if (scope.selected === '' || scope.selected === scope.create) {
-                                if (scope.layerAreas.length > 0) {
+                            if (scope.selected === '' ||  scope.isNewAreaCreated) {
+                                if (scope.isNewAreaCreated && scope.layerAreas.length > 0) {
                                     scope._selectedArea.area[0] = scope.layerAreas[0];
                                     scope.selected = scope._selectedArea.area[0].uid
                                 } else {
@@ -95,9 +99,11 @@
                                         }
                                     }
 
-                                    scope.selected = scope._selectedArea.area[0].name
+                                    if (scope._selectedArea.area.length > 0) {
+                                        scope.selected = scope._selectedArea.area[0].name
+                                    }
                                 }
-                            } else {
+                            } else if (scope._selectedArea.area.length > 0) {
                                 if (scope._selectedArea.area[0].uid === undefined) {
                                     scope.selected = scope._selectedArea.area[0].name
                                 } else {

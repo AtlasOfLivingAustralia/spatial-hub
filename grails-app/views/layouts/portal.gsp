@@ -55,6 +55,12 @@
                            onclick="$('#sessionsButton')[0].click()"
                            data-toggle="dropdown" role="button"
                            aria-expanded="false">Load</a>
+                        <g:if test="config.workflow.enabled">
+                            <a href="#" class="save-load"
+                               onclick="$('#workflowsButton')[0].click()"
+                               data-toggle="dropdown" role="button"
+                               aria-expanded="false">Workflows</a>
+                        </g:if>
                     </g:if>
                     <button class="display-flex search-trigger hidden-md hidden-lg collapsed collapse-trigger-button"
                             title="Open search dialog"
@@ -369,6 +375,7 @@
 
 <!-- End header -->
 <!-- end banner message -->
+<ala:systemMessage/>
 <!-- Container -->
 <div class="${fluidLayout ? 'container-fluid' : 'container'}" id="main">
     <g:layoutBody/>

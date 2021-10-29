@@ -40,11 +40,7 @@
                     $scope.warning = '';
                     $scope.loading = true;
 
-                    var urlFinal = url;
-                    // attempt to use proxy when spatial-hub is on https and the remote url is not
-                    if (urlFinal.indexOf("https") != 0 && $SH.baseUrl.indexOf("https") == 0) {
-                        urlFinal = $SH.baseUrl + "/portal/proxy?url=" + urlFinal
-                    }
+                    var urlFinal = $SH.baseUrl + "/portal/proxy?url=" + encodeURIComponent(url)
 
                     $http.get(urlFinal, $scope._httpDescription('proxyGetCapabilities'))
                         .success(function (resp) {
@@ -64,10 +60,7 @@
                                         legendurl = styles.LegendURL.OnlineResource['xlink:href'];
                                     }
 
-                                    // attempt to use proxy when spatial-hub is on https and the remote url is not
-                                    if (legendurl.indexOf("https") != 0 && $SH.baseUrl.indexOf("https") == 0) {
-                                        legendurl = $SH.baseUrl + "/portal/proxy?url=" + encodeURIComponent(legendurl)
-                                    }
+                                    legendurl = $SH.baseUrl + "/portal/proxy?url=" + encodeURIComponent(legendurl)
 
                                     $scope.availableLayers.push({
                                         displayname: layers[i].Name,
@@ -87,10 +80,8 @@
                                                 legendurl = styles.LegendURL.OnlineResource['xlink:href'];
                                             }
 
-                                            // attempt to use proxy when spatial-hub is on https and the remote url is not
-                                            if (legendurl.indexOf("https") != 0 && $SH.baseUrl.indexOf("https") == 0) {
-                                                legendurl = $SH.baseUrl + "/portal/proxy?url=" + encodeURIComponent(legendurl)
-                                            }
+                                            legendurl = $SH.baseUrl + "/portal/proxy?url=" + encodeURIComponent(legendurl)
+
                                             $scope.availableLayers.push({
                                                 displayname: layers[i].Layer[k].Name,
                                                 name: layers[i].Layer[k].Name,
@@ -120,7 +111,9 @@
 
 
                 $scope.addLayer = function () {
-                    var serverUrl = $scope.selectedServer.substr(0, $scope.selectedServer.lastIndexOf('/') + 1) + 'wms';
+                    var len = $scope.selectedServer.lastIndexOf('?')
+                    if (len < 0) len = $scope.selectedServer.length()
+                    var serverUrl = $scope.selectedServer.substr(0, len);
                     var proxyUrl = $SH.baseUrl + "/portal/proxy?url=" + encodeURIComponent(serverUrl);
                     var layer = Object.assign({url: proxyUrl, layertype: "wms"}, $scope.selectedLayer);
 

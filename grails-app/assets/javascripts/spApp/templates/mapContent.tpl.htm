@@ -1,31 +1,37 @@
 <div name="divMappedLayers" style="height:100%;overflow:auto;margin-left: -15px;padding-top:10px">
     <ul ui-sortable="sortableOptions" ng-model="list" class="list-group layer-list">
         <li ng-repeat="item in list" class="list-group-item" ng-class="{ 'layer-selected' : isSelected(item)}"
-            ng-click="select(item)">
-            <input type="checkbox" ng-model="item.visible" ng-change="updateVisibility(item)">
+            ng-click="select(item)" testTag="layer-list">
+            <input type="checkbox" ng-model="item.visible" ng-change="updateVisibility(item);"
+                   ng-click="$event.stopPropagation();">
             <img ng-src="{{baseUrl}}/assets/icon_{{item.layertype}}-layer.png">
             <span style="max-width: 270px;display: inline-block;word-wrap:break-word;vertical-align: top;">{{item.name}}</span>
-            <i style="float:right" class="glyphicon glyphicon-trash" ng-click="delete(item)"></i>
+            <i style="float:right" class="glyphicon glyphicon-trash"
+               ng-click="delete(item);$event.stopPropagation();"></i>
             <a ng-show="item.metadataUrl.length > 0" target="_blank" href="{{item.metadataUrl}}"><i style="float:right"
                                                                                                     class="glyphicon glyphicon-info-sign"></i></a>
             <i ng-show="item.metadataUrl == undefined" style="float:right" class="glyphicon glyphicon-info-sign"
                ng-click="info(item)"></i>
-            <i style="float:right" class="glyphicon glyphicon-zoom-in" ng-click="zoom(item)"></i>
+            <i style="float:right" class="glyphicon glyphicon-zoom-in"
+               ng-click="zoom(item);$event.stopPropagation();"></i>
         </li>
     </ul>
     <ul class="list-group layer-list">
-        <li class="list-group-item" ng-click="selectControls()" style="border-radius: 0px;" ng-if="config.mapOptions"
-            ng-class="{ 'layer-selected' : LayoutService.showLegend[0] }">
+        <li class="list-group-item" ng-click="select(undefined)" style="border-radius: 0px;" ng-if="config.mapOptions"
+            ng-class="{ 'layer-selected' : isSelected(item) }">
 
             <div class="btn-group" style="float:left;margin-top:-3px;margin-right:20px">
-                <i style="float:right" class="glyphicon glyphicon-eye-close" title="hide all" ng-click="hideAll()"></i>
-                <i style="float:right" class="glyphicon glyphicon-eye-open" title="show all" ng-click="showAll()"></i>
+                <i style="float:right" class="glyphicon glyphicon-eye-close" title="hide all"
+                   ng-click="hideAll(); $event.stopPropagation();"></i>
+                <i style="float:right" class="glyphicon glyphicon-eye-open" title="show all"
+                   ng-click="showAll(); $event.stopPropagation();"></i>
             </div>
 
             <span i18n="155">Map options</span>
 
             <div class="btn-group" style="float:right;margin-top:-3px">
-                <i style="float:right" class="glyphicon glyphicon-trash" ng-click="deleteAll()"></i>
+                <i style="float:right" class="glyphicon glyphicon-trash"
+                   ng-click="deleteAll(); $event.stopPropagation();"></i>
             </div>
         </li>
     </ul>

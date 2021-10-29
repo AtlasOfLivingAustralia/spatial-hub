@@ -6,6 +6,7 @@ import grails.web.http.HttpHeaders
 import io.swagger.annotations.ApiImplicitParams
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiResponses
+import org.apache.commons.httpclient.HttpStatus
 import org.apache.commons.httpclient.methods.StringRequestEntity
 import org.apache.commons.io.FileUtils
 import org.apache.commons.lang.StringUtils
@@ -155,6 +156,7 @@ class PortalController {
                     render(view: 'index',
                             model: [config     : config,
                                     userId     : userId,
+                                    userDetails: authService.userDetails(),
                                     sessionId  : sessionService.newId(userId),
                                     messagesAge: messageService.messagesAge,
                                     hub        : hub])
@@ -220,7 +222,7 @@ class PortalController {
 
         response.contentType = 'text/javascript'
 
-        String text = 'Messages = { messages: ' +
+        String text = 'BiocacheI18n = { messages: ' +
                 messageService.messages +
                 ',get: function(key, _default) { var value = this.messages[key]; if (!value) { ' +
                 'if (_default !== undefined) { return _default; } else { return key; } } else { return value } } }; '
@@ -290,16 +292,21 @@ class PortalController {
     @ApiImplicitParams([])
     def session(Long id) {
         def userId = getValidUserId(params)
-
-        if (request.method == 'POST') {
-            //save
-            render sessionService.put(sessionService.newId(userId), userId, request.JSON, true) as JSON
-        } else if (request.method == 'DELETE') {
-            //delete
-            render sessionService.updateUserSave(id, userId, SessionService.DELETE, null, null) as JSON
-        } else if (request.method == 'GET') {
-            //retrieve
-            render sessionService.get(id) as JSON
+        if (userId){
+            if (request.method == 'POST') {
+                //save
+                render sessionService.put(sessionService.newId(userId), userId, request.JSON, true) as JSON
+            } else if (request.method == 'DELETE') {
+                //delete
+                render sessionService.updateUserSave(id, userId, SessionService.DELETE, null, null) as JSON
+            } else if (request.method == 'GET') {
+                //retrieve
+                render sessionService.get(id) as JSON
+            }
+        } else {
+            response.status = 403
+            Map error = [error : "Login required!"]
+            render error as JSON
         }
     }
 
@@ -315,17 +322,16 @@ class PortalController {
         if (!userId) {
             notAuthorised()
         } else {
+            Map headers = [apiKey: grailsApplication.config.api_key]
             def json = request.JSON as Map
-
-            json.api_key = grailsApplication.config.api_key
-
             def url = "${grailsApplication.config.layersService.url}/shape/upload/wkt"
-            def r = hubWebService.urlResponse(HttpPost.METHOD_NAME, url, null, null,
+            def r = hubWebService.urlResponse(HttpPost.METHOD_NAME, url, null, headers,
                     new StringRequestEntity((json as JSON).toString()))
-
+            response.status = r.statusCode
             render JSON.parse(new String(r?.text ?: "")) as JSON
         }
     }
+
 
     private String getWkt(objectId) {
         String wkt = null
@@ -338,7 +344,6 @@ class PortalController {
         } catch (err) {
             log.error "failed to lookup object wkt: ${objectId}", err
         }
-
         wkt
     }
 
@@ -357,13 +362,16 @@ class PortalController {
             def r = hubWebService.postUrl("${grailsApplication.config.layersService.url}/shape/upload/${type}?" +
                     "name=${URLEncoder.encode((String) params.name, ce)}&" +
                     "description=${URLEncoder.encode((String) params.description, ce)}&" +
-                    "api_key=${grailsApplication.config.api_key}", (Map) settings, null, mFile);
+                    "api_key=${grailsApplication.config.api_key}", null, settings, mFile);
 
             if (!r) {
                 render [:] as JSON
-            } else if (r.error) {
+            } else if (r.error || r.statusCode > 299) {
                 log.error("failed ${type} upload: ${r}")
-                render [:] as JSON
+                def msg = JSON.parse(new String(r?.text ?: "{}"))
+                Map error = [error: msg.error]
+                response.status = r.statusCode
+                render error as JSON
             } else {
                 def json = JSON.parse(new String(r?.text ?: "{}"))
                 def shapeFileId = json.id
@@ -385,21 +393,18 @@ class PortalController {
     def postArea() {
         def userId = authService.userId
 
-        if (userId) {
+        if (!userId) {
+            notAuthorised()
+        } else{
             def json = request.JSON as Map
-
             json.user_id = userId
-            json.api_key = grailsApplication.config.api_key
-
+            Map headers = [apiKey: grailsApplication.config.api_key]
             String url = "${grailsApplication.config.layersService.url}/shape/upload/shp/" +
                     "${json.shpId}/${json.featureIdx}"
-
-            def r = hubWebService.urlResponse(HttpPost.METHOD_NAME, url, null, null,
+            def r = hubWebService.urlResponse(HttpPost.METHOD_NAME, url, null, headers,
                     new StringRequestEntity((json as JSON).toString()))
-
+            response.status = r.statusCode
             render JSON.parse(new String(r?.text ?: "{}")) as JSON
-        } else {
-            render [:] as JSON
         }
     }
 
@@ -411,14 +416,15 @@ class PortalController {
         } else {
             def json = request.JSON as Map
 
-            json.api_key = grailsApplication.config.api_key
+            Map headers = [apiKey: grailsApplication.config.api_key]
 
             def r = hubWebService.postUrl("${grailsApplication.config.layersService.url}/tasks/create?" +
-                    "userId=${userId}&sessionId=${params.sessionId}", json)
+                    "userId=${userId}&sessionId=${params.sessionId}", json, headers)
 
             if (r == null) {
                 render [:] as JSON
             } else {
+                response.status = r.statusCode
                 render JSON.parse(new String(r?.text ?: "{}")) as JSON
             }
         }
@@ -432,15 +438,13 @@ class PortalController {
         } else {
             def json = request.JSON as Map
 
-            json.listType = PortalService.APP_CONSTANT
-
             def url = grailsApplication.config.lists.url
 
             def header = [:]
-            if (!Holders.config.security.cas.disableCAS) {
-                header.put(grailsApplication.config.app.http.header.userId, userId)
-                header.put('Cookie', 'ALA-Auth=' + URLEncoder.encode(authService.email, 'UTF-8'))
-            }
+//            if (!Holders.config.security.cas.disableCAS) {
+//                header.put(grailsApplication.config.app.http.header.userId, userId)
+//                header.put('Cookie', 'ALA-Auth=' + URLEncoder.encode(authService.email, 'UTF-8'))
+//            }
 
             def r = hubWebService.urlResponse(HttpPost.METHOD_NAME, "${url}/ws/speciesList/", null, header,
                     new StringRequestEntity((json as JSON).toString()), true)
@@ -510,6 +514,16 @@ class PortalController {
         }
     }
 
+    /**
+     * Status code returned from proxied url will be stored in response body
+     *
+     * For example:
+     *
+     * if a proxied server return status code 401, the status code will be wrapped into  statusCode field in body
+     * and returned to client with status 200
+     *
+     * @return
+     */
     def proxy() {
         def userId = getValidUserId(params)
 
@@ -565,7 +579,7 @@ class PortalController {
             } else {
                 def stream = hubWebService.getStream(url, HttpPost.METHOD_NAME, request.contentType, request.inputStream)
 
-                def contentType = stream.call.getResponseHeader(HttpHeaders.CONTENT_TYPE).value
+                def contentType = stream.call.getResponseHeader(HttpHeaders.CONTENT_TYPE)?.value
                 if (contentType) {
                     response.setContentType(contentType)
                 }
@@ -650,6 +664,7 @@ class PortalController {
             }
         }
     }
+
 
     def ping() {
         response.addHeader("content-type", "application/json")

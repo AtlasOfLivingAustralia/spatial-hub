@@ -1,0 +1,61 @@
+<div class="modal-header">
+    <button i18n="1" type="button" class="close" ng-click="close()">×</button>
+    <h3 i18n="519" class="modal-title">Select Facet</h3>
+</div>
+
+<div class="modal-body">
+    <div style="overflow:auto">
+        <select ng-model="category">
+            <option ng-repeat="x in categories" value="{{x.value}}">
+                {{x.name}}
+            </option>
+        </select>
+        <input ng-model="filter" type="text" placeholder="Filter">
+        <button i18n="520" class="btn btn-default btn-xs" ng-click="filter=''">Clear filter</button>
+        <button i18n="120" class="btn btn-default btn-xs" ng-click="clearSelection()">Clear selection</button>
+
+        <br/><br/>
+        <table class="table table-striped table-condensed">
+            <thead>
+            <tr>
+                <th style="width:70px"><label i18n="521">Enabled</label></th>
+                <th style="width:120px" ng-click="sortType='class';sortReverse=!sortReverse;"><label
+                        i18n="522">Category</label>
+                    <span ng-show="sortType == 'class' && !sortReverse"
+                          class="glyphicon glyphicon-chevron-down"></span>
+                    <span ng-show="sortType == 'class' && sortReverse"
+                          class="glyphicon glyphicon-chevron-up"></span></th>
+                <th style="width:300px" ng-click="sortType='displayName';sortReverse=!sortReverse;"><label i18n="127">Facet</label>
+                    <span ng-show="sortType == 'displayName' && !sortReverse"
+                          class="glyphicon glyphicon-chevron-down"></span>
+                    <span ng-show="sortType == 'displayName' && sortReverse"
+                          class="glyphicon glyphicon-chevron-up"></span></th>
+                <th ng-click="sortType='info';sortReverse=!sortReverse;"><label i18n="363">Info</label>
+                    <span ng-show="sortType == 'info' && !sortReverse"
+                          class="glyphicon glyphicon-chevron-down"></span>
+                    <span ng-show="sortType == 'info' && sortReverse"
+                          class="glyphicon glyphicon-chevron-up"></span></th>
+                <th style="width:10px"></th>
+            </tr>
+            </thead>
+            <tbody style="overflow:auto">
+            <tr ng-repeat="x in data | filter:filter | filter:(category == selectedFacetsValue ? {selected: true} : {class: category}) | orderBy:sortType:sortReverse ">
+                <td><input type="checkbox" ng-model="x.selected" ng-change="selectionChanged(x)"></td>
+                <td>{{x.class}}</td>
+                <td uib-popover-html="popupContent(x)" popover-trigger="'mouseenter'" popover-placement="right">
+                    {{x.displayName}}
+                </td>
+                <td style="display:block">{{x.info}}</td>
+                <td><a ng-show="x.url.length > 0" target="_blank" href="{{x.url}}">
+                    <i class="glyphicon glyphicon-info-sign"></i></a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <label>{{selectionCount()}} <span i18n="523">facets selected</span></label>
+    <button i18n="120" class="btn btn-default" type="button" ng-click="clearSelection()">Clear selection</button>
+    <button i18n="524" class="btn btn-primary" type="button" ng-click="close()">Continue</button>
+</div>

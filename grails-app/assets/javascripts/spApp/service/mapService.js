@@ -50,7 +50,7 @@
                         }
                     }
                 };
-                var selected = {layer: null};
+                var selected = {layer: undefined};
                 var uid = 1;
                 var pidList = [];
 
@@ -110,7 +110,9 @@
                         for (var i = 0; i < layers.length; i++) {
                             if (layers[i].uid === uid) {
                                 if (layers[i].bbox !== undefined && layers[i].area_km != 0) {
-                                    this.zoomToExtents(layers[i].bbox);
+                                    if (layers[i].count === undefined || layers[i].count > 0) {
+                                        this.zoomToExtents(layers[i].bbox);
+                                    }
                                     return
                                 }
                             }
@@ -123,11 +125,13 @@
                         var bbox = [[90, 180], [-90, -180]]
                         for (var i = 0; i < layers.length; i++) {
                             if (layers[i].bbox !== undefined && layers[i].area_km != 0) {
-                                zoom = true
-                                if (bbox[0][0] > layers[i].bbox[0][0]) bbox[0][0] = layers[i].bbox[0][0];
-                                if (bbox[0][1] > layers[i].bbox[0][1]) bbox[0][1] = layers[i].bbox[0][1];
-                                if (bbox[1][0] < layers[i].bbox[1][0]) bbox[1][0] = layers[i].bbox[1][0];
-                                if (bbox[1][1] < layers[i].bbox[1][1]) bbox[1][1] = layers[i].bbox[1][1];
+                                if (layers[i].count === undefined || layers[i].count > 0) {
+                                    zoom = true
+                                    if (bbox[0][0] > layers[i].bbox[0][0]) bbox[0][0] = layers[i].bbox[0][0];
+                                    if (bbox[0][1] > layers[i].bbox[0][1]) bbox[0][1] = layers[i].bbox[0][1];
+                                    if (bbox[1][0] < layers[i].bbox[1][0]) bbox[1][0] = layers[i].bbox[1][0];
+                                    if (bbox[1][1] < layers[i].bbox[1][1]) bbox[1][1] = layers[i].bbox[1][1];
+                                }
                             }
                         }
                         if (zoom) {
@@ -137,6 +141,16 @@
                             if (bbox[1][1] == -180) bbox[1][1] = 180;
                             this.zoomToExtents(bbox);
                         }
+                    },
+
+                    defaultLayerSelection: function () {
+                        var selection = undefined; // map options
+                        for (var i = 0; selection === undefined && i < layers.length; i++) {
+                            if (layers[i].visible) {
+                                selection = layers[i];
+                            }
+                        }
+                        this.select(selection)
                     },
 
                     setVisible: function (uid, show) {
@@ -237,29 +251,17 @@
                     },
 
                     addOtherArea: function (type, query, area, include) {
-                        if (include !== true || query.q.indexOf("lsid:") !== 0) {
+                        if (include !== true || query.q[0].indexOf("lsid:") !== 0) {
                             return $q.when()
                         }
                         // for consistency with the species autocomplete, only the first lsid is used in the search
-                        var lsid = query.q.substring(5);
+                        var lsid = query.q[0].substring(5);
                         return LayersService.findOtherArea(type, lsid, area).then(function (response) {
                             if (response && response.data && response.data.length > 0) {
                                 var data = response.data;
                                 for (var i in data) {
 
                                     var item = data[i];
-
-                                    //map with geom_idx
-                                    var parts = item.wmsurl.split("&");
-                                    parts[0] = parts[0].split("?")[1];
-                                    var parameters = {};
-                                    for (var j in parts) {
-                                        var kv = parts[j].split("=");
-                                        if (kv.length === 2) {
-                                            parameters[kv[0]] = kv[1]
-                                        }
-                                    }
-                                    parameters['transparent'] = true;
 
                                     var name = item.area_name;
                                     if (name === undefined) {
@@ -310,7 +312,20 @@
 
                                         pidList.push(data[i]);
                                     } else {
+                                        //map with geom_idx
+                                        var parts = item.wmsurl.split("&");
+                                        parts[0] = parts[0].split("?")[1];
+                                        var parameters = {};
+                                        for (var j in parts) {
+                                            var kv = parts[j].split("=");
+                                            if (kv.length === 2) {
+                                                parameters[kv[0]] = kv[1]
+                                            }
+                                        }
+                                        parameters['transparent'] = true;
+
                                         MapService.add({
+                                            log: query.log,
                                             query: query,
                                             geom_idx: item.geom_idx,
                                             layertype: "area",
@@ -329,38 +344,44 @@
                         })
                     },
 
+                    mapFromPid: function (next, parentLayer, color) {
+                        return LayersService.getObject(next.pid).then(function (data) {
+                            data.data.layertype = 'area';
+                            if (next.query) data.data.query = next.query;
+                            if (next.metadataUrl) data.data.metadataUrl = next.metadataUrl;
+                            if (next.name) data.data.name = next.name;
+                            if (next.name) data.data.displayname = next.name;
+                            if (next.label) data.data.displayname = next.label;
+                            if (next.geom_idx) data.data.geom_idx = next.geom_idx;
+                            if (next.metadata) data.data.metadata = next.metadata;
+                            if (next.log) data.data.log = next.log;
+                            if (color) data.data.color = color;
+
+                            return MapService.add(data.data, parentLayer);
+                        })
+                    },
+
                     mapFromPidList: function () {
                         if (pidList.length > 0) {
                             var next = pidList.pop();
-                            LayersService.getObject(next.pid).then(function (data) {
-                                data.data.layertype = 'area';
-                                if (next.query) data.data.query = next.query;
-                                if (next.metadataUrl) data.data.metadataUrl = next.metadataUrl;
-                                if (next.name) data.data.name = next.name;
-                                if (next.name) data.data.displayname = next.name;
-                                if (next.geom_idx) data.data.geom_idx = next.geom_idx;
-                                if (next.metadata) data.data.metadata = next.metadata;
-
-                                MapService.add(data.data);
-
+                            MapService.mapFromPid(next).then(function () {
                                 MapService.mapFromPidList();
                             })
                         }
                     },
 
-                    addHighlight: function (id) {
-                        // wrap in timeout in case we need to wait for a prior removeHighlight()
-                        $timeout(function () {
-                            var template = highlightTemplate;
-                            template.layerOptions.layers = [];
+                    // addHighlight: function (pid, parentLayer) {
+                    //
+                    //     // wrap in timeout in case we need to wait for a prior removeHighlight()
+                    //
+                    //     $timeout(function () {
+                    //
+                    //         MapService.add(id, {leaflet: template});
+                    //     }, 0);
+                    // },
 
-                            MapService.add(id, {leaflet: template});
-                            leafletLayers["highlight" + uid] = template;
-                            uid = uid + 1;
-                            $timeout(function () {
-                                MapService.setHighlightVisible(true)
-                            })
-                        }, 0);
+                    getNextUid: function () {
+                        return uid;
                     },
 
                     removeHighlight: function () {
@@ -463,20 +484,37 @@
                                     url: id.url,
                                     label: id.displayname,
                                     legendurl: id.legendurl
-                                });
+                                }, id.uid);
+                            } else {
+                                LoggerService.addLayerId(id.uid)
                             }
 
-                        } else if (id.q && id.layertype !== 'area') {
+                        } else if ((id.q || id.qid) && id.layertype !== 'area') {
+                            if (!id.bs) id.bs = $SH.biocacheServiceUrl
+                            if (!id.ws) id.ws = $SH.biocacheUrl
+
                             // do not add to log if it is a child layer or already logged
                             if ((id.log === undefined || id.log) && parentLayer === undefined) {
                                 LoggerService.log('Map', 'Species', {
+                                    bs: id.bs,
+                                    ws: id.ws,
                                     qid: id.qid,
                                     label: id.displayname,
                                     species_list: id.species_list
-                                });
+                                }, id.uid);
+                            } else {
+                                LoggerService.addLayerId(id.uid)
+                            }
+
+                            if (id.qid && !id.q) {
+                                id.q = id.qid
                             }
 
                             id.layertype = 'species';
+
+                            // the display of species layers can be modified with 'facets' that hide items
+                            id.facets = []
+
                             var env = 'colormode%3Agrid%3Bname%3Acircle%3Bsize%3A3%3Bopacity%3A1';
                             var firstLayer = undefined;
                             if (id && id.layer && id.layer.leaflet && id.layer.leaflet.layerOptions &&
@@ -525,8 +563,14 @@
                                 promises.push(ListsService.getItemsQ(id.species_list));
                             }
 
-                            promises.push(FacetAutoCompleteService.search(id).then(function (data) {
-                                id.list = data;
+                            id.groupedFacets = []
+                            promises.push(FacetAutoCompleteService.search(id, false).then(function (data) {
+                                id.groupedFacets = data;
+                            }));
+
+                            id.indexFields = []
+                            promises.push(FacetAutoCompleteService.search(id, true).then(function (data) {
+                                id.indexFields = data;
                             }));
 
                             promises.push(BiocacheService.bbox(id).then(function (data) {
@@ -535,6 +579,9 @@
 
                             promises.push(BiocacheService.count(id).then(function (data) {
                                 id.count = data;
+                                if (id.count == 0 && id.fromSave === undefined) {
+                                    bootbox.alert(id.name + "<br/><br/>" + $i18n(475, "No occurrences mapped for this layer and applied filters."))
+                                }
                                 if (id.count < 100000 && id.fromSave === undefined) {
                                     id.colorType = '-1'
                                 }
@@ -544,13 +591,10 @@
                             var sld_body = undefined;
 
                             if (id.layertype === 'area') {
-                                if (id.id.includes(":")){
-                                    console.log('Parse id: ' + id.id +" -> id with ':' does not store in Objects. It should contains wmsurl, otherwise it will fail" )
+                                if (id.id && ( isNaN(id.id)? id.id.includes(":") : false )){
                                     //qs does not parse full url, it ignores the first param after ?
                                     var wmsurl = id.wmsurl.split('?')[1]
                                     var qs = new URLSearchParams(wmsurl)
-                                    if (!qs.has('service'))
-                                        console.log("Fatal error: " + wmsurl + " does not have 'wmsurl'")
                                     sld_body = qs.get('sld_body');
                                     newLayer = {
                                         name: uid + ': ' + id.name,
@@ -567,10 +611,7 @@
                                             transparent: true
                                         }
                                     }
-
-
                                 }else{
-
                                     if (id.type === 'envelope') {
                                         newLayer = {
                                             name: uid + ': ' + id.name,
@@ -624,8 +665,11 @@
                                                 pid: id.pid,
                                                 geom_idx: id.geom_idx,
                                                 label: id.displayname,
-                                                query: id.query
-                                            });
+                                                query: id.query,
+                                                taskId: id.taskId
+                                            }, id.uid);
+                                        } else {
+                                            LoggerService.addLayerId(id.uid)
                                         }
                                     }
 
@@ -636,6 +680,7 @@
                                         newLayer.layerParams.sld_body = this.objectSld(id)
                                     }
 
+                                    if (id.pid) newLayer.pid = id.pid;
                                 }
 
 
@@ -646,21 +691,32 @@
 
                                 // do not add to log if it is a child layer or already logged
                                 if ((id.log === undefined || id.log) && parentLayer === undefined) {
-                                    LoggerService.log('Map', 'Layer', {id: id.id, label: layer.layer.displayname});
+                                    LoggerService.log('Map', 'Layer', {
+                                        id: id.id,
+                                        label: layer.layer.displayname
+                                    }, id.uid);
+                                } else {
+                                    LoggerService.addLayerId(id.uid)
                                 }
 
                                 if (layer.type !== 'e') {
-                                    id.layertype = 'contextual';
+                                    if (layer.type == 'c') {
+                                        id.layertype = 'contextual';
+                                    } else {
+                                        id.layertype = 'gridAsContextual'
+                                    }
 
                                     id.contextualSelection = {};
 
                                     id.contextualList = [];
+                                    id.contextualListCount = null;
 
                                     id.contextualPage = 1;
                                     id.contextualPageSize = 5;
 
                                     promises.push(LayersService.getField(id.id, 0, id.contextualPageSize, '').then(function (data) {
                                         id.contextualList = data.data.objects;
+                                        id.contextualListCount = id.contextualList.length;
                                         for (var i in id.contextualList) {
                                             if (id.contextualList.hasOwnProperty(i)) {
                                                 id.contextualList[i].selected = false
@@ -668,50 +724,69 @@
                                         }
                                         id.contextualMaxPage = Math.ceil(data.data.number_of_objects / id.contextualPageSize);
                                     }));
-                                } else {
+                                } else if (id.layertype === undefined) {
                                     id.layertype = 'grid'
                                 }
 
-                                var url = layer.layer.displaypath.replace("&style=", "&ignore=");
+                                var url = layer.layer.displaypath
+                                url = url.replace(/\?.*/, '')
+
+                                if (layer.id.startsWith("el") || id.layertype == 'gridAsContextual') {
+                                    id.defaultStyle = layer.layer.name
+                                } else if (layer.id.startsWith("cl")) {
+                                    id.defaultStyle = layer.id
+                                }
+
+                                if (!id.style) id.style = 'default'
+                                var style = id.style
+                                if ('default' == style) style = id.defaultStyle
+                                if ('linear' == style) style = id.defaultStyle + '_linear'
+                                if ('outline' == style) style = 'outline'
+                                if ('filled' == style) style = 'polygon'
 
                                 newLayer = {
                                     name: uid + ': ' + layer.layer.displayname,
                                     type: 'wms',
                                     visible: true,
                                     opacity: id.opacity / 100.0,
-                                    url: layer.layer.displaypath,
+                                    url: url,
                                     layertype: id.layertype,
                                     layerParams: {
                                         opacity: id.opacity / 100.0,
                                         layers: 'ALA:' + layer.layer.name,
                                         format: 'image/png',
-                                        transparent: true
+                                        transparent: true,
+                                        styles: style
                                     }
                                 };
+
+                                if (id.layertype === 'scatterplotEnvelope') {
+                                    var layer2 = LayersService.getLayer(id.layer2);
+                                    newLayer.layerParams.layers = "ALA:" + layer.layer.name + ",ALA:" + layer2.layer.name
+
+                                    parentLayer.parentVisible = true
+                                }
+
                                 if (id.sldBody) {
                                     newLayer.layerParams.sld_body = id.sldBody
                                     newLayer.url = newLayer.url.replace("gwc/service/", "")
                                 } else if (id.sld_body) {
                                     newLayer.layerParams.sld_body = id.sld_body
                                     newLayer.url = newLayer.url.replace("gwc/service/", "")
-                                } else if (layer.id.startsWith("cl")) {
-                                    // contextual layers may have more than one style
-                                    newLayer.layerParams.styles = layer.id
                                 }
+
                                 newLayer.legendurl = newLayer.url
-                                    .replace("gwc/service/", "")
-                                    .replace('GetMap', 'GetLegendGraphic')
-                                    .replace('layers=', 'layer=')
-                                    .replace('_style', '')
-                                    .replace("&style=", "&ignore=");
+                                    .replace(/gwc\/service\//, '') + "?layer=" + encodeURIComponent(newLayer.layerParams.layers)
 
                                 if (!newLayer.legendurl.indexOf("GetLegendGraphic") >= 0) {
                                     if (id.sldBody) {
-                                        newLayer.legendurl += "&service=WMS&version=1.1.0&request=GetLegendGraphic&format=image/png&sld_body=" + encodeURIComponent(id.sldBody)
+                                        newLayer.legendurl += "&service=WMS&request=GetLegendGraphic&format=image/png&sld_body=" + encodeURIComponent(id.sldBody)
                                     } else if (id.sld_body) {
-                                        newLayer.legendurl += "&service=WMS&version=1.1.0&request=GetLegendGraphic&format=image/png&sld_body=" + encodeURIComponent(id.sld_body)
-                                    } else if (layer.id.startsWith("cl")) {
-                                        newLayer.legendurl += "&service=WMS&version=1.1.0&request=GetLegendGraphic&format=image/png&style=" + encodeURIComponent(layer.id)
+                                        newLayer.legendurl += "&service=WMS&request=GetLegendGraphic&format=image/png&sld_body=" + encodeURIComponent(id.sld_body)
+                                    } else if (id.style) {
+                                        newLayer.legendurl += "&service=WMS&request=GetLegendGraphic&format=image/png&style=" + encodeURIComponent(style)
+                                    } else {
+                                        newLayer.legendurl += "&service=WMS&REQUEST=GetLegendGraphic&FORMAT=image/png"
                                     }
                                 }
                             }
@@ -732,7 +807,12 @@
                                 name: newLayer.name
                             };
 
-                            layerGroup.layerOptions.layers.push(newLayer);
+                            if (id.layertype === 'scatterplotEnvelope') {
+                                // add below the parent layer
+                                layerGroup.layerOptions.layers.unshift(newLayer);
+                            } else {
+                                layerGroup.layerOptions.layers.push(newLayer);
+                            }
 
                             if (!parentLeafletGroup) {
                                 id.leaflet = layerGroup;
@@ -751,13 +831,12 @@
                                 promises.push(MapService.addOtherArea("distribution", id, id.area, id.includeExpertDistributions));
                                 promises.push(MapService.addOtherArea("track", id, id.area, id.includeAnimalMovement));
                                 promises.push(MapService.addOtherArea("checklist", id, id.area, id.includeChecklists));
-
                             }
 
                             // do not select this layer if it is a child layer
                             if (!parentLeafletGroup) {
                                 $timeout(function () {
-                                    $rootScope.$broadcast('showLegend');
+                                    $rootScope.$broadcast('showLegend', id);
                                     MapService.select(id);
                                 }, 0);
                             }
@@ -790,8 +869,7 @@
                     },
                     objectSld: function (item) {
                         var sldBody = '';
-                        if(item.pid.includes(":")){
-                            console.log('Warning: ' + id.id +" -> id with ':', its wmsurl should contain sld_body, otherwise the layer cannot be rendered properly!" )
+                        if(item.pid && item.pid.includes(":")){
                             //qs does not parse full url, it ignores the first param after ?
                             var wmsurl = id.wmsurl.split('?')[1]
                             var qs = new URLSearchParams(wmsurl)
@@ -840,12 +918,29 @@
                             return layer.leaflet.layerOptions.layers[0];
                         }
                     },
+                    reloadLayer: function (layer) {
+                        leafletLayers[layer.uid] = layer.leaflet;
+                        delete leafletLayers[layer.uid];
+                        $timeout(function () {
+                            leafletLayers[layer.uid] = layer.leaflet;
+                        })
+                    },
                     reMap: function (layer) {
                         if (layer.layer.layertype === 'area') {
                             this._firstLayer(layer).layerParams.sld_body = this.objectSld(layer.layer)
                         }
 
-                        this.leafletScope.changeParams(this.getLayer(layer.layer.uid), this._firstLayer(layer).layerParams)
+                        var len = 0
+                        if (layer.layer.leaflet !== undefined && layer.layer.leaflet.layerOptions !== undefined && layer.layer.leaflet.layerOptions.layers !== undefined) {
+                            len = layer.layer.leaflet.layerOptions.layers.length
+                        } else {
+                            len = layer.leaflet.layerOptions.layers.length
+                        }
+
+                        // do not apply layer parameters when there are sublayers
+                        if (len == 1) {
+                            this.leafletScope.changeParams(this.getLayer(layer.layer.uid), this._firstLayer(layer).layerParams)
+                        }
                     },
                     newArea: function (name, q, wkt, area_km, bbox, pid, wms, legend, metadata) {
                         return {
@@ -871,16 +966,6 @@
                         }
 
                         if (layer.qid) query.qid = layer.qid;
-
-                        return query
-                    },
-                    getAllSpeciesQuery: function (layer) {
-                        var query = {q: [], name: '', bs: '', ws: ''};
-                        query.name = $i18n(244);
-                        query.bs = $SH.biocacheServiceUrl;
-                        query.ws = $SH.biocacheUrl;
-                        query.q.push('*:*');
-                        query.selectOption = 'allSpecies';
 
                         return query
                     },

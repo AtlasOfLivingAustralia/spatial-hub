@@ -60,6 +60,9 @@
                     $.each($scope.selectedQs, function (i) {
                         var q = $scope.selectedQs[i];
                         promises.push(BiocacheService.registerQuery(q).then(function (response) {
+                            if (response == null) {
+                                return $q.when(false)
+                            }
                             return BiocacheService.facet('taxon_name', response).then(function (facets) {
                                 if ($scope.includeSpeciesList && q.species_list) {
                                     var species = [];

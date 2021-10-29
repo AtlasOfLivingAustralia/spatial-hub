@@ -49,7 +49,7 @@
                 },
 
                 logError: function (config, msg) {
-                    if (msg && msg.indexOf('Error') >= 0 && !config.ignoreErrors) {
+                    if (msg && msg.indexOf('Error') >= 0 && config && !config.ignoreErrors) {
                         // TODO: identify fatal errors
                         var isFatalError = false;
 
@@ -73,7 +73,7 @@
                         }
 
                         this._errors.push({msg: msg, config: config, layout: this._layout});
-                        LoggerService.log('httpService', msg, config.url);
+                        LoggerService.log('httpService', "error", {"error": msg, "url": config.url});
                     }
                 },
 

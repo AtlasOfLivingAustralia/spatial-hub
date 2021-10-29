@@ -1,14 +1,20 @@
-<div ng-repeat="x in layerAreas" class="checkbox"><label>
+<div ng-repeat="x in layerAreas" class="checkbox">
+    <label>
     <input type="checkbox" ng-model="x.selected" ng-change="updateSelection(x)"
-           ng-value="x">{{x.name}}</label></div>
+           value="{{x.name}}"    testTag="selectArea" >{{x.name}}
+   </label>
+</div>
 
-<div ng-repeat="x in defaultAreas" class="checkbox"><label>
+<div ng-repeat="x in defaultAreas" class="checkbox">
+    <label>
     <input type="checkbox" ng-model="x.selected" ng-change="updateSelection(x)"
-           ng-value="x">{{x.name}}</label></div>
+           value="{{x.name}}"   testTag="selectArea">{{x.name}}
+    </label>
+</div>
 
 <div ng-show="_includeInOutLayer" class="checkbox"><label>
     <input type="checkbox" ng-model="pickInOutLayer"
-           ng-value="x.name" name="selectedArea"><span i18n="230">(2 areas) In/Out of a contextual layer</span></label>
+            name="selectedArea" testTag='selectArea' value="(2 areas) In/Out of a contextual layer"><span i18n="230">(2 areas) In/Out of a contextual layer</span></label>
 </div>
 
 <div ng-if="pickInOutLayer" class="well-lg">
@@ -45,7 +51,7 @@
 
 <div>
     <br/>
-    <button class="btn btn-default btn-xs" type="button" ng-click="createArea()" ng-value="create">
+    <button class="btn btn-default btn-xs" type="button" ng-click="createArea()" ng-value="create" testTag="createArea">
         <span i18n="222">Define new area...</span></button>
     <br/>
 </div>

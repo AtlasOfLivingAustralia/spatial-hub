@@ -1,0 +1,13 @@
+<div class="modal-header">
+    <button i18n="1" type="button" class="close" ng-click="close()">×</button>
+    <h4 class="modal-title">{{$i18n(457, "Facet classes for&nbsp;") + facet.displayName}}</h4>
+</div>
+
+<div class="modal-body">
+    <facet-editor ng-if="facet !== undefined"
+                  facet="facet" settings="settings" on-custom="updateSelection()"></facet-editor>
+</div>
+
+<div class="modal-footer">
+    <button i18n="38" class="btn btn-default" type="button" ng-click="close()">Close</button>
+</div>

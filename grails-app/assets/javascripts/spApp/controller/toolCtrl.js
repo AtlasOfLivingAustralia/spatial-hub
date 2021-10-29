@@ -51,6 +51,11 @@
                                         if (input[name]) {
                                             $scope.spec.input[i] = angular.merge($scope.spec.input[i], input[name])
                                         }
+
+                                        // needed when 'name' is numeric
+                                        if (input[i]) {
+                                            $scope.spec.input[i] = angular.merge($scope.spec.input[i], input[i])
+                                        }
                                     }
                                 }
                             } else {
@@ -65,10 +70,13 @@
                             $scope.spec = angular.merge({}, specList[k])
                         }
 
+                        $scope.initSpec();
                         $scope.initValues();
                         $scope.buildViews();
 
-                        if ($scope.stage === 'execute') {
+                        if ($scope.stage === 'edit') {
+                            inputData.newValue = $scope.getInputs()
+                        } else if ($scope.stage === 'execute') {
                             $scope.finish();
                         } else if ($scope.stage === 'output') {
                             $scope.statusUrl = $SH.layersServiceUrl + '/tasks/status/' + $scope.taskId;
@@ -105,9 +113,72 @@
                     }
                 };
 
+                $scope.initSpec = function () {
+                    var c = $scope.spec.input;
+                    var k;
+                    var value;
+                    for (k in c) {
+                        if (c.hasOwnProperty(k)) {
+                            value = c[k];
+                            if (value.constraints === undefined) value.constraints = {};
+                            var v;
+                            if (value.type === 'area') {
+                                if (value.constraints['defaultAreas'] === undefined) value.constraints['defaultAreas'] = true;
+                                if (value.constraints['defaultToWorld'] === undefined) value.constraints['defaultToWorld'] = true;
+                                if (value.constraints['max'] === undefined) value.constraints['max'] = 1000;
+                            } else if (value.type === 'species') {
+                                if (value.constraints['areaIncludes'] === undefined) value.constraints['areaIncludes'] = false;
+                                if (value.constraints['spatialValidity'] === undefined) value.constraints['spatialValidity'] = true;
+                                if (value.constraints['absentOption'] === undefined) value.constraints['absentOption'] = true;
+                                if (value.constraints['canAddSpecies'] === undefined) value.constraints['canAddSpecies'] = false;
+                                if (value.constraints['dateRangeOption'] === undefined) value.constraints['dateRangeOption'] = true;
+                                if (value.constraints['lifeforms'] === undefined) value.constraints['lifeforms'] = true;
+                                if (value.constraints['importList'] === undefined) value.constraints['importList'] = true;
+                                if (value.constraints['importPoints'] === undefined) value.constraints['importPoints'] = true;
+                                if (value.constraints['searchSpecies'] === undefined) value.constraints['searchSpecies'] = true;
+                                if (value.constraints['allSpecies'] === undefined) value.constraints['allSpecies'] = true;
+                                // } else if (value.type === 'date') {
+                                // } else if (value.type === 'layer') {
+                                // } else if (value.type === 'boolean') {
+                                // } else if (value.type === 'int') {
+                                // } else if (value.type === 'double') {
+                            } else if (value.type === 'list') {
+                                // convert to array of labels and values
+                                value.constraints._list = [];
+                                if (value.constraints.labels === undefined) {
+                                    value.constraints.labels = value.constraints.content;
+                                }
+                                for (var i in value.constraints.content) {
+                                    var label = value.constraints.content[i]
+                                    if (value.constraints.labels) {
+                                        label = value.constraints.labels[i]
+                                    }
+                                    value.constraints._list.push({
+                                        value: value.constraints.content[i],
+                                        label: label,
+                                        selected: false
+                                    })
+                                }
+                                // } else if (value.type === 'phylogeneticTree') {
+                                // } else if (value.type === 'text') {
+                            } else if (value.type === 'speciesOptions') {
+                                if (value.constraints['areaIncludes'] === undefined) value.constraints['areaIncludes'] = false;
+                                if (value.constraints['kosherIncludes'] === undefined) value.constraints['kosherIncludes'] = true;
+                                if (value.constraints['endemicIncludes'] === undefined) value.constraints['endemicIncludes'] = false;
+                                // } else if (value.type === 'facet') {
+                                // } else {
+                            }
+                        }
+                    }
+                }
+
                 $scope.initValues = function () {
                     //no need for initValues when $scope.values is populated from LayoutService.addToSave
                     if ($scope.values.length > 0) return;
+                    if (inputData.values) {
+                        $scope.values = inputData.values;
+                        return;
+                    }
 
                     //check for previously entered value in LayoutService
                     $scope.values = LayoutService.getValue($scope.componentName, 'values', $scope.values);
@@ -137,20 +208,37 @@
                             var v;
                             if (value.type === 'area') {
                                 if (value.constraints['defaultAreas'] === undefined) value.constraints['defaultAreas'] = true;
-                                if (value.constraints['defaultToWorld'] === undefined) value.constraints['defaultToWorld'] = false;
+                                if (value.constraints['defaultToWorld'] === undefined) value.constraints['defaultToWorld'] = true;
                                 if (value.constraints['max'] === undefined) value.constraints['max'] = 1000;
 
-                                if (value.constraints['default'] !== undefined) v = value.constraints['default'];
-                                else v = {area: []}
+                                if (value.constraints['default'] !== undefined) {
+                                    // getInputs returns the .area array which is inconsistent with the value
+                                    if (value.constraints['default'] instanceof Array) {
+                                        v = {area: value.constraints['default']}
+                                    } else {
+                                        v = value.constraints['default']
+                                    }
+                                } else {
+                                    v = {area: []}
+                                }
+
                             } else if (value.type === 'species') {
                                 if (value.constraints['areaIncludes'] === undefined) value.constraints['areaIncludes'] = false;
                                 if (value.constraints['spatialValidity'] === undefined) value.constraints['spatialValidity'] = true;
+                                if (value.constraints['absentOption'] === undefined) value.constraints['absentOption'] = true;
+                                if (value.constraints['canAddSpecies'] === undefined) value.constraints['canAddSpecies'] = false;
+                                if (value.constraints['dateRangeOption'] === undefined) value.constraints['dateRangeOption'] = true;
+                                if (value.constraints['lifeforms'] === undefined) value.constraints['lifeforms'] = true;
+                                if (value.constraints['importList'] === undefined) value.constraints['importList'] = true;
+                                if (value.constraints['importPoints'] === undefined) value.constraints['importPoints'] = true;
+                                if (value.constraints['searchSpecies'] === undefined) value.constraints['searchSpecies'] = true;
+                                if (value.constraints['allSpecies'] === undefined) value.constraints['allSpecies'] = true;
 
                                 if (value.constraints['default'] !== undefined) v = value.constraints['default'];
                                 else if (value.constraints['speciesOption'] === 'allSpecies') {
                                     //specify allSpecies default
                                     v = {
-                                        q: ["*:*", "geospatial_kosher:true", $SH.fqExcludeAbsent],
+                                        q: ["*:*"],
                                         name: 'All species',
                                         bs: $SH.biocacheServiceUrl,
                                         ws: $SH.biocacheUrl
@@ -165,7 +253,17 @@
                             } else if (value.type === 'date') {
                                 v = {fq: []}
                             } else if (value.type === 'layer') {
-                                if (value.constraints['default'] !== undefined) v = value.constraints['default'];
+                                if (value.constraints['default'] !== undefined) {
+                                    // getInputs returns the .area array which is inconsistent with the value
+                                    if (value.constraints['default'] instanceof Array) {
+                                        v = {layers: []};
+                                        $.map(value.constraints['default'], function (layer) {
+                                            v.layers.push(LayersService.getLayer(layer))
+                                        })
+                                    } else {
+                                        v = LayersService.getLayer(value.constraints['default']);
+                                    }
+                                }
                                 else v = {layers: []}
                             } else if (value.type === 'boolean') {
                                 v = value.constraints['default']
@@ -175,23 +273,13 @@
                                 v = value.constraints['default']
                             } else if (value.type === 'list') {
                                 if (value.constraints.selection !== 'single') {
-                                    v = [value.constraints['default']];
+                                    v = value.constraints['default'];
+                                    if (v == undefined) {
+                                        v = [];
+                                    }
                                 } else {
                                     v = value.constraints['default'];
                                 }
-                                // convert to array of labels and values
-                                value.constraints._list = [];
-                                if (value.constraints.labels === undefined) {
-                                    value.constraints.labels = value.constraints.content;
-                                }
-                                for (var i in value.constraints.content) {
-                                    value.constraints._list.push({
-                                        value: value.constraints.content[i],
-                                        label: value.constraints.labels[i]
-                                    })
-                                }
-                            } else if (value.constraints !== undefined && value.constraints['default'] !== undefined) {
-                                v = value.constraints['default']
                             } else if (value.type === 'phylogeneticTree') {
                                 if (value.constraints['default'] !== undefined) v = value.constraints['default'];
                                 else v = []
@@ -206,7 +294,9 @@
                                 else v = {}
                             } else if (value.type === 'facet') {
                                 if (value.constraints['default'] !== undefined) v = value.constraints['default'];
-                                else v = ""
+                                else v = []
+                            } else if (value.constraints !== undefined && value.constraints['default'] !== undefined) {
+                                v = value.constraints['default']
                             } else {
                                 v = null
                             }
@@ -218,8 +308,13 @@
                 };
 
                 $scope.finish = function () {
-                    $scope.stage = 'execute';
-                    var response = $scope.execute();
+                    if ($scope.stage === 'edit') {
+                        inputData.newValue = $scope.getInputs()
+                        $scope.close()
+                    } else {
+                        $scope.stage = 'execute';
+                        var response = $scope.execute();
+                    }
                 };
 
                 $scope.finished = false;
@@ -264,6 +359,9 @@
                         return false
                     } else if (value.type === 'facet') {
                         return $scope.values[i].length === 0
+                    } else if (value.type === 'annotation') {
+                        var value = $scope.values[i];
+                        return !value || value.invalid();
                     } else {
                         return false
                     }
@@ -334,7 +432,7 @@
                 };
 
                 $scope.getInputs = function () {
-                    var c = ToolsService.getCap($scope.toolName).input;
+                    var c = $scope.spec.input;
                     var inputs = {};
                     var k;
                     var j;
@@ -348,7 +446,15 @@
                         }
                         if (c.hasOwnProperty(kvalue)) {
                             if ($scope.values[k] !== undefined && $scope.values[k] !== null) {
-                                if ($scope.values[k].area !== undefined) {
+                                if (c[kvalue].type == 'list' && c[kvalue].constraints.selection !== 'single') {
+                                    inputs[kvalue] = []
+                                    var list = c[kvalue].constraints._list
+                                    for (var idx in list) {
+                                        if (list[idx].selected) {
+                                            inputs[kvalue].push(list[idx].value)
+                                        }
+                                    }
+                                } else if ($scope.values[k].area !== undefined) {
                                     inputs[kvalue] = [];
                                     for (j in $scope.values[k].area) {
                                         if ($scope.values[k].area.hasOwnProperty(j)) {
@@ -374,16 +480,8 @@
                                         }
                                     }
                                 } else if ($scope.values[k].q !== undefined) {
-                                    inputs[kvalue] = {
-                                        q: $scope.values[k].q,
-                                        ws: $scope.values[k].ws,
-                                        bs: $scope.values[k].bs,
-                                        name: $scope.values[k].name
-                                    };
-                                    // additional species related values
-                                    if ($scope.values[k].species_list) {
-                                        inputs[kvalue].species_list = $scope.values[k].species_list;
-                                    }
+                                    inputs[kvalue] = $.extend({}, $scope.values[k]);
+
                                     // additional date range fq
                                     if ($scope.injectDateRange) {
                                         inputs[kvalue].q = inputs[kvalue].q.concat($scope.values[k + 1].fq)

@@ -11,10 +11,10 @@
                         id="chooseDisplayedLayerMenuButton" data-toggle="dropdown" aria-haspopup="true"
                         aria-expanded="false">
                     <span><i class="glyphicon glyphicon-triangle-right"></i></span>
-                    {{olist.layer.isSelectedFacetsOnly ? olist.layer.name + ' - selected ' + olist.layer.facet+
-                    "("+olist.layer.selCount+")" : olist.layer.isWithoutSelectedFacetsOnly ? olist.layer.name + ' -
-                    unselected ' + olist.layer.facet+" ("+olist.layer.withoutSelCount+")" : olist.layer.name +
-                    '('+olist.layer.total+')'}}
+                    {{olist.layer.isSelectedFacetsOnly ? olist.layer.name + ' - selected ' + olist.layer.facet +
+                        "(" + olist.layer.selCount + ")" : olist.layer.isWithoutSelectedFacetsOnly ? olist.layer.name +
+                        ' - unselected ' + olist.layer.facet + " (" + olist.layer.withoutSelCount + ")" : olist.layer.name +
+                        '(' + olist.layer.total + ')'}}
 
                 </button>
 
@@ -117,7 +117,7 @@
                 <div class="col-sm-12">
                     <div class="col-sm-6">
                         <button type="button" class="btn btn-default btn-xs" title="Add all occurrences to adhoc"
-                                ng-click="olist.toggleBBox()"><span>Add occurrences to adhoc</span>
+                                ng-click="olist.toggleBBox()"><span i18n="496">Add occurrences to adhoc</span>
                         </button>
 
 

@@ -1,12 +1,12 @@
 <div class="row" name="nearestLocality" style="padding-left:10px;width:400px">
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h3 class="panel-title" style="margin-bottom: 0px">
+            <h3 class="panel-title" style="margin-bottom: 0px" testTag="nearestLocalityTitle">
                 <button i18n="1" type="button" class="close" ng-click="cancel()">×</button>
                 <div i18n="156">Nearest locality</div>
             </h3>
         </div>
-        <div class="panel-body" style="overflow-y:scroll;">
+        <div class="panel-body" style="overflow-y:auto;">
             <div class="alert alert-ala-success alert-success" role="alert">
                 <div class="container">
                     <p style="display:inline;" ng-show="pointLabel.length > 0"><strong>{{pointLabel}}</strong></p>
@@ -15,13 +15,13 @@
                                 ng-disabled="selectedArea.wkt.length == 0 && points.length > 0">Edit location
                         </button>
                         <br/>
-                        <button class="btn btn-default" ng-click="zoom()"
+                        <button i18n="518" class="btn btn-default" ng-click="zoom()"
                                 ng-disabled="selectedArea.wkt.length == 0">Zoom to Localities
                         </button>
                     </div>
-                    <p style="" ng-hide="pointLabel.length > 0"><span i18n="158">Longitude:&nbsp;</span>{{point.longitude
+                    <p style="" ng-hide="pointLabel.length > 0" testTag="longitude"><span i18n="158">Longitude:&nbsp;</span>{{point.longitude
                         | number : 3}}</p>
-                    <p style="" ng-hide="pointLabel.length > 0"><span i18n="159">Latitude:&nbsp;</span>{{point.latitude
+                    <p style="" ng-hide="pointLabel.length > 0" testTag="latitude"><span i18n="159">Latitude:&nbsp;</span>{{point.latitude
                         | number : 3}}</p>
                 </div>
             </div>

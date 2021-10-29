@@ -291,6 +291,43 @@
         ]
       }
     ]
+  },
+  "DoubleGridding": {
+    "view": [
+      {
+        "inputs": [
+          "area"
+        ]
+      },
+      {
+        "inputs": [
+          "species"
+        ]
+      },
+      {
+        "inputs": [
+          "primaryGridCellSize"
+        ]
+      },
+      {
+        "inputs": [
+          "secondaryGridCellSize"
+        ]
+      },
+      {
+        "inputs": [
+          "yearSize"
+        ]
+      }
+    ]
+  },
+  "SpeciesByLayer": {
+    "description": "Tabulate - 1D",
+    "input": {
+      "layer": {
+        "description": "Select 1 layer"
+      }
+    }
   }
 }
 

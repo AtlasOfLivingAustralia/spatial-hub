@@ -1,0 +1,85 @@
+<div class="modal-header">
+    <button i18n="1" type="button" class="close" ng-click="$close()">×</button>
+    <h3 i18n="506" class="modal-title" ng-show="workflow.length <= 0">Available Workflows</h3>
+    <h3 class="modal-title" ng-show="playStep < 0 && !workflowId && workflow.length > 0">Create Workflow</h3>
+    <h3 class="modal-title" ng-show="playStep < 0 && !!workflowId && workflow.length > 0">Run Workflow</h3>
+    <h3 class="modal-title" ng-show="playStep >= 0 && workflow.length > 0">Running Workflow</h3>
+</div>
+
+<div class="modal-body">
+    <div style="overflow:auto" ng-if="workflow.length == 0">
+        <input type="text" width="150px"
+               placeholder="Filter workflows"
+               ng-model="workflowFilter">
+        <table class="table table-striped table-condensed">
+            <thead>
+            <th></th>
+            <th>
+                <div href="#" ng-click="sortType = 'id'; sortReverse = !sortReverse">
+                    <span i18n="486">Id</span>
+                    <span ng-show="sortType == 'id' && !sortReverse"
+                          class="glyphicon glyphicon-chevron-down"></span>
+                    <span ng-show="sortType == 'id' && sortReverse"
+                          class="glyphicon glyphicon-chevron-up"></span>
+                </div>
+            </th>
+            <th>
+                <div href="#" ng-click="sortType = 'name'; sortReverse = !sortReverse">
+                    <span i18n="151">Name</span>
+                    <span ng-show="sortType == 'name' && !sortReverse"
+                          class="glyphicon glyphicon-chevron-down"></span>
+                    <span ng-show="sortType == 'name' && sortReverse"
+                          class="glyphicon glyphicon-chevron-up"></span>
+                </div>
+            </th>
+            <th>
+                <div href="#" ng-click="sortType = 'created'; sortReverse = !sortReverse">
+                    <span i18n="107">Created</span>
+                    <span ng-show="sortType == 'created' && !sortReverse"
+                          class="glyphicon glyphicon-chevron-down"></span>
+                    <span ng-show="sortType == 'created' && sortReverse"
+                          class="glyphicon glyphicon-chevron-up"></span>
+                </div>
+            </th>
+            <th></th>
+            </thead>
+            <tbody>
+            <tr ng-repeat="workflow in workflows | orderBy:sortType:sortReverse | filter:workflowFilter">
+                <td>
+                    <button i18n="507" class="button btn-xs" ng-click="loadWorkflow(workflow.id)">Load</button>
+                </td>
+                <td>{{workflow.id}}</td>
+                <td>{{workflow.name}}</td>
+                <td>{{ (toDate(workflow.created) | date : 'yyyy-MM-ddThh:mm:ss' : 'UTC') +
+                    (toDate(workflow.created)?'Z':'')}}
+                </td>
+                <td><i ng-show="workflow.id != undefined" class="glyphicon glyphicon-trash"
+                       ng-click="deleteWorkflow(workflow.id)"></i></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div style="overflow:auto" ng-if="workflow.length > 0 && playStep < 0">
+
+        <workflow-item workflow="workflowProperties"></workflow-item>
+
+        <div style="overflow:auto" ng-if="workflow.length > 0 && playStep >= 0">
+            <uib-progressbar class="progress-striped"
+                             ng-class="{ active: true }" value="100" type='info' title="Running..."><span i18n="508"
+            >Running...</span>
+            </uib-progressbar>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn btn-default" type="button" ng-click="$close()" ng-show="playStep >= 0">Cancel</button>
+        <button i18n="38" class="btn btn-default" type="button" ng-click="$close()" ng-show="playStep < 0">Close
+        </button>
+        <button i18n="509" class="btn btn-default" type="button" ng-click="save()"
+                ng-show="playStep < 0 && !workflowId && workflow.length > 0">Save
+        </button>
+        <button i18n="510" class="btn btn-default" type="button" ng-click="playback()"
+                ng-show="playStep < 0 && !!workflowId && workflow.length > 0">Run
+        </button>
+    </div>
+</div>

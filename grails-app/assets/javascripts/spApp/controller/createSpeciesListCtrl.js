@@ -25,16 +25,30 @@
      */
     angular.module('create-species-list-ctrl', ['map-service', 'biocache-service', 'layers-service'/*, 'ala.sandbox.preview'*/])
         .controller('CreateSpeciesListCtrl', ['$scope', '$controller', 'MapService', '$timeout', 'LayoutService', '$uibModalInstance',
-            'BiocacheService', 'LayersService', 'ListsService', 'data', 'BieService', 'LoggerService',
-            function ($scope, $controller, MapService, $timeout, LayoutService, $uibModalInstance, BiocacheService, LayersService, ListsService, inputData, BieService, LoggerService) {
+            'BiocacheService', 'LayersService', 'ListsService', 'data', 'BieService', 'LoggerService', '$q',
+            function ($scope, $controller, MapService, $timeout, LayoutService, $uibModalInstance, BiocacheService, LayersService, ListsService, inputData, BieService, LoggerService, $q) {
                 LayoutService.addToSave($scope);
 
                 $scope.step = '1';
 
+                $scope.maxFileSize = $SH.maxUploadSize;
+
+                $scope.listTypes = [
+                    {id: 'OTHER', label: "Other"},
+                    {id: 'SPECIES_CHARACTERS', label: "Species characters list"},
+                    {id: 'CONSERVATION_LIST', label: "Conservation list"},
+                    {id: 'SENSITIVE_LIST', label: "Sensitive list of species"},
+                    {id: 'LOCAL_LIST', label: "Local checklist"},
+                    {id: 'COMMON_TRAIT', label: "Common trait of species"},
+                    {id: 'COMMON_HABITAT', label: "Common habitat of species"},
+                    {id: 'TEST', label: "Test list"}
+                ]
+
                 $scope.newListName = $i18n(375, "My species list");
                 $scope.newListDescription = '';
                 $scope.newItems = '';
-                $scope.makePrivate = true;
+                $scope.makePrivate = false;
+                $scope.newListType = $scope.listTypes[0]
 
                 $scope.selectedQ = {
                     q: []
@@ -51,6 +65,21 @@
                 $scope.$watch('file', function () {
                     $scope.uploadCSV();
                 });
+
+                $scope.validateFile = function (newFiles) {
+                    if (newFiles == null || newFiles.length == 0) {
+                        return
+                    }
+
+                    var file = newFiles[0]
+
+                    if (file.$error) {
+                        if (file.$errorMessages.maxSize) {
+                            bootbox.alert($i18n(476, "The uploaded file is too large. Max file size:") + " " + Math.floor($scope.maxFileSize / 1024 / 1024) + "MB");
+                            return
+                        }
+                    }
+                }
 
                 $scope.matchedItems = [];
 
@@ -125,18 +154,18 @@
                 };
 
                 $scope.addNewSpecies = function () {
-                    ListsService.createList($scope.newListName, $scope.newListDescription, $scope.matchedGuids(), $scope.makePrivate).then(function (resp) {
+                    ListsService.createList($scope.newListName, $scope.newListDescription, $scope.matchedGuids(), $scope.makePrivate, $scope.newListType.id).then(function (resp) {
                         if (resp.status === 200) {
                             var json = JSON.parse(resp.data.text);
                             var druid = json.druid;
 
-                            LoggerService.log("Create", "createSpeciesList", JSON.stringify({
+                            LoggerService.log("Create", "createSpeciesList", {
                                 name: $scope.newListName,
                                 description: $scope.newListDescription,
                                 guids: $scope.matchedGuids(),
                                 makePrivate: $scope.makePrivate,
                                 druid: druid
-                            }))
+                            })
 
                             ListsService.items(druid, {max: 1}).then(function (data) {
                                 if (data.length === 0) {
@@ -157,8 +186,10 @@
                                             closeLater = true;
                                             var newquery = BiocacheService.newQuery($scope.selectedQ.q, $scope.selectedQ.name, undefined);
                                             BiocacheService.newLayer(newquery, undefined, newquery.name).then(function (data) {
-                                                data.species_list = druid;
-                                                MapService.add(data);
+                                                if (data != null) {
+                                                    data.species_list = druid;
+                                                    MapService.add(data);
+                                                }
                                                 $scope.$close();
                                             });
                                         }

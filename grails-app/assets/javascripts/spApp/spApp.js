@@ -98,11 +98,24 @@ spApp.config(['$httpProvider', function ($httpProvider) {
             },
 
             'responseError': function (rejection, a, c) {
+                // Todo should remove this bit code after authentication issue solved
+                // For auth redirect issue, retry once when status == -1 and withCredentials == true
+                if (rejection.status == -1 && rejection.config.withCredentials && rejection.config.retried === undefined) {
+                    var $http = angular.element(document.querySelector('sp-app')).injector().get('$http');
+                    rejection.config.retried = true;
+                    return $http(rejection.config);
+                }
+
                 var httpService = angular.element(document.querySelector('sp-app')).injector().get('HttpService');
                 if (httpService) httpService.pop(rejection, 'responseError');
 
-                if (rejection.status == -1) {
+                if ( rejection.status == 403 || rejection.status == 401) {
+                    bootbox.alert("Authentication failed or login session expired, Please login again!")
+                    rejection.handled = true;
+                } else if (rejection.status == -1) {
                     // urls not accessible are ignored.
+                    // Mainly caused by network/connection, or CORS
+                    console.log("Cannot connect to: " + rejection.config.url +" due to network/connection problems, for example: CORS")
                 } else if (rejection.status === 0) {
                     if (window.isInWrapper) {
                         //Logout if in an app;
@@ -110,11 +123,8 @@ spApp.config(['$httpProvider', function ($httpProvider) {
                     } else {
                         window.location.reload();
                     }
-                } else if (rejection.status !== 404) {
-                    //Ignore invalid urls
-                    //HTTP interceptor can decorate the promise rejection with a property handled to indicate whether it's handled the error.
-                    rejection.handled = true;
                 }
+                console.log(JSON.stringify(rejection.data))
                 return $q.reject(rejection);
             }
         };
@@ -156,8 +166,11 @@ function fetchData() {
 
     var gLayerDistances = {};
     var gMessages = {};
+    var gLayers = []
+
     spApp.constant("gLayerDistances", gLayerDistances);
     spApp.constant("gMessages", gMessages);
+    spApp.constant("gLayers", gLayers);
 
     var distancesUrl = $SH.layersServiceUrl + "/layerDistances/layerdistancesJSON";
 
@@ -172,14 +185,13 @@ function fetchData() {
             }
         });
     }
-    /*
-    if(window.getCookie('lang') === 'en') {
-        $SH.i18n = "default";
-    }
-    if(window.getCookie('lang') === 'de_AT') {
-        $SH.i18n = "de_AT";
-    }
-     */
+
+    promises.push($http.get($SH.layersServiceUrl + "/fields/search?q=", _httpDescription('getLayers')).then(function (data) {
+        $.map(data.data, function (v) {
+            gLayers.push(v);
+        })
+    }))
+
     promises.push($http.get($SH.baseUrl + "/portal/i18n?lang=" + $SH.i18n, _httpDescription('geti18n')).then(function (result) {
         for (k in result.data) {
             gMessages[k + ""] = result.data[k]
@@ -394,9 +406,10 @@ var authWorkaround = function (url) {
 };
 
 // This is to fix auth issues with ajax calls to other ala applications
-if ($SH.biocollectUrl) {
-    authWorkaround($SH.biocollectUrl);
-}
+//  if ($SH.biocollectLoginUrl) {
+//      authWorkaround($SH.biocollectLoginUrl);
+//  }
+
 
 // // Override Leaflet to fix map locking up when using different EPSGs
 L.oldLatLng = L.LatLng;

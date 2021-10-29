@@ -1,17 +1,27 @@
-<div ng-show="_spatialValidity" class="checkbox">
+<div ng-show="_spatialValidity && !mappedLayerSelected" class="checkbox">
     <label>
         <input type="checkbox" ng-model="spatiallyValid" ng-change="setQ()"><span i18n="238">Include spatially-valid records</span>
     </label>
+    <i class="glyphicon glyphicon-question-sign text-warning" popover-trigger="mouseenter" uib-popover="Display records which have passed all the spatial data quality tests (see link below for more information)"  popover-placement="right"></i>
 </div>
-<div ng-show="_spatialValidity" class="checkbox">
+<div ng-show="_spatialValidity && !mappedLayerSelected" class="checkbox">
     <label>
         <input type="checkbox" ng-model="spatiallySuspect" ng-change="setQ()"><span i18n="239">Include spatially-suspect records</span>
     </label>
+    <i class="glyphicon glyphicon-question-sign text-warning" popover-trigger="mouseenter" uib-popover="Display records which have failed one or more spatial data quality tests (see link below for more information)"  popover-placement="right"></i>
 </div>
-<div ng-show="_absentOption" class="checkbox">
+<div ng-show="_spatialValidity && !mappedLayerSelected" class="checkbox">
     <label>
-        <input type="checkbox" ng-model="includeAbsences" ng-change="setQ()"><span
-            i18n="284">Include absent occurrences</span>
+        <input type="checkbox" ng-model="spatiallyUnknown"
+               ng-change="setQ()"><span i18n="525">Include spatially-undefined records</span>
+    </label>
+    <i class="glyphicon glyphicon-question-sign text-warning" popover-trigger="mouseenter" uib-popover="Include records that have NOT been supplied with coordinates (note they will not appear on map but will be included in download file)" popover-placement="right"></i>
+</div>
+<p ng-show="!mappedLayerSelected"  class="notice" ><i class="glyphicon glyphicon-info-sign text-warning"></i>Minimum one spatially related option is required! See this <a href="https://support.ala.org.au/support/solutions/articles/6000236981-what-does-the-spatially-valid-flag-geospatial-kosher-mean-" target="_blank" >support article</a> for more information</p>
+
+<div ng-show="_absentOption && !mappedLayerSelected" class="checkbox">
+    <label>
+        <input type="checkbox" ng-model="includeAbsences" ng-change="setQ()"><span i18n="514">Include absences</span>
     </label>
 </div>
 <div ng-show="_areaIncludes">
@@ -30,8 +40,8 @@
         </label>
     </div>
 </div>
-<div ng-show="_dateRangeOption">
-    <select-date-range selected-date-range="dateRange" on-custom="setQ()"></select-date-range>
+<div ng-show="_dateRangeOption && !mappedLayerSelected">
+    <select-date-range selected-date-range="dateRange" on-custom="setQ()" testTag="otherInput"></select-date-range>
 </div>
 
 <div ng-if="_min == 0 && !multiselect" class="radio">
@@ -43,6 +53,7 @@
 <div ng-show="multiselect">
     <div ng-repeat="layer in speciesLayers">
         <input type="checkbox" ng-model="layer.checked" ng-change="updateMultiSelection()">{{layer.name}}<span
+            i18n="526"
             ng-if="layer.species_list"
             style="margin-left:10px;font-style: italic">(may include species traits)</span>
         <br/>
@@ -53,7 +64,7 @@
 <div ng-show="multiselect" class="radio">
     <label>
         <input type="radio" ng-model="speciesOption" value="none" ng-change="changeOption('none')" name="{{_uniqueId}}">
-        <span>No additional species</span></label>
+        <span i18n="527">No additional species</span></label>
     <br/>
 </div>
 
@@ -64,7 +75,7 @@
     <br/>
 </div>
 
-<div ng-show="!_inputData.importList && !_inputData.importPoints" class="radio">
+<div ng-show="!_inputData.importList && !_inputData.importPoints && _lifeforms" class="radio">
     <label>
         <input type="radio" ng-model="speciesOption" value="lifeform" ng-change="changeOption('lifeform')"
                name="{{_uniqueId}}"><span i18n="528">Lifeform</span></label>
@@ -73,17 +84,29 @@
         <lifeform-select style="width:400px" on-custom="setLifeformQ"></lifeform-select>
         <hr>
     </div>
-
 </div>
 
-<div ng-show="!_inputData.importList && !_inputData.importPoints" class="radio">
+<div ng-show="!_inputData.importList && !_inputData.importPoints && _allSpecies" class="radio">
     <label>
         <input type="radio" ng-model="speciesOption" value="allSpecies" ng-change="changeOption('allSpecies')"
                name="{{_uniqueId}}"><span i18n="244">All species</span></label>
     <br/>
 </div>
 
-<div ng-show="!_inputData.importList && !_inputData.importPoints" class="radio">
+<div ng-show="doiEnabled" class="radio">
+    <label><input type="radio" ng-model="speciesOption" value="searchDois" ng-change="changeOption('searchDois')"
+                  name="{{_uniqueId}}"><span i18n="435">Search for a species in a DOI dataset</span></label>
+
+    <br/>
+    <div ng-show="speciesOption == 'searchDois'">
+        <label>
+            <input id="doiAutoComplete" doi-auto-complete on-select="doiSelected">
+        </label>
+        <hr>
+    </div>
+</div>
+
+<div ng-show="!_inputData.importList && !_inputData.importPoints && _searchSpecies" class="radio">
     <label>
         <input type="radio" ng-model="speciesOption" value="searchSpecies"
                ng-change="changeOption('searchSpecies')" name="{{_uniqueId}}"><span i18n="245">Search for a species by scientific or common
@@ -101,9 +124,10 @@
     </div>
 </div>
 
-<div ng-show="listsEnabled()" class="radio"><label>
+<div ng-show="listsEnabled() && _importList" class="radio"><label>
     <input type="radio" ng-model="speciesOption" value="speciesList" ng-change="changeOption('speciesList')"
-           ng-show="!_inputData.importPoints" name="{{_uniqueId}}"><span i18n="251">Use species list</span></label>
+           name="{{_uniqueId}}"><span
+        i18n="251">Use species list</span></label>
 
     <div ng-show="speciesOption == 'speciesList'" style="margin-left:15px">
         <div lists-list on-custom="setQ"></div>
@@ -111,10 +135,10 @@
     </div>
 </div>
 
-<div ng-show="listsEnabled()" class="radio"><label>
-    <input  type="radio" ng-model="speciesOption" value="importList" ng-show="!_inputData.importPoints"
-            ng-change="changeOption('importList')" ng-disabled="isNotLoggedIn" name="{{_uniqueId}}"><span i18n="248">Create new species
-    list</span></label>
+<div ng-show="listsEnabled() && _importList" class="radio"><label>
+    <input i18n="248" type="radio" ng-model="speciesOption" value="importList"
+           ng-change="changeOption('importList')" ng-disabled="isNotLoggedIn" name="{{_uniqueId}}">Create new species
+    list</label>
     <div ng-show="speciesOption == 'importList'" style="margin-left:15px">
         <span i18n="249">List:</span><span class="strong"> {{speciesListName}}</span>
         <button i18n="250" style="margin-left:30px" type="button" class="btn btn-default btn-xs"
@@ -125,7 +149,7 @@
     </div>
 </div>
 
-<div ng-show="!_inputData.importList && sandboxEnabled()" class="radio"><label>
+<div ng-show="sandboxEnabled() && _importPoints" class="radio"><label>
     <input type="radio" ng-model="speciesOption" value="sandboxPoints"
            ng-change="changeOption('sandboxPoints')" ng-disabled="isNotLoggedIn" name="{{_uniqueId}}"><span
         i18n="254">Use imported points</span>
@@ -137,7 +161,7 @@
     </div>
 </div>
 
-<div ng-show="!_inputData.importList && sandboxEnabled()" class="radio"><label>
+<div ng-show="sandboxEnabled() && _importPoints" class="radio"><label>
     <input type="radio" ng-model="speciesOption" value="importPoints"
            ng-change="changeOption('importPoints')"
            ng-disabled="isNotLoggedIn" name="{{_uniqueId}}"><span i18n="252">Import points</span></label>

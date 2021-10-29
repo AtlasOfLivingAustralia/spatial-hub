@@ -1,7 +1,16 @@
 <div>
     <label i18n="127" style=";width:70px">Facet</label>
     <select style=";width:300px" id='facet' ng-model="facet"
-            ng-change="resetFacet()">
+            ng-change="changeFacet()" testTag="facetInModal">
+
+        <option i18n="503" value="search">Search facets...</option>
+
+        <option i18n="504" disabled>--- Active Filters ---</option>
+
+        <option ng-repeat="x in activeFacets" value="{{x.facet}}">
+            {{x.name}}
+        </option>
+
         <option ng-repeat="x in facets" value="{{x.facet}}"
                 ng-disabled="x.separator">
             {{x.name}}
@@ -11,24 +20,27 @@
 
 <div style="height:320px">
     <hr/>
-    <span>Facet begins with (case sensitive):</span>
-    <input style="width:200px" type="text" ng-model="facetFilter"/>
+    <span i18n="505">Facet begins with (case sensitive):</span>
+    <input style="width:200px" type="text" ng-model="activeFacet.facetFilter" testTag="applyFacetFilter"/>
     <div class="btn-group btn-group-xs">
-        <button i18n="141" ng-click="offset = 0; updatePage()" class="btn btn-default">
+        <button i18n="141" ng-click="offset = 0; applyFilter()" class="btn btn-default" testTag="applyFacetFilter">
             apply filter
         </button>
-        <button i18n="129" ng-click="clearFilter()" class="btn btn-default">clear filter
+        <button i18n="129" ng-click="clearFilter()" class="btn btn-default" testTag="cleaFacetFilter">clear filter
         </button>
+
     </div>
 
     <a download="facets list"
-       ng-href="{{exportUrl}}" ng-show="exportUrl != null">
+       ng-href="{{activeFacet.exportUrl}}" ng-show="activeFacet.exportUrl != null">
         <span style="float:right" i18n="51">Download</span><i class=" pull-right glyphicon glyphicon-download-alt"></i>
     </a>
-
-    <table ng-hide="updatingPage" class="table layers-table table-striped"
-           style="margin-top:10px;width:100%;height:250px;overflow:scroll;display:block">
-        <tr ng-repeat="x in facetList">
+    <div>
+        <input type="checkbox" ng-model="sortFacetsByName" ng-click="applyFilter()">Sorted by name
+    </div>
+    <table id="facetList" ng-hide="updatingPage" class="table layers-table table-striped"
+           style="margin-top:10px;width:100%;height:250px;overflow:auto;display:block">
+        <tr ng-repeat="x in activeFacet.facetList" testTag="recordsOfSelectedFacet">
             <td style="width:20px"><input type="checkbox" ng-model="x.selected"
                                           ng-change="applySelection()"></td>
             <td style="width:330px;display: block;word-wrap:break-word;">{{x.displaylabel}}</td>
@@ -48,14 +60,16 @@
         <button ng-click="previousPage()" class="btn btn-default" ng-disabled="offset == 0">
             <span i18n="110" aria-hidden="true">«</span>
         </button>
-        <button ng-click="nextPage()" class="btn btn-default" ng-disabled="offset + pageSize >= max">
+        <button ng-click="nextPage()" class="btn btn-default" ng-disabled="offset + pageSize >= activeFacet.max">
             <span i18n="111" aria-hidden="true">»</span>
         </button>
     </div>
-    <span>Page {{(offset / pageSize) + 1}} of {{maxPages}}</span>
+    <span>Page {{(offset / pageSize) + 1}} of {{activeFacet.maxPages}}</span>
 
     <div style="float:right">
-        <span style="color:red">{{selection.length}} facets selected</span>
+        <span style="color:red" span ng-if="activeFacet.selection.length ==0 || activeFacet.selection.length >1" >{{activeFacet.selection.length}} classes selected</span>
+        <span style="color:red" span ng-if="activeFacet.selection.length ==1" >{{activeFacet.selection.length}} class selected</span>
+
         <div class="btn-group btn-group-xs">
             <button i18n="120" ng-click="clearSelection()" class="btn btn-default">Clear selection</button>
         </div>

@@ -7,8 +7,8 @@
             </h3>
         </div>
 
-        <div class="panel-body" style="width: 390px;overflow:scroll">
-            <table class="table table-striped" ng-show="points.length > 0">
+        <div class="panel-body" style="width: 390px;overflow:auto">
+            <table class="table table-striped" ng-show="points.length > 0" testTag="drawedPoints">
                 <thead>
                 <tr>
                     <th class="td-vertical-align text-center">Id</th>
@@ -60,15 +60,15 @@
             </div>
             <div ng-show="comparison.length > 0 && !searching">
                 <hr/>
-                <h4 i18n="181">Comparison Result</h4>
+                <h4 i18n="181" >Comparison Result</h4>
                 <div>
-                    <input style="width:200px" type="text" ng-model="searchText.name"/>
+                    <input style="width:200px" type="text" placeholder="Filter" ng-model="searchText.name"/>
                     <button i18n="129" ng-click="searchText.name=''" class="btn btn-xs btn-default"
                             ng-disabled="searchText.name == ''">clear filter
                     </button>
                 </div>
-                <div style="max-width: 360px; overflow: scroll">
-                    <table class="table table-striped">
+                <div style="max-width: 360px; overflow: auto">
+                    <table class="table table-striped" testTag="comparisonResult">
                         <thead>
                         <tr>
                             <th class="td-vertical-align text-right" ng-repeat="value in header">{{value}}</th>
@@ -87,7 +87,7 @@
         </div>
     </div>
     <div class="modal-footer">
-        <a download="nearestLocalities_{{point.longitude}}_{{point.latitude}}.csv"
+        <a download="pointComparison_{{point.longitude}}_{{point.latitude}}.csv"
            ng-show="comparison.length > 0 && !searching"
            ng-href="{{exportUrl}}" ng-disabled="exportUrl == null" style="margin-right:30px">
             <i class="glyphicon glyphicon-download-alt"></i><span i18n="51">Download</span>

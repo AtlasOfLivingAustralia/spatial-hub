@@ -9,10 +9,10 @@
      */
     angular.module('area-report-ctrl', ['map-service', 'biocache-service', 'lists-service', 'layers-service'])
         .controller('AreaReportCtrl', ['$scope', 'MapService', '$timeout', 'LayoutService', '$uibModalInstance',
-            'BiocacheService', 'data', '$http', 'ListsService', 'LayersService',
+            'BiocacheService', 'data', '$http', 'ListsService', 'LayersService', 'EventService', '$q',
             function ($scope, MapService, $timeout, LayoutService, $uibModalInstance, BiocacheService, data, $http,
-                      ListsService, LayersService) {
-                LayoutService.addToSave($scope);
+                      ListsService, LayersService, EventService, $q) {
+                LayoutService.addToModeless($scope);
 
                 $scope._httpDescription = function (method, httpconfig) {
                     if (httpconfig === undefined) {
@@ -35,12 +35,17 @@
 
                 $scope.journalMapDocumentCount = function () {
                     if ($scope.area.wkt !== undefined && $scope.area.wkt.length > 0) {
-                        $http.get(LayersService.url() + "/journalMap/search?wkt=" + $scope.area.wkt, $scope._httpDescription('journalmapCount')).then(function (response) {
-                            $scope.setJournalMapCount(response.data)
+                        return $http.get(LayersService.url() + "/journalMap/search?wkt=" + $scope.area.wkt, $scope._httpDescription('journalmapCount')).then(function (response) {
+                            return $scope.setJournalMapCount(response.data)
+                        });
+                    } else if (!($scope.area.pid.indexOf('~'))) {
+                        return $http.get(LayersService.url() + "/journalMap/search?pid=" + $scope.area.pid, $scope._httpDescription('journalmapCount')).then(function (response) {
+                            return $scope.setJournalMapCount(response.data)
                         });
                     } else {
-                        $http.get(LayersService.url() + "/journalMap/search?pid=" + $scope.area.pid, $scope._httpDescription('journalmapCount')).then(function (response) {
-                            $scope.setJournalMapCount(response.data)
+                        var wkt = $scope.bboxToWkt($scope.area.bbox)
+                        return $http.get(LayersService.url() + "/journalMap/search?wkt=" + wkt, $scope._httpDescription('journalmapCount')).then(function (response) {
+                            return $scope.setJournalMapCount(response.data)
                         });
                     }
                 };
@@ -59,6 +64,7 @@
                             }
                         }
                     }
+                    return $q.when(true)
                 };
 
                 $scope.journalMap = [];
@@ -75,16 +81,22 @@
                             }
                         }
                     }
+                    return $q.when(true)
                 };
 
                 $scope.distributionCounts = function () {
                     if ($scope.area.wkt !== undefined && $scope.area.wkt.length > 0) {
-                        $http.get(LayersService.url() + "/distributions?wkt=" + $scope.area.wkt, $scope._httpDescription('distributionCounts')).then(function (response) {
-                            $scope.setDistributionCount(response.data)
+                        return $http.get(LayersService.url() + "/distributions?wkt=" + $scope.area.wkt, $scope._httpDescription('distributionCounts')).then(function (response) {
+                            return $scope.setDistributionCount(response.data)
+                        });
+                    } else if (($scope.area.pid + '').indexOf('~') < 0) {
+                        return $http.get(LayersService.url() + "/distributions?pid=" + $scope.area.pid, $scope._httpDescription('distributionCounts')).then(function (response) {
+                            return $scope.setDistributionCount(response.data)
                         });
                     } else {
-                        $http.get(LayersService.url() + "/distributions?pid=" + $scope.area.pid, $scope._httpDescription('distributionCounts')).then(function (response) {
-                            $scope.setDistributionCount(response.data)
+                        var wkt = $scope.bboxToWkt($scope.area.bbox)
+                        return $http.get(LayersService.url() + "/distributions?wkt=" + encodeURIComponent(wkt), $scope._httpDescription('distributionCounts')).then(function (response) {
+                            return $scope.setDistributionCount(response.data)
                         });
                     }
                 };
@@ -106,6 +118,7 @@
                     for (k in areas) {
                         areaCount++
                     }
+
                     for (k in $scope.items) {
                         if ($scope.items.hasOwnProperty(k)) {
                             if ($i18n(358, "Checklist species distributions") === $scope.items[k].name) {
@@ -116,19 +129,28 @@
                             }
                         }
                     }
+                    return $q.when(true)
                 };
                 $scope.checklistCounts = function () {
                     if ($scope.area.wkt !== undefined && $scope.area.wkt.length > 0) {
-                        $http.get(LayersService.url() + "/checklists?wkt=" + $scope.area.wkt, $scope._httpDescription('checklistCounts')).then(function (response) {
-                            $scope.setChecklistCount(response.data)
+                        return $http.get(LayersService.url() + "/checklists?wkt=" + $scope.area.wkt, $scope._httpDescription('checklistCounts')).then(function (response) {
+                            return $scope.setChecklistCount(response.data)
+                        });
+                    } else if (($scope.area.pid + '').indexOf('~') < 0) {
+                        return $http.get(LayersService.url() + "/checklists?pid=" + $scope.area.pid, $scope._httpDescription('checklistCounts')).then(function (response) {
+                            return $scope.setChecklistCount(response.data)
                         });
                     } else {
-                        $http.get(LayersService.url() + "/checklists?pid=" + $scope.area.pid, $scope._httpDescription('checklistCounts')).then(function (response) {
-                            $scope.setChecklistCount(response.data)
+                        var wkt = $scope.bboxToWkt($scope.area.bbox)
+                        return $http.get(LayersService.url() + "/checklists?wkt=" + encodeURIComponent(wkt), $scope._httpDescription('checklistCounts')).then(function (response) {
+                            return $scope.setChecklistCount(response.data)
                         });
                     }
                 };
 
+                $scope.bboxToWkt = function (bbox) {
+                    return 'POLYGON((' + bbox[0][1] + ' ' + bbox[0][0] + ',' + bbox[1][1] + ' ' + bbox[0][0] + ',' + bbox[1][1] + ' ' + bbox[1][0] + ',' + bbox[0][1] + ' ' + bbox[1][0] + ',' + bbox[0][1] + ' ' + bbox[0][0] + '))'
+                }
 
                 $scope.gazPoints = [];
                 $scope.setGazCount = function (data) {
@@ -140,17 +162,25 @@
                             }
                         }
                     }
+                    return $q.when(true)
                 };
                 $scope.gazPointCounts = function () {
                     if ($scope.area.wkt !== undefined && $scope.area.wkt.length > 0) {
-                        $http.get(LayersService.url() + "/objects/inarea/" + LayersService.gazField() + "?wkt=" + $scope.area.wkt + "&limit=9999999", $scope._httpDescription('gazetteerCounts')).then(function (response) {
-                            $scope.setGazCount(response.data)
+                        return $http.get(LayersService.url() + "/objects/inarea/" + LayersService.gazField() + "?wkt=" + $scope.area.wkt + "&limit=9999999", $scope._httpDescription('gazetteerCounts')).then(function (response) {
+                            return $scope.setGazCount(response.data)
+                        });
+                    } else if (($scope.area.pid + '').indexOf('~') < 0) {
+                        return $http.get(LayersService.url() + "/objects/inarea/" + LayersService.gazField() + "?pid=" + $scope.area.pid + "&limit=9999999", $scope._httpDescription('gazetteerCounts')).then(function (response) {
+                            return $scope.setGazCount(response.data)
                         });
                     } else {
-                        $http.get(LayersService.url() + "/objects/inarea/" + LayersService.gazField() + "?pid=" + $scope.area.pid + "&limit=9999999", $scope._httpDescription('gazetteerCounts')).then(function (response) {
-                            $scope.setGazCount(response.data)
+                        var wkt = $scope.bboxToWkt($scope.area.bbox)
+                        return $http.get(LayersService.url() + "/objects/inarea/" + LayersService.gazField() + "?wkt=" + encodeURIComponent(wkt) + "&limit=9999999", $scope._httpDescription('gazetteerCounts')).then(function (response) {
+                            return $scope.setGazCount(response.data)
                         });
                     }
+
+                    return $q.when(true)
                 };
 
                 $scope.poi = [];
@@ -163,23 +193,57 @@
                             }
                         }
                     }
+                    return $q.when(true)
                 };
-                $scope.pointOfInterestCounts = function () {
-                    if ($scope.area.wkt !== undefined && $scope.area.wkt.length > 0) {
-                        $http.get(LayersService.url() + "/intersect/poi/wkt?wkt=" + $scope.area.wkt + "&limit=9999999", $scope._httpDescription('pointsOfInterestCount')).then(function (response) {
-                            $scope.setPoi(response.data)
+
+                $scope.biocollectCounts = function (idx) {
+                    if ($SH.biocollectReport && $SH.biocollectReport.length > idx) {
+                        var bbox = $scope.area.bbox
+                        var shape = JSON.stringify({
+                            type: 'Polygon',
+                            coordinates: [[[bbox[0], bbox[1]], [bbox[2], bbox[1]], [bbox[2], bbox[3]], [bbox[0], bbox[3]], [bbox[0], bbox[1]]]]
+                        })
+                        var geoSearchJSON = encodeURIComponent(shape)
+                        var geoSearchEncoded = encodeURIComponent(LZString.compressToBase64(shape))
+
+                        var name = $SH.biocollectReport[idx].name
+                        var countUrl = $SH.biocollectReport[idx].count.replace('_geoSearchJSON_', geoSearchJSON).replace('_geoSearchEncoded', geoSearchEncoded)
+                        var linkUrl = $SH.biocollectReport[idx].link.replace('_geoSearchJSON_', geoSearchJSON).replace('_geoSearchEncoded', geoSearchEncoded)
+                        var urlProxy = $SH.baseUrl + "/biocollect?url=" + encodeURIComponent(countUrl)
+                        return $http.get(urlProxy, $scope._httpDescription('biocollectCounts')).then(function (response) {
+                            return {count: response.data.hits.total, link: linkUrl, linkName: 'list', name: name}
                         });
                     } else {
-                        $http.get(LayersService.url() + "/intersect/poi/wkt?pid=" + $scope.area.pid + "&limit=9999999", $scope._httpDescription('pointsOfInterestCount')).then(function (response) {
-                            $scope.setPoi(response.data)
+                        return $q.when({})
+                    }
+                };
+
+                $scope.pointOfInterestCounts = function () {
+                    if ($scope.area.wkt !== undefined && $scope.area.wkt.length > 0) {
+                        return $http.get(LayersService.url() + "/intersect/poi/wkt?wkt=" + $scope.area.wkt + "&limit=9999999", $scope._httpDescription('pointsOfInterestCount')).then(function (response) {
+                            return $scope.setPoi(response.data)
+                        });
+                    } else if (($scope.area.pid + '').indexOf('~') < 0) {
+                        return $http.get(LayersService.url() + "/intersect/poi/wkt?pid=" + $scope.area.pid + "&limit=9999999", $scope._httpDescription('pointsOfInterestCount')).then(function (response) {
+                            return $scope.setPoi(response.data)
+                        });
+                    } else {
+                        var wkt = $scope.bboxToWkt($scope.area.bbox)
+                        return $http.get(LayersService.url() + "/intersect/poi/wkt?wkt=" + encodeURIComponent(wkt) + "&limit=9999999", $scope._httpDescription('pointsOfInterestCount')).then(function (response) {
+                            return $scope.setPoi(response.data)
                         });
                     }
+
                 };
 
                 $scope.items = [];
 
                 $scope.init = function (areaQ) {
                     BiocacheService.registerQuery(areaQ).then(function (response) {
+                        if (response == null) {
+                            return
+                        }
+
                         areaQ.qid = response.qid;
 
                         $scope.items = [
@@ -303,7 +367,7 @@
                         });
 
                         $.each(['Algae', 'Amphibians', 'Angiosperms', 'Animals', 'Arthropods', 'Bacteria', 'Birds',
-                            'Bryophytes', 'Chromista', 'Crustaceans', 'Dicots', 'FernsAndAllies', 'Fish', 'Fungi',
+                            'Bryophytes', 'Chromista', 'Crustaceans', 'Dicots', 'FernsAndAllies', 'Fishes', 'Fungi',
                             'Gymnosperms', 'Insects', 'Mammals', 'Molluscs', 'Monocots', 'Plants', 'Protozoa', 'Reptiles'], function (i, v) {
                             $scope.items.push({
                                 name: v,
@@ -312,37 +376,60 @@
                             })
                         });
 
-                        $timeout(function () {
-                            $scope.checklistCounts();
-                            $scope.distributionCounts();
-                            $scope.journalMapDocumentCount();
-                            $scope.gazPointCounts();
-                            $scope.pointOfInterestCounts()
-                        }, 0);
-
-                        var items = $scope.items;
-                        var k;
-                        for (k in items) {
-                            if (items.hasOwnProperty(k)) {
-                                if (items[k].query !== undefined) {
-                                    items[k].value = '';
-                                    if (items[k].occurrences !== undefined && items[k].occurrences) {
-                                        $scope.count(items[k], BiocacheService.count(items[k].query, items[k].extraQ))
-                                    } else if (items[k].name.indexOf('endemic') >= 0) {
-                                        $scope.count(items[k], BiocacheService.speciesCountEndemic(items[k].query, items[k].extraQ))
-                                    } else {
-                                        $scope.count(items[k], BiocacheService.speciesCount(items[k].query, items[k].extraQ))
+                        if ($SH.biocollectReport) {
+                            $.each($SH.biocollectReport, function (i, v) {
+                                $scope.biocollectCounts(i).then(function (data) {
+                                    if (data) {
+                                        $scope.items.push(data)
                                     }
-                                }
-                            }
+                                })
+                            })
                         }
 
-                        $scope.makeCSV()
+                        $timeout(function () {
+                            $scope.checklistCounts().then(function () {
+                                $scope.distributionCounts().then(function () {
+                                    $scope.journalMapDocumentCount().then(function () {
+                                        $scope.gazPointCounts().then(function () {
+                                            $scope.pointOfInterestCounts()
+                                        })
+                                    })
+                                })
+                            })
+                        }, 0);
+
+                        $scope.countNextItem($scope.items, 0);
                     });
                 };
 
+                $scope.countNextItem = function(items, index) {
+                    if (items[index]) {
+                        if (index < items.length) {
+                            if (items[index].query !== undefined) {
+                                items[index].value = '';
+                                if (items[index].occurrences !== undefined && items[index].occurrences) {
+                                    $scope.count(items[index], BiocacheService.count(items[index].query, items[index].extraQ)).then(function (count) {
+                                        $scope.countNextItem(items, index + 1)
+                                    })
+                                } else if (items[index].name.indexOf('endemic') >= 0) {
+                                    $scope.count(items[index], BiocacheService.speciesCountEndemic(items[index].query, items[index].extraQ))
+                                    // endemic counts are slow, do not wait
+                                    $scope.countNextItem(items, index + 1)
+                                } else {
+                                    $scope.count(items[index], BiocacheService.speciesCount(items[index].query, items[index].extraQ)).then(function (count) {
+                                        $scope.countNextItem(items, index + 1)
+                                    })
+                                }
+                            } else {
+                                $scope.countNextItem(items, index + 1)
+                            }
+                        }
+                    }
+                    $scope.makeCSV()
+                }
+
                 $scope.count = function (item, promise) {
-                    promise.then(function (data) {
+                    return promise.then(function (data) {
                         item.value = data
                     })
                 };
@@ -384,27 +471,36 @@
                 };
 
                 $scope.list = function (item) {
-                    BiocacheService.speciesList(item.query, item.extraQ).then(function (data) {
-                        LayoutService.openModal('csv', {
-                            title: item.name,
-                            csv: data,
-                            columnOrder: [],
-                            info: item.name + ' csv',
-                            filename: item.name.replace(' ', '') + '.csv',
-                            display: {size: 'full'}
-                        }, true)
-                    })
+                    if (item.endemic !== undefined){
+                        BiocacheService.speciesListEndemic(item.query, item.extraQ, {}).then(function (data) {
+                            LayoutService.openModal('csv', {
+                                title: item.name,
+                                csv: data,
+                                columnOrder: [],
+                                info: item.name + ' csv',
+                                filename: item.name.replace(' ', '') + '.csv',
+                                display: {size: 'full'}
+                            }, true)
+                        })
+                    } else {
+                        BiocacheService.speciesList(item.query, item.extraQ, {}).then(function (data) {
+                            LayoutService.openModal('csv', {
+                                title: item.name,
+                                csv: data,
+                                columnOrder: [],
+                                info: item.name + ' csv',
+                                filename: item.name.replace(' ', '') + '.csv',
+                                display: {size: 'full'}
+                            }, true)
+                        })
+                    }
                 };
 
                 $scope.map = function (event, item) {
                     event.currentTarget.classList.add('disabled');
                     if (item.extraQ === undefined) item.extraQ = [];
-                    var q = {q: areaQ.q.concat(item.extraQ), ws: areaQ.ws, bs: areaQ.bs, wkt: areaQ.wkt};
-                    BiocacheService.registerQuery(q).then(function (response) {
-                        BiocacheService.newLayer(response, undefined, item.name).then(function (data) {
-                            MapService.add(data)
-                        })
-                    })
+                    var q = {q: areaQ.q, ws: areaQ.ws, bs: areaQ.bs, wkt: areaQ.wkt, name: item.name};
+                    EventService.facetNewLayer(areaQ, item.extraQ)
                 };
 
                 $scope.sample = function (item) {

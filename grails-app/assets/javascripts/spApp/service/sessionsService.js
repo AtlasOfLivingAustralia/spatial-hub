@@ -8,7 +8,8 @@
      *   Access to spatial-hub sessions
      */
     angular.module('sessions-service', [])
-        .factory('SessionsService', ['$http', '$rootScope', 'MapService', function ($http, $rootScope, MapService) {
+        .factory('SessionsService', ['$http', '$rootScope', 'MapService', 'BiocacheService','LoggerService',
+            function ($http, $rootScope, MapService, BiocacheService, LoggerService) {
 
             var _httpDescription = function (method, httpconfig) {
                 if (httpconfig === undefined) {
@@ -86,7 +87,23 @@
                                 contextualSelection: src.contextualSelection,
                                 contextualFilter: src.contextualFilter,
                                 facetSelectionCount: src.facetSelectionCount,
-                                sel: src.sel,
+
+                                facets: src.facets ? $.map(src.facets, function (v) {
+                                    // Session only needs to store the list of selected items.
+                                    // Only the fq is required. It will be deleted after facet.data is reloaded.
+                                    var copy = $.merge({}, v);
+
+                                    delete copy.data;
+
+                                    if (copy._fq === undefined && v.data && v.data.length > 0) {
+                                        copy._fq = []
+                                        $.map(v.data, function (d) {
+                                            copy._fq.push(BiocacheService.facetToFq(v.data, false))
+                                        })
+                                    }
+
+                                    return copy;
+                                }) : undefined,
 
                                 index: src.index,
 
@@ -161,9 +178,15 @@
                                     name = $i18n(403, "My saved session")
                                 }
                                 data.name = name;
-                                return $http.post($SH.baseUrl + "/portal/session/" + $SH.sessionId, data, _httpDescription('save')).then(function (response) {
-                                    bootbox.alert('<h3>' + $i18n(404, "Session Saved") + '</h3><br/><br/>' + $i18n(405, "URL to retrived this saved session") + '<br/><br/><a target="_blank" href="' + response.data.url + '">' + response.data.url + '</a>')
-                                });
+                                return $http.post($SH.baseUrl + "/portal/session/" + $SH.sessionId, data, _httpDescription('save')).then(
+                                    function (response) {
+                                         bootbox.alert('<h3>' + $i18n(404, "Session Saved") + '</h3><br/><br/>' + $i18n(405, "URL to retrived this saved session") + '<br/><br/><a target="_blank" href="' + response.data.url + '">' + response.data.url + '</a>')
+                                    },
+                                    function (error) {
+                                        if (!error.handled) {
+                                            bootbox.alert("Error:" + error.data);
+                                        }
+                                    });
                             }
                         }
                     });
@@ -220,13 +243,13 @@
                  * @param {string} session id
                  * @return {Promise}
                  */
-                'delete': function (sessionId) {
+                remove: function (sessionId) {
                     return $http.delete($SH.baseUrl + "/portal/session/" + sessionId, _httpDescription('delete')).then(function (response) {
                         return response.data
                     });
                 },
                 /**
-                 * Load a saved session. This adds layers, changes the basemap and sets the zoom/extents of the
+                 *   a saved session. This adds layers, changes the basemap and sets the zoom/extents of the
                  * current session.
                  *
                  * Note: map layers are not removed.
@@ -236,11 +259,11 @@
                  */
                 load: function (sessionId) {
                     return this.get(sessionId).then(function (data) {
-                        _this._load(data);
+                        _this._load(data, sessionId);
                     })
                 },
 
-                _load: function (sessionData) {
+                _load: function (sessionData, sessionId) {
                     if (sessionData && sessionData.extents) {
                         MapService.removeAll();
 
@@ -251,6 +274,8 @@
 
                         MapService.setBaseMap(sessionData.basemap);
 
+                        LoggerService.log('Map', 'Session', {sessionId: sessionId})
+
                         //add in index order
                         sessionData.layers.sort(function (a, b) {
                             return a.index - b.index
@@ -259,6 +284,7 @@
                         for (var i = 0; i < sessionData.layers.length; i++) {
                             sessionData.layers[i].fromSave = true;
                             sessionData.layers[i].uid += uidOffset;
+                            sessionData.layers[i].log = false
                             MapService.add(sessionData.layers[i])
                         }
                     }

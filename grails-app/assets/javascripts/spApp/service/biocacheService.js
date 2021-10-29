@@ -21,7 +21,7 @@
 
             var indexFields;
 
-            return {
+            var thiz = {
                 /**
                  * Get the number of unique species (by facet names_and_lsid)
                  * @memberof BiocacheService
@@ -46,6 +46,9 @@
                 speciesCount: function (query, fqs, httpconfig) {
                     var fqList = (fqs === undefined ? '' : '&fq=' + this.joinAndEncode(fqs));
                     return this.registerQuery(query).then(function (response) {
+                        if (response == null) {
+                            return $q.when(0)
+                        }
                         return $http.get(query.bs + "/occurrence/facets?facets=names_and_lsid&flimit=0&q=" + response.qid + fqList, _httpDescription('speciesCount', httpconfig)).then(function (response) {
                             if (response.data !== undefined && response.data.length > 0 && response.data[0].count !== undefined) {
                                 return response.data[0].count;
@@ -81,11 +84,19 @@
                     if (fqs !== undefined) q = this.newLayerAddFq(query, fqs, '');
                     else q = query;
 
-                    return this.registerQuery(query).then(function (response) {
-                        return $http.get(query.bs + "/explore/endemic/speciescount/" + response.qid.replace("qid:", "") + "?facets=names_and_lsid", _httpDescription('speciesCountEndemic')).then(function (response) {
-                            return response.data.count;
-                        });
-                    })
+                    if (q == null) {
+                        return $q.when(0)
+                    } else {
+                        return this.registerQuery(query).then(function (response) {
+                            if (response == null) {
+                                return $q.when(0)
+                            } else {
+                                return $http.get(query.bs + "/explore/endemic/speciescount/" + response.qid.replace("qid:", "") + "?facets=names_and_lsid", _httpDescription('speciesCountEndemic')).then(function (response) {
+                                    return response.data.count;
+                                });
+                            }
+                        })
+                    }
                 },
                 /**
                  * Get species list CSV
@@ -113,6 +124,9 @@
                  */
                 speciesList: function (query, fqs, config) {
                     return this.speciesListUrl(query, fqs).then(function (url) {
+                        if (url == null) {
+                            return $q.when('')
+                        }
                         return $http.get(url, _httpDescription('speciesList', config)).then(function (response) {
                             return response.data;
                         });
@@ -142,7 +156,10 @@
                 speciesListUrl: function (query, fqs) {
                     var fqList = (fqs === undefined ? '' : '&fq=' + this.joinAndEncode(fqs));
                     return this.registerQuery(query).then(function (response) {
-                        return query.bs + "/occurrences/facets/download?facets=names_and_lsid&lookup=true&count=true&lists=true&q=" + query.qid + fqList;
+                        if (response == null) {
+                            return null
+                        }
+                        return query.bs + "/occurrences/facets/download?facets=names_and_lsid&lookup=true&count=true&lists=true&q=" + response.qid + fqList;
                     })
                 },
                 /**
@@ -171,7 +188,10 @@
                  *  ```
                  */
                 speciesListEndemic: function (query, fqs, config) {
-                    this.speciesListEndemicUrl(query, fqs).then(function (url) {
+                    return this.speciesListEndemicUrl(query, fqs).then(function (url) {
+                        if (url == null) {
+                            return $q.when('')
+                        }
                         return $http.get(url, _httpDescription('speciesListEndemic', config)).then(function (response) {
                             return response.data;
                         });
@@ -203,9 +223,17 @@
                     if (fqs !== undefined) q = this.newLayerAddFq(query, fqs, '');
                     else q = query;
 
-                    return this.registerQuery(query).then(function (response) {
-                        return query.bs + "/explore/endemic/species/" + response.qid.replace("qid:", "") + ".csv?facets=names_and_lsid&lookup=true&count=true&lists=true";
-                    })
+                    if (q == null) {
+                        return $q.when(false)
+                    } else {
+                        return this.registerQuery(query).then(function (response) {
+                            if (response == null) {
+                                return $q.when(null)
+                            } else {
+                                return query.bs + "/explore/endemic/species/" + response.qid.replace("qid:", "") + ".csv?facets=names_and_lsid&lookup=true&count=true&lists=true";
+                            }
+                        })
+                    }
                 },
                 /**
                  * List data providers
@@ -231,6 +259,10 @@
                 dataProviderList: function (query, fqs) {
                     var fqList = (fqs === undefined ? '' : '&fq=' + this.joinAndEncode(fqs));
                     return this.registerQuery(query).then(function (response) {
+                        if (response == null) {
+                            return $q.when([])
+                        }
+
                         return $http.get(query.bs + "/webportal/dataProviders?q=" + response.qid + fqList, _httpDescription('dataProviderList')).then(function (response) {
                             return response.data;
                         });
@@ -261,6 +293,10 @@
                     var fqList = (fqs === undefined ? '' : '&fq=' + this.joinAndEncode(fqs));
 
                     return this.registerQuery(query).then(function (response) {
+                        if (response == null) {
+                            return $q.when(0)
+                        }
+
                         var url = query.bs + "/occurrences/search?facet=false&pageSize=0&q=" + response.qid + fqList
 
                         return $http.get(url, _httpDescription('count')).then(function (response) {
@@ -293,6 +329,10 @@
                  */
                 queryTitle: function (query) {
                     return this.registerQuery(query).then(function (response) {
+                        if (response == null) {
+                            return $q.when("")
+                        }
+
                         return $http.get(query.bs + "/webportal/params/details/" + response.qid.replace("qid:", ""), _httpDescription('queryTitle')).then(function (response) {
                             if (response.data !== undefined && response.data.displayString !== undefined) {
                                 //remove html wrapping from title
@@ -335,6 +375,9 @@
                     offset = offset || 0;
                     var fqList = (fqs === undefined ? '' : '&fq=' + this.joinAndEncode(fqs));
                     return this.registerQuery(query).then(function (response) {
+                        if (response == null) {
+                            return null
+                        }
                         return query.ws + "/occurrences/search?facet=" + facet + "&pageSize=" + pageSize + "&startIndex=" + offset + "&q=" + response.qid + fqList
                     })
                 },
@@ -381,6 +424,9 @@
                     offset = offset || 0;
                     var fqList = (fqs === undefined ? '' : '&fq=' + this.joinAndEncode(fqs));
                     return this.registerQuery(query).then(function (response) {
+                        if (response == null) {
+                            return {}
+                        }
                         return $http.get(query.bs + "/occurrences/search?facet=" + facet + "&pageSize=" + pageSize + "&startIndex=" + offset + "&q=" + response.qid + fqList + '&sort=id', _httpDescription('searchForOccurrences')).then(function (response) {
                             if (response.data !== undefined) {
                                 return response.data;
@@ -427,17 +473,45 @@
                   "green": 57
                   }]
                  */
-                facet: function (facet, query) {
+                facet: function (facet, query, ranges) {
                     return this.registerQuery(query).then(function (response) {
-                        return $http.get(query.bs + "/webportal/legend?cm=" + facet + "&q=" + response.qid + "&type=application/json", _httpDescription('facet',
+                        if (response == null) {
+                            return $q.when([])
+                        }
+
+                        ranges = (ranges || []).join(",");
+                        ranges = ranges.length > 0 ? "," + ranges : "";
+                        return $http.get(query.bs + "/webportal/legend?cm=" + facet + ranges + "&q=" + response.qid + "&type=application/json", _httpDescription('facet',
                             {headers: {Accept: "application/json"}})).then(function (response) {
                             $.map(response.data, function (v, k) {
-                                v.displayname = Messages.get(facet + '.' + v.name, v.name ? v.name : "")
+                                if (ranges.length > 0) {
+                                    // parse name for ranges: (optional '-')  + facet + '.[' + min + ' TO ' + max + ']'
+                                    var match = ("" + v.name).match(/(-)*.*\[(.* TO .*)\]/);
+                                    if (match && match.length === 3) {
+                                        match[1] = match[1] || "";
+                                        // add "exclude" to label for facets with '-'
+                                        if (match[1] === '-' && match[2] === "* TO *") {
+                                            match[1] = "";
+                                            match[2] = $i18n(474, "Not supplied")
+                                            // 'min' is for numerical sorting
+                                            v.min = ''
+                                        } else {
+                                            // 'min' is for numerical sorting
+                                            v.min = parseFloat(match[2].split(' ')[0])
+                                        }
+                                        v.displayname = match[1] + match[2];
+                                    } else {
+                                        v.displayname = v.name
+                                    }
+                                } else {
+                                    v.displayname = BiocacheI18n.get(facet + '.' + v.name, v.name ? v.name : "")
+                                }
                             });
                             return response.data;
                         });
                     })
                 },
+
                 /**
                  * Get pageable facet list
                  * @memberof BiocacheService
@@ -445,6 +519,8 @@
                  * @param {Query} query Biocache query
                  * @param {Integer} pageSize (Optional) page size (default=1)
                  * @param {Integer} offset (Optional) offset (default=0)
+                 * @param {String} prefixFilter (Optional) keywords
+                 * @param {String} sortBy (Optional) sorted by field (default=count)
                  * @param {List} config (Optional) parameters for $http#get
                  * @returns {Promise(List)} facets
                  *
@@ -477,16 +553,20 @@
                          }]
                      }]
                  */
-                facetGeneral: function (facet, query, pageSize, offset, prefixFilter, config) {
-                    return this.registerQuery(query).then(function (response) {
 
-                        var url = query.bs + "/occurrence/facets?facets=" + facet + "&flimit=" + pageSize + "&foffset=" + offset + "&q=" + response.qid;
+                facetGeneral: function (facet, query, pageSize, offset, prefixFilter, sortBy, config) {
+                    return this.registerQuery(query).then(function (response) {
+                        if (response == null) {
+                            return $q.when([])
+                        }
+
+                        var url = query.bs + "/occurrence/facets?facets=" + facet + "&flimit=" + pageSize + "&foffset=" + offset + "&fsort=" + (sortBy ? sortBy:"count")  + "&q=" + response.qid;
                         if (prefixFilter !== undefined && prefixFilter.length > 0) url += "&fprefix=" + encodeURIComponent(prefixFilter);
 
                         return $http.get(url, _httpDescription('facetGeneral', config)).then(function (response) {
                             if (response.data && response.data[0] && response.data[0].fieldResult) {
                                 $.map(response.data[0].fieldResult, function (v, k) {
-                                    v.displaylabel = Messages.get(facet + '.' + v.label, v.label ? v.label : "")
+                                    v.displaylabel = BiocacheI18n.get(facet + '.' + v.label, v.label ? v.label : "")
                                 });
                                 return response.data;
                             } else {
@@ -509,8 +589,10 @@
                     var q = '';
                     if (list instanceof Array) {
                         $.each(list, function (index, item) {
-                            if (q.length > 0) q += '&fq=';
-                            q += encodeURIComponent(item)
+                            if (item !== undefined && item !== null) {
+                                if (q.length > 0) q += '&fq=';
+                                q += encodeURIComponent(item)
+                            }
                         })
                     } else {
                         q = list
@@ -537,6 +619,9 @@
                  */
                 bbox: function (query) {
                     return this.registerQuery(query).then(function (response) {
+                        if (response == null) {
+                            return $q.when([[-180, -90], [180, 90]])
+                        }
                         return $http.get(query.bs + "/webportal/bbox?q=" + response.qid + "&type=application/json", _httpDescription('bbox')).then(function (response) {
                             var bb = response.data.split(",");
                             return [[bb[1], bb[0]], [bb[3], bb[2]]];
@@ -582,22 +667,7 @@
                                 fq.splice(0, 1)
                             }
                         }
-                        var data = {q: q, bs: query.bs};
-                        if ($SH.qc !== undefined && $SH.qc !== null && $SH.qc.length > 0) data.qc = $SH.qc;
-                        if (fq !== undefined && fq !== null) data.fq = fq;
-                        if (query.wkt !== undefined && query.wkt !== null && query.wkt.length > 0) data.wkt = query.wkt;
-
-                        //TODO: biocache wms request is failing for q=lsid:... when ENV contains a "sel" value. Do not set query.qid=data.q
-                        // if(((data.fq === undefined || data.fq === null || data.fq.length === 0) &&
-                        //     (data.wkt === undefined || data.wkt === null || data.wkt.length === 0))) {
-                        //     query.qid = data.q;
-                        //     return $q.when(query)
-                        // } else {
-                        return $http.post($SH.baseUrl + "/portal/q", data, _httpDescription('registerQuery')).then(function (response) {
-                            query.qid = 'qid:' + response.data.qid;
-                            return query
-                        });
-                        // }
+                        return this.registerParam(query.bs, q, fq, query.wkt, query.qualityProfile, query.disableQualityFilter, query.disableAllQualityFilters)
                     }
                 },
                 /**
@@ -607,6 +677,9 @@
                  * @param {List} query q and fq terms
                  * @param {List} fq (optional) one fq term
                  * @param {String} wkt (optional) WKT search value
+                 * @param {String} qualityProfile (optional) quality profile
+                 * @param {Array} disableQualityFilter (optional) quality filters to disable
+                 * @param {Boolean} disableAllQualityFilters (optional) whether to disable all quality filters
                  * @returns {Promise(Integer)} qid
                  *
                  * @example
@@ -619,13 +692,25 @@
                  * Output:
                  * 1234
                  */
-                registerParam: function (bs, q, fq, wkt) {
+                registerParam: function (bs, q, fq, wkt, qualityProfile, disableQualityFilter, disableAllQualityFilters) {
                     var data = {q: q, bs: bs};
                     if ($SH.qc !== undefined && $SH.qc !== null && $SH.qc.length > 0) data.qc = $SH.qc;
                     if (fq !== undefined && fq !== null) data.fq = fq;
                     if (wkt !== undefined && wkt !== null && wkt.length > 0) data.wkt = wkt;
+                    if (disableAllQualityFilters !== undefined && disableAllQualityFilters !== null) data.disableAllQualityFilters = disableAllQualityFilters;
+                    if (qualityProfile !== undefined && qualityProfile !== null) data.qualityProfile = qualityProfile;
+                    if (disableQualityFilter !== undefined && disableQualityFilter !== null) data.disableQualityFilter = disableQualityFilter;
                     return $http.post($SH.baseUrl + "/portal/q", data, _httpDescription('registerParam')).then(function (response) {
-                        return response.data
+                        if (thiz.validateQID(response.data.qid)) {
+                            //Need to return 'qid:xxxxxx'
+                            return {qid: "qid:" + response.data.qid}
+                        } else {
+                            bootbox.alert($i18n(478, "Failed to register query. Try again later."));
+                            return null
+                        }
+                    }, function (response) {
+                        bootbox.alert($i18n(478, "Failed to register query. Try again later."));
+                        return null
                     });
                 },
                 /**
@@ -696,18 +781,21 @@
                         fq = fq.concat(query.fqs)
                     }
                     var wkt = undefined;
+
                     if (area !== undefined && area instanceof Array && area.length > 0 && area[0] !== undefined) {
-                        if (area[0].q && (area[0].q.length > 0)) {
+                        //Area created from layer: cl1023:Tas
+                        if (area[0].q !== undefined && area[0].q.length > 0){
                             fq = fq.concat(area[0].q)
+                        } else if (area[0].pid && (area[0].pid.length > 0) && area[0].pid.indexOf('~') < 0) {
+                            //~ stands for mulitple pids
+                            wkt = area[0].pid
                         } else if (area[0].wkt && (area[0].wkt.length) > 0) {
                             wkt = area[0].wkt
-                        } else if (area[0].pid && (area[0].pid.length > 0)) {
-                            wkt = area[0].pid
                         }
                     }
                     if (query.wkt !== undefined) wkt = query.wkt;
 
-                    return this.registerLayer(query.bs, query.ws, fq, wkt, newName)
+                    return this.registerLayer(query.bs, query.ws, fq, wkt, query.qualityProfile, query.disableQualityFilter, query.disableAllQualityFilters, newName)
                 },
                 /**
                  * Create a new query #Layer
@@ -746,7 +834,15 @@
                         $.merge(fqs, [newFq])
                     }
 
-                    return this.registerLayer(query.bs, query.ws, fqs, query.wkt, newName)
+                    return this.registerLayer(query.bs, query.ws, fqs, query.wkt, query.qualityProfile, query.disableQualityFilter, query.disableAllQualityFilters, newName).then(function (data) {
+                        if (data == null) {
+                            return null;
+                        } else {
+                            data.species_list = query.species_list
+
+                            return data
+                        }
+                    })
                 },
                 /**
                  * Create a layer and register for qid
@@ -755,6 +851,9 @@
                  * @param {String} hubUrl biocache-hub URL
                  * @param {List} fqs q and fq terms
                  * @param {String} wkt (optional) WKT
+                 * @param {String} qualityProfile (optional) quality profile
+                 * @param {Array} disableQualityFilter (optional) quality filters to disable
+                 * @param {Boolean} disableAllQualityFilters (optional) whether to disable all quality filters
                  * @param {newName} name (optional) name for display
                  * @returns {Promise(Layer)}
                  *
@@ -775,7 +874,7 @@
                  *      "name": ""
                  *  }
                  */
-                registerLayer: function (bs, ws, fq, wkt, name) {
+                registerLayer: function (bs, ws, fq, wkt, qualityProfile, disableQualityFilter, disableAllQualityFilters, name) {
                     fq = fq.slice();
                     for (var i = 0; i < fq.length; i++) {
                         if (fq[i] === '*:*') fq.splice(i, 1)
@@ -785,26 +884,30 @@
                         q = fq[0];
                         fq.splice(0, 1)
                     }
-                    if (fq.length > 0 || (wkt !== undefined && wkt !== null && wkt.length > 0)) {
-                        return this.registerParam(bs, q, fq, wkt).then(function (data) {
-                            return {
-                                q: q,
-                                fq: fq,
-                                wkt: wkt,
-                                qid: "qid:" + data.qid,
-                                bs: bs,
-                                ws: ws,
-                                name: name
+                    if (fq.length > 0 || (wkt !== undefined && wkt !== null && wkt.length > 0) || qualityProfile || disableQualityFilter || disableAllQualityFilters != null) {
+                        return this.registerParam(bs, q, fq, wkt, qualityProfile, disableQualityFilter, disableAllQualityFilters).then(function (data) {
+                            if (data != null) {
+                                return {
+                                    q: $.merge([q], fq),
+                                    wkt: wkt,
+                                    qid: data.qid, //qid has been reformated to "qid:xxxxxx"
+                                    bs: bs,
+                                    ws: ws,
+                                    name: name
+                                }
+                            } else {
+                                return null
                             }
                         })
                     } else {
                         var qc = [];
                         if ($SH.qc !== undefined && $SH.qc != null && $SH.qc.length > 0) qc = [$SH.qc];
+                        var qid = q;
+                        if (qc.length > 0) qid = "(" + q + ") AND " + qc[0]
                         return $q.when({
-                            q: q,
-                            fq: qc, //fq.length == 0 so it is safe to use qc here
+                            q: $.merge(q, qc), //fq.length == 0 so it is safe to use qc here
                             wkt: wkt,
-                            qid: q,
+                            qid: qid,
                             bs: bs,
                             ws: ws,
                             name: name
@@ -813,17 +916,178 @@
                 },
                 getIndexFields: function () {
                     // use static index fields before biocache-service index fields
-                    if ($SH.indexFields) {
-                        return $q.when($SH.indexFields)
-                    } else if (scope.indexFields) {
+                    if (indexFields) {
                         return $q.when(indexFields)
                     } else {
-                        return $http.get($SH.baseUrl + "/index/fields", data, _httpDescription('getIndexFields')).then(function (response) {
+                        return $http.get($SH.biocacheServiceUrl + "/index/fields", _httpDescription('getIndexFields')).then(function (response) {
                             indexFields = response.data;
-                            return response.data
+                            for (var i = 0; i < indexFields.length; i++) {
+                                indexFields[i].displayName = indexFields[i].dwcTerm || indexFields[i].description || indexFields[i].name
+                                if (indexFields[i].classs === undefined) {
+                                    indexFields[i].classs = 'Other'
+                                }
+                                indexFields[i].class = indexFields[i].classs
+                                indexFields[i].url = thiz.parseUrl(indexFields[i].info)
+                                if (indexFields[i].url !== undefined) {
+                                    indexFields[i].info = indexFields[i].info.replace(indexFields[i].url, '')
+                                } else {
+                                    indexFields[i].url = ''
+                                }
+                                if (indexFields[i].description === undefined) {
+                                    indexFields[i].description = ''
+                                }
+                            }
+                            return indexFields
                         });
                     }
+                },
+                parseUrl: function (info) {
+                    if (info !== undefined) {
+                        var match = info.match("\\bhttps?://[^\\b]+")
+                        if (match) {
+                            return match[0]
+                        }
+                    }
+                    return undefined
+                },
+                /**
+                 * Get the minimum and maxium value for a facet in a given query.
+                 * @param query
+                 * @param facet
+                 * @returns {Promise(Object)}
+                 * Input:
+                 * - facet
+                 *  {
+                 *      name: "year"
+                 *      ...
+                 *  }
+                 * - query
+                 *  {
+                 *      "q": "frog",
+                 *      "bs": "https://biocache-ws.ala.org.au/ws",
+                 *      "ws": "https://biocache.ala.org.au"
+                 *  }
+                 *
+                 * Output:
+                 * {
+                 *      "min":1896.0,
+                 *      "max":2019.0,
+                 *      "label":"year"
+                 * }
+                 */
+                getFacetMinMax: function(query, facet) {
+                    var defaultValue = {min: undefined, max: undefined, label: facet.name};
+                    if (Util.isFacetOfRangeDataType(facet.dataType)) {
+                        return this.registerQuery(query).then(function (response) {
+                            if (response == null) {
+                                return $q.when(defaultValue)
+                            }
+                            return $http.get(query.bs + "/chart?q=" + response.qid + "&statType=min,max&stats=" + facet.name).then(function (response) {
+                                return response.data.data && response.data.data[0] && response.data.data[0].data && response.data.data[0].data[0] || defaultValue;
+                            });
+                        });
+                    } else {
+                        return $q.when(defaultValue);
+                    }
+                },
+                facetsToFq: function (facet, ignoreEnabledFlag) {
+                    var fqs = [];
+                    if (facet && facet.length > 0) {
+                        for (var i in facet) {
+                            var term = this.facetToFq(facet[i], ignoreEnabledFlag)
+                            if (term && term.fq) {
+                                fqs.push(term.fq)
+                            }
+                        }
+                    }
+                    return fqs;
+                },
+                facetToFq: function (facet, ignoreEnabledFlag) {
+                    if (facet.data === undefined || (!ignoreEnabledFlag && !facet.enabled)) {
+                        return {sum: 0, fq: undefined}
+                    }
+                    var sel = '';
+                    var invert = false;
+                    var count = 0;
+                    var sum = 0;
+                    // sum only applies to the single facet
+                    for (var i = 0; i < facet.data.length; i++) {
+                        if (facet.data[i].selected) {
+                            var fq = facet.data[i].fq;
+                            if (fq.match(/^-/g) != null && (fq.match(/:\*$/g) != null || fq.match(/\[\* TO \*\]$/g) != null)) {
+                                invert = true
+                            }
+                            count++;
+                            sum += facet.data[i].count;
+                        }
+                    }
+
+                    if (count == 0 /*|| count == facet.data.length*/) {
+                        return {sum: 0, fq: undefined}
+                    } else {
+                        if (count === 1) invert = false;
+                        for (i = 0; i < facet.data.length; i++) {
+                            if (facet.data[i].selected) {
+                                var fq = facet.data[i].fq;
+
+                                if (invert) {
+                                    if (sel.length > 0) sel += " AND ";
+                                    if (fq.match(/^-/g) != null && (fq.match(/:\*$/g) != null || fq.match(/\[\* TO \*\]$/g) != null)) {
+                                        sel += fq.substring(1)
+                                    } else {
+                                        sel += '-' + fq
+                                    }
+                                } else {
+                                    if (sel.length > 0) sel += " OR ";
+                                    sel += fq
+                                }
+                            }
+                        }
+                        if (invert) {
+                            sel = '-(' + sel + ')'
+                        }
+                        return {sum: sum, fq: sel}
+                    }
+                },
+                downloadAsync:function(species, area, doiApplicationData) {
+                    var params = {
+                        hubName: $SH.doiHubName || "CSDM",
+                        file: species.name,
+                        mintDoi: true,
+                        reasonTypeId: $SH.doiReasonTypeId || 13,
+                        fileType: 'csv',
+                        qa: 'none',
+                        sourceTypeId: $SH.doiSourceTypeId || 10002,
+                        email: $SH.userEmail,
+                        emailTemplate: $SH.doiEmailTemplate || 'csdm',
+                        doiDisplayTemplate: $SH.doiDisplayTemplate || 'csdm'
+                    };
+
+                    // This should be a POST but the data binding in biocache-service isn't setup to bind from the POST body.
+                    for (var key in doiApplicationData) {
+                        if (doiApplicationData.hasOwnProperty(key)) {
+                            params["doiMetadata["+key+"]"] = doiApplicationData[key];
+                        }
+                    }
+
+                    return thiz.newLayer(species, area, species.name).then(function (query) {
+                        if (query == null) {
+                            return $q.when(null)
+                        }
+
+                        var downloadUrl = $SH.biocacheServiceUrl + '/occurrences/offline/download';
+                        params.q = query.qid;
+                        params.searchUrl = $SH.biocacheServiceUrl + '/occurrences/search?q=' + query.qid;
+                        return $http.get(downloadUrl, _httpDescription("offlineDownload", {params: params}));
+                    });
+
+                },
+
+                validateQID: function(qid){
+                    return !isNaN(qid)
                 }
+
             };
+            return thiz;
         }])
 }(angular));

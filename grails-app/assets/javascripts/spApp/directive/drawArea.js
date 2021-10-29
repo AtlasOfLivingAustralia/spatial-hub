@@ -30,6 +30,10 @@
 
                         scope.loading = false;
 
+                        scope.radiusKm = 10;
+
+                        scope.line = []
+
                         scope.enableDrawing = function () {
                             if (scope.deleteDrawing)
                                 scope.deleteDrawing();
@@ -48,6 +52,9 @@
                             } else if (scope.type === 'drawPointRadius') {
                                 scope.typeName = 'circle';
                                 scope.addCircle()
+                            } else if (scope.type === 'drawPolyline') {
+                                scope.typeName = 'polyline';
+                                scope.addPolyline()
                             }
                             scope.areaName = MapService.nextLayerName("My " + ((!scope.typeName || 0 === scope.typeName.length) ? "Area" : (scope.typeName.charAt(0).toUpperCase() + scope.typeName.slice(1))));
                         };
@@ -95,6 +102,21 @@
 
                             LayoutService.closePanel()
                         };
+
+                        scope.isNextEnabled = function(){
+                            //Directly call intersect.value.length and selectedArea.wkt.length will throw null exception
+                            if( scope.intersect && scope.intersect.value){
+                               if (scope.intersect.value.length > 0 ){
+                                   return true
+                               }
+                            }
+                            if( scope.selectedArea && scope.selectedArea.wkt){
+                               if(scope.selectedArea.wkt.length > 0){
+                                   return true;
+                               }
+                            }
+                            return false;
+                        }
 
                         scope.ok = function () {
                             scope.loading = true;
@@ -187,6 +209,10 @@
                             $('.leaflet-draw-draw-polygon')[0].click();
                         };
 
+                        scope.addPolyline = function () {
+                            $('.leaflet-draw-draw-polyline')[0].click();
+                        };
+
                         scope.addCircle = function () {
                             $('.leaflet-draw-draw-circle')[0].click();
                         };
@@ -224,10 +250,71 @@
                                 scope.intersectPoint = data[1].toFixed(4) + ' ' + data[2].toFixed(4);
 
                                 scope.updateIntersect()
+                            } else if (data[0] === 'polyline') {
+                                scope.line = data[1]
+                                scope.lineWithBuffer()
                             } else {
                                 scope.setWkt(data[0])
                             }
                         });
+
+                        // generate buffers for each line segment and merge as a MULTIPOLYGON
+                        scope.lineWithBuffer = function () {
+                            var coords = scope.line
+                            var radius = scope.radiusKm * 1000
+
+                            var polygons = [];
+
+                            for (var i = 1;i<coords.length;i++) {
+                                var dx = coords[i][0] - coords[i-1][0]
+                                var dy = coords[i][1] - coords[i-1][1]
+                                var angleDegrees = (Math.atan2(dx, dy) / Math.PI) * 180.0
+
+                                var right1 = Util.computeOffset(coords[i-1][1], coords[i-1][0], radius, angleDegrees + 90)
+                                var right2 = Util.computeOffset(coords[i][1], coords[i][0], radius, angleDegrees + 90)
+
+                                var left1 = Util.computeOffset(coords[i-1][1], coords[i-1][0], radius, angleDegrees - 90)
+                                var left2 = Util.computeOffset(coords[i][1], coords[i][0], radius, angleDegrees - 90)
+
+                                var pts = [right1]
+                                var segments = 10
+
+                                // start of line
+                                for (var j=1;j<segments;j++) {
+                                    var deg = angleDegrees + 90 + (180 / segments) * j
+                                    var pt = Util.computeOffset(coords[i-1][1], coords[i-1][0], radius, deg)
+                                    pts.push(pt)
+                                }
+                                pts.push(left1)
+                                pts.push(left2)
+
+                                // end of line
+                                for (var j=1;j<segments;j++) {
+                                    var deg = angleDegrees - 90 + (180 / segments) * j
+                                    var pt = Util.computeOffset(coords[i][1], coords[i][0], radius, deg)
+                                    pts.push(pt)
+                                }
+                                pts.push(right2)
+                                pts.push(right1)
+
+                                polygons.push(pts)
+                            }
+
+                            var wkt = "MULTIPOLYGON ("
+                            for (var i = 0;i<polygons.length;i++) {
+                                if (i > 0) wkt = wkt + ","
+                                wkt = wkt + "(("
+                                for (var j=0;j<polygons[i].length;j++) {
+                                    if (j > 0) wkt = wkt + ","
+                                    wkt = wkt + polygons[i][j][0] + " " + polygons[i][j][1]
+                                }
+                                wkt = wkt + "))"
+                            }
+                            wkt = wkt + ")"
+
+                            scope.setWkt(wkt)
+                            scope.showWkt()
+                        }
 
                         scope.updateIntersect = function () {
                             //get selected layer

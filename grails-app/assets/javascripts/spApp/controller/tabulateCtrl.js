@@ -9,8 +9,8 @@
      */
     angular.module('tabulate-ctrl', ['map-service', 'biocache-service', 'layers-service'])
         .controller('TabulateCtrl', ['$scope', 'MapService', '$timeout', 'LayoutService', '$uibModalInstance',
-            'BiocacheService', '$http', 'LayersService', 'LoggerService',
-            function ($scope, MapService, $timeout, LayoutService, $uibModalInstance, BiocacheService, $http, LayersService, LoggerService) {
+            'BiocacheService', '$http', 'LayersService', 'LoggerService', 'data',
+            function ($scope, MapService, $timeout, LayoutService, $uibModalInstance, BiocacheService, $http, LayersService, LoggerService, data) {
                 LayoutService.addToSave($scope);
 
                 $scope._httpDescription = function (method, httpconfig) {
@@ -58,11 +58,11 @@
 
                         var url = LayersService.url() + '/tabulation/' + $scope.type + '/' + $scope.layer1 + '/' + $scope.layer2 + '/tabulation.html';
 
-                        LoggerService.log("View", "tabulation", JSON.stringify({
+                        LoggerService.log("View", "tabulation", {
                             type: $scope.type,
                             layer1: $scope.layer1,
                             layer2: $scope.layer2
-                        }))
+                        })
 
                         LayoutService.openIframe(url, false)
                     }
@@ -72,6 +72,15 @@
                     if ($scope.step === 1) {
                         return !($scope.layer1 !== $scope.layer2 && $scope.layer1.length > 0 && $scope.layer2.length > 0)
                     }
+                }
+
+                /* init */
+                if (data && data.type) {
+                    $scope.type = data.type
+                    $scope.layer1 = data.layer1
+                    $scope.layer2 = data.layer2
+
+                    $scope.ok()
                 }
             }])
 }(angular));

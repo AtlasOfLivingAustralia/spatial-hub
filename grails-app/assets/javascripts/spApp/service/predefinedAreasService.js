@@ -23,10 +23,16 @@
                     for (var i in $SH.defaultAreas) {
                         if ($SH.defaultAreas.hasOwnProperty(i)) {
                             var area = $SH.defaultAreas[i];
+                            var geoArea = undefined
+                            if (area.areaSqKm) {
+                                geoArea = area.areaSqKm
+                            } else if (area.wkt && area.wkt.length > 0) {
+                                geoArea = LGeo.area(wellknown.parse(area.wkt))
+                            }
                             defaultAreas.push(MapService.newArea($i18n(area.name),
                                 area.fqs,
                                 area.wkt,
-                                LGeo.area(wellknown.parse(area.wkt)),
+                                geoArea,
                                 area.bbox))
                         }
                     }

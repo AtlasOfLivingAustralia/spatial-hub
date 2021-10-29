@@ -9,10 +9,8 @@
         <tr class="row-gray">
             <td i18n="260" class="label-gray">Number of species:</td>
             <td></td>
-            <td
-                    class="md_value">{{speciesCountKosher}} <span i18n="261">without a flagged spatial issue</span>
-                <br><br>{{speciesCountKosherAny}} <span i18n="262">with any coordinates</span>
-                <br><br>{{speciesCountAll}} <span i18n="263">total including records without coordinates</span>
+            <td class="md_value">
+                {{speciesCountAll}}
             </td>
         </tr>
         <tr>
@@ -23,10 +21,7 @@
                 class="label-gray">Number of occurrences:
             </td>
             <td></td>
-            <td
-                    class="md_value">{{countKosher}} <span i18n="261">without a flagged spatial issue</span>
-                <br><br>{{countKosherAny}} <span i18n="262">with any coordinates</span>
-                <br><br>{{countAll}} <span i18n="263">total including records without coordinates</span>
+            <td class="md_value">{{countAll}}
             </td>
         </tr>
         <tr>
@@ -63,7 +58,7 @@
         </tr>
 
         <tr class="row-gray">
-            <td class="label-gray">Data providers:</td>
+            <td i18n="495" class="label-gray">Data providers:</td>
             <td></td>
             <td class="md_value">
                 <div ng-repeat="x in dataProviderList">
@@ -91,7 +86,7 @@
         </tr>
         <tr class="">
             <td class="label-gray" colspan="3"><a
-                    href="{{species.ws}}/occurrences/search?q={{species.qid}}"
+                    href="{{species.ws}}/occurrences/search?q={{species.qid}}&disableAllQualityFilters=true"
                     target="_blank">Table view of these records</a></td>
         </tr>
         <tr>
@@ -104,6 +99,10 @@
         </tr>
         </tbody>
     </table>
+    <h3 i18n="453">Charts</h3>
+    <biocache-chart chart="chart" species="{{species.qid}}">
+        <div id="charts" style="margin-top: 10px"></div>
+    </biocache-chart>
 </div>
 
 <div class="modal-footer">

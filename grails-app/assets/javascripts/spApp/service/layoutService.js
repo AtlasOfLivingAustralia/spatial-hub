@@ -8,12 +8,13 @@
      *   Management of spatial-hub dialogs and panels
      */
     angular.module('layout-service', [])
-        .factory("LayoutService", ['$uibModal', '$timeout', '$rootScope', 'SessionsService', 'HttpService',
-            function ($uibModal, $timeout, $rootScope, sessionsService, httpService) {
+        .factory("LayoutService", ['$uibModal', '$timeout', '$rootScope', 'SessionsService', 'HttpService', 'WorkflowService', 'LoggerService',
+            function ($uibModal, $timeout, $rootScope, sessionsService, httpService, WorkflowService, LoggerService) {
 
                 var showLegend = [false];
                 var showOptions = [false];
                 var layoutStack = [];
+                var modelessStack = [];
                 var toOpenStack = [];
                 var panelMode = ['default'];
                 var panels = ['default', 'area', 'envelope', 'nearestLocality', 'pointComparison'];
@@ -34,9 +35,9 @@
                         return layoutStack;
                     },
 
-                    enable: function (type) {
+                    enable: function (type, data) {
                         if (type === 'legend') {
-                            showLegend[0] = true;
+                            showLegend[0] = data === undefined ? false : data;
                             showOptions[0] = false;
                         } else if (type === 'options') {
                             showLegend[0] = false;
@@ -73,7 +74,7 @@
                             this.createCheckpoint();
                         }
                     },
-                    /* Save the state of a controller. Call after initialising controller vars. */
+                    /* Save the state of a modal controller. Call after initialising controller vars. */
                     addToSave: function (scopeToSave) {
                         if (layoutStack.length > 0) {
                             var top = layoutStack[layoutStack.length - 1];
@@ -95,6 +96,14 @@
 
                             top[1][scopeToSave.componentName] = scopeToSave
                         }
+                    },
+                    /* adds popup to modeless stack */
+                    addToModeless: function (scope) {
+                        // remove from modal stack
+                        layoutStack.pop()
+
+                        // add to modeless stack
+                        modelessStack.push(scope)
                     },
                     saveScope: function (scopeToSave) {
                         if (layoutStack.length > 0) {
@@ -205,7 +214,26 @@
                             }
                         }
                     },
-                    /* close top window */
+                    /* close one or all modeless windows */
+                    closeModeless: function (nameOrId) {
+                        for (var k in modelessStack) {
+                            if (modelessStack.hasOwnProperty(k)) {
+                                if (!nameOrId ||
+                                    modelessStack[k].componentName == nameOrId ||
+                                    modelessStack[k].$id == nameOrId) {
+                                    if (modelessStack[k].close) {
+                                        // custom close method
+                                        modelessStack[k].close()
+                                    } else if (modelessStack[k].$close) {
+                                        // default close method
+                                        modelessStack[k].$close()
+                                    }
+                                    modelessStack.splice(k, 1)
+                                }
+                            }
+                        }
+                    },
+                    /* close top modal window */
                     _closeOpen: function (reopen) {
                         if (layoutStack.length > 0) {
                             _this.saveValues();
@@ -300,6 +328,7 @@
                     info: function (item) {
                         if (item.layertype === 'species') {
                             item.display = {size: 'full'};
+
                             this.openModal('speciesInfo', item, false)
                         } else if (item.layertype === 'area' && item.metadataUrl === undefined) {
                             var b = item.bbox;
@@ -328,17 +357,21 @@
                             }
 
                             bootbox.alert("<b>Area</b><br/><br/>" +
-                                "<table class='table-striped table table-bordered'>" +
+                                "<table class='table-striped table table-bordered' testTag='displayAreaInfo'>" +
                                 "<tr><td style='width:100px'>" + $i18n("Name") + "</td><td>" + item.name + "</td></tr>" +
                                 "<tr><td>" + $i18n(347, "Description") + "</td><td>" + item.description + "</td></tr>" +
-                                "<tr><td>" + $i18n(348, "Area (sq km)") + "</td><td>" + item.area_km.toFixed(2) + "</td></tr>" +
+                                "<tr><td>" + $i18n(348, "Area (sq km)") + "</td><td testTag='areaSize'>" + item.area_km.toFixed(2) + "</td></tr>" +
                                 "<tr><td>" + $i18n(349, "Extents") + "</td><td>" + b[0][0] + " " + b[0][1] + ", " +
                                 b[1][0] + " " + b[1][1] + "</td></tr>" + metadata + "</table>")
                         } else {
                             if (item.metadataUrl !== undefined) {
                                 this.openIframe(item.metadataUrl, '', '')
                             } else if (item.layerId) {
-                                this.openIframe($SH.layersServiceUrl + '/layer/more/' + item.layerId, '', '')
+                                this.openIframe($SH.layersServiceUrl + '/layer/more/' + item.layerId, '', '') //Open info panel
+                            } else if (item.layer && item.layer.id){
+                                //e.g  https://spatial.ala.org.au/?layers=alwc4
+                                //with ?layers=alwc4 params, item object will be changed. No layerId, instead of layer object.
+                                this.openIframe($SH.layersServiceUrl + '/layer/more/' + item.layer.id, '', '') //Open info panel from opened panel
                             }
                         }
                     }
@@ -349,7 +382,7 @@
                 });
 
                 $rootScope.$on('showLegend', function (event, data) {
-                    _this.enable('legend');
+                    _this.enable('legend', data);
                 });
 
                 return _this;

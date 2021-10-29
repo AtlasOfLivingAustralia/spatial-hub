@@ -10,7 +10,7 @@
 //= require bootstrap/dist/js/bootstrap.min.js
 
 //leaflet
-//= require leaflet/dist/leaflet.js
+//= require leaflet/dist/leaflet-src.js
 //= require proj4/dist/proj4.js
 //= require proj4leaflet/src/proj4leaflet.js
 //= require leaflet-draw/dist/leaflet.draw.js
@@ -21,6 +21,7 @@
 //= require leaflet-label/leaflet.label.js
 //= require leaflet-geodesy/leaflet-geodesy.js
 //= require Leaflet.zoomslider-0.7.1/src/L.Control.Zoomslider.js
+//= require leaflet-measure/dist/leaflet-measure.min.js
 
 //angular
 //= require angular/angular.min.js
@@ -44,11 +45,21 @@
 //= require components.js
 //= require sandbox-hub/preview.js
 
+//ala-charts-plugin
+//= require bootstrap-multiselect.js
+//require bootstrap-slider.js
+//= require bootstrap-toggle.min.js
+//= require Chart.min.js
+//= require ALAChart.js
+//= require angular-chart.js
+
 //spatial-hub
 //= require jquery-csv/jquery.csv.js
 //= require spAppModules.js
 //= require_tree spApp
 //= require x2js/xml2json.min.js
 
+//biocollect searching
+//= require lz-string/libs/lz-string.min.js
 
 

@@ -1,24 +1,12 @@
 import org.apache.commons.io.FileUtils
 import org.apache.commons.lang.StringUtils
-import org.gradle.internal.os.OperatingSystem
 
 def build(String baseDir) {
+
     println 'Starting NPM install'
     final workdir = new File(baseDir, '')
     final proc = new ProcessBuilder().inheritIO()
-    // npm for UNIX, npm.cmd for Windows
-    final exec = null;
-    if (OperatingSystem.current().isLinux()) {
-        exec = proc.command('npm', '-dd', 'install').start()
-    } else if (OperatingSystem.current().isUnix()) {
-        exec = proc.command('npm', '-dd', 'install').start()
-    } else if (OperatingSystem.current().isWindows()) {
-        exec = proc.command('npm.cmd', '-dd', 'install').start()
-    } else if (OperatingSystem.current().isMacOsX()) {
-        exec = proc.command('npm', '-dd', 'install').start()
-    } else {
-        exec = proc.command('npm', '-dd', 'install').start()
-    }
+    final exec = proc.command('npm', '-dd', 'install').start()
     def exitValue = exec.waitFor()
     if (exitValue) {
         println '*****************************************************'
@@ -31,17 +19,15 @@ def build(String baseDir) {
     }
 
     println 'Copying files to grails-app/assets/node_modules'
-    // new ProcessBuilder().inheritIO().command('rm', '-r', 'grails-app/assets/node_modules').start().waitFor()
-    println '================================='
-    println baseDir
-    println '================================='
-    def files = ['angular/angular.min.js', 'angular-animate/angular-animate.min.js', 'angular-aria/angular-aria.min.js',
+    new ProcessBuilder().inheritIO().command('rm', '-r', 'grails-app/assets/node_modules').start().waitFor()
+
+    def files = ['angular/angular.js', 'angular/angular.min.js', 'angular-animate/angular-animate.min.js', 'angular-aria/angular-aria.min.js',
                  'angular-leaflet-directive/dist/angular-leaflet-directive.min.js', 'angular-route/angular-route.min.js',
                  'angular-touch/angular-touch.min.js', 'angular-ui-bootstrap/dist/ui-bootstrap-tpls.js',
                  'angular-ui-bootstrap/dist/ui-bootstrap-csp.css', 'bootbox/dist/bootbox.min.js', 'jquery/dist/jquery.min.js',
                  'ng-file-upload/dist/ng-file-upload.js', 'ngbootbox/dist/ngBootbox.min.js',
-                 'bootstrap/dist/', 'leaflet/dist/', 'leaflet-draw/dist/', 'proj4/dist/proj4.js',
-                 'proj4leaflet/src/proj4leaflet.js','ace-builds/src/ace.js', 'ace-builds/src/mode-json.js', 'angular/angular-csp.css']
+                 'bootstrap/dist/', 'leaflet/dist/', 'leaflet-draw/dist/', 'leaflet-measure/dist/', 'proj4/dist/proj4.js',
+                 'proj4leaflet/src/proj4leaflet.js', 'lz-string/libs/lz-string.min.js']
     files.each { name ->
         def dst = new File(baseDir + '/grails-app/assets/node_modules/' + name)
         dst.getParentFile().mkdirs()
@@ -76,18 +62,7 @@ def build(String baseDir) {
 
     // jsdoc
     println 'Starting JSDoc'
-    final exec2 = null;
-    if (OperatingSystem.current().isLinux()) {
-        exec2 = proc.command('npm', 'run', 'jsdoc').start()
-    } else if (OperatingSystem.current().isUnix()) {
-        exec2 = proc.command('npm', 'run', 'jsdoc').start()
-    } else if (OperatingSystem.current().isWindows()) {
-        exec2 = proc.command('npm.cmd', 'run', 'jsdoc').start()
-    } else if (OperatingSystem.current().isMacOsX()) {
-        exec2 = proc.command('npm', 'run', 'jsdoc').start()
-    } else {
-        exec2 = proc.command('npm', 'run', 'jsdoc').start()
-    }
+    final exec2 = proc.command('npm', 'run', 'jsdoc').start()
     def exitValue2 = exec2.waitFor()
     if (exitValue2) {
         println '*****************************************************'
@@ -112,8 +87,6 @@ def build(String baseDir) {
 
     // load existing defaults
     def p = new File(baseDir + '/grails-app/i18n/messages.properties')
-    // test refere to data dir
-    //def p = new File('/data/spatial-hub/i18n/messages.properties')
     def prop = new Properties()
     prop.load(new FileReader(p))
     // reverse lookup
@@ -133,6 +106,13 @@ def build(String baseDir) {
         idx = Math.max(idx, findLastIndex(baseDir + '/grails-app/assets/javascripts/spApp/' + jsDir, "\$i18n(", ", \""))
     }
 
+    // get max prop id
+    for (def kv : prop) {
+        try {
+            idx = Math.max(idx, Integer.parseInt(kv.key))
+        } catch (e) {}
+    }
+
     idx++
 
     println 'i18n next available idx: ' + idx
@@ -142,99 +122,105 @@ def build(String baseDir) {
     def dir = baseDir + '/grails-app/assets/javascripts/spApp/templates/'
     print 'i18n - find new in templates : ' + dir
     for (File f : new File(dir).listFiles()) {
+        try {
+            def label = ' ' + f.name
+            print(label)
+            def newCount = 0
 
-        def label = ' ' + f.name
-        print(label)
-        def newCount = 0
+            String input = FileUtils.readFileToString(f)
 
-        String input = FileUtils.readFileToString(f)
+            if (!input.contains("skipI18n")) {
+                def output = new StringBuilder()
 
-        if (!input.contains("skipI18n")) {
-            def output = new StringBuilder()
+                def previousPos = 0
+                start = input.indexOf('<')
+                while (start < input.length() && start != -1) {
 
-            start = 0
-            while (start < input.length() && start != -1) {
-                def next = input.indexOf('</', start)
+                    if (start > previousPos) {
+                        output.append(input.substring(previousPos, start))
+                        previousPos = start
+                    }
 
-                if (next > start) {
-                    output.append(input.substring(start, next))
-                }
+                    def readPos = -1
+                    for (int i = 0; i < textElements.length && readPos < 0; i++) {
+                        String e = textElements[i]
 
-                def writeAt = -1
-                for (int i = 0; i < textElements.length && writeAt < 0; i++) {
-                    String e = textElements[i]
+                        // match <tag...> and <tag.../>
+                        if (input.startsWith(e, start + 1)) {
+                            // break out of for loop
+                            readPos = 0
 
-                    if (input.startsWith(e, next + 1)) {
-                        //very rough matching
-                        def end1 = input.indexOf("/>", next)
-                        def end2 = input.indexOf(">", next)
-                        //check that end2 is not part of ng-*=".*" or {{*}}
-                        def s = input.substring(next, end2)
-                        while (end2 > 0 && (end1 == -1 || end1 > end2) &&
-                                (StringUtils.countMatches(s, "{{") < StringUtils.countMatches(s, "}}") ||
-                                        s.matches(".*\\sng-[^\\s=]+=(('[^']*)|(\"[^\"]*))\$"))) {
-                            end2 = input.indexOf(">", end2 + 1)
-                        }
+                            //very rough matching
+                            def end1 = input.indexOf("/>", start)
+                            def end2 = input.indexOf(">", start)
 
-                        if (end1 == -1 || end1 > end2) {
-                            //has interior
-                            def txtStart = end2 + 1
-                            def txtEnd = input.indexOf("<", txtStart)
-                            def str = input.substring(txtStart, txtEnd)
-                            // exclude whitespace, anything with angular substitution
-                            if (str.length() > 0 && !StringUtils.isWhitespace(str) && !str.contains("{{")) {
-                                //has text, insert next attr if missing
-                                if (!input.substring(next, end2).contains("i18n")) {
-                                    writeAt = e.length() + next + 1
+                            //skip over attr ng-*=".*" and substitution strings {{*}}
+                            def s = input.substring(start, end2)
+                            while (end2 > 0 && (end1 == -1 || end1 > end2) &&
+                                    (StringUtils.countMatches(s, "{{") < StringUtils.countMatches(s, "}}") ||
+                                            s.matches(".*\\sng-[^\\s=]+=(('[^']*)|(\"[^\"]*))\$"))) {
+                                end2 = input.indexOf(">", end2 + 1)
+                            }
 
-                                    output.append(input.substring(next, writeAt))
-                                    def value = input.substring(txtStart, txtEnd).replaceAll("\\s+", ' ').trim()
+                            def tagEnd = "</" + e + ">"
+                            if (end1 == -1 || end1 > end2) {
+                                //get innerText of <tag...></tag>
+                                def txtStart = end2 + 1
+                                def txtEnd = input.indexOf(tagEnd, txtStart)
+                                if (txtEnd > 0 && txtEnd < input.length()) {
+                                    def innerText = input.substring(txtStart, txtEnd)
+                                    // exclude whitespace, anything with angular substitution or tag start/end characters '<' '>'
+                                    if (innerText.length() > 0 && !innerText.contains('>') && !innerText.contains('<') && !StringUtils.isWhitespace(innerText) && !innerText.contains("{{")) {
+                                        //insert i18n attr if missing
+                                        if (!input.substring(start, end2).contains("i18n")) {
+                                            readPos = e.length() + start + 1
 
-                                    if (value != "&nbsp;") {
-                                        def currentIdx = idx
-                                        if (all.containsKey(value)) {
-                                            currentIdx = all.get(value)
-                                        } else {
-                                            all.put(value, idx)
-                                            idx++
+                                            output.append(input.substring(start, readPos))
+                                            def value = input.substring(txtStart, txtEnd).replaceAll("\\s+", ' ').trim()
 
-                                            newProperties.append("\n${currentIdx}=${value}")
-                                            newCount++
-                                            totalNewProperties++
+                                            if (value != "&nbsp;") {
+                                                def currentIdx = idx
+                                                if (all.containsKey(value)) {
+                                                    currentIdx = all.get(value)
+                                                } else {
+                                                    all.put(value, idx)
+                                                    idx++
+
+                                                    newProperties.append("\n${currentIdx}=${value}")
+                                                    newCount++
+                                                    totalNewProperties++
+                                                }
+
+                                                output.append(" i18n=\"${currentIdx}\" ")
+                                            }
+
+                                            output.append(input.substring(readPos, txtEnd + tagEnd.length()))
+                                            previousPos = txtEnd + tagEnd.length()
+                                            start = previousPos
                                         }
-
-                                        output.append(" i18n=\"${currentIdx}\" ")
                                     }
-
-                                    output.append(input.substring(writeAt, txtEnd))
-                                    start = txtEnd
                                 }
                             }
                         }
                     }
+
+                    start = input.indexOf('<', start + 1)
                 }
 
-                if (writeAt < 0) {
-                    def end = input.indexOf(">", next)
-                    if (next >= 0 && end >= 0) {
-                        output.append(input.substring(next, end + 1))
+                if (previousPos < input.length()) {
+                    output.append(input.substring(previousPos))
+                }
 
-                        start = end + 1
-                    } else if (next >= 0) {
-                        output.append(input.substring(next, input.length()))
-                        start = input.length() + 1
-                    } else {
-                        start = input.length() + 1
-                    }
+                if (newCount > 0) {
+                    // overwrite template file
+                    FileUtils.writeStringToFile(f, output.toString())
+
+                    print " - $newCount new keys, "
                 }
             }
-
-            if (newCount > 0) {
-                // overwrite template file
-                FileUtils.writeStringToFile(f, output.toString())
-
-                print " - $newCount new keys, "
-            }
+        } catch (err) {
+            println f.name
+            err.printStackTrace()
         }
     }
 
