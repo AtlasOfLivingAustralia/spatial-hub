@@ -20,7 +20,7 @@
                         "input": [
                             {
                                 "name": "species",
-                                "description": "Select mapped species.",
+                                "description": $i18n(544,"Select mapped species."),
                                 "type": "species",
                                 "constraints": {
                                     "min": 1,
@@ -39,14 +39,14 @@
                             },
                             {
                                 "name":"annotateWorkflow",
-                                "description": "Annotate your workflow",
+                                "description": $i18n(545,"Annotate your workflow"),
                                 "type": "annotation",
                                 "constraints": {
                                     "optional": false
                                 }
                             }
                         ],
-                        "description": "Export points."
+                        "description": $i18n(546,"Export points.")
                     },
 
                     refresh: function (inputs, specs) {

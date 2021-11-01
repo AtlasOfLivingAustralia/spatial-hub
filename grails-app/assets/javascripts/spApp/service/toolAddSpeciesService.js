@@ -17,7 +17,7 @@
                         "input": [
                             {
                                 "name": "species",
-                                "description": "Select species.",
+                                "description": $i18n(416,"Select species."),
                                 "type": "species",
                                 "constraints": {
                                     "min": 1,
@@ -30,7 +30,7 @@
                             },
                             {
                                 "name": "speciesOptions",
-                                "description": "Include related areas.",
+                                "description": $i18n(417,"Include related areas."),
                                 "type": "speciesOptions",
                                 "constraints": {
                                     "optional": true,
@@ -41,7 +41,7 @@
                             },
                             {
                                 "name": "area",
-                                "description": "Restrict to an area.",
+                                "description": $i18n(418,"Restrict to an area."),
                                 "type": "area",
                                 "constraints": {
                                     "min": 1,
@@ -49,7 +49,7 @@
                                     "defaultToWorld": true
                                 }
                             }],
-                        "description": "Add a species layer to the map"
+                        "description": $i18n(419,"Add a species layer to the map")
                     },
 
 

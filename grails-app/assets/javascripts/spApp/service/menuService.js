@@ -26,6 +26,12 @@
 
                 if ($SH.menu.indexOf('http') == 0) {
                     var setup = $http.get($SH.menu, _httpDescription('getMenu')).then(function (data) {
+                        for(var i = 0; i < data.data.length; i++) {
+                            data.data[i].name = $i18n(data.data[i].name);
+                            for(var j = 0; j < data.data[i].items.length; j++) {
+                                data.data[i].items[j].name = $i18n(data.data[i].items[j].name);
+                            }
+                        }
                         menuConfig = data.data;
                         return menuConfig;
                     });
