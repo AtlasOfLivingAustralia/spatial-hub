@@ -39,7 +39,7 @@
                                 }
 
                             }],
-                        "description": "Export areas."
+                        "description": $i18n(425,"Export areas.")
                     },
 
                     execute: function (inputs) {

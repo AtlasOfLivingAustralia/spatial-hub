@@ -15,7 +15,7 @@
                     spec: {
                         "input": [
                             {
-                                "description": "Restrict to an area.",
+                                "description": $i18n(543, "Restrict to an area."),
                                 "type": "area",
                                 "constraints": {
                                     "min": 1,
@@ -24,7 +24,7 @@
                                 }
                             },
                             {
-                                "description": "Species options.",
+                                "description": $i18n(411,"Species options."),
                                 "type": "speciesOptions",
                                 "constraints": {
                                     "areaIncludes": false,
@@ -33,7 +33,7 @@
                                     "absentOption": true
                                 }
                             }],
-                        "description": "Export a species list."
+                        "description": $i18n(426,"Export a species list.")
                     },
 
                     downloading: false,

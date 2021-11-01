@@ -39,7 +39,7 @@
                     }
 
                     return [
-                        MapService.newArea($i18n("Current extent"),
+                        MapService.newArea($i18n(16, "Current extent"),
                             ["longitude:[" + extents[0] + " TO " + extents[2] + "]", "latitude:[" + extents[1] + " TO " + extents[3] + "]"],
                             'POLYGON((' + extents[0] + ' ' + extents[3] + ',' + extents[0] + ' ' + extents[1] + ',' +
                             extents[2] + ' ' + extents[1] + ',' + extents[2] + ' ' + extents[3] + ',' +

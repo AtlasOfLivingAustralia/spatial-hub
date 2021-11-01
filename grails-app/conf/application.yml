@@ -9,6 +9,7 @@ grails:
     config:
         locations:
             - file:/data/spatial-hub/config/spatial-hub-config.yml
+            - file:/data/spatial-hub/config/spatial-hub-config.groovy
     spring:
         transactionManagement:
             proxies: false

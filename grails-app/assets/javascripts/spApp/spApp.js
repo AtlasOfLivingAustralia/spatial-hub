@@ -196,12 +196,32 @@ function fetchData() {
             gMessages[k + ""] = result.data[k]
         }
         $SH.gMessages = gMessages;
-        $i18n = function (k) {
-            var key = ("" + k).replace(" ", "_");
+        // $i18n = function (k) {
+        //     var key = ("" + k).replace(" ", "_");
+        //     if ($SH.gMessages[key] !== undefined) {
+        //         return $SH.gMessages[key]
+        //     } else {
+        //         return k
+        //     }
+        // }
+        /**
+         * If key is not found in message.properties, use the default value
+         *
+         * If no default value is given, use key
+         *
+         * @param k key
+         * @param v optional default value
+         * @returns {*}
+         */
+        $i18n = function (k, v) {
+            var key = ("" + k);
             if ($SH.gMessages[key] !== undefined) {
                 return $SH.gMessages[key]
             } else {
-                return k
+                if (v !== undefined)
+                    return v
+                else
+                    return k
             }
         }
     }));
