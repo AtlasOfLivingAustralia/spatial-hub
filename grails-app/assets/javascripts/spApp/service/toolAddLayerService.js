@@ -22,7 +22,7 @@
                                 "optional": false
                             }
                         }],
-                    "description": $i18n(515,"Add environmental and contextual layers to the map.")
+                    "description": $i18n(415,"Add environmental and contextual layers to the map.")
                 },
 
                 execute: function (inputs) {
