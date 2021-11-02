@@ -115,7 +115,7 @@ dependencies {
     compile "org.grails.plugins:ala-admin-plugin:2.2"
     compile "org.grails.plugins:ala-bootstrap3:3.2.4"
     implementation "au.org.ala:ala-cas-client:2.4"
-    runtime "au.org.ala.plugins.grails:ala-charts-plugin:2.1-ANGULAR-4"
+    runtime "au.org.ala.plugins.grails:ala-charts-plugin:2.2"
     runtime 'org.grails.plugins:sandbox-hub:1.0'
 }
 
