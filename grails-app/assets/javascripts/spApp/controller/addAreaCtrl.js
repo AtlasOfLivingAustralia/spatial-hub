@@ -176,7 +176,12 @@
                                 LayersService.createFromWkt($scope.selectedArea.wkt, $scope.selectedArea.name, '').then(
                                     function (data) {
                                         if (!data.data.id) {
-                                            bootbox.alert($i18n(479, "Invalid WKT"))
+                                            if (data.data.error) {
+                                                bootbox.alert(data.data.error)
+                                            } else {
+                                                bootbox.alert($i18n(540,"An error occurred. Please try again and if the same error occurs, send an email to support@ala.org.au and include the URL to this page, the error message and what steps you performed that triggered this error."));
+                                            }
+
                                         } else {
                                             LayersService.getObject(data.data.id).then(function (data) {
                                                 data.data.layertype = 'area';

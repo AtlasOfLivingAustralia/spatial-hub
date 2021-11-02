@@ -1,4 +1,5 @@
 import geb.spock.GebSpec
+import org.openqa.selenium.Keys
 import page.SpatialHubHomePage
 
 class AddAreaSpec extends GebSpec {
