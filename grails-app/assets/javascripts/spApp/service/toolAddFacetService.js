@@ -15,7 +15,7 @@
                 spec: {
                     "input": [
                         {
-                            "description": "Select area",
+                            "description": $i18n(352, "Select area."),
                             "type": "area",
                             "constraints": {
                                 "min": 1,
@@ -25,7 +25,7 @@
                             }
                         },
                         {
-                            "description": "Species options",
+                            "description": $i18n(411,"Species options."),
                             "type": "speciesOptions",
                             "constraints": {
                                 "min": 1,
@@ -34,7 +34,7 @@
                             }
                         },
                         {
-                            "description": "Select facet",
+                            "description": $i18n(412,"Select facet."),
                             "type": "facet",
                             "constraints": {
                                 "min": 1,

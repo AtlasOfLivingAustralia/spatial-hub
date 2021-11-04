@@ -75,15 +75,21 @@ class ToolPointsToGridSpec extends GebSpec {
 
         then:
         waitFor 10, { modalModule.title == "Create grids from points." }
-        waitFor 40, { modalModule.status.contains("running") }
+        //waitFor 40, { modalModule.status.contains("running") }
 
         waitFor 200, { modalModule.openNewWindow.displayed }
         waitFor 10, { modalModule.outputDoc.displayed }
 
+        def htmlSrc = $('#outputDocs').getAttribute("src")
         //Need to switch iFrame before access an element in iFrame
         driver.switchTo().frame("outputDocs")
 
-//        waitFor 10, { $("img[src='occurrence_density.png'], img[src='species_richness.jpeg']").displayed }
+        if (htmlSrc.endsWith("srichness_metadata.html")) {
+            waitFor 10, { $("img[src='species_richness.png']").displayed }
+            waitFor 10, { $("img[src='species_richness_legend.png']").displayed }
+        }
+        else if (htmlSrc.endsWith("odensity_metadata.html"))
+            waitFor 10, { $("img[src='occurrence_density.png']").displayed }
 
         Thread.sleep(pause)
 

@@ -15,7 +15,7 @@
                 spec: {
                     "input": [
                         {
-                            "description": "Select areas.",
+                            "description": $i18n(420,"Select areas."),
                             "type": "area",
                             "constraints": {
                                 "min": 1,
@@ -25,7 +25,7 @@
                             }
                         },
                         {
-                            "description": "Filetype.",
+                            "description": $i18n(421,"Filetype."),
                             "type": "list",
                             "constraints": {
                                 "default": "Shapefile",
@@ -41,26 +41,26 @@
                         }],
                     "view": [
                         {
-                            "name": "Select areas to export.",
+                            "name": $i18n(422,"Select areas to export."),
                             "inputs": [
                                 "area"
                             ]
                         },
                         {
-                            "name": "Select filetype.",
+                            "name": $i18n(423,"Select filetype."),
                             "inputs": [
                                 "layer"
                             ]
                         },
                         {
-                            "name": "Number of groups and Shapefile generation",
+                            "name": $i18n(424,"Number of groups and Shapefile generation"),
                             "inputs": [
                                 "groups",
                                 "shp"
                             ]
                         }
                     ],
-                    "description": "Export areas."
+                    "description": $i18n(425,"Export areas.")
                 },
 
                 execute: function (inputs) {

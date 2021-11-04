@@ -1,5 +1,6 @@
 ---
 grails:
+    serverURL: https://spatial.ala.org.au
     cors:
         enabled: true
     profile: web
@@ -7,7 +8,6 @@ grails:
         defaultPackage: au.org.ala.spatial.portal
     config:
         locations:
-            - file:/data/spatial-hub/config/spatial-hub-config.properties
             - file:/data/spatial-hub/config/spatial-hub-config.yml
             - file:/data/spatial-hub/config/spatial-hub-config.groovy
     spring:
@@ -22,11 +22,19 @@ grails:
         upload:
             maxFileSize: 10000000
             maxRequestSize: 10000000
+
+layersService:
+    url: 'https://spatial.ala.org.au/ws'
+geoserver:
+  url: 'https://spatial.ala.org.au/geoserver/web/'
+
 info:
     app:
         name: '@info.app.name@'
         version: '@info.app.version@'
         grailsVersion: '@info.app.grailsVersion@'
+        build:
+          date: '@info.app.build.date@'
 spring:
     main:
         banner-mode: "off"
@@ -171,7 +179,7 @@ skin:
   favicon: 'https://www.ala.org.au/app/uploads/2019/01/cropped-favicon-32x32.png'
 
 layersService:
-    url: 'https://localhost:8085/spatial-service/'
+    url: 'https://spatial.ala.org.au/ws/'
 
 lists:
     url: 'https://lists.ala.org.au'
@@ -311,7 +319,7 @@ startup:
     lng: 131
     zoom: 4
     baselayer:
-        default: 'google_roadmaps'
+        default: 'osm'
     baselayers:
         google_roadmaps:
             name: 'Streets'
@@ -416,16 +424,16 @@ qc: ""
 projection:
     default: '3857'
 projections:
-    3857:
+    "3857":
       label: 'Pseudo-Mercator -- Spherical Mercator'
       definition:
         code: 'EPSG:3857' # leaflet supported, uses startup lat,lon,zoom
 # Uncomment to include these additional projections
-    4326:
+    "4326":
       label: 'World Geodetic System 1984'
       definition:
         code: 'EPSG:4326' # leaflet supported, uses startup lat,lon,zoom
-    3031:
+    "3031":
       label: 'Antarctic Polar Stereographic'
       definition:
         code: 'EPSG:3031'
@@ -435,7 +443,7 @@ projections:
         latitude: -80
         longitude: 0
         zoom: 1
-    3575:
+    "3575":
       label: 'North Pole LAEA Europe'
       definition:
         code: 'EPSG:3575'
@@ -621,7 +629,11 @@ environments:
           port: 8087
           use-forward-headers: true
         grails:
-          serverURL: http://devt.ala.org.au:8087
+          serverURL: "http://devt.ala.org.au:8087"
+        layersService:
+          url: "http://devt.ala.org.au:8080/ws"
+        geoserver:
+          url: 'http://devt.ala.org.au:8079/geoserver'
     test:
     production:
         assets:

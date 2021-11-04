@@ -1,8 +1,0 @@
-rootProject.name='spatial-hub'
-
-boolean inplace = false
-
-if (inplace) {
-    include ':ala-charts-plugin'
-    project(':ala-charts-plugin').projectDir = new File(settingsDir,'../ala-charts-plugin')
-}

@@ -136,6 +136,7 @@ class BootStrap {
 
             speciesDotSize = speciesDotSize.toInteger()
             speciesDotOpacity = speciesDotOpacity.toInteger()
+            workflow.speciesFilters = toListOfMaps(workflow.speciesFilters)
 
             webservice.readTimeout = webservice.readTimeout.toInteger()
             webservice.connectTimeout = webservice.connectTimeout.toInteger()

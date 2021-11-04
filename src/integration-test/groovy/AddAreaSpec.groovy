@@ -1,4 +1,5 @@
 import geb.spock.GebSpec
+import org.openqa.selenium.Keys
 import page.SpatialHubHomePage
 
 class AddAreaSpec extends GebSpec {
@@ -19,20 +20,20 @@ class AddAreaSpec extends GebSpec {
         def logCount = 0;
 
         //Open log history and read count if bbox
+//        when:
+//        menuModule.clickMenu("Add to map ") //NOTICE: space
+//        menuModule.clickMenuitem("History")
+
+//        then:
+//        waitFor 10, { historyModule.title == "History"}
+//        waitFor 10, { historyModule.shouldHaveLogs() }
+
         when:
-        menuModule.clickMenu("Add to map ") //NOTICE: space
-        menuModule.clickMenuitem("History")
+//        logCount = historyModule.getLogCount("drawBoundingBox")
+//        historyModule.close()
 
-        then:
-        waitFor 10, { historyModule.title == "History"}
-        waitFor 10, { historyModule.shouldHaveLogs() }
-
-        when:
-        logCount = historyModule.getLogCount("drawBoundingBox")
-        historyModule.close()
-
-        and:
-        Thread.sleep(pause)
+ //       and:
+//        Thread.sleep(pause)
         menuModule.clickMenu("Add to map ")
         menuModule.clickMenuitem("Area")
 
@@ -60,14 +61,14 @@ class AddAreaSpec extends GebSpec {
 
 
         //Open log again
-        when:
-        menuModule.clickMenu("Add to map ")
-        menuModule.clickMenuitem("History")
+//        when:
+//        menuModule.clickMenu("Add to map ")
+//        menuModule.clickMenuitem("History")
 
-        then:
-        waitFor 10, { historyModule.title == "History"}
-        //waitFor 10, { historyModule.getLogCount("drawBoundingBox") == logCount + 1 }
-        historyModule.close()
+//        then:
+//        waitFor 10, { historyModule.title == "History"}
+//        //waitFor 10, { historyModule.getLogCount("drawBoundingBox") == logCount + 1 }
+//        historyModule.close()
 
         //Add Circle
         when:

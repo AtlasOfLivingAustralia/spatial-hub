@@ -29,6 +29,7 @@
                             } else if (area.wkt && area.wkt.length > 0) {
                                 geoArea = LGeo.area(wellknown.parse(area.wkt))
                             }
+
                             defaultAreas.push(MapService.newArea($i18n(area.name),
                                 area.fqs,
                                 area.wkt,
@@ -38,7 +39,7 @@
                     }
 
                     return [
-                        MapService.newArea($i18n("Current extent"),
+                        MapService.newArea($i18n(16, "Current extent"),
                             ["longitude:[" + extents[0] + " TO " + extents[2] + "]", "latitude:[" + extents[1] + " TO " + extents[3] + "]"],
                             'POLYGON((' + extents[0] + ' ' + extents[3] + ',' + extents[0] + ' ' + extents[1] + ',' +
                             extents[2] + ' ' + extents[1] + ',' + extents[2] + ' ' + extents[3] + ',' +

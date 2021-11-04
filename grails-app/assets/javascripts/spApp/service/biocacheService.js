@@ -619,13 +619,23 @@
                  */
                 bbox: function (query) {
                     return this.registerQuery(query).then(function (response) {
+                        var bbox = [[-180, -90], [180, 90]]
                         if (response == null) {
-                            return $q.when([[-180, -90], [180, 90]])
+                            return $q.when(bbox)
                         }
                         return $http.get(query.bs + "/webportal/bbox?q=" + response.qid + "&type=application/json", _httpDescription('bbox')).then(function (response) {
-                            var bb = response.data.split(",");
-                            return [[bb[1], bb[0]], [bb[3], bb[2]]];
-                        });
+                            try {
+                                var bb = response.data.split(",");
+                                bbox = [[bb[1], bb[0]], [bb[3], bb[2]]];
+                            } catch (exception) {
+                                 console.warn("Error: Biocache/bbox query return an invalid BBox.")
+                            } finally {
+                                return bbox;
+                            }
+                        }).catch(function (error) {
+                            console.warn("Biocache/bbox query returns an error!")
+                            return bbox;
+                        })
                     })
                 },
                 /**

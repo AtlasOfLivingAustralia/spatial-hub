@@ -15,14 +15,14 @@
                 spec: {
                     "input": [
                         {
-                            "description": "Select layers.",
+                            "description": $i18n(414,"Select layers."),
                             "type": "layer",
                             "constraints": {
                                 "min": 1,
                                 "optional": false
                             }
                         }],
-                    "description": "Add environmental and contextual layers to the map."
+                    "description": $i18n(415,"Add environmental and contextual layers to the map.")
                 },
 
                 execute: function (inputs) {
