@@ -123,8 +123,7 @@
                                 function (response) {
                                         if (response.data.error) {
                                             bootbox.alert(
-                                                "No areas selected. Points cannot be imported from a shapefile. (Error: "
-                                                + response.data.error + ")");
+                                                "(Error: "  + response.data.error + ")");
                                         } else {
                                             $scope.setPid(response.data.id, true)
                                         }

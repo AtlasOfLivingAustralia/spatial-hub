@@ -14,7 +14,7 @@ appender('STDOUT', ConsoleAppender) {
         charset = Charset.forName('UTF-8')
 
         pattern =
-                '%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} ' + // Date
+                '[SPATIAL-HUB] %clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} ' + // Date
                         '%clr(%5p) ' + // Log level
                         '%clr(---){faint} %clr([%15.15t]){faint} ' + // Thread
                         '%clr(%-40.40logger{39}){cyan} %clr(:){faint} ' + // Logger
@@ -34,5 +34,7 @@ if (Environment.isDevelopmentMode() && targetDir != null) {
     logger("StackTrace", ERROR, ['FULL_STACKTRACE'], false)
     logger("au.org.ala.layers", DEBUG, ['STDOUT'], false)
     logger("au.org.ala.spatial", DEBUG, ['STDOUT'], false)
+} else {
+    logger("au.org.ala.spatial", INFO, ['STDOUT'], false)
 }
 root(ERROR, ['STDOUT'])

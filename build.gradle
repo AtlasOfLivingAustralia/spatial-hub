@@ -11,7 +11,7 @@ buildscript {
     }
 }
 
-version "1.0.0-SNAPSHOT"
+version "1.0.1-SNAPSHOT"
 group "au.org.ala"
 
 apply plugin:"eclipse"
@@ -46,11 +46,6 @@ configurations {
     developmentOnly
     runtimeClasspath {
         extendsFrom developmentOnly
-    }
-    all {
-        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
-        exclude group: 'ch.qos.logback', module: 'logback-classic'
-        exclude group: 'ch.qos.logback', module: 'logback-core'
     }
 }
 
