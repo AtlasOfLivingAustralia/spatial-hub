@@ -148,6 +148,7 @@ class AddAreaSpec extends GebSpec {
         addAreaModule.gazAutoList("Ben Lomond").click()
 
         and:
+        waitFor 10, {addAreaModule.isNextBtnEnabled()}
         addAreaModule.nextBtn.click()
 
         then:
@@ -233,7 +234,7 @@ class AddAreaSpec extends GebSpec {
         addAreaModule.wktAreaDataTextarea.value(wkt)
 
         then:
-        waitFor 20, { addAreaModule.nextBtn.displayed }
+        waitFor 10, {addAreaModule.isNextBtnEnabled()}
         addAreaModule.nextBtn.click()
 
         then:

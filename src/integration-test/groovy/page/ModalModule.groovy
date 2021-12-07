@@ -142,7 +142,7 @@ class ModalModule extends Module {
     }
 
     def isNextBtnEnabled() {
-        return !nextBtn.is(":disabled")
+        return !nextBtn.attr('disabled')
     }
 
     //Get cell in CSV report table

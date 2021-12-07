@@ -47,6 +47,7 @@ class ToolPredictSpec extends GebSpec {
         addAreaModule.gazAutoList("Tasmania").click()
 
         and:
+        waitFor 10, {addAreaModule.isNextBtnEnabled()}
         addAreaModule.nextBtn.click()
 
         then:

@@ -46,6 +46,7 @@ class ToolGeneratePointsSpec extends GebSpec {
         addAreaModule.gazAutoList("Ben Lomond").click()
 
         and:
+        waitFor 10, {addAreaModule.isNextBtnEnabled()}
         addAreaModule.nextBtn.click()
 
         then:
