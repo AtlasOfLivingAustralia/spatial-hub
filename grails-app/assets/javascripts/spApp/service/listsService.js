@@ -57,8 +57,8 @@
                     };
                     return $http.post($SH.baseUrl + "/portal/postSpeciesList", list, _httpDescription('createList', {withCredentials: true})).then(function (resp) {
                         return resp;
-                    }, function (resp) {
-                        return resp;
+                    }, function (error) {
+                        return error;
                     });
                 },
                 items: function (listId, params) {

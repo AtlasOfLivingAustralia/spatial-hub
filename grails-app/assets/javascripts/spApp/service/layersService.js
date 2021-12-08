@@ -241,7 +241,7 @@
                             name: name,
                             description: description,
                             user_id: $SH.userId
-                        }, _httpDescription('createFromWkt'))
+                        })
                 },
                 /**
                  * Get object information
