@@ -208,9 +208,9 @@ publishing {
             }
         }
     }
-    publications {
-        mavenJar(MavenPublication) {
 
+    publications {
+        MavenPublication(MavenPublication) {
             pom.withXml {
                 def pomNode = asNode()
                 pomNode.dependencyManagement.replaceNode {}
@@ -224,7 +224,7 @@ publishing {
                     it.replaceNode {}
                 }
             }
-            artifact bootJar
+            artifact bootWar
         }
     }
 }
