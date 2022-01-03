@@ -13,3 +13,4 @@ out/
 /node_modules/
 /grails-app/assets/node_modules/
 /grails-app/assets/node_modules/
+/package-lock.json
