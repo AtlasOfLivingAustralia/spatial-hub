@@ -86,7 +86,7 @@ class AddSpeciesSpec extends GebSpec {
         addSpeciesModule.importSpeciesListRadioBtn.click()
 
         then:
-        waitFor 10, {addSpeciesModule.speciesListForm.displayed}
+        waitFor 15, {addSpeciesModule.speciesListForm.displayed}
 
         when:
         addSpeciesModule.speciesListInput.value('Eucalyptus gunnii, red kangaroo')
@@ -97,6 +97,7 @@ class AddSpeciesSpec extends GebSpec {
 
         then:
         waitFor 10, { addSpeciesModule.speciesListTable.displayed }
+        Thread.sleep(pause)
         addSpeciesModule.findSpeciesInTable("Eucalyptus gunnii",1).displayed
         addSpeciesModule.findSpeciesInTable("Osphranter rufus",1).displayed
 

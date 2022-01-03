@@ -127,9 +127,9 @@ endpoints:
 security:
     cas:
         casServerName: 'https://auth.ala.org.au'
-        uriFilterPattern: '/alaAdmin,/alaAdmin.*'
-        uriExclusionFilterPattern: '/portal/q.*,/portal/messages.*,/portal/sessionCache.*,/static.*,/assets.*'
-        authenticateOnlyIfLoggedInPattern: '/portal.*,/,/portal/config.*,/portal/i18n.*,/hub/[a-zA-Z0-9]+'
+        uriFilterPattern: ['/alaAdmin','/alaAdmin/*']
+        uriExclusionFilterPattern: ['/portal/q/*','/portal/messages/*','/portal/sessionCache/*','/static/*','/assets/*']
+        authenticateOnlyIfLoggedInPattern: ['/portal/*','/','/portal/config/*','/portal/i18n/*','/hub/[a-zA-Z0-9]+']
         loginUrl: 'https://auth.ala.org.au/cas/login'
         logoutUrl: 'https://auth.ala.org.au/cas/logout'
         gateway: false
