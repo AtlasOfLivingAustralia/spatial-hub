@@ -144,7 +144,7 @@
             , '${config.doiService.url}/**'
             </g:if>
         ],
-        i18n: '${config.i18n?.region?:"default"}',
+        i18n: '${config.i18n?.currentRegion?:"default"}',
         editable: ${params.edit?:'false'},
         wmsIntersect: ${config.wms.intersect},
         projections: ${(config.projections as grails.converters.JSON).toString().encodeAsRaw()},

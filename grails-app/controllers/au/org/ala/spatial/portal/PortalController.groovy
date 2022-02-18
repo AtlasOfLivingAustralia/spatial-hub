@@ -151,7 +151,11 @@ class PortalController {
                     config.spApp.each { k, v ->
                         spApp.put(k, v.class.newInstance(params.get(k, v)))
                     }
-                    config.spApp = spApp
+                    if (params.get("lang")) {
+                        config.i18n?.currentRegion = params.get("lang")
+                    } else {
+                        config.i18n?.currentRegion = config.i18n?.region
+                    }
 
                     render(view: 'index',
                             model: [config     : config,
