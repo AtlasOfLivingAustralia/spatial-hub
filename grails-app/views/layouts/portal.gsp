@@ -118,6 +118,10 @@
                         <div class="horizontal-line"></div>
                         <span class="collapse visible-on-show" aria-hidden="true">&times;</span>
                     </button>
+                    <select class="form-select" id="lang" aria-label="Region" onchange="location = this.value;">
+                        <option selected value="/">EN</option>
+                        <option value="?lang=ES" ${params.lang?.toLowerCase()=='es' ? 'selected' : ''}>ES</option>
+                    </select>
                 </div>
             </div>
 
@@ -311,6 +315,7 @@
                             </li>
                         </ul>
                     </div>
+
                     <button class="search-trigger hidden-xs hidden-sm collapsed collapse-trigger-button"
                             data-toggle="collapse"
                             data-target="#autocompleteSearchALA" onclick="focusOnClickSearchButton()">
@@ -360,7 +365,10 @@
                 </form>
             </div>
         </div>
+
     </nav><!-- .site-navigation -->
+
+
 
 </div>
 <script type="text/html" id="autoCompleteTemplate">
@@ -405,6 +413,5 @@
     </script>
 </g:if>
 <!-- End Google Analytics -->
-
 </body>
 </html>

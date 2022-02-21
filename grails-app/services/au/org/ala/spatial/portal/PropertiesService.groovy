@@ -26,7 +26,7 @@ class PropertiesService {
     def grailsApplication
 
     def get(type) {
-        def name = "messages" + (type == "default" ? "" : "_" + type)
+        def name = "messages" + (type == "default" ? "" : "_" + type.toLowerCase())
         def defaultFile = "${name}.properties";
         def properties = new Properties()
 
