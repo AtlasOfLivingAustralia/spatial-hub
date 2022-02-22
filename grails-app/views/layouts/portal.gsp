@@ -118,10 +118,6 @@
                         <div class="horizontal-line"></div>
                         <span class="collapse visible-on-show" aria-hidden="true">&times;</span>
                     </button>
-                    <select class="form-select" id="lang" aria-label="Region" onchange="location = this.value;">
-                        <option selected value="/">EN</option>
-                        <option value="?lang=ES" ${params.lang?.toLowerCase()=='es' ? 'selected' : ''}>ES</option>
-                    </select>
                 </div>
             </div>
 

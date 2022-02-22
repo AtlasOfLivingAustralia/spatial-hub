@@ -154,8 +154,9 @@ class PortalController {
                     if (params.get("lang")) {
                         config.i18n?.currentRegion = params.get("lang")
                     } else {
-                        config.i18n?.currentRegion = config.i18n?.region
+                        config.i18n?.currentRegion = null;
                     }
+
 
                     render(view: 'index',
                             model: [config     : config,

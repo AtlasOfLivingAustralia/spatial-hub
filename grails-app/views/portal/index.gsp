@@ -74,6 +74,10 @@
         baseLayers: ${(config.startup.baselayers as grails.converters.JSON).toString().encodeAsRaw()},
         defaultBaseLayer: '${config.startup.baselayer.default}',
 
+        <g:if test="${config.i18n?.currentRegion}">
+        i18n: '${config.i18n?.currentRegion}',
+        </g:if>
+
         <g:if test="${config.flickr.url}">
         flickrUrl: '${config.flickr.url}',
         flickrLicensesData: ${(config.flickr.licensesData as grails.converters.JSON).toString().encodeAsRaw()},
@@ -93,6 +97,8 @@
         defaultSpeciesDotOpacity: ${config.speciesDotOpacity},
         presetWMSServers: ${(config.presetWMSServers as grails.converters.JSON).toString().encodeAsRaw()},
         getMapExamples: ${(config.getMapExamples as grails.converters.JSON).toString().encodeAsRaw()},
+
+
 
         <g:if test="${config.doiService?.url}">
         doiServiceUrl: '${config.doiService.url}',
@@ -144,7 +150,7 @@
             , '${config.doiService.url}/**'
             </g:if>
         ],
-        i18n: '${config.i18n?.currentRegion?:"default"}',
+
         editable: ${params.edit?:'false'},
         wmsIntersect: ${config.wms.intersect},
         projections: ${(config.projections as grails.converters.JSON).toString().encodeAsRaw()},
@@ -211,6 +217,17 @@
 
         , maxUploadSize: ${config.grails.controllers.upload.maxFileSize}
     };
+
+    if (!$SH.i18n) {
+        if (( navigator.language || navigator.browserLanguage).startsWith('en')) {
+            $SH.i18n = 'default';
+        } else if ((navigator.language || navigator.browserLanguage).startsWith('de')) {
+            $SH.i18n = 'de';
+        } else {
+            $SH.i18n = navigator.language || navigator.browserLanguage;
+        }
+    }
+
 
     BIE_VARS = {
         autocompleteUrl: '${config.autocompleteUrl}'
