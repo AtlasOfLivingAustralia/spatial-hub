@@ -23,7 +23,7 @@
                         "input": [
                             {
                                 "name": "area",
-                                "description": $i18n(382,"Select area."),
+                                "description": $i18n(420,"Select area."),
                                 "type": "area",
                                 "constraints": {
                                     "min": 1,
