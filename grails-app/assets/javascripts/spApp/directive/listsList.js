@@ -97,7 +97,7 @@
                                         var query = data;
                                         var limit = 200;
                                         if (items.length > limit ) {
-                                            alert("Biocache only returns the occurrences of the first 200 names in non-authoritative list.");
+                                            alert("Note: only the first 200 names will be used when when adding species to the map (for user-uploaded checklists)");
                                             query = items.slice(0,limit).join(" OR ") +")";
                                         }
                                         scope._custom()({
