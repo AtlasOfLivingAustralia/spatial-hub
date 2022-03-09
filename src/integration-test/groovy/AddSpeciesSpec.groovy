@@ -130,4 +130,45 @@ class AddSpeciesSpec extends GebSpec {
         waitFor 10, {legendModule.title == "my test species (Australia)"}
         Thread.sleep(pause)
     }
+
+    def "Add authoritative speciesList to Australia"() {
+        when:
+        menuModule.clickMenu("Add to map ") //NOTICE: space
+        menuModule.clickMenuitem("Species")
+
+        then:
+        waitFor 20, {  addSpeciesModule.title == "Add a species layer to the map"}
+
+        and:
+        addSpeciesModule.chooseListInputOption.click()
+
+        then:
+        waitFor 15, {addSpeciesModule.searchInSpeciesListInput.displayed}
+
+        when:
+        addSpeciesModule.searchInSpeciesListInput.value('GRIIS')
+
+        then:
+        waitFor 10, { addSpeciesModule.speciesListTable.displayed }
+        Thread.sleep(pause)
+        addSpeciesModule.findSpeciesInTable("GRIIS - Global Register of Introduced and Invasive Species - Australia",1).displayed
+        assert addSpeciesModule.isAuthoritative("GRIIS - Global Register of Introduced and Invasive Species - Australia",1) == true
+
+        and:
+        addSpeciesModule.selectSpeciesInTable("GRIIS - Global Register of Introduced and Invasive Species - Australia", 0)
+
+        when:
+        interact {
+            modalModule.moveToStep(3)
+            modalModule.selectArea("Australia")
+        }
+
+        and:
+        addSpeciesModule.nextBtn.click()
+
+        then:
+        waitFor 30, { layerListModule.getLayer("GRIIS - Global Register of Introduced and Invasive Species - Australia (Australia)").displayed }
+        waitFor 100, {legendModule.title == "GRIIS - Global Register of Introduced and Invasive Species - Australia (Australia)"}
+        Thread.sleep(pause*3)
+    }
 }
