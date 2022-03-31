@@ -10,6 +10,9 @@ class AddSpeciesModule extends ModalModule {
         parseSpeciesListBtn(required:false){ $('button[name=parseSpeciesList]') }
         speciesListTable(required:false){ $('table[name=speciesList]') }
         newListNameInput(required:false){ $('input[name=newListName]') }
+
+        chooseListInputOption(required:false){ $('input[value="speciesList"]') }
+        searchInSpeciesListInput(required:false){ $('input[name="searchInSpeciesList"]') }
     }
 
     /**
@@ -21,5 +24,21 @@ class AddSpeciesModule extends ModalModule {
     def findSpeciesInTable(String name, int col) {
         def rols =  speciesListTable.find("tr td", text: name).parent()
         return  rols.find("td")[col]
+    }
+
+    def isAuthoritative(String name, int col) {
+        def rols =  speciesListTable.find("tr td", text: name).parent()
+        return  rols.find("td")[col].has("span[title='Authoritative list']").size() == 1
+    }
+
+    /**
+     * Select/deselect the species.
+     * @param name
+     * @param col of checkbox
+     * @return
+     */
+    def selectSpeciesInTable(String name, int col) {
+        def rols =  speciesListTable.find("tr td", text: name).parent()
+        return  rols.find("td")[col].click()
     }
 }
