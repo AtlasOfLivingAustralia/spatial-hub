@@ -41,7 +41,15 @@ class ToolAooEooSpec extends GebSpec {
         waitFor 10, {addAreaModule.gazAutoListCheckbox("ASGS").displayed}
         addAreaModule.gazAutoListCheckbox("ASGS").click()
 
+        then:
         waitFor 10, {addAreaModule.gazAutoList("Tasmania").displayed}
+
+        when:
+        interact {
+            moveToElement(addAreaModule.gazAutoList("Tasmania"))
+        }
+
+        then:
         addAreaModule.gazAutoList("Tasmania").click()
 
         and:

@@ -41,6 +41,12 @@ class ToolDoubleGridingSpec extends GebSpec {
         waitFor 10, {addAreaModule.gazAutoListCheckbox("ASGS").displayed}
         addAreaModule.gazAutoListCheckbox("ASGS").click()
         waitFor 10, {addAreaModule.gazAutoList("Tasmania").displayed}
+        when:
+        //Avoid possibility of 'not clickable'
+        interact {
+            moveToElement(addAreaModule.gazAutoList("Tasmania"))
+        }
+        then:
         addAreaModule.gazAutoList("Tasmania").click()
 
         and:

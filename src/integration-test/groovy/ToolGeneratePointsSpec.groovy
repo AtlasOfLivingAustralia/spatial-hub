@@ -43,6 +43,13 @@ class ToolGeneratePointsSpec extends GebSpec {
         waitFor 10, {addAreaModule.gazAutoListCheckbox("IBRA 7 Subregions").displayed}
         addAreaModule.gazAutoListCheckbox("IBRA 7 Subregions").click()
         waitFor 10, {addAreaModule.gazAutoList("Ben Lomond").displayed}
+
+        when:
+        interact {
+            moveToElement(addAreaModule.gazAutoList("Ben Lomond"))
+        }
+
+        then:
         addAreaModule.gazAutoList("Ben Lomond").click()
 
         and:

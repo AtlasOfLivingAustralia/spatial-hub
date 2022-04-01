@@ -145,6 +145,14 @@ class AddAreaSpec extends GebSpec {
         addAreaModule.gazAutoListCheckbox("IBRA 7 Subregions").click()
 
         waitFor 10, {addAreaModule.gazAutoList("Ben Lomond").displayed}
+
+        when:
+        //Avoid possibility of 'not clickable'
+        interact {
+            moveToElement(addAreaModule.gazAutoList("Ben Lomond"))
+        }
+
+        then:
         addAreaModule.gazAutoList("Ben Lomond").click()
 
         and:

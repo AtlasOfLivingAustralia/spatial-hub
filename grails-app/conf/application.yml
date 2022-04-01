@@ -178,8 +178,6 @@ skin:
   orgNameLong: 'Atlas of Living Australia'
   favicon: 'https://www.ala.org.au/app/uploads/2019/01/cropped-favicon-32x32.png'
 
-layersService:
-    url: 'https://spatial.ala.org.au/ws/'
 
 lists:
     url: 'https://lists.ala.org.au'

@@ -39,7 +39,7 @@ class ToolComparePointsSpec extends GebSpec {
         toolComparePointsModule.compare()
 
         then:
-        waitFor 20, {toolComparePointsModule.comparisonResult.displayed}
+        waitFor 120, {toolComparePointsModule.comparisonResult.displayed}
 
  //       toolComparePointsModule.getComparisonResult(5,0) == "ASGS Australian States and Territories"
         Thread.sleep(pause)
