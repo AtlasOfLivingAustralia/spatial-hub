@@ -44,11 +44,10 @@ class AddLayerSpec extends GebSpec {
 
         when:
         legendModule.styleSelection.click()
-        legendModule.selectStyle("non-linear")
+        legendModule.selectStyle("default")
 
         then:
         Thread.sleep(pause)
     }
-
 
 }
