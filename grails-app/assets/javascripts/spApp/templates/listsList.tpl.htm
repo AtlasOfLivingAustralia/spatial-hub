@@ -1,13 +1,13 @@
 <div class="">
     <div class="">
         <div class="">
-            <table class="table table-striped fixed-head layers-table" style="width:430px">
+            <table class="table table-striped fixed-head layers-table" style="width:480px" name="speciesList">
                 <caption>
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="input-group">
                                 <input type="text" class="form-control" placeholder="Filter"
-                                       ng-model="searchLists">
+                                       ng-model="searchLists" name="searchInSpeciesList">
                                 <div class="input-group-addon"><i class="fa fa-search"></i></div>
                             </div>
                         </div>
@@ -47,7 +47,7 @@
                     <td style="width:10px" class="td-vertical-align text-center"><input type="checkbox"
                                                                                         ng-model="item.selected"
                                                                                         ng-click="select(item)"></td>
-                    <td class="td-vertical-align table-text-ellipsis" style="width:300px"><a target="_blank"
+                    <td class="td-vertical-align table-text-ellipsis" style="width:300px"><span title="Authoritative list" ng-show="item.isAuthoritative" class="glyphicon glyphicon-ok-circle"></span><a target="_blank"
                                                                                              href="{{ itemUrl(item) }}">{{
                         item.listName }}</a></td>
                     <td style="width:100px" class="td-vertical-align text-right">{{ item.lastUpdated | date: short}}

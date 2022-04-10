@@ -155,7 +155,7 @@
 
                 $scope.addNewSpecies = function () {
                     ListsService.createList($scope.newListName, $scope.newListDescription, $scope.matchedGuids(), $scope.makePrivate, $scope.newListType.id).then(function (resp) {
-                        if (resp.status === 200) {
+                        if (resp.status >= 200 && resp.status < 300) {
                             var json = JSON.parse(resp.data.text);
                             var druid = json.druid;
 

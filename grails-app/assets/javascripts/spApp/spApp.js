@@ -104,27 +104,28 @@ spApp.config(['$httpProvider', function ($httpProvider) {
                     var $http = angular.element(document.querySelector('sp-app')).injector().get('$http');
                     rejection.config.retried = true;
                     return $http(rejection.config);
-                }
+                } else {
+                    var httpService = angular.element(document.querySelector('sp-app')).injector().get('HttpService');
+                    if (httpService) httpService.pop(rejection, 'responseError');
 
-                var httpService = angular.element(document.querySelector('sp-app')).injector().get('HttpService');
-                if (httpService) httpService.pop(rejection, 'responseError');
-
-                if ( rejection.status == 403 || rejection.status == 401) {
-                    bootbox.alert("Authentication failed or login session expired, Please login again!")
-                    rejection.handled = true;
-                } else if (rejection.status == -1) {
-                    // urls not accessible are ignored.
-                    // Mainly caused by network/connection, or CORS
-                    console.log("Cannot connect to: " + rejection.config.url +" due to network/connection problems, for example: CORS")
-                } else if (rejection.status === 0) {
-                    if (window.isInWrapper) {
-                        //Logout if in an app;
-                        window.location.href = 'ios:logout';
-                    } else {
-                        window.location.reload();
+                    if ( rejection.status == 403 || rejection.status == 401) {
+                        bootbox.alert("Authentication failed or login session expired, Please login again!")
+                        rejection.handled = true;
+                    } else if (rejection.status == -1) {
+                        // urls not accessible are ignored.
+                        // Mainly caused by network/connection, or CORS
+                        console.log("Cannot connect to: " + rejection.config.url +" due to network/connection problems, for example: CORS")
+                    } else if (rejection.status === 0) {
+                        if (window.isInWrapper) {
+                            //Logout if in an app;
+                            window.location.href = 'ios:logout';
+                        } else {
+                            window.location.reload();
+                        }
                     }
+                    return $q.reject(rejection);
                 }
-                return $q.reject(rejection);
+
             }
         };
     });

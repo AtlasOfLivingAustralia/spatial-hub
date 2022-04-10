@@ -1116,3 +1116,9 @@ ul.errors {
     padding-top: 20px;
     font-style: italic;
 }
+
+#lang {
+    color: #FFFFFF;
+    background-color: #000000;
+    border-width: 0;
+}

@@ -43,9 +43,17 @@ class ToolScatterPlotSpec extends GebSpec {
         waitFor 10, {addAreaModule.gazAutoListCheckbox("ASGS").displayed}
         addAreaModule.gazAutoListCheckbox("ASGS").click()
         waitFor 10, {addAreaModule.gazAutoList("Tasmania").displayed}
+
+        when:
+        interact {
+            moveToElement(addAreaModule.gazAutoList("Tasmania"))
+        }
+
+        then:
         addAreaModule.gazAutoList("Tasmania").click()
 
         and:
+        waitFor 10, {addAreaModule.isNextBtnEnabled()}
         addAreaModule.nextBtn.click()
 
         then:
@@ -119,13 +127,19 @@ class ToolScatterPlotSpec extends GebSpec {
         waitFor 20, {addAreaModule.gazAutoListCheckbox("ASGS").displayed}
         addAreaModule.gazAutoListCheckbox("ASGS").click()
         waitFor 20, {addAreaModule.gazAutoList("Tasmania").displayed}
+        when:
+        interact {
+            moveToElement(addAreaModule.gazAutoList("Tasmania"))
+        }
+
+        then:
         addAreaModule.gazAutoList("Tasmania").click()
 
         and:
+        waitFor 10, {addAreaModule.isNextBtnEnabled()}
         addAreaModule.nextBtn.click()
 
         then:
-        waitFor 10, { layerListModule.getLayer("Tasmania").displayed }
         addAreaModule.nextBtn.click()
 
         waitFor 5, { modalModule.title == "Scatterplot list."  }

@@ -254,6 +254,7 @@ Layers required to be imported to Spatial Service:
     Temperature - annual mean (Bio01)
     GEOMACS - geometric mean
     ASGS Australian States and Territories
+    IBRA 7 Subregions
 
 Williams 2030 best 5  - for predict and classify
 

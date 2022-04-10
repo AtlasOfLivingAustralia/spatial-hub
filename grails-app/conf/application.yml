@@ -22,6 +22,8 @@ grails:
         upload:
             maxFileSize: 10000000
             maxRequestSize: 10000000
+i18n:
+  region: 'default'
 
 layersService:
     url: 'https://spatial.ala.org.au/ws'
@@ -127,16 +129,14 @@ endpoints:
 security:
     cas:
         casServerName: 'https://auth.ala.org.au'
-        uriFilterPattern: '/alaAdmin,/alaAdmin.*'
-        uriExclusionFilterPattern: '/portal/q.*,/portal/messages.*,/portal/sessionCache.*,/static.*,/assets.*'
-        authenticateOnlyIfLoggedInPattern: '/portal.*,/,/portal/config.*,/portal/i18n.*,/hub/[a-zA-Z0-9]+'
+        uriFilterPattern: ['/alaAdmin/?.*']
+        uriExclusionFilterPattern: ['/portal/q/*','/portal/messages/*','/portal/sessionCache/*','/static/*','/assets/*']
+        authenticateOnlyIfLoggedInPattern: ['/portal/*','/','/portal/config/*','/portal/i18n/*','/hub/[a-zA-Z0-9]+']
         loginUrl: 'https://auth.ala.org.au/cas/login'
         logoutUrl: 'https://auth.ala.org.au/cas/logout'
-        gateway: false
         casServerUrlPrefix: 'https://auth.ala.org.au/cas'
         bypass: false # set to true for non-ALA deployment
         disableCAS: false
-        roleAttribute: authority
         ignoreCase: true
         authCookieName: ALA-Auth
 
@@ -178,8 +178,6 @@ skin:
   orgNameLong: 'Atlas of Living Australia'
   favicon: 'https://www.ala.org.au/app/uploads/2019/01/cropped-favicon-32x32.png'
 
-layersService:
-    url: 'https://spatial.ala.org.au/ws/'
 
 lists:
     url: 'https://lists.ala.org.au'

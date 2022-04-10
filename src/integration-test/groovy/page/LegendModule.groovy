@@ -30,7 +30,7 @@ class LegendModule extends Module {
     }
 
     void selectStyle (String name) {
-         $("select[testTag='layerStyleInLegend'] option" , text : name).click()
+        $("select[testTag='layerStyleInLegend'] option").find{it.value()== name}.click()
     }
 
     def selectFacet(name) {

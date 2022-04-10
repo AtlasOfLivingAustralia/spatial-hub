@@ -16,6 +16,7 @@
 package au.org.ala.spatial.portal
 
 import org.apache.commons.io.FileUtils
+import org.apache.logging.log4j.util.Strings
 
 /**
  * Helper class for invoking other ALA web services.
@@ -25,9 +26,13 @@ class PropertiesService {
     def grailsApplication
 
     def get(type) {
-        def name = "messages" + (type == "default" ? "" : "_" + type)
+        def name = "messages" + (type == "default" ? "" : "_" + type.toLowerCase())
         def defaultFile = "${name}.properties";
         def properties = new Properties()
+
+        //Load default English properties
+        def defaultProperties = new Properties()
+        defaultProperties.load(new StringReader(PortalController.classLoader.getResourceAsStream("messages.properties")?.text))
 
         def text = PortalController.classLoader.getResourceAsStream("$defaultFile")?.text
         if (text) {
@@ -53,6 +58,12 @@ class PropertiesService {
         def file = new File("/data/spatial-hub/config/i18n/" + defaultFile)
         if (file.exists()) {
             properties.load(new FileReader(file))
+        }
+        //Use default English properties if the required lang is not available
+        defaultProperties.each{
+            if (!properties.getProperty(it.key)){
+                properties.setProperty(it.key, it.value)
+            }
         }
 
         if (properties.size() == 0 && type != 'messages') {

@@ -151,7 +151,12 @@ class PortalController {
                     config.spApp.each { k, v ->
                         spApp.put(k, v.class.newInstance(params.get(k, v)))
                     }
-                    config.spApp = spApp
+                    if (params.get("lang")) {
+                        config.i18n?.currentRegion = params.get("lang")
+                    } else {
+                        config.i18n?.currentRegion = null;
+                    }
+
 
                     render(view: 'index',
                             model: [config     : config,
@@ -322,7 +327,7 @@ class PortalController {
         if (!userId) {
             notAuthorised()
         } else {
-            Map headers = [apiKey: grailsApplication.config.api_key]
+            Map headers = [apiKey: grailsApplication.config.api_key, Accept: 'application/json']
             def json = request.JSON as Map
             def url = "${grailsApplication.config.layersService.url}/shape/upload/wkt"
             def r = hubWebService.urlResponse(HttpPost.METHOD_NAME, url, null, headers,
@@ -453,13 +458,14 @@ class PortalController {
             if (r == null) {
                 def status = response.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR)
                 r = [status: status, error: 'Unknown error when creating list']
-            } else if (r.error) {
-                response.setStatus((int) r.statusCode)
-            } else {
-                response.setStatus(HttpURLConnection.HTTP_OK)
             }
 
-            render r as JSON
+            def status = r.statusCode
+            if (r.statusCode < 200 || r.statusCode > 300) {
+                r = [error: r.text  ]
+            }
+
+            render status: status, r as JSON
         }
     }
 

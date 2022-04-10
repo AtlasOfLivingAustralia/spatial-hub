@@ -62,7 +62,7 @@ class ToolTabulateSpec extends GebSpec {
         modalModule.getSizeOfCSVTable() > 2
         modalModule.getCellByName("layer",1) ==  "Koppen Climate Classification (Major Classes)"
 
-        Float.parseFloat(modalModule.getCellByName("Temperate",2)) >= 1600
+        Float.parseFloat(modalModule.getCellByName("Temperate",2)) >= 1500
 
         Thread.sleep(pause)
     }

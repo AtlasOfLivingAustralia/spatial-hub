@@ -311,6 +311,7 @@
                             </li>
                         </ul>
                     </div>
+
                     <button class="search-trigger hidden-xs hidden-sm collapsed collapse-trigger-button"
                             data-toggle="collapse"
                             data-target="#autocompleteSearchALA" onclick="focusOnClickSearchButton()">
@@ -360,7 +361,10 @@
                 </form>
             </div>
         </div>
+
     </nav><!-- .site-navigation -->
+
+
 
 </div>
 <script type="text/html" id="autoCompleteTemplate">
@@ -405,6 +409,5 @@
     </script>
 </g:if>
 <!-- End Google Analytics -->
-
 </body>
 </html>
