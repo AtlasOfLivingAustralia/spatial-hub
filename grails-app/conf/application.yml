@@ -118,27 +118,39 @@ grails:
             excludes:
                 - '**/*.min.js'
         enableGzip: true
-            
+
     cache:
         enabled: true
 
 endpoints:
     jmx:
         unique-names: true
-        
+
 security:
     cas:
-        casServerName: 'https://auth.ala.org.au'
-        uriFilterPattern: ['/alaAdmin/?.*']
-        uriExclusionFilterPattern: ['/portal/q/*','/portal/messages/*','/portal/sessionCache/*','/static/*','/assets/*']
-        authenticateOnlyIfLoggedInPattern: ['/portal/*','/','/portal/config/*','/portal/i18n/*','/hub/[a-zA-Z0-9]+']
-        loginUrl: 'https://auth.ala.org.au/cas/login'
-        logoutUrl: 'https://auth.ala.org.au/cas/logout'
-        casServerUrlPrefix: 'https://auth.ala.org.au/cas'
+        uriFilterPattern: ['/alaAdmin/*']
+        casServerName: 'https://auth-dev.ala.org.au'
+        uriExclusionFilterPattern: ['/portal/q/.*','/portal/messages/.*','/portal/sessionCache/.*','/static/.*','/assets/.*']
+        authenticateOnlyIfCookieFilterPattern: ['/portal/*','/','/portal/config/*','/portal/i18n/*','/hub/*', '/log/*']
+        loginUrl: 'https://auth-dev.ala.org.au/cas/login'
+        logoutUrl: 'https://auth-dev.ala.org.au/cas/logout'
+        casServerUrlPrefix: 'https://auth-dev.ala.org.au/cas'
         bypass: false # set to true for non-ALA deployment
-        disableCAS: false
         ignoreCase: true
+        renew: false
         authCookieName: ALA-Auth
+        enabled: false
+    oidc:
+      enabled: true
+      discovery-uri: 'https://auth-dev.ala.org.au/cas/oidc/.well-known'
+      clientId: 'change me'
+      secret: 'change me'
+      allowUnsignedIdTokens: true
+      scope: 'openid profile email ala roles'
+    jwt:
+      enabled: true
+      discoveryUri: https://auth-dev.ala.org.au/cas/oidc/.well-known
+      fallbackToLegacyBehaviour: true
 
 autocompleteUrl: 'https://bie.ala.org.au/ws/search/auto.jsonp'
 
@@ -271,6 +283,7 @@ logger:
 webservice:
     readTimeout: 60000
     connectTimeout: 20000
+    jwt: true
 
 cache:
     headers:
@@ -311,7 +324,7 @@ keep:
     alive:
         timeout:
             ms: 180000
-    
+
 startup:
     lat: -25
     lng: 131
@@ -629,9 +642,9 @@ environments:
         grails:
           serverURL: "http://devt.ala.org.au:8087"
         layersService:
-          url: "http://devt.ala.org.au:8080/ws"
+          url: "https://spatial.ala.org.au/ws"
         geoserver:
-          url: 'http://devt.ala.org.au:8079/geoserver'
+          url: 'https://spatial.ala.org.au/geoserver'
     test:
     production:
         assets:

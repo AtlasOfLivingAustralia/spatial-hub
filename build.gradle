@@ -93,9 +93,6 @@ dependencies {
     compile group: 'commons-io', name: 'commons-io', version: '2.6'
     implementation group: 'commons-lang', name: 'commons-lang', version: '2.6'
 
-    implementation group: 'io.swagger', name: 'swagger-annotations', version: '1.6.2'
-    implementation group: 'org.jasig.cas.client', name: 'cas-client-core', version: '3.6.2'
-
     implementation group: "com.bertramlabs.plugins", name: "asset-pipeline-gradle", version: "3.0.10"
     implementation 'com.bertramlabs.plugins:asset-pipeline-core:2.14.2'
 
@@ -106,10 +103,11 @@ dependencies {
     compile('com.github.ziplet:ziplet:2.0.0') {
         exclude group: 'org.slf4j', module: 'slf4j-nop'
     }
-    implementation "org.grails.plugins:ala-auth:3.2.3"
     compile "org.grails.plugins:ala-admin-plugin:2.2"
-    compile "org.grails.plugins:ala-bootstrap3:3.2.4"
-    implementation "au.org.ala:ala-cas-client:2.4"
+
+    compile "org.grails.plugins:ala-auth:5.0.0-SNAPSHOT"
+    compile "org.grails.plugins:ala-bootstrap3:4.0.1-SNAPSHOT"
+
     runtime "au.org.ala.plugins.grails:ala-charts-plugin:2.1-ANGULAR-4"
     runtime 'org.grails.plugins:sandbox-hub:1.0'
 }
@@ -130,7 +128,7 @@ if (inplace) {
 
 task _Events {
     doLast {
-        new GroovyScriptEngine([''] as String[]).run('_Events.groovy', new Binding())
+        //new GroovyScriptEngine(['/data/src/spatial-hub/'] as String[]).run('_Events.groovy', new Binding())
     }
 }
 
@@ -141,8 +139,8 @@ bootRun.dependsOn(_Events)
 
 bootRun {
     jvmArgs(
-        '-Dspring.output.ansi.enabled=always', 
-        '-noverify', 
+        '-Dspring.output.ansi.enabled=always',
+        '-noverify',
         '-XX:TieredStopAtLevel=1',
         '-Xmx1024m')
     sourceResources sourceSets.main

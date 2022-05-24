@@ -3,12 +3,7 @@ package au.org.ala.spatial.portal
 import grails.converters.JSON
 import grails.util.Holders
 import grails.web.http.HttpHeaders
-import io.swagger.annotations.ApiImplicitParams
-import io.swagger.annotations.ApiOperation
-import io.swagger.annotations.ApiResponses
-import org.apache.commons.httpclient.HttpStatus
 import org.apache.commons.httpclient.methods.StringRequestEntity
-import org.apache.commons.io.FileUtils
 import org.apache.commons.lang.StringUtils
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.client.methods.HttpPost
@@ -34,57 +29,6 @@ class PortalController {
         }
     }
 
-    def editConfig(String id) {
-        def userId = getValidAdminUserId(params)
-
-        if (!userId) {
-            notAuthorised()
-        } else {
-            def type = ["view", "menu"].contains(id) ? id : "view"
-            def currentJSON = portalService.getConfig(type, false)
-            def config = (currentJSON as JSON).toString(true)
-            def error = ""
-            if (request.isPost() && params.config) {
-                def newJSON = null
-                try {
-                    newJSON = JSON.parse(params.config)
-                    config = (newJSON as JSON).toString(true)
-                } catch (Exception e) {
-                    error = "Invalid json. " + e.toString()
-                    config = params.config
-                }
-                if (!error && newJSON != null) {
-                    if (!equals(currentJSON, newJSON)) {
-                        //backup
-                        def current = new File("/data/spatial-hub/config/" + type + "-config.json")
-                        def backup = new File("/data/spatial-hub/config/" + type + "-config." + (new Date()).toString() + ".json")
-
-                        if (current.exists()) {
-                            FileUtils.copyFile(current, backup)
-                        }
-
-                        //write new
-                        FileUtils.writeStringToFile(current, params.config)
-
-                        //update cache
-                        grailsCacheManager.getCache("configCache").clear()
-
-                        error = "Saved"
-                    } else {
-                        error = "No change"
-                    }
-                }
-            }
-
-            def availableVersions = new File("/data/spatial-hub/config").listFiles().findAll {
-                file -> file.name.startsWith(type)
-            }.toString() + defaultConfigLabel()
-
-            render(view: "editConfig", model: [config  : (config), type: type, error: error,
-                                               versions: availableVersions])
-        }
-    }
-
     private boolean equals(a, b) {
         if (a instanceof Map && b instanceof Map) {
             if (!((Map) a).keySet().containsAll(((Map) b).keySet()) ||
@@ -100,7 +44,6 @@ class PortalController {
     }
 
     static allowedMethods = [index          : ['GET'],
-                             editConfig     : ['GET', 'POST'],
                              i18n           : ['GET', 'POST'],
                              messages       : ['GET'],
                              session        : ['POST', 'DELETE', 'GET'],
@@ -142,7 +85,7 @@ class PortalController {
                 render status: HttpURLConnection.HTTP_NOT_FOUND, model: [config: config, hub: hub]
             } else {
                 // test for user_role
-                def authDisabled = grailsApplication.config.security.cas.bypass || grailsApplication.config.security.cas.disableCAS
+                def authDisabled = !grailsApplication.config.security.oidc.enabled
                 def userAllowed = userAllowed(config)
 
                 if (authDisabled || userAllowed) {
@@ -175,7 +118,7 @@ class PortalController {
     }
 
     private def userAllowed(config) {
-        if (!config.user_roles || grailsApplication.config.security.cas.bypass || grailsApplication.config.security.cas.disableCAS) {
+        if (!config.user_roles || !grailsApplication.config.security.oidc.enabled) {
             return true
         }
         for (role in config.user_roles) {
@@ -187,14 +130,7 @@ class PortalController {
     }
 
     private def login() {
-        // redirect to login page
-        String serverName = grailsApplication.config.security.cas.appServerName
-        def protocol = org.jasig.cas.client.Protocol.CAS2
-        String service = null
-
-        def requestURL = CommonUtils.constructServiceUrl(request, response, service, serverName, protocol.getServiceParameterName(), protocol.getArtifactParameterName(), true);
-
-        redirect(url: grailsApplication.config.security.cas.loginUrl + "?service=" + URLEncoder.encode(requestURL, "UTF-8"))
+        redirect(absolute: true, uri: authService.loginUrl(request))
     }
 
     def resetCache() {
@@ -236,15 +172,15 @@ class PortalController {
     }
 
 
-    @ApiOperation(
-            value = "List all sessions for a user",
-            notes = "authenticated user or userId with apiKey",
-            produces = "application/json",
-            code = 200,
-            hidden = true
-    )
-    @ApiResponses([])
-    @ApiImplicitParams([])
+//    @ApiOperation(
+//            value = "List all sessions for a user",
+//            notes = "authenticated user or userId with apiKey",
+//            produces = "application/json",
+//            code = 200,
+//            hidden = true
+//    )
+//    @ApiResponses([])
+//    @ApiImplicitParams([])
     def sessions() {
         render sessionService.list(getValidUserId(params)) as JSON
     }
@@ -259,7 +195,7 @@ class PortalController {
     private def getValidUserId(params) {
         //apiKey + userId (non-numeric) OR authenticated user
         def userId
-        if (Holders.config.security.cas.disableCAS || Holders.config.security.cas.bypass) {
+        if (!Holders.config.security.oidc.enabled) {
             userId = portalService.DEFAULT_USER_ID
         } else if (portalService.isValidApiKey(params.apiKey) && !StringUtils.isNumeric(params.userId)) {
             userId = params.userId
@@ -287,14 +223,6 @@ class PortalController {
         render sessionService.put(id, null, request.JSON, false) as JSON
     }
 
-    @ApiOperation(
-            value = "Authenticated peristant session service.",
-            produces = "application/json",
-            consumes = "application/json",
-            code = 200
-    )
-    @ApiResponses([])
-    @ApiImplicitParams([])
     def session(Long id) {
         def userId = getValidUserId(params)
         if (userId){
@@ -446,7 +374,7 @@ class PortalController {
             def url = grailsApplication.config.lists.url
 
             def header = [:]
-            if (!Holders.config.security.cas.disableCAS) {
+            if (Holders.config.security.oidc.enabled) {
                 header.put("userId", userId)
                 header.put("apiKey", grailsApplication.config.api_key)
                 //header.put('Cookie', 'ALA-Auth=' + URLEncoder.encode(authService.email, 'UTF-8'))
