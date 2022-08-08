@@ -103,10 +103,10 @@ dependencies {
     compile('com.github.ziplet:ziplet:2.0.0') {
         exclude group: 'org.slf4j', module: 'slf4j-nop'
     }
-    compile "org.grails.plugins:ala-admin-plugin:2.2"
+    compile "org.grails.plugins:ala-admin-plugin:2.3.0"
 
-    compile "org.grails.plugins:ala-auth:5.0.0-SNAPSHOT"
-    compile "org.grails.plugins:ala-bootstrap3:4.0.1-SNAPSHOT"
+    compile "org.grails.plugins:ala-auth:5.1.0"
+    compile "org.grails.plugins:ala-bootstrap3:4.1.0"
 
     runtime "au.org.ala.plugins.grails:ala-charts-plugin:2.1-ANGULAR-4"
     runtime 'org.grails.plugins:sandbox-hub:1.0'
