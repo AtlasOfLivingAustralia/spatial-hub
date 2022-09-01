@@ -17,7 +17,7 @@ class BiocollectController {
      */
     def index() {
         String url = URLDecoder.decode(params.url, "UTF-8")
-        if (!authService.userId && isAllowed(url)) {
+        if (!authService.userId || !isAllowed(url)) {
             notAuthorised()
         } else {
             def headers = [:]

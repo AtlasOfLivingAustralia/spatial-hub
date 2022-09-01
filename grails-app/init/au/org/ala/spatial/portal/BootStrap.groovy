@@ -121,7 +121,7 @@ class BootStrap {
         grailsApplication.config.with {
             security.cas.gateway = security.cas.gateway.toBoolean()
             security.cas.bypass = security.cas.bypass.toBoolean()
-            security.cas.disableCAS = security.cas.disableCAS.toBoolean()
+            security.cas.enabled = security.cas.enabled.toBoolean()
             lists.facets = lists.facets.toBoolean()
 
             biocacheService.custom_facets = toMapOfLists(biocacheService.custom_facets)
