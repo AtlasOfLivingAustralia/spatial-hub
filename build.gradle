@@ -11,7 +11,7 @@ buildscript {
     }
 }
 
-version "1.0.2"
+version "1.1.0-SNAPSHOT"
 group "au.org.ala"
 
 apply plugin:"eclipse"
@@ -31,9 +31,6 @@ war {
 buildProperties {
     inputs.property("info.app.build.date", new Date().format('yyyy-MM-dd HH:mm:ss'))
 }
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
 
 repositories {
     mavenLocal()
