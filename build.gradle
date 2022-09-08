@@ -102,7 +102,7 @@ dependencies {
     }
     compile "org.grails.plugins:ala-admin-plugin:2.3.0"
 
-    compile "org.grails.plugins:ala-auth:5.1.0"
+    compile "org.grails.plugins:ala-auth:5.1.1"
     compile "org.grails.plugins:ala-bootstrap3:4.1.0"
 
     runtime "au.org.ala.plugins.grails:ala-charts-plugin:2.1-ANGULAR-4"
