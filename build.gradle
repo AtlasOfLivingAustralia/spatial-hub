@@ -7,7 +7,7 @@ buildscript {
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
         classpath "gradle.plugin.com.github.erdi.webdriver-binaries:webdriver-binaries-gradle-plugin:2.0"
-        classpath "com.bertramlabs.plugins:asset-pipeline-gradle:3.0.10"
+        classpath "com.bertramlabs.plugins:asset-pipeline-gradle:3.3.2"
         classpath 'com.bertramlabs.plugins:asset-pipeline-core:2.14.2'
     }
 }
@@ -38,6 +38,7 @@ repositories {
     maven { url "https://repo.grails.org/grails/core" }
     maven { url "https://nexus.ala.org.au/content/groups/public/" }
     maven { url 'https://jitpack.io' }
+    mavenCentral()
 }
 
 configurations {
@@ -126,7 +127,7 @@ if (inplace) {
 
 task _Events {
     doLast {
-        //new GroovyScriptEngine(['/data/src/spatial-hub/'] as String[]).run('_Events.groovy', new Binding())
+        new GroovyScriptEngine([project.projectDir.toString()] as String[]).run('_Events.groovy', new Binding())
     }
 }
 
