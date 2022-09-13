@@ -128,10 +128,10 @@ endpoints:
 
 security:
     cas:
-        uriFilterPattern: ['/alaAdmin/*']
+        uriFilterPattern: ['/alaAdmin/*', '/']
         casServerName: 'https://auth-dev.ala.org.au'
         uriExclusionFilterPattern: ['/portal/q/.*','/portal/messages/.*','/portal/sessionCache/.*','/static/.*','/assets/.*']
-        authenticateOnlyIfCookieFilterPattern: ['/portal/*','/','/portal/config/*','/portal/i18n/*','/hub/*', '/log/*']
+        authenticateOnlyIfCookieFilterPattern: ['/portal/config/*','/portal/i18n/*','/hub/*', '/log/*']
         loginUrl: 'https://auth-dev.ala.org.au/cas/login'
         logoutUrl: 'https://auth-dev.ala.org.au/cas/logout'
         casServerUrlPrefix: 'https://auth-dev.ala.org.au/cas'
