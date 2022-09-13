@@ -294,6 +294,7 @@ phylolink:
     url: 'https://phylolink.ala.org.au'
 
 apiKeyCheckUrlTemplate: 'https://auth.ala.org.au/apikey/ws/check?apikey={0}'
+api_key: 'change me'
 
 character:
     encoding: UTF-8

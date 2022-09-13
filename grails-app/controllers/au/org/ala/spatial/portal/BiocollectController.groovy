@@ -8,7 +8,7 @@ import grails.util.Holders
 class BiocollectController {
     def hubWebService
     def authService
-    def allowCalls = ["/acsa/nocas/geoService"]
+    def allowCalls = ["/nocas/geoService"]
     String biocollectUrl = Holders.config.biocollect.url
 
     /**
