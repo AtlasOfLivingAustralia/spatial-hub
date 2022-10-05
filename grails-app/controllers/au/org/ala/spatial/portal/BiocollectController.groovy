@@ -8,7 +8,7 @@ import grails.util.Holders
 class BiocollectController {
     def hubWebService
     def authService
-    def allowCalls = ["/acsa/nocas/geoService"]
+    def allowCalls = ["/nocas/geoService"]
     String biocollectUrl = Holders.config.biocollect.url
 
     /**
@@ -17,7 +17,7 @@ class BiocollectController {
      */
     def index() {
         String url = URLDecoder.decode(params.url, "UTF-8")
-        if (!authService.userId && isAllowed(url)) {
+        if (!authService.userId || !isAllowed(url)) {
             notAuthorised()
         } else {
             def headers = [:]

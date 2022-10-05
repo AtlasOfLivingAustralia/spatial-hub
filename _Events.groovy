@@ -5,7 +5,7 @@ def build(String baseDir) {
 
     println 'Starting NPM install'
     final workdir = new File(baseDir, '')
-    final proc = new ProcessBuilder().inheritIO()
+    final proc = new ProcessBuilder().inheritIO().directory(workdir)
     final exec = proc.command('npm', '-dd', 'install').start()
     def exitValue = exec.waitFor()
     if (exitValue) {
@@ -353,4 +353,4 @@ def process(doc, nextIdx, update) {
     return nextIdx
 }
 
-build("./")
+build(System.properties.get("base.dir"))
