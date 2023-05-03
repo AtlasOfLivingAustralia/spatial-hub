@@ -90,7 +90,7 @@ class ToolTabulateSpec extends GebSpec {
 
         toolTabulateModule.layer1.click()
         if (env == "server") {
-            toolTabulateModule.selectLayer1("IBRA 7 Subregions")
+            toolTabulateModule.selectLayer1("IBRA 6 Subregions")
         } else {
             toolTabulateModule.selectLayer1("ASGS Australian States and Territories")
         }

@@ -6,13 +6,13 @@ buildscript {
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
-        classpath "gradle.plugin.com.github.erdi.webdriver-binaries:webdriver-binaries-gradle-plugin:2.0"
-        classpath "com.bertramlabs.plugins:asset-pipeline-gradle:3.3.2"
-        classpath 'com.bertramlabs.plugins:asset-pipeline-core:2.14.2'
+        classpath "gradle.plugin.com.github.erdi.webdriver-binaries:webdriver-binaries-gradle-plugin:2.7"
+        classpath "com.bertramlabs.plugins:asset-pipeline-gradle:3.4.6"
+//        classpath 'com.bertramlabs.plugins:asset-pipeline-core:3.2.4'
     }
 }
 
-version "1.1.0-SNAPSHOT"
+version "2.0.0-SNAPSHOT"
 group "au.org.ala"
 
 apply plugin:"eclipse"
@@ -50,65 +50,67 @@ configurations {
 
 dependencies {
     developmentOnly("org.springframework.boot:spring-boot-devtools")
-    compile "org.springframework.boot:spring-boot-starter-logging"
-    compile "org.springframework.boot:spring-boot-autoconfigure"
-    compile "org.grails:grails-core"
-    compile "org.springframework.boot:spring-boot-starter-actuator"
-    compile "org.springframework.boot:spring-boot-starter-tomcat"
-    compile "org.grails:grails-web-boot"
-    compile "org.grails:grails-logging"
-    compile "org.grails:grails-plugin-rest"
-    compile "org.grails:grails-plugin-databinding"
-    compile "org.grails:grails-plugin-i18n"
-    compile "org.grails:grails-plugin-services"
-    compile "org.grails:grails-plugin-url-mappings"
-    compile "org.grails:grails-plugin-interceptors"
-    compile "org.grails.plugins:cache"
-    compile "org.grails.plugins:async"
-    compile "org.grails.plugins:scaffolding"
-    compile "org.grails.plugins:events"
-    compile "org.grails.plugins:gsp"
-    compileOnly "io.micronaut:micronaut-inject-groovy"
+   // compile "org.springframework.boot:spring-boot-starter-logging"
+    implementation "org.springframework.boot:spring-boot-autoconfigure"
+    implementation "org.grails:grails-core"
+    implementation "org.springframework.boot:spring-boot-starter-actuator"
+    implementation "org.springframework.boot:spring-boot-starter-tomcat"
+    implementation "org.grails:grails-web-boot"
+    implementation "org.grails:grails-logging"
+    implementation "org.grails:grails-plugin-rest"
+    implementation "org.grails:grails-plugin-databinding"
+    implementation "org.grails:grails-plugin-i18n"
+    implementation "org.grails:grails-plugin-services"
+    implementation "org.grails:grails-plugin-url-mappings"
+    implementation "org.grails:grails-plugin-interceptors"
+    implementation "org.grails.plugins:cache"
+    implementation "org.grails.plugins:async"
+    implementation "org.grails.plugins:scaffolding"
+    implementation "org.grails.plugins:events"
+    implementation "org.grails.plugins:gsp"
+    implementation "io.micronaut:micronaut-inject-groovy"
     console "org.grails:grails-console"
     profile "org.grails.profiles:web"
-    runtime "org.glassfish.web:el-impl:2.1.2-b03"
-    runtime "com.h2database:h2"
-    runtime "org.apache.tomcat:tomcat-jdbc"
-    runtime "javax.xml.bind:jaxb-api:2.3.0"
+    runtimeOnly "org.glassfish.web:el-impl:2.1.2-b03"
+    runtimeOnly "com.h2database:h2"
+    runtimeOnly "org.apache.tomcat:tomcat-jdbc"
+    runtimeOnly "javax.xml.bind:jaxb-api:2.3.0"
 
-    testCompile "org.mockito:mockito-core"
-    testCompile "org.grails:grails-web-testing-support"
-    testCompile "org.grails.plugins:geb"
-    testCompile "org.seleniumhq.selenium:selenium-remote-driver:3.14.0"
-    testCompile "org.seleniumhq.selenium:selenium-api:3.14.0"
-    testCompile "org.seleniumhq.selenium:selenium-support:3.14.0"
-    testRuntime "org.seleniumhq.selenium:selenium-chrome-driver:3.14.0"
-    testRuntime "org.seleniumhq.selenium:selenium-firefox-driver:3.14.0"
+    testImplementation "org.mockito:mockito-core"
+    testImplementation "org.grails:grails-web-testing-support"
+    testImplementation "org.grails.plugins:geb"
+    testRuntimeOnly 'net.sourceforge.htmlunit:htmlunit:2.35.0'
+    testImplementation "org.seleniumhq.selenium:htmlunit-driver:2.35.1"
+    testImplementation "org.seleniumhq.selenium:selenium-remote-driver:3.141.59"
+    testImplementation "org.seleniumhq.selenium:selenium-api:3.141.59"
+    testImplementation "org.seleniumhq.selenium:selenium-support:3.141.59"
+    testRuntimeOnly "org.seleniumhq.selenium:selenium-chrome-driver:3.141.59"
+    testRuntimeOnly "org.seleniumhq.selenium:selenium-firefox-driver:3.141.59"
 
     // Additional Plugins
-    implementation 'org.grails.plugins:external-config:2.0.0'
+    implementation 'dk.glasius:external-config:3.1.1'
     implementation group: 'commons-httpclient', name: 'commons-httpclient', version: '3.1'
     implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.4'
-    compile group: 'commons-io', name: 'commons-io', version: '2.6'
+    implementation group: 'commons-io', name: 'commons-io', version: '2.6'
     implementation group: 'commons-lang', name: 'commons-lang', version: '2.6'
 
-    implementation group: "com.bertramlabs.plugins", name: "asset-pipeline-gradle", version: "3.0.10"
-    implementation 'com.bertramlabs.plugins:asset-pipeline-core:2.14.2'
+    implementation group: "com.bertramlabs.plugins", name: "asset-pipeline-gradle", version: "3.4.6"
 
     //Angular profile wrapper needs
     assets 'com.craigburke.angular:angular-annotate-asset-pipeline:2.4.1'
-    assets "com.craigburke.angular:angular-template-asset-pipeline:2.4.0"
+    //Fork version in Atlas
+    assets "com.craigburke.angular:angular-template-asset-pipeline:2.5.0"
 
-    compile('com.github.ziplet:ziplet:2.0.0') {
+    implementation('com.github.ziplet:ziplet:2.0.0') {
         exclude group: 'org.slf4j', module: 'slf4j-nop'
     }
-    compile "org.grails.plugins:ala-admin-plugin:2.3.0"
+    implementation "org.grails.plugins:ala-admin-plugin:2.3.0"
+    implementation "org.grails.plugins:ala-auth:6.0.0"
 
-    compile "org.grails.plugins:ala-auth:5.1.1"
-    compile "org.grails.plugins:ala-bootstrap3:4.1.0"
+    implementation "org.grails.plugins:ala-bootstrap3:4.1.0"
 
-    runtime "au.org.ala.plugins.grails:ala-charts-plugin:2.1-ANGULAR-4"
-    runtime 'org.grails.plugins:sandbox-hub:1.0'
+    implementation "au.org.ala.plugins.grails:ala-charts-plugin:2.3.0-ANGULAR-SNAPSHOT"
+    runtimeOnly 'org.grails.plugins:sandbox-hub:1.0'
 }
 
 // Set to true it needed only for development
@@ -118,7 +120,7 @@ if (inplace) {
     grails {
         exploded = true
         plugins {
-            compile (project(':ala-charts-plugin')) {
+            implementation (project(':ala-charts-plugin')) {
                 exclude group: 'org.grails', module: 'grails-plugin-converters'
             }
         }
@@ -160,11 +162,25 @@ ext {
 }
 
 webdriverBinaries {
-    chromedriver '2.45.0'
-    geckodriver '0.26.0'
+    driverUrlsConfiguration = resources.text.fromFile('geb-repo-arm64.json') // (2)
+
+        chromedriver {
+            version = '101.0.4951.41'
+            architecture = 'ARM64'
+        }
+        geckodriver {
+            version = '0.31.0'
+        }
+
 }
 
 tasks.getByName("integrationTest") {
+    useJUnitPlatform()
+    description = 'Runs integration tests.'
+    group = 'verification'
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+
     group JavaBasePlugin.VERIFICATION_GROUP
     systemProperty "geb.build.reportsDir", reporting.file("geb/$name")
     systemProperty "geb.env",  System.properties['driver']?:"firefox"  // firefox by default
@@ -178,6 +194,7 @@ tasks.getByName("integrationTest") {
 }
 
 
+
 tasks.withType(Test) {
     maxHeapSize = "1g"
     jvmArgs '-XX:MaxMetaspaceSize=512m'
@@ -186,6 +203,7 @@ tasks.withType(Test) {
         showStandardStreams = true
     }
 }
+
 
 assets {
     minifyJs = true

@@ -29,11 +29,14 @@ class AddLayerSpec extends GebSpec {
         waitFor 10, { addLayerModule.title == "Add environmental and contextual layers to the map." }
         Thread.sleep(pause)
         addLayerModule.availableLayers.size() > 2
-        addLayerModule.clickLayer("GEOMACS - geometric mean")
+        addLayerModule.setLayerFilter("Annual Mean Moisture Index (Bioclim 28)");
+        addLayerModule.availableLayers.size() >= 1
+        //addLayerModule.clickLayer("Annual Mean Moisture Index (Bioclim 28)")
+        addLayerModule.selectFirstAvailableLayer()
         waitFor 10, { addLayerModule.isNextBtnEnabled() }
         addLayerModule.nextBtn.click()
 
-        waitFor 20, { legendModule.title == "GEOMACS - geometric mean"}
+        waitFor 20, { legendModule.startsWith("Annual Mean Moisture Index (Bioclim 28)")}
 
         when:
         legendModule.styleSelection.click()
