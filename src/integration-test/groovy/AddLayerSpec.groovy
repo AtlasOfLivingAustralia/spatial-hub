@@ -29,7 +29,7 @@ class AddLayerSpec extends GebSpec {
         waitFor 10, { addLayerModule.title == "Add environmental and contextual layers to the map." }
         Thread.sleep(pause)
         addLayerModule.availableLayers.size() > 2
-        addLayerModule.setLayerFilter("Annual Mean Moisture Index (Bioclim 28)");
+        addLayerModule.setLayerFilter("bioclim_28");
         addLayerModule.availableLayers.size() >= 1
         //addLayerModule.clickLayer("Annual Mean Moisture Index (Bioclim 28)")
         addLayerModule.selectFirstAvailableLayer()
