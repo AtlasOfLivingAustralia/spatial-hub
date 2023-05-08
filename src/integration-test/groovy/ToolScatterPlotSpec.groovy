@@ -82,9 +82,9 @@ class ToolScatterPlotSpec extends GebSpec {
 
         when:
         modalModule.filterLayer("Bio12")
-        modalModule.selectLayer("Precipitation - annual (Bio12)")
-        modalModule.filterLayer("Bio01")
-        modalModule.selectLayer("Temperature - annual mean (Bio01)")
+        modalModule.selectLayer("WorldClim 2.1: Precipitation - annual")
+        modalModule.filterLayer("Bioclim 01")
+        modalModule.selectLayer("Annual Mean Temperature (Bioclim 01) from 1976-2005 at 9s / 250m resolution")
 
         then:
         waitFor 10, { modalModule.isNextBtnEnabled() }
@@ -166,11 +166,11 @@ class ToolScatterPlotSpec extends GebSpec {
 
         when:
         modalModule.filterLayer("Bio12")
-        modalModule.selectLayer("Precipitation - annual (Bio12)")
-        modalModule.filterLayer("Bio01")
-        modalModule.selectLayer("Temperature - annual mean (Bio01)")
-        modalModule.filterLayer("GEOMACS")
-        modalModule.selectLayer("GEOMACS - geometric mean")
+        modalModule.selectLayer("WorldClim 2.1: Precipitation - annual")
+        modalModule.filterLayer("Bioclim 01")
+        modalModule.selectLayer("Annual Mean Temperature (Bioclim 01) from 1976-2005 at 9s / 250m resolution")
+        modalModule.filterLayer("Bioclim 28")
+        modalModule.selectLayer("Annual Mean Moisture Index (Bioclim 28) from 1976-2005 at 9s / 250m resolution")
 
 
         //Select another species
@@ -187,10 +187,10 @@ class ToolScatterPlotSpec extends GebSpec {
         then:
         //waitFor 10, {modalModule.speciesAutocompleteList[1].first().text().startsWith("Eucalyptus")}
         Thread.sleep(pause)
-
-        //select the first species
+        //select the second species
         when:
-        modalModule.selectSpeciesInAutocomplete("Eucalyptus")
+        //js.exec("window.scrollTo(0, document.getElementsByClassName(\"modal-body\").scrollHeight);")
+        modalModule.selectBackgroundSpeciesInAutocomplete("Eucalyptus")
 
         then:
         waitFor 10, { modalModule.isNextBtnEnabled() }

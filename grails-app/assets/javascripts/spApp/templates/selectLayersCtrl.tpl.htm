@@ -49,6 +49,7 @@
                 <div ng-hide="layers == undefined || layers.length == 0">
                     <label i18n="227" style="width:120px;">Filter</label><input type="text" width="150px"
                                                                                 placeholder="Filter layers"
+                                                                                name="layerFilter"
                                                                                 ng-model="searchLayer">
                     <label style="padding-left:20px;" ng-show="searchLayer.length > 0">{{(layers |
                         filter:searchLayer).length}} <span i18n="228">matching layers</span></label>

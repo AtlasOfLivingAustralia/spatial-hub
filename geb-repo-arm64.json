@@ -1,0 +1,19 @@
+{
+  "drivers": [
+    {
+      "name": "chromedriver",
+      "platform": "mac",
+      "bit": "arm64",
+      "version": "101.0.4951.41",
+      "url": "https://chromedriver.storage.googleapis.com/101.0.4951.41/chromedriver_mac64.zip"
+    },
+    {
+      "name": "geckodriver",
+      "platform": "mac",
+      "bit": "arm64",
+      "version": "0.31.0",
+      "url": "https://github.com/mozilla/geckodriver/releases/download/v0.31.0/geckodriver-v0.31.0-macos-aarch64.tar.gz"
+    }
+  ]
+
+}
