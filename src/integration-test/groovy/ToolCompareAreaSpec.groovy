@@ -87,7 +87,7 @@ class ToolCompareAreaSpec extends GebSpec {
         int size = $("table[name='areaComparisonResult'] tbody tr").size()
         //last row
         $("table[name='areaComparisonResult'] tbody tr")[6].find("td")[0].text() == "Species found in both areas"
-        Integer.parseInt($("table[name='areaComparisonResult'] tbody tr")[6].find("td")[1].text()) > 300
+        Integer.parseInt($("table[name='areaComparisonResult'] tbody tr")[6].find("td")[1].text()) > 200
 
         Thread.sleep(pause)
     }

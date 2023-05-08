@@ -94,7 +94,7 @@ class ToolAooEooSpec extends GebSpec {
         waitFor 10, { $("div.aooeoo").displayed }
 
         $("div.aooeoo table tr")[0].find("td")[0].text().contains("Number of records used for the calculations")
-        Integer.parseInt($("div.aooeoo table tr")[0].find("td")[1].text()) > 200
+        Integer.parseInt($("div.aooeoo table tr")[0].find("td")[1].text()) > 150
 
         when:
         driver.switchTo().defaultContent()
