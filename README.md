@@ -191,13 +191,6 @@ From line 200 in build.gradle, you will find how we pass different test servers 
 
 ### Usage
 
-**Skip integration test in building process**
-
-
-    ./gradlew build -x integrationTest
-
-
-
 ### Run with Firefox (default):
 
     ./gradlew :integrationTest -Dusername=xxxx -Dpassword=xxxxx
@@ -214,7 +207,6 @@ when authentication is stored into the default file:
 **See more: [How to pass authentication](#Authentication)**
 
 ### run with Chrome:
-This solution is not requried by M2 MBP
 
     ./gradlew :integrationTest -Ddriver=chrome
 

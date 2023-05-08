@@ -68,13 +68,6 @@ class ModalModule extends Module {
         $("ul li.ui-menu-item a").find("text":startsWith(name))[0].click()
     }
 
-    void selectBackgroundSpeciesInAutocomplete(name) {
-        js.exec("\$(\"input[name=species2]\").get(0).scrollIntoView()")
-        def species2 = $("input[name=species2]");
-        species2.value(name)
-        //$("ul li.ui-menu-item a").find("text":startsWith(name))[0].click()
-    }
-
    //Todo
     def scrollToLayer(name) {
        // js.exec( "\$(\"li[testTag='layer-list'] span\").get(0).scrollIntoView()")
@@ -96,17 +89,13 @@ class ModalModule extends Module {
     }
 
     void selectLayer(name) {
-        js.exec( "\$(\"tr[testTag='availableLayers'] td[testTag='layerName']\").get(0).scrollIntoView()")
         def td = $("tr[testTag='availableLayers'] td[testTag='layerName']", text: name)
         td.siblings().children("input[type='checkbox']").click()
     }
 
     void selectPredefiendLayers(name) {
         def select = $("select[testTag='predefinedLayers']")
-        select.click()
-        sleep(2000)
         select.find("option",text: name).click()
-        sleep(5)
     }
 
     def sizeOfSelectedLayers() {
@@ -114,18 +103,11 @@ class ModalModule extends Module {
     }
 
     void selectLifeform(name) {
-        $("lifeform-select select").click();
         $("lifeform-select select").find("option", text: name).click()
     }
 
     //Move to step n
     void moveToStep(n) {
-        String qTag = "div[testTag='step" + n + "']"
-        String q = "\$(\""+qTag+"\").get(0).scrollIntoView()"
-        js.exec(q )
-    }
-
-    void moveToStepBottom(n) {
         String qTag = "div[testTag='step" + n + "']"
         String q = "\$(\""+qTag+"\").get(0).scrollIntoView()"
         js.exec(q )

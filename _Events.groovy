@@ -2,12 +2,11 @@ import org.apache.commons.io.FileUtils
 import org.apache.commons.lang.StringUtils
 
 def build(String baseDir) {
-    final workdir = new File(baseDir, '')
-    println 'Starting NPM install within '+workdir
-    final proc = new ProcessBuilder().inheritIO()
-    //final proc = new ProcessBuilder().inheritIO().directory(workdir)
 
-    final exec = proc.command('npm' , '-dd', 'install').start()
+    println 'Starting NPM install'
+    final workdir = new File(baseDir, '')
+    final proc = new ProcessBuilder().inheritIO().directory(workdir)
+    final exec = proc.command('npm', '-dd', 'install').start()
     def exitValue = exec.waitFor()
     if (exitValue) {
         println '*****************************************************'
@@ -16,7 +15,7 @@ def build(String baseDir) {
         println "* Exit value: $exitValue                            *"
         println '*****************************************************'
     } else {
-        println 'Completed NPM install.'
+        println 'Completed NPM install'
     }
 
     println 'Copying files to grails-app/assets/node_modules'
@@ -68,7 +67,7 @@ def build(String baseDir) {
     if (exitValue2) {
         println '*****************************************************'
         println '* `npm run jsdoc` failed'
-        println "* Exit value: $exitValue2                            *"
+        println "* Exit value: $exitValue                            *"
         println '*****************************************************'
     } else {
         println 'Completed jsdoc'
