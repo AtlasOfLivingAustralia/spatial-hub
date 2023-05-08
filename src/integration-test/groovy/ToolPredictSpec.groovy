@@ -17,11 +17,7 @@ class ToolPredictSpec extends GebSpec {
         waitFor 20, { menuModule.isReady()}
     }
 
-    /**
-     * It may fail because those 5 layers will be removed in future
-     * @return
-     */
-    def "predict - Williams 2030 5 best"(){
+    def "predict"(){
         String title = "Maxent prediction."
 
         when:
@@ -91,14 +87,6 @@ class ToolPredictSpec extends GebSpec {
         modalModule.selectPredefiendLayers("Williams 2030 best 5")
 
         then:
-        sleep(pause)
-
-        if (modalModule.sizeOfSelectedLayers().startsWith("0 ")) {
-           print("Layers of Williams 2030 best 5 have been removed")
-           print("May not continue the prediction")
-           return
-        }
-
         waitFor 10, { modalModule.sizeOfSelectedLayers().startsWith("5 ")   }
 
         when:

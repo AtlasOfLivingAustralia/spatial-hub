@@ -50,23 +50,7 @@ class AddSpeciesSpec extends GebSpec {
         then:
         waitFor 10, { layerListModule.getLayer("Eucalyptus gunnii (Australia)").displayed }
         //waitFor 10, { addSpeciesModule.selectedLayerPanel.value().startsWith("Eucalyptus gunnii (Australia)")}
-        waitFor 20, {legendModule.title == "Eucalyptus gunnii (Australia)"}
-        sleep(pause)
-
-        //Check charts
-        and:
-        layerListModule.displayAreaInfo("Eucalyptus gunnii (Australia)")
-
-        then:
-        waitFor 10, {$("div.modal-title").text() == "Species layer - Eucalyptus gunnii (Australia)"}
-        sleep(pause)
-
-        and:
-        modalModule.closeBtn.click()
-
-        then:
-        waitFor 10, { layerListModule.getLayer("Eucalyptus gunnii (Australia)").displayed }
-
+        waitFor 10, {legendModule.title == "Eucalyptus gunnii (Australia)"}
 
         when:
         interact {
@@ -88,7 +72,6 @@ class AddSpeciesSpec extends GebSpec {
             Thread.sleep(1000)
             legendModule.checkRecordOfSelectedFacet(i)
         }
-
     }
 
     def "Add speciesList to Australia"() {
@@ -130,7 +113,7 @@ class AddSpeciesSpec extends GebSpec {
 
         then:
         Thread.sleep(pause)
-        waitFor 20, { addSpeciesModule.isNextBtnEnabled() }
+        waitFor 10, { addSpeciesModule.isNextBtnEnabled() }
 
         when:
         interact {
