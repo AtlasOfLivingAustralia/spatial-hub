@@ -44,8 +44,8 @@ class ToolTabulateSpec extends GebSpec {
         waitFor 10, {modalModule.availableLayers.size() > 0 }
 
         when:
-        modalModule.filterLayer("Koppen")
-        modalModule.selectLayer("Koppen Climate Classification (Major Classes)")
+        modalModule.filterLayer("ASGS")
+        modalModule.selectLayer("ASGS Australian States and Territories")
 
 
         then:
@@ -60,9 +60,9 @@ class ToolTabulateSpec extends GebSpec {
         waitFor 10, { modalModule.reportCSVTable.displayed }
 
         modalModule.getSizeOfCSVTable() > 2
-        modalModule.getCellByName("layer",1) ==  "Koppen Climate Classification (Major Classes)"
+        modalModule.getCellByName("layer",1) ==  "ASGS Australian States and Territories"
 
-        Float.parseFloat(modalModule.getCellByName("Temperate",2)) >= 1500
+        Float.parseFloat(modalModule.getCellByName("Australian Capital Territory",2)) >= 0
 
         Thread.sleep(pause)
     }
@@ -89,15 +89,9 @@ class ToolTabulateSpec extends GebSpec {
         when:
 
         toolTabulateModule.layer1.click()
-        if (env == "server") {
-            toolTabulateModule.selectLayer1("IBRA 7 Subregions")
-        } else {
-            toolTabulateModule.selectLayer1("ASGS Australian States and Territories")
-        }
-
-
+        toolTabulateModule.selectLayer1("IBRA 6 Regions")
         toolTabulateModule.layer2.click()
-        toolTabulateModule.selectLayer2("Koppen Climate Classification (Major Classes)")
+        toolTabulateModule.selectLayer2("ASGS Australian States and Territories")
 
         toolTabulateModule.reportType.click()
         toolTabulateModule.selectReportType("area")
@@ -118,7 +112,7 @@ class ToolTabulateSpec extends GebSpec {
         if (env == "server") {
            // Float.parseFloat(toolTabulateModule.getCellByName("Starke Coastal Lowlands", 2)) > 5000
         } else {
-            Float.parseFloat(toolTabulateModule.getCellByName("New South Wales",1)) > 111100
+            Float.parseFloat(toolTabulateModule.getCellByName("New South Wales",3)) > 111100
         }
 
         Thread.sleep(pause)

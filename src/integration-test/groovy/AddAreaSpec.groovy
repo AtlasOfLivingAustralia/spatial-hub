@@ -1,7 +1,9 @@
 import geb.spock.GebSpec
 import org.openqa.selenium.Keys
 import page.SpatialHubHomePage
+import grails.testing.mixin.integration.Integration
 
+@Integration
 class AddAreaSpec extends GebSpec {
     int pause = 1000
 
@@ -290,9 +292,9 @@ class AddAreaSpec extends GebSpec {
         legendModule.envelopeLegend.displayed
 
         when:
-        legendModule.searchEnvelopeLayer.value("GEOMACS")
+        legendModule.searchEnvelopeLayer.value("Elevation")
         Thread.sleep(pause)
-        legendModule.selectLayerInAutocomplete("GEOMACS")
+        legendModule.selectLayerInAutocomplete("Elevation")
 
         and:
         legendModule.nextEnvelopeBtn.click()
@@ -329,9 +331,9 @@ class AddAreaSpec extends GebSpec {
         addAreaModule.addAreaLegend.displayed
 
         when:
-        legendModule.searchLayerInput.value("Koppen")
+        legendModule.searchLayerInput.value("ASGS Australian States and Territories")
         Thread.sleep(pause)
-        legendModule.selectLayerInAutocomplete("Koppen")
+        legendModule.selectLayerInAutocomplete("ASGS Australian States and Territories")
 
         and:
         mapModule.drawPoint(100,100)

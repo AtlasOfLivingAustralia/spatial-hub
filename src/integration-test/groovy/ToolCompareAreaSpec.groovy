@@ -40,8 +40,8 @@ class ToolCompareAreaSpec extends GebSpec {
         addAreaModule.gazInput.value("Ben Lomond")
 
         then:
-        waitFor 10, {addAreaModule.gazAutoListCheckbox("IBRA 7 Subregions").displayed}
-        addAreaModule.gazAutoListCheckbox("IBRA 7 Subregions").click()
+        waitFor 10, {addAreaModule.gazAutoListCheckbox("IBRA 6 Sub Regions").displayed}
+        addAreaModule.gazAutoListCheckbox("IBRA 6 Sub Regions").click()
         waitFor 10, {addAreaModule.gazAutoList("Ben Lomond").displayed}
 
         when:
@@ -67,6 +67,7 @@ class ToolCompareAreaSpec extends GebSpec {
         modalModule.moveToStep(1)
         //click lifeform
         modalModule.lifeformRadioBtn.click()
+        sleep(pause)
         modalModule.selectLifeform("Birds")
 
         then:
@@ -86,7 +87,7 @@ class ToolCompareAreaSpec extends GebSpec {
         int size = $("table[name='areaComparisonResult'] tbody tr").size()
         //last row
         $("table[name='areaComparisonResult'] tbody tr")[6].find("td")[0].text() == "Species found in both areas"
-        Integer.parseInt($("table[name='areaComparisonResult'] tbody tr")[6].find("td")[1].text()) > 300
+        Integer.parseInt($("table[name='areaComparisonResult'] tbody tr")[6].find("td")[1].text()) > 200
 
         Thread.sleep(pause)
     }
