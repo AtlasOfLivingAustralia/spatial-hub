@@ -5,6 +5,7 @@ import page.SpatialHubHomePage
 class ToolScatterPlotSpec extends GebSpec {
 
     int pause = 3000
+    def env = driver.currentUrl.contains("test")?"test":"dev"
 
     def setup() {
         when:
@@ -12,6 +13,9 @@ class ToolScatterPlotSpec extends GebSpec {
 
         if (title.startsWith("ALA | Login"))
             authModule.login()
+        if (driver.currentUrl.contains("spatial.ala.org.au")) {
+            env="prod"
+        }
 
         then:
         waitFor 20, { menuModule.isReady()}
@@ -83,8 +87,13 @@ class ToolScatterPlotSpec extends GebSpec {
         when:
         modalModule.filterLayer("Bio12")
         modalModule.selectLayer("WorldClim 2.1: Precipitation - annual")
-        modalModule.filterLayer("Bioclim 01")
-        modalModule.selectLayer("Annual Mean Temperature (Bioclim 01) from 1976-2005 at 9s / 250m resolution")
+        if (env="prod") {
+            modalModule.filterLayer("Bio01")
+            modalModule.selectLayer("Temperature - annual mean (Bio01)")
+        } else {
+            modalModule.filterLayer("Bioclim 01")
+            modalModule.selectLayer("Annual Mean Temperature (Bioclim 01) from 1976-2005 at 9s / 250m resolution")
+        }
 
         then:
         waitFor 10, { modalModule.isNextBtnEnabled() }
@@ -167,10 +176,18 @@ class ToolScatterPlotSpec extends GebSpec {
         when:
         modalModule.filterLayer("Bio12")
         modalModule.selectLayer("WorldClim 2.1: Precipitation - annual")
-        modalModule.filterLayer("Bioclim 01")
-        modalModule.selectLayer("Annual Mean Temperature (Bioclim 01) from 1976-2005 at 9s / 250m resolution")
-        modalModule.filterLayer("Bioclim 28")
-        modalModule.selectLayer("Annual Mean Moisture Index (Bioclim 28) from 1976-2005 at 9s / 250m resolution")
+        if (env="prod") {
+            modalModule.filterLayer("Bio01")
+            modalModule.selectLayer("Temperature - annual mean (Bio01)")
+            modalModule.filterLayer("Bio28")
+            modalModule.selectLayer("Moisture Index - annual mean (Bio28)")
+        } else {
+            modalModule.filterLayer("Bioclim 01")
+            modalModule.selectLayer("Annual Mean Temperature (Bioclim 01) from 1976-2005 at 9s / 250m resolution")
+            modalModule.filterLayer("Bioclim 28")
+            modalModule.selectLayer("Annual Mean Moisture Index (Bioclim 28) from 1976-2005 at 9s / 250m resolution")
+        }
+
 
 
         //Select another species

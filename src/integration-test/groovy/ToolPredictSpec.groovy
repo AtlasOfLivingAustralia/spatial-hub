@@ -88,17 +88,9 @@ class ToolPredictSpec extends GebSpec {
         waitFor 10, {modalModule.availableLayers.size() > 0 }
 
         when:
-        modalModule.selectPredefiendLayers("Williams 2030 best 5")
+        modalModule.selectPredefiendLayers("BIOCLIM 1960 best 5")
 
         then:
-        sleep(pause)
-
-        if (modalModule.sizeOfSelectedLayers().startsWith("0 ")) {
-           print("Layers of Williams 2030 best 5 have been removed")
-           print("May not continue the prediction")
-           return
-        }
-
         waitFor 10, { modalModule.sizeOfSelectedLayers().startsWith("5 ")   }
 
         when:
