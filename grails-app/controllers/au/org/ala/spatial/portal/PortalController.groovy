@@ -1,5 +1,6 @@
 package au.org.ala.spatial.portal
 
+import au.org.ala.ws.service.WebService
 import grails.converters.JSON
 import grails.util.Holders
 import grails.web.http.HttpHeaders
@@ -7,6 +8,7 @@ import org.apache.commons.httpclient.methods.StringRequestEntity
 import org.apache.commons.lang.StringUtils
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.client.methods.HttpPost
+import org.apache.http.entity.ContentType
 import org.jasig.cas.client.util.CommonUtils
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.multipart.MultipartHttpServletRequest
@@ -18,6 +20,8 @@ import java.util.zip.ZipInputStream
  * Controller for all spatial-hub web services.
  */
 class PortalController {
+
+    WebService webService
 
     def propertiesService
 
@@ -255,13 +259,11 @@ class PortalController {
         if (!userId) {
             notAuthorised()
         } else {
-            Map headers = [apiKey: grailsApplication.config.api_key, Accept: 'application/json']
             def json = request.JSON as Map
             def url = "${grailsApplication.config.layersService.url}/shape/upload/wkt"
-            def r = hubWebService.urlResponse(HttpPost.METHOD_NAME, url, null, headers,
-                    new StringRequestEntity((json as JSON).toString()))
-            response.status = r.statusCode
-            render JSON.parse(new String(r?.text ?: "")) as JSON
+
+            webService.proxyPostRequest(response, url, json.toString(), ContentType.APPLICATION_JSON, false, true)
+            response.contentType = ContentType.APPLICATION_JSON
         }
     }
 

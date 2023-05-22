@@ -12,6 +12,9 @@
         </encoder>
     </appender>
 
+    <logger name="org.hibernate.orm.deprecation" level="OFF"/>
+    <logger name="org.grails.config.NavigableMap" level="OFF"/>
+
     <root level="info">
         <appender-ref ref="STDOUT" />
     </root>

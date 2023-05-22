@@ -213,7 +213,7 @@
                       displayname: name
                     }
                   });
-                } else if (d.name === 'area') {
+                } else if (d.name === 'area' || d.name === 'AREA') {
                   if (d.file.indexOf("{") === 0) {
                     // parse JSON response
                     // ENVELOPE is the only output of this type
@@ -239,7 +239,7 @@
                           return MapService.add(data.data)
                         }))
                   }
-                } else if (d.name === 'species') {
+                } else if (d.name === 'species' || d.name === 'SPECIES') {
                   var q = jQuery.parseJSON(d.file);
 
                   if (!q.qid) {
@@ -252,7 +252,7 @@
                   q.log = false // The task is logged, no need to log adding the layer
 
                   promises.push(MapService.add(q))
-                } else if (d.name === 'nextprocess') {
+                } else if (d.name === 'nextprocess' || d.name === 'NEXTPROCESS') {
                   var nextinput = jQuery.parseJSON(d.file);
 
                   // format 'nextprocess' output for LayoutService.openModal

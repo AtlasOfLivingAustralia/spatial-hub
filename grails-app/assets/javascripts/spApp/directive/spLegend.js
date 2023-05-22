@@ -1120,7 +1120,7 @@
                                     task.input.selection = selectedLayer.scatterplotSelection;
                                 }
                                 task.input.wkt = [{pid: selectedLayer.highlightWkt}];
-                                $http.post($SH.baseUrl + '/portal/postTask?sessionId=' + $SH.sessionId, task, _httpDescription('updateScatterplot', {ignoreErrors: true})).then(function (response) {
+                                $http.post($SH.layersServiceUrl + '/tasks/create?sessionId=' + $SH.sessionId, task, _httpDescription('updateScatterplot', {ignoreErrors: true})).then(function (response) {
                                     scope.checkScatterplotStatus(LayersService.url() + '/tasks/status/' + response.data.id, selectedLayer)
                                 })
                             }
