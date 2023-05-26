@@ -26,12 +26,13 @@
                 <label>{{ selected.layer.scatterplotLabel2 }}</label>
             </div>
 
-            <div ng-if="areaLayers.length > 0" class="form-group row">
-                <label i18n="119">Highlight area</label>
-                <select style="width:250px" ng-model="selected.layer.highlightWkt" ng-change="scatterplotUpdate()"
-                        ng-options="area.pid as area.name for area in areaLayers">
-                </select>
-            </div>
+<!--            spatial-service part is not working-->
+<!--            <div ng-if="areaLayers.length > 0" class="form-group row">-->
+<!--                <label i18n="119">Highlight area</label>-->
+<!--                <select style="width:250px" ng-model="selected.layer.highlightWkt" ng-change="scatterplotUpdate()"-->
+<!--                        ng-options="area.pid as area.name for area in areaLayers">-->
+<!--                </select>-->
+<!--            </div>-->
 
             <div class="form-group row">
                 <button i18n="120" class="btn btn-xs btn-default" ng-click="scatterplotUpdate(null)">Clear selection

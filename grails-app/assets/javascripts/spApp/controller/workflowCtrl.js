@@ -170,7 +170,7 @@
                     var input = []
 
                     $.map(item.data, function (v, k) {
-                        input[k] = {constraints: {default: v}}
+                        input[k] = {constraints: {defaultValue: v}}
                     })
 
                     var ov = {};

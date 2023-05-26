@@ -512,8 +512,8 @@
                         overrideValues: {
                             ToolExportSampleService: {
                                 input: {
-                                    species: {constraints: {'default': query, disable: true}},
-                                    area: {constraints: {'default': area, disable: true}}
+                                    species: {constraints: {'defaultValue': query, disable: true}},
+                                    area: {constraints: {'defaultValue': area, disable: true}}
                                 }
                             }
                         },

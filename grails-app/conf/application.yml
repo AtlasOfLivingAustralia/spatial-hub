@@ -219,10 +219,10 @@ gazField: 'cl915'
 userObjectsField: 'cl1082'
 
 biocache:
-    url: 'https://biocache.ala.org.au'
+    url: 'https://biocache-databox.ala.org.au'
 
 biocacheService:
-    url: 'https://biocache.ala.org.au/ws'
+    url: 'https://biocache-ws-test.ala.org.au/ws'
     #Facets to ignore in the biocache grouped/facets service
     default_facets_ignored: 'data_resource_uid,data_provider_uid,species,collection_uid,institution_code_name,institution_uid,uncertainty'
     custom_facets:
