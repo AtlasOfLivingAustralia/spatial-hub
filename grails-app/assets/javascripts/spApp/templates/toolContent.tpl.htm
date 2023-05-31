@@ -112,10 +112,6 @@
                                     </div>
                                     <label ng-if="v.constraints.header !== undefined">{{v.constraints.header}}</label>
                                 </div>
-                                <div ng-if="v.type == 'phylogeneticTree'" testTag="phylogeneticTree">
-                                    <div style="height:300px;overflow:auto;display:block"
-                                         select-phylo selected-phylo="values[i]"></div>
-                                </div>
                                 <div ng-if="v.type == 'text'" testTag="otherInput">
                                     <label ng-if="sv.name !== undefined && sv.name !== v.description">{{v.description}}</label>
                                     <textarea class="form-control" rows="3" ng-model="values[i]"></textarea>

@@ -159,7 +159,6 @@
                                         selected: false
                                     })
                                 }
-                                // } else if (value.type === 'phylogeneticTree') {
                                 // } else if (value.type === 'text') {
                             } else if (value.type === 'speciesOptions') {
                                 if (value.constraints['areaIncludes'] === undefined) value.constraints['areaIncludes'] = false;
@@ -280,9 +279,6 @@
                                 } else {
                                     v = value.constraints['defaultValue'];
                                 }
-                            } else if (value.type === 'phylogeneticTree') {
-                                if (value.constraints['defaultValue'] !== undefined) v = value.constraints['defaultValue'];
-                                else v = []
                             } else if (value.type === 'text') {
                                 v = value.constraints['defaultValue']
                             } else if (value.type === 'speciesOptions') {
@@ -350,8 +346,6 @@
                     } else if (value.type === 'list' && value.constraints.selection === 'single') {
                         return $scope.values[i] === undefined
                     } else if (value.type === 'list' && value.constraints.selection !== 'single') {
-                        return $scope.values[i].length === 0
-                    } else if (value.type === 'phylogeneticTree') {
                         return $scope.values[i].length === 0
                     } else if (value.type === 'text') {
                         return $scope.values[i] < value.constraints.min || $scope.values[i] > value.constraints.max

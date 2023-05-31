@@ -756,7 +756,7 @@
                                         layers: 'ALA:' + layer.layer.name,
                                         format: 'image/png',
                                         transparent: true,
-                                        styles: style
+                                        styles: style || id.id
                                     }
                                 };
 

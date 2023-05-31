@@ -647,7 +647,7 @@ environments:
         layersService:
           url: "http://localhost:8081/ws"
         geoserver:
-          url: 'https://spatial-test.ala.org.au/geoserver'
+          url: 'http://localhost:8079/geoserver'
     test:
     production:
         assets:

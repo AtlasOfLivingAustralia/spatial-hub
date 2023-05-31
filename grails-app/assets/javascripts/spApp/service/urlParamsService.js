@@ -22,11 +22,11 @@
                      *  - ```ws```: biocache-hub URL for any layers added with this method. e.g. ```ws=https://biocache.ala.org.au```
                      *  - ```bs```: biocache-service URL for any layers added with this method. e.g. ```bs=https://biocache.ala.org.au/ws```
                      * * Global to the whole session
-                     *  - ```wmscache```: ON/OFF for the current session (TODO: implement this)
+                     *  - ```wmscache```: ON/OFF for the current session
                      * * Map control
                      *  - ```bbox```: zoom to this area with Min Lng, Min Lat, Max Lng, Max Lat. e.g. ```bbox=112,-42,154,-9```
                      * * Open a tool
-                     *  - ```tool```: name of tool to open. This can be any client side or spatial-service tool (TODO: support more than phylogeneticdiversity and exportBCCVL). e.g. ```tool=exportBCCVL```
+                     *  - ```tool```: name of tool to open. This can be any client side or spatial-service tool
                      *  - ```toolParameters```: JSON Map of inputName:value for 'tool'. e.g. ```toolParameters={}```
                      * * Add one species layer
                      *  - ```qname```: display name for the 'q' layer. e.g. ```qname=My URL layer```
@@ -275,9 +275,6 @@
                             var parameters = {};
                             if (toolParameters)
                                 parameters = JSON.parse(toolParameters);
-                            if (tool === 'phylogeneticdiversity') {
-                                //TODO: translate SpatialPortal phylogenetic diversity input parameters to SpatialHub format
-                            }
 
                             if (LayoutService.isPanel(tool)) {
                                 // is panel
