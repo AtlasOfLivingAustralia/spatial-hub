@@ -171,14 +171,6 @@
       {
         "name": "Areas",
         "open": "ToolExportAreaService"
-      },
-      {
-        "name": "DOI",
-        "open": "ToolExportDoiService"
-      },
-      {
-        "name": "Points to BCCVL",
-        "open": "exportBccvl"
       }
     ]
   },
