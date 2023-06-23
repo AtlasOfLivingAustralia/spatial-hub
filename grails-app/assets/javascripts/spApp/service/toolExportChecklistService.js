@@ -8,8 +8,8 @@
      *   Client side tool to export list of species in an occurrence layer
      */
     angular.module('tool-export-checklist-service', [])
-        .factory("ToolExportChecklistService", ["$http", "$q", "MapService", "BiocacheService", "LayoutService",
-            function ($http, $q, MapService, BiocacheService, LayoutService) {
+        .factory("ToolExportChecklistService", ["$http", "$q", "MapService", "BiocacheService", "LayoutService", "LayersService",
+            function ($http, $q, MapService, BiocacheService, LayoutService, LayersService) {
                 var _this = {
                     // Override text with view-config.json
                     spec: {
@@ -52,9 +52,15 @@
                         var wkt = undefined;
                         if (area[0].q && (area[0].q.length > 0)) {
                             q = area[0].q
-                        } else if (area[0].wkt.length > 0) {
+                        } else if (area[0].wkt && area[0].wkt.length > 0) {
                             q = ['*:*'];
                             wkt = area[0].wkt;
+                        } else {
+                            LayersService.getWkt(area[0].pid).then(function (wkt) {
+                                inputs[0][0].wkt = wkt.data
+                                _this.execute(inputs)
+                            })
+                            return
                         }
 
                         if (speciesOptions.spatiallyUnknown) {

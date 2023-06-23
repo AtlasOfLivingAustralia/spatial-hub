@@ -379,6 +379,7 @@
                             if (data.data === undefined || data.data.id === undefined || !data.data.indb) {
                                 LayersService.getWkt(pid).then(function (wkt) {
                                     $scope.selectedArea.wkt = wkt.data
+                                    $scope.selectedArea.obj.wkt = wkt.data
                                     if (mapNow) {
                                         $scope.addToMapAndClose();
                                     }
