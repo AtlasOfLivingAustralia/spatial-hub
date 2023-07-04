@@ -17,7 +17,8 @@
                         _selectedArea: '=selectedArea',
                         _includeDefaultAreas: '=includeDefaultAreas',
                         _uniqueId: '=uniqueId',
-                        _defaultToWorld: '=?defaultToWorld'
+                        _defaultToWorld: '=?defaultToWorld',
+                        _excludeWorld: '=?excludeWorld'
                     },
                     link: function (scope, element, attrs) {
 
@@ -63,7 +64,7 @@
 
                         scope.defaultAreas = [];
                         if (scope._includeDefaultAreas !== false) {
-                            scope.defaultAreas = $.map(PredefinedAreasService.getList(), function (x, idx) {
+                            scope.defaultAreas = $.map(PredefinedAreasService.getList(scope._excludeWorld), function (x, idx) {
                                 return x
                             })
                         }

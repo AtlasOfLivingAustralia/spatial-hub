@@ -32,7 +32,8 @@
                                 <div ng-if="v.type == 'area' && !(v.constraints.max>1)">
                                     <div select-area selected-area="values[i]" unique-id="i"
                                          include-default-areas="v.constraints.defaultAreas"
-                                         default-to-world="v.constraints.defaultToWorld"></div>
+                                         default-to-world="v.constraints.defaultToWorld"
+                                         exclude-world="v.constraints.excludeWorld"></div>
                                 </div>
                                 <div ng-if="v.type == 'area' && v.constraints.max>1">
                                     <div select-multiple-area selected-area="values[i]" unique-id="i"

@@ -304,6 +304,15 @@
         "description": "Select 1 layer"
       }
     }
+  },
+  "AreaReport": {
+    "input": {
+      "area": {
+        "constraints": {
+          "excludeWorld": true
+        }
+      }
+    }
   }
 }
 
