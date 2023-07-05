@@ -274,6 +274,8 @@ user_roles:
 # When using skin.layout='portal' enable google analytics by setting the googleAnalyticsId
 googleAnalyticsId:
 
+# When using skin.layout='portal' enable fathom analytics by setting the fathomId
+fathomId:
 
 
 speciesDotSize: 5
@@ -645,7 +647,8 @@ environments:
         grails:
           serverURL: "http://local.ala.org.au:8087"
         layersService:
-          url: "http://localhost:8081/ws"
+#          url: "http://localhost:8081/ws"
+          url: "https://spatial.ala.org.au/ws"
         geoserver:
           url: 'http://localhost:8079/geoserver'
     test:
