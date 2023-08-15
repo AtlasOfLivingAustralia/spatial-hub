@@ -111,7 +111,8 @@ class PortalController {
                                     userDetails: authService.userDetails(),
                                     sessionId  : sessionService.newId(userId),
                                     messagesAge: messageService.messagesAge,
-                                    hub        : hub])
+                                    hub        : hub,
+                                    custom_facets: toMapOfLists(config.biocacheService.custom_facets)])
                 } else if (!authDisabled && userId == null) {
                     login()
                 } else {
@@ -378,6 +379,7 @@ class PortalController {
             def header = [:]
             if (Holders.config.security.oidc.enabled) {
                 header.put("userId", userId)
+                header.put("X-ALA-userId", userId)
                 header.put("apiKey", grailsApplication.config.api_key)
                 //header.put('Cookie', 'ALA-Auth=' + URLEncoder.encode(authService.email, 'UTF-8'))
             }
@@ -630,5 +632,79 @@ class PortalController {
 
     def embedExample() {
         render(view: 'embedExample')
+    }
+
+    private def toList(Object o) {
+        if (o == null || org.apache.commons.lang3.StringUtils.isEmpty(o.toString())) {
+            return []
+        } else if (o instanceof List) {
+            return o
+        } else if (o.toString().startsWith("[")) {
+            // JSON list
+            return JSON.parse(o.toString())
+        } else {
+            // comma delimited
+            return Arrays.asList(o.toString().split(","))
+        }
+    }
+
+    private def toListOfMaps(Object o) {
+        if (o == null || o.toString().isEmpty()) {
+            return new ArrayList()
+        }
+
+        def listOfMaps = toList(o)
+
+        for (def i = 0; i < listOfMaps.size(); i++) {
+            listOfMaps.set(i, toMap(listOfMaps.get(i)))
+        }
+
+        return listOfMaps
+    }
+
+    private def toMap(Object o) {
+        if (o == null || o.toString().isEmpty()) {
+            return new HashMap()
+        }
+
+        def map = o
+
+        if (!(map instanceof Map)) {
+            map = JSON.parse(map.toString())
+        }
+
+        return map
+    }
+
+    private def toMapOfMaps(Object o) {
+        if (o == null || o.toString().isEmpty()) {
+            return new HashMap()
+        }
+
+        def mapOfMaps = toMap(o)
+
+        for (def key : mapOfMaps.keySet) {
+            mapOfMaps[key] = toMap(mapOfMaps[key])
+        }
+
+        return mapOfMaps
+    }
+
+    private def toMapOfLists(Object o) {
+        if (o == null || o.toString().isEmpty()) {
+            return new HashMap()
+        }
+
+        def mapOfLists = toMap(o)
+
+        def result = [:]
+        mapOfLists.each { k, v ->
+            if (!k.contains('[')) { // exclude odd artifacts
+                result[k] = toList(v)
+            }
+        }
+
+
+        return result
     }
 }
