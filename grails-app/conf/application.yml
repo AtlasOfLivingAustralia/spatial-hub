@@ -647,8 +647,8 @@ environments:
         grails:
           serverURL: "http://local.ala.org.au:8087"
         layersService:
-#          url: "http://localhost:8081/ws"
-          url: "https://spatial.ala.org.au/ws"
+          url: "http://localhost:8081/ws"
+#          url: "https://spatial.ala.org.au/ws"
         geoserver:
           url: 'http://localhost:8079/geoserver'
     test:

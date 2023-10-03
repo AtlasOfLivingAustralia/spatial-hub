@@ -291,7 +291,7 @@ class PortalController {
         } else {
             def type = id
             MultipartFile mFile = ((MultipartHttpServletRequest) request).getFile('shapeFile')
-            def settings = [api_key: grailsApplication.config.api_key]
+            def settings = [apiKey: grailsApplication.config.api_key]
 
             String ce = grailsApplication.config.character.encoding
 

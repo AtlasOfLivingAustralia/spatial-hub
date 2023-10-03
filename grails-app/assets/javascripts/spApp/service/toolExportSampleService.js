@@ -73,7 +73,7 @@
 
                             //include redirect to biocache-service/occurrences/search page
                             var sampleUrl = _this.species.ws + '/download/options1?searchParams=' +
-                                encodeURIComponent('q=' + query.qid) +
+                                encodeURIComponent('?q=' + encodeURIComponent(query.qid)) +
                                 "&targetUri=/occurrences/search%3F&downloadType=records";
 
                             if (_this.layers && (_this.layers.length > 0)) {
