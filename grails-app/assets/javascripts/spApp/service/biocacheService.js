@@ -38,7 +38,7 @@
                  *      "ws": "https://biocache.ala.org.au"
                  *  }
                  * - fqs
-                 *  ["geospatial_kosher:true"]
+                 *  ["spatiallyValid:true"]
                  *
                  * Ouput:
                  *  10
@@ -74,7 +74,7 @@
                  *      "ws": "https://biocache.ala.org.au"
                  *  }
                  * - fqs
-                 *  ["geospatial_kosher:true"]
+                 *  ["spatiallyValid:true"]
                  *
                  * Ouput:
                  *  2
@@ -115,7 +115,7 @@
                  *      "ws": "https://biocache.ala.org.au"
                  *  }
                  * - fqs
-                 *  ["geospatial_kosher:true"]
+                 *  ["spatiallyValid:true"]
                  * - config
                  * Ouput:
                  *  "names_and_lsid","Species Name","Scientific Name Authorship","Taxon Rank","Kingdom","Phylum","Class","Order","Family","Genus","Vernacular Name","Number of records","Conservation","Invasive"
@@ -148,10 +148,10 @@
                  *      "ws": "https://biocache.ala.org.au"
                  *  }
                  * - fqs
-                 *  ["geospatial_kosher:true"]
+                 *  ["spatiallyValid:true"]
                  *
                  * Output:
-                 *  "https://biocache-ws.ala.org.au/ws/occurrences/facets/download?facets=names_and_lsid&lookup=true&count=true&lists=true&q=Macropus&fq=geospatial_kosher:true"
+                 *  "https://biocache-ws.ala.org.au/ws/occurrences/facets/download?facets=names_and_lsid&lookup=true&count=true&lists=true&q=Macropus&fq=spatiallyValid:true"
                  */
                 speciesListUrl: function (query, fqs) {
                     var fqList = (fqs === undefined ? '' : '&fq=' + this.joinAndEncode(fqs));
@@ -178,7 +178,7 @@
                  *      "ws": "https://biocache.ala.org.au"
                  *  }
                  * - fqs
-                 *  ["geospatial_kosher:true"]
+                 *  ["spatiallyValid:true"]
                  *
                  * Output:
                  *  ```
@@ -213,7 +213,7 @@
                  *      "ws": "https://biocache.ala.org.au"
                  *  }
                  * - fqs
-                 *  ["geospatial_kosher:true"]
+                 *  ["spatiallyValid:true"]
                  *
                  * Output:
                  *  "http://biocache.ala.org.au/ws/explore/endemic/species/1234.csv?facets=names_and_lsid&lookup=true&count=true&lists=true"
@@ -251,7 +251,7 @@
                  *      "ws": "https://biocache.ala.org.au"
                  *  }
                  * - fqs
-                 *  ["geospatial_kosher:true"]
+                 *  ["spatiallyValid:true"]
                  *
                  * Output:
                  *  []
@@ -284,7 +284,7 @@
                  *      "ws": "https://biocache.ala.org.au"
                  *  }
                  * - fqs
-                 *  ["geospatial_kosher:true"]
+                 *  ["spatiallyValid:true"]
                  *
                  * Output:
                  *  500
@@ -322,7 +322,7 @@
                  *      "ws": "https://biocache.ala.org.au"
                  *  }
                  * - fqs
-                 *  ["geospatial_kosher:true"]
+                 *  ["spatiallyValid:true"]
                  *
                  * Output:
                  *  "<span>Macropus</span>"
@@ -364,10 +364,10 @@
                  *      "ws": "https://biocache.ala.org.au"
                  *  }
                  * - fqs
-                 *  ["geospatial_kosher:true"]
+                 *  ["spatiallyValid:true"]
                  *
                  * Output:
-                 *  "http://biocache-ws.ala.org.au/ws/occurrences/search?q=Macropus&fq=geospatial_kosher:true&pageSize=1&offset=0&facet=false"
+                 *  "http://biocache-ws.ala.org.au/ws/occurrences/search?q=Macropus&fq=spatiallyValid:true&pageSize=1&offset=0&facet=false"
                  */
                 constructSearchResultUrl: function (query, fqs, pageSize, offset, facet) {
                     facet = facet || false;

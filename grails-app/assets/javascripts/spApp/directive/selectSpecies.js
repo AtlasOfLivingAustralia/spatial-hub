@@ -236,12 +236,12 @@
                                     if (pos >= 0) query.q.splice(pos, 1)
                                 }
                                 /*
-                                   spatially-valid = geospatial_kosher:true
-                                   spatially-suspect = geospatial_kosher:false
-                                   spatially-unknown = -geospatial_kosher:*
+                                   spatially-valid = spatiallyValid:true
+                                   spatially-suspect = spatiallyValid:false
+                                   spatially-unknown = -spatiallyValid:*
 
                                    If we want include VALID and MISSING(UNKNOWN) spatial data
-                                   fq=(geospatial_kosher:true OR -geospatial_kosher:*) BS(solr) does not support '-' in complicated query
+                                   fq=(spatiallyValid:true OR -spatiallyValid:*) BS(solr) does not support '-' in complicated query
                                    */
                                 var gs = ["-*:*"]; // select nothing
                                 if (scope.spatiallyUnknown) { //include UNKNOWN (MISSING) spatial data records
@@ -251,23 +251,23 @@
                                     } else if (scope.spatiallyValid) {
                                         //  spatially-unknown && spatiallyValid
                                         //  Solution -> rule out of spatiallySuspect
-                                        gs = ['-geospatial_kosher:false'];
+                                        gs = ['-spatiallyValid:false'];
                                     } else if (scope.spatiallySuspect) {
                                         //  spatially-unknown && spatiallySuspect
                                         //  -> rule out of spatiallyValid
-                                        gs = ['-geospatial_kosher:true'];
+                                        gs = ['-spatiallyValid:true'];
                                     } else {
                                         //return records without spatial
-                                        gs = ['-geospatial_kosher:*'];
+                                        gs = ['-spatiallyValid:*'];
                                     }
                                 } else {
                                     //spatially-valid and spatially-suspect
                                     if (scope.spatiallyValid && scope.spatiallySuspect) {
-                                        gs = ['geospatial_kosher:*'];
+                                        gs = ['spatiallyValid:*'];
                                     } else if (scope.spatiallyValid){
-                                        gs = ['geospatial_kosher:true'];
+                                        gs = ['spatiallyValid:true'];
                                     } else if (scope.spatiallySuspect){
-                                        gs = ['geospatial_kosher:false'];
+                                        gs = ['spatiallyValid:false'];
                                     } else {
                                         // No records returned by default
                                     }

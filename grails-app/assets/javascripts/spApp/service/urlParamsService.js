@@ -32,7 +32,7 @@
                      *  - ```qname```: display name for the 'q' layer. e.g. ```qname=My URL layer```
                      *  - ```q```: biocache-service q term for occurrences layer to add. e.g. ```q=state:Queensland```
                      *  - ```species_lsid```: LSID for occurrences layer to add. e.g. ```species_lsid=urn:lsid:biodiversity.org.au:afd.taxon:e6aff6af-ff36-4ad5-95f2-2dfdcca8caff```
-                     *  - ```fq```: biocache-service fq term for occurrences layer to add. e.g. ```fq=geospatial_kosher:true```
+                     *  - ```fq```: biocache-service fq term for occurrences layer to add. e.g. ```fq=spatiallyValid:true```
                      *  - ```qc```: biocache-service fq term for occurrences layer to add. e.g. ```qc=data_hub_uid:dh1```
                      *  - ```qualityProfile```: biocache-service qualityProfile param for data quality profile to apply
                      *  - ```disableAllQualityFilters```: biocache-service disableAllQualityFilters param to disable all data quality filters on this request
