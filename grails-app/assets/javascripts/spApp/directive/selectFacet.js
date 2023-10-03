@@ -34,16 +34,16 @@
                         });
 
                         //Watch special options update
-                        //fq=geospatial_kosher:true&fq=-occurrence_status:absent
+                        //fq=spatiallyValid:true&fq=-occurrence_status:absent
                         scope.$on("speciesOptionsChange",function (event, value) {
                             scope.fqsOfSpeciesOptions = [];
                             /*
-                            spatially-valid = geospatial_kosher:true
-                            spatially-suspect = geospatial_kosher:false
-                            spatially-unknown = -geospatial_kosher:*
+                            spatially-valid = spatiallyValid:true
+                            spatially-suspect = spatiallyValid:false
+                            spatially-unknown = -spatiallyValid:*
 
                             If we want include VALID and MISSING(UNKNOWN) spatial data
-                            fq=(geospatial_kosher:true OR -geospatial_kosher:*) BS(solr) does not support '-' in complicated query
+                            fq=(spatiallyValid:true OR -spatiallyValid:*) BS(solr) does not support '-' in complicated query
                             */
 
                             if (value.spatiallyUnknown) { //include UNKNOWN (MISSING) spatial data records
@@ -53,20 +53,20 @@
                                 } else if (value.spatiallyValid) {
                                     //spatially-unknown && spatiallyValid
                                     //-> rule out of spatiallySuspect
-                                    scope.fqsOfSpeciesOptions.push('-geospatial_kosher:false');
+                                    scope.fqsOfSpeciesOptions.push('-spatiallyValid:false');
                                 }else if (value.spatiallySuspect) {
                                     //spatially-unknown && spatiallySuspect
                                     //-> rule out of spatiallyValid
-                                    scope.fqsOfSpeciesOptions.push('-geospatial_kosher:true');
+                                    scope.fqsOfSpeciesOptions.push('-spatiallyValid:true');
                                 }
                             } else {
                                 //spatially-valid and spatially-suspect
                                 if (value.spatiallyValid && value.spatiallySuspect) {
-                                    scope.fqsOfSpeciesOptions.push('geospatial_kosher:*');
+                                    scope.fqsOfSpeciesOptions.push('spatiallyValid:*');
                                 } else if (value.spatiallyValid) {
-                                    scope.fqsOfSpeciesOptions.push('geospatial_kosher:true');
+                                    scope.fqsOfSpeciesOptions.push('spatiallyValid:true');
                                 } else if (value.spatiallySuspect) {
-                                    scope.fqsOfSpeciesOptions.push('geospatial_kosher:false');
+                                    scope.fqsOfSpeciesOptions.push('spatiallyValid:false');
                                 }
                             }
 
