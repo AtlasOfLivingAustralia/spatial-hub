@@ -108,7 +108,7 @@ dependencies {
     implementation "org.grails.plugins:ala-auth:$alaSecurityLibsVersion"
     implementation "org.grails.plugins:ala-ws-plugin:$alaSecurityLibsVersion"
 
-    implementation "org.grails.plugins:ala-bootstrap3:4.3.0"
+    implementation "org.grails.plugins:ala-bootstrap3:4.4.0"
 
     implementation "au.org.ala.plugins.grails:ala-charts-plugin:2.3.0-ANGULAR-SNAPSHOT"
     runtimeOnly 'org.grails.plugins:sandbox-hub:1.0'

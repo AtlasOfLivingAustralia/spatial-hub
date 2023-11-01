@@ -128,7 +128,7 @@
 
                                 var header = $i18n(409, "Longitude") + "," + scope.point.longitude + "\n" +
                                     $i18n(410, "Latitude") + "," + scope.point.latitude + "\n\n" +
-                                    $i18n(160, "Feature") + "," + $i18n(161, "Location") + "," + $i18n(162, "Distance (km)") + "," + $i18n(163, "Heading (deg)");
+                                    $i18n(160, "Feature") + "," + $i18n(161, "Location") + "," + $i18n(162, "Distance (m)") + "," + $i18n(163, "Heading (deg)");
                                 var blob = new Blob([header + rows], {type: 'text/plain'});
                                 scope.exportUrl = (window.URL || window.webkitURL).createObjectURL(blob);
 
