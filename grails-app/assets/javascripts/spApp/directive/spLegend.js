@@ -302,7 +302,7 @@
                             var selectedStyle = currentLayer.style
 
                             //Raster style
-                            if(selectedStyle == 'non-linear') selectedStyle = currentLayer.defaultStyle   //e.g geomacs_gmean
+                            if (selectedStyle == 'non-linear') selectedStyle = currentLayer.defaultStyle   //e.g geomacs_gmean
                             if (selectedStyle == 'linear') selectedStyle = currentLayer.defaultStyle + '_linear'
                             //Vector sytle
                             if (selectedStyle == 'default') selectedStyle = currentLayer.defaultStyle  //e.g cl1084

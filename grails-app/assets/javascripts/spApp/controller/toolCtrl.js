@@ -159,7 +159,6 @@
                                         selected: false
                                     })
                                 }
-                                // } else if (value.type === 'phylogeneticTree') {
                                 // } else if (value.type === 'text') {
                             } else if (value.type === 'speciesOptions') {
                                 if (value.constraints['areaIncludes'] === undefined) value.constraints['areaIncludes'] = false;
@@ -211,12 +210,12 @@
                                 if (value.constraints['defaultToWorld'] === undefined) value.constraints['defaultToWorld'] = true;
                                 if (value.constraints['max'] === undefined) value.constraints['max'] = 1000;
 
-                                if (value.constraints['default'] !== undefined) {
+                                if (value.constraints['defaultValue'] !== undefined) {
                                     // getInputs returns the .area array which is inconsistent with the value
-                                    if (value.constraints['default'] instanceof Array) {
-                                        v = {area: value.constraints['default']}
+                                    if (value.constraints['defaultValue'] instanceof Array) {
+                                        v = {area: value.constraints['defaultValue']}
                                     } else {
-                                        v = value.constraints['default']
+                                        v = value.constraints['defaultValue']
                                     }
                                 } else {
                                     v = {area: []}
@@ -234,7 +233,7 @@
                                 if (value.constraints['searchSpecies'] === undefined) value.constraints['searchSpecies'] = true;
                                 if (value.constraints['allSpecies'] === undefined) value.constraints['allSpecies'] = true;
 
-                                if (value.constraints['default'] !== undefined) v = value.constraints['default'];
+                                if (value.constraints['defaultValue'] !== undefined) v = value.constraints['defaultValue'];
                                 else if (value.constraints['speciesOption'] === 'allSpecies') {
                                     //specify allSpecies default
                                     v = {
@@ -253,50 +252,47 @@
                             } else if (value.type === 'date') {
                                 v = {fq: []}
                             } else if (value.type === 'layer') {
-                                if (value.constraints['default'] !== undefined) {
+                                if (value.constraints['defaultValue'] !== undefined) {
                                     // getInputs returns the .area array which is inconsistent with the value
-                                    if (value.constraints['default'] instanceof Array) {
+                                    if (value.constraints['defaultValue'] instanceof Array) {
                                         v = {layers: []};
-                                        $.map(value.constraints['default'], function (layer) {
+                                        $.map(value.constraints['defaultValue'], function (layer) {
                                             v.layers.push(LayersService.getLayer(layer))
                                         })
                                     } else {
-                                        v = LayersService.getLayer(value.constraints['default']);
+                                        v = LayersService.getLayer(value.constraints['defaultValue']);
                                     }
                                 }
                                 else v = {layers: []}
                             } else if (value.type === 'boolean') {
-                                v = value.constraints['default']
+                                v = value.constraints['defaultValue']
                             } else if (value.type === 'int') {
-                                v = value.constraints['default']
+                                v = value.constraints['defaultValue']
                             } else if (value.type === 'double') {
-                                v = value.constraints['default']
+                                v = value.constraints['defaultValue']
                             } else if (value.type === 'list') {
                                 if (value.constraints.selection !== 'single') {
-                                    v = value.constraints['default'];
+                                    v = value.constraints['defaultValue'];
                                     if (v == undefined) {
                                         v = [];
                                     }
                                 } else {
-                                    v = value.constraints['default'];
+                                    v = value.constraints['defaultValue'];
                                 }
-                            } else if (value.type === 'phylogeneticTree') {
-                                if (value.constraints['default'] !== undefined) v = value.constraints['default'];
-                                else v = []
                             } else if (value.type === 'text') {
-                                v = value.constraints['default']
+                                v = value.constraints['defaultValue']
                             } else if (value.type === 'speciesOptions') {
                                 if (value.constraints['areaIncludes'] === undefined) value.constraints['areaIncludes'] = false;
                                 if (value.constraints['kosherIncludes'] === undefined) value.constraints['kosherIncludes'] = true;
                                 if (value.constraints['endemicIncludes'] === undefined) value.constraints['endemicIncludes'] = false;
 
-                                if (value.constraints['default'] !== undefined) v = value.constraints['default'];
+                                if (value.constraints['defaultValue'] !== undefined) v = value.constraints['defaultValue'];
                                 else v = {}
                             } else if (value.type === 'facet') {
-                                if (value.constraints['default'] !== undefined) v = value.constraints['default'];
+                                if (value.constraints['defaultValue'] !== undefined) v = value.constraints['defaultValue'];
                                 else v = []
-                            } else if (value.constraints !== undefined && value.constraints['default'] !== undefined) {
-                                v = value.constraints['default']
+                            } else if (value.constraints !== undefined && value.constraints['defaultValue'] !== undefined) {
+                                v = value.constraints['defaultValue']
                             } else {
                                 v = null
                             }
@@ -350,8 +346,6 @@
                     } else if (value.type === 'list' && value.constraints.selection === 'single') {
                         return $scope.values[i] === undefined
                     } else if (value.type === 'list' && value.constraints.selection !== 'single') {
-                        return $scope.values[i].length === 0
-                    } else if (value.type === 'phylogeneticTree') {
                         return $scope.values[i].length === 0
                     } else if (value.type === 'text') {
                         return $scope.values[i] < value.constraints.min || $scope.values[i] > value.constraints.max

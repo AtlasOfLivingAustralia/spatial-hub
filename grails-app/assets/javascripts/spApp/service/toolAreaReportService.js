@@ -20,7 +20,8 @@
                             "constraints": {
                                 "min": 1,
                                 "max": 1,
-                                "optional": false
+                                "optional": false,
+                                "excludeWorld": true
                             }
                         }],
                     "description": $i18n("Area Report")

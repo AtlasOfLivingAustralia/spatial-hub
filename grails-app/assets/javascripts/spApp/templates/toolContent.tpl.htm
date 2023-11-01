@@ -32,7 +32,8 @@
                                 <div ng-if="v.type == 'area' && !(v.constraints.max>1)">
                                     <div select-area selected-area="values[i]" unique-id="i"
                                          include-default-areas="v.constraints.defaultAreas"
-                                         default-to-world="v.constraints.defaultToWorld"></div>
+                                         default-to-world="v.constraints.defaultToWorld"
+                                         exclude-world="v.constraints.excludeWorld"></div>
                                 </div>
                                 <div ng-if="v.type == 'area' && v.constraints.max>1">
                                     <div select-multiple-area selected-area="values[i]" unique-id="i"
@@ -111,10 +112,6 @@
                                                ng-model="item.selected"><label class="list-multiple-label">{{item.label}}</label>
                                     </div>
                                     <label ng-if="v.constraints.header !== undefined">{{v.constraints.header}}</label>
-                                </div>
-                                <div ng-if="v.type == 'phylogeneticTree'" testTag="phylogeneticTree">
-                                    <div style="height:300px;overflow:auto;display:block"
-                                         select-phylo selected-phylo="values[i]"></div>
                                 </div>
                                 <div ng-if="v.type == 'text'" testTag="otherInput">
                                     <label ng-if="sv.name !== undefined && sv.name !== v.description">{{v.description}}</label>

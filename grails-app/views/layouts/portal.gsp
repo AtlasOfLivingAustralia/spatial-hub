@@ -17,6 +17,9 @@
     <title><g:layoutTitle/></title>
     <g:layoutHead/>
     <asset:stylesheet href="application.css" />
+    <g:if test="${config.fathomId != null && config.fathomId != ''}">
+        <script src="https://cdn.usefathom.com/script.js" data-site="${config.fathomId}" defer></script>
+    </g:if>
 
 </head>
 
@@ -391,7 +394,7 @@
 <asset:javascript src="commonui-bs3-2019.js"/>
 
 <!-- Google Analytics -->
-<g:if test="${config.googleAnalyticsId != null}">
+<g:if test="${config.googleAnalyticsId != null && config.googleAnalyticsId != ''}">
     <script>
         (function (i, s, o, g, r, a, m) {
             i['GoogleAnalyticsObject'] = r;

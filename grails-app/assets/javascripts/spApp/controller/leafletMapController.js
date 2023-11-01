@@ -484,7 +484,7 @@
                                     if (data[pt] instanceof Array) {
                                         g = [data[pt][1], data[pt][2]];
                                     } else {
-                                        g = data[pt].geometry.replace("POINT(", "").replace(")", "").split(" ");
+                                        g = data[pt].geometry.replace("POINT (", "").replace(")", "").split(" ");
                                     }
                                     var m = L.marker([g[1], g[0]])
                                         .bindLabel(data[pt].name, {noHide: true});

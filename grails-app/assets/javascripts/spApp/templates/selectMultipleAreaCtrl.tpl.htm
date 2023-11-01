@@ -13,8 +13,8 @@
 </div>
 
 <div ng-show="_includeInOutLayer" class="checkbox"><label>
-    <input type="checkbox" ng-model="pickInOutLayer"
-            name="selectedArea" testTag='selectArea' value="(2 areas) In/Out of a contextual layer"><span i18n="230">(2 areas) In/Out of a contextual layer</span></label>
+    <input type="checkbox" ng-model="pickInOutLayer"  ng-click='updatePickInOutLayer()'
+           name="selectedArea" testTag='selectArea' value="(2 areas) In/Out of a contextual layer"><span i18n="230">(2 areas) In/Out of a contextual layer</span></label>
 </div>
 
 <div ng-if="pickInOutLayer" class="well-lg">
@@ -32,22 +32,23 @@
          unique-id="inout"></div>
 </div>
 
-<div class="checkbox"><label>
-    <input type="checkbox" ng-model="pickContextualLayer" name="selectedArea"><span i18n="232">Select all areas of a contextual
-    layer</span></label></div>
-<div ng-show="pickContextualLayer" class="well-lg">
-    <div class="alert alert-ala-success alert-success" ng-show="pickContextualLayerName.length > 0">
-        <div ng-show="pickContextualLayerName.length > 0" class="btn-group btn-group-sm"
-             style="float: right; margin-top: -3px;">
-            <button i18n="231" type="button" class="btn btn-default btn-xs"
-                    ng-click='editPickContextualLayerVisible()'>Edit selection
-            </button>
-        </div>
-        <p>{{pickContextualLayerName}}</p>
-    </div>
-    <div ng-if="pickContextualLayerVisible" select-layers selected-layers="selectedLayer"
-         min-count="1" max-count="1" mandatory="false" environmental="false" contextual="true" analysis="false"></div>
-</div>
+<!-- This was to be used by CompareAreas but that only compares 2 areas. -->
+<!-- <div class="checkbox"><label>-->
+<!--    <input type="checkbox" ng-model="pickContextualLayer" ng-click='updatePickContextualLayer()' name="selectedArea"><span i18n="232">Select all areas of a contextual-->
+<!--    layer</span></label></div>-->
+<!--<div ng-show="pickContextualLayer" class="well-lg">-->
+<!--    <div class="alert alert-ala-success alert-success" ng-show="pickContextualLayerName.length > 0">-->
+<!--        <div ng-show="pickContextualLayerName.length > 0" class="btn-group btn-group-sm"-->
+<!--             style="float: right; margin-top: -3px;">-->
+<!--            <button i18n="231" type="button" class="btn btn-default btn-xs"-->
+<!--                    ng-click='editPickContextualLayerVisible()'>Edit selection-->
+<!--            </button>-->
+<!--        </div>-->
+<!--        <p>{{pickContextualLayerName}}</p>-->
+<!--    </div>-->
+<!--    <div ng-if="pickContextualLayerVisible" select-layers selected-layers="selectedLayer"-->
+<!--         min-count="1" max-count="1" mandatory="false" environmental="false" contextual="true" analysis="false"></div>-->
+<!--</div>-->
 
 <div>
     <br/>

@@ -28,7 +28,7 @@
                                 "description": "Select an image format.",
                                 "type": "list",
                                 "constraints": {
-                                    "default": "png",
+                                    "defaultValue": "png",
                                     "selection": "single",
                                     "content": [
                                         "png",
@@ -88,13 +88,13 @@
                         data.overrideValues = {
                             MapImage: {
                                 input: {
-                                    outputType: {constraints: {'default': outputType}},
-                                    resolution: {constraints: {'default': resolution}},
-                                    bbox: {constraints: {'default': bbox}},
-                                    windowSize: {constraints: {'default': windowSize}},
-                                    comment: {constraints: {'default': comment}},
-                                    baseMap: {constraints: {'default': baseMap}},
-                                    mapLayers: {constraints: {'default': mapLayers}}
+                                    outputType: {constraints: {'defaultValue': outputType}},
+                                    resolution: {constraints: {'defaultValue': resolution}},
+                                    bbox: {constraints: {'defaultValue': bbox}},
+                                    windowSize: {constraints: {'defaultValue': windowSize}},
+                                    comment: {constraints: {'defaultValue': comment}},
+                                    baseMap: {constraints: {'defaultValue': baseMap}},
+                                    mapLayers: {constraints: {'defaultValue': mapLayers}}
                                 }
                             },
                             'stage': 'execute'

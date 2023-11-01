@@ -95,10 +95,6 @@
         "open": "Classification"
       },
       {
-        "name": "Phylogenetic Diversity",
-        "open": "PhylogeneticDiversity"
-      },
-      {
         "name": "Nearest Locality",
         "open": "nearestLocality"
       },
@@ -175,14 +171,6 @@
       {
         "name": "Areas",
         "open": "ToolExportAreaService"
-      },
-      {
-        "name": "DOI",
-        "open": "ToolExportDoiService"
-      },
-      {
-        "name": "Points to BCCVL",
-        "open": "exportBccvl"
       }
     ]
   },

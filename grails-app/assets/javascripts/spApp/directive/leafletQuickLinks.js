@@ -11,7 +11,7 @@
  * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
- * 
+ *
  * Created by Temi on 8/09/2016.
  */
 (function (angular) {
@@ -45,7 +45,7 @@
                                 if (data.overrideValues.input === undefined) data.overrideValues.input = {};
                                 if (data.overrideValues.input[key] === undefined) data.overrideValues.input[key] = {};
                                 if (data.overrideValues.input[key].constraints === undefined) data.overrideValues.input[key].constraints = {};
-                                data.overrideValues.input[key].constraints['default'] = value;
+                                data.overrideValues.input[key].constraints['defaultValue'] = value;
                             };
 
                             $scope.open = function (name, data, includeSpecies, includeArea) {

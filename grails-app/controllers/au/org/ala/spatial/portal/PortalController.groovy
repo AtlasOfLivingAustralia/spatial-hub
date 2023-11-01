@@ -1,5 +1,6 @@
 package au.org.ala.spatial.portal
 
+import au.org.ala.ws.service.WebService
 import grails.converters.JSON
 import grails.util.Holders
 import grails.web.http.HttpHeaders
@@ -7,6 +8,7 @@ import org.apache.commons.httpclient.methods.StringRequestEntity
 import org.apache.commons.lang.StringUtils
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.client.methods.HttpPost
+import org.apache.http.entity.ContentType
 import org.jasig.cas.client.util.CommonUtils
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.multipart.MultipartHttpServletRequest
@@ -18,6 +20,8 @@ import java.util.zip.ZipInputStream
  * Controller for all spatial-hub web services.
  */
 class PortalController {
+
+    WebService webService
 
     def propertiesService
 
@@ -107,7 +111,8 @@ class PortalController {
                                     userDetails: authService.userDetails(),
                                     sessionId  : sessionService.newId(userId),
                                     messagesAge: messageService.messagesAge,
-                                    hub        : hub])
+                                    hub        : hub,
+                                    custom_facets: toMapOfLists(config.biocacheService.custom_facets)])
                 } else if (!authDisabled && userId == null) {
                     login()
                 } else {
@@ -255,13 +260,11 @@ class PortalController {
         if (!userId) {
             notAuthorised()
         } else {
-            Map headers = [apiKey: grailsApplication.config.api_key, Accept: 'application/json']
             def json = request.JSON as Map
             def url = "${grailsApplication.config.layersService.url}/shape/upload/wkt"
-            def r = hubWebService.urlResponse(HttpPost.METHOD_NAME, url, null, headers,
-                    new StringRequestEntity((json as JSON).toString()))
-            response.status = r.statusCode
-            render JSON.parse(new String(r?.text ?: "")) as JSON
+
+            webService.proxyPostRequest(response, url, json.toString(), ContentType.APPLICATION_JSON, false, true)
+            response.contentType = ContentType.APPLICATION_JSON
         }
     }
 
@@ -288,7 +291,7 @@ class PortalController {
         } else {
             def type = id
             MultipartFile mFile = ((MultipartHttpServletRequest) request).getFile('shapeFile')
-            def settings = [api_key: grailsApplication.config.api_key]
+            def settings = [apiKey: grailsApplication.config.api_key]
 
             String ce = grailsApplication.config.character.encoding
 
@@ -376,6 +379,7 @@ class PortalController {
             def header = [:]
             if (Holders.config.security.oidc.enabled) {
                 header.put("userId", userId)
+                header.put("X-ALA-userId", userId)
                 header.put("apiKey", grailsApplication.config.api_key)
                 //header.put('Cookie', 'ALA-Auth=' + URLEncoder.encode(authService.email, 'UTF-8'))
             }
@@ -628,5 +632,79 @@ class PortalController {
 
     def embedExample() {
         render(view: 'embedExample')
+    }
+
+    private def toList(Object o) {
+        if (o == null || org.apache.commons.lang3.StringUtils.isEmpty(o.toString())) {
+            return []
+        } else if (o instanceof List) {
+            return o
+        } else if (o.toString().startsWith("[")) {
+            // JSON list
+            return JSON.parse(o.toString())
+        } else {
+            // comma delimited
+            return Arrays.asList(o.toString().split(","))
+        }
+    }
+
+    private def toListOfMaps(Object o) {
+        if (o == null || o.toString().isEmpty()) {
+            return new ArrayList()
+        }
+
+        def listOfMaps = toList(o)
+
+        for (def i = 0; i < listOfMaps.size(); i++) {
+            listOfMaps.set(i, toMap(listOfMaps.get(i)))
+        }
+
+        return listOfMaps
+    }
+
+    private def toMap(Object o) {
+        if (o == null || o.toString().isEmpty()) {
+            return new HashMap()
+        }
+
+        def map = o
+
+        if (!(map instanceof Map)) {
+            map = JSON.parse(map.toString())
+        }
+
+        return map
+    }
+
+    private def toMapOfMaps(Object o) {
+        if (o == null || o.toString().isEmpty()) {
+            return new HashMap()
+        }
+
+        def mapOfMaps = toMap(o)
+
+        for (def key : mapOfMaps.keySet) {
+            mapOfMaps[key] = toMap(mapOfMaps[key])
+        }
+
+        return mapOfMaps
+    }
+
+    private def toMapOfLists(Object o) {
+        if (o == null || o.toString().isEmpty()) {
+            return new HashMap()
+        }
+
+        def mapOfLists = toMap(o)
+
+        def result = [:]
+        mapOfLists.each { k, v ->
+            if (!k.contains('[')) { // exclude odd artifacts
+                result[k] = toList(v)
+            }
+        }
+
+
+        return result
     }
 }

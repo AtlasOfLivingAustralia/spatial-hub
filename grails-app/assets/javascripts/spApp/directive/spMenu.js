@@ -70,7 +70,7 @@
                         scope.exportMap = function () {
                             scope.open('tool', {
                                 processName: 'ToolExportMapService',
-                                overrideValues: {ToolExportMapService: {input: {caption: {constraints: {default: (new Date())}}}}}
+                                overrideValues: {ToolExportMapService: {input: {caption: {constraints: {defaultValue: (new Date())}}}}}
                             })
                         };
 

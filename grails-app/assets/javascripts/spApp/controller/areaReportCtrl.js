@@ -262,7 +262,7 @@
                                 name: $i18n(365, "Number of species - spatially valid only"),
                                 query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
                                 map: false,
-                                extraQ: ["geospatial_kosher:true"]
+                                extraQ: ["spatiallyValid:true"]
                             },
                             {
                                 name: $i18n(366, "Number of endemic species"),
@@ -275,7 +275,7 @@
                                 endemic: true,
                                 query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
                                 map: false,
-                                extraQ: ["geospatial_kosher:true"]
+                                extraQ: ["spatiallyValid:true"]
                             }];
 
                         // TODO: move this into config and retrieve from $SH
@@ -289,7 +289,7 @@
                                 name: $i18n(368, "Occurrences - spatially valid only"),
                                 query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
                                 occurrences: true,
-                                extraQ: ["geospatial_kosher:true"]
+                                extraQ: ["spatiallyValid:true"]
                             },
                             {
                                 name: $i18n(356, "Expert distributions"),
@@ -512,8 +512,8 @@
                         overrideValues: {
                             ToolExportSampleService: {
                                 input: {
-                                    species: {constraints: {'default': query, disable: true}},
-                                    area: {constraints: {'default': area, disable: true}}
+                                    species: {constraints: {'defaultValue': query, disable: true}},
+                                    area: {constraints: {'defaultValue': area, disable: true}}
                                 }
                             }
                         },

@@ -15,13 +15,13 @@
                  *
                  * @returns {Array.<area>} list of default areas.
                  */
-                getList: function () {
+                getList: function (excludeWorld) {
                     var extents = MapService.getExtents();
 
                     var defaultAreas = [];
 
                     for (var i in $SH.defaultAreas) {
-                        if ($SH.defaultAreas.hasOwnProperty(i)) {
+                        if ($SH.defaultAreas.hasOwnProperty(i) && (!excludeWorld || $SH.defaultAreas[i].name != 'World')) {
                             var area = $SH.defaultAreas[i];
                             var geoArea = undefined
                             if (area.areaSqKm) {

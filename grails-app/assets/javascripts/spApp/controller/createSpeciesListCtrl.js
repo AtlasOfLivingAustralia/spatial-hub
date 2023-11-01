@@ -47,7 +47,7 @@
                 $scope.newListName = $i18n(375, "My species list");
                 $scope.newListDescription = '';
                 $scope.newItems = '';
-                $scope.makePrivate = false;
+                $scope.makePrivate = true; // new lists are private by default
                 $scope.newListType = $scope.listTypes[0]
 
                 $scope.selectedQ = {

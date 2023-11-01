@@ -129,12 +129,12 @@ endpoints:
 security:
     cas:
         uriFilterPattern: ['/alaAdmin/*', '/']
-        casServerName: 'https://auth-dev.ala.org.au'
+        casServerName: 'https://auth-test.ala.org.au'
         uriExclusionFilterPattern: ['/portal/q/.*','/portal/messages/.*','/portal/sessionCache/.*','/static/.*','/assets/.*']
         authenticateOnlyIfCookieFilterPattern: ['/portal/config/*','/portal/i18n/*','/hub/*', '/log/*']
-        loginUrl: 'https://auth-dev.ala.org.au/cas/login'
-        logoutUrl: 'https://auth-dev.ala.org.au/cas/logout'
-        casServerUrlPrefix: 'https://auth-dev.ala.org.au/cas'
+        loginUrl: 'https://auth-test.ala.org.au/cas/login'
+        logoutUrl: 'https://auth-test.ala.org.au/cas/logout'
+        casServerUrlPrefix: 'https://auth-test.ala.org.au/cas'
         bypass: false # set to true for non-ALA deployment
         ignoreCase: true
         renew: false
@@ -142,15 +142,17 @@ security:
         enabled: false
     oidc:
       enabled: true
-      discovery-uri: 'https://auth-dev.ala.org.au/cas/oidc/.well-known'
+      discovery-uri: 'https://auth-test.ala.org.au/cas/oidc/.well-known'
       clientId: 'change me'
       secret: 'change me'
       allowUnsignedIdTokens: true
       scope: 'openid profile email ala roles'
     jwt:
       enabled: true
-      discoveryUri: https://auth-dev.ala.org.au/cas/oidc/.well-known
+      discoveryUri: https://auth-test.ala.org.au/cas/oidc/.well-known
       fallbackToLegacyBehaviour: true
+
+
 
 autocompleteUrl: 'https://bie.ala.org.au/ws/search/auto.jsonp'
 
@@ -217,10 +219,10 @@ gazField: 'cl915'
 userObjectsField: 'cl1082'
 
 biocache:
-    url: 'https://biocache.ala.org.au'
+    url: 'https://biocache-databox.ala.org.au'
 
 biocacheService:
-    url: 'https://biocache.ala.org.au/ws'
+    url: 'https://biocache-ws-test.ala.org.au/ws'
     #Facets to ignore in the biocache grouped/facets service
     default_facets_ignored: 'data_resource_uid,data_provider_uid,species,collection_uid,institution_code_name,institution_uid,uncertainty'
     custom_facets:
@@ -272,6 +274,8 @@ user_roles:
 # When using skin.layout='portal' enable google analytics by setting the googleAnalyticsId
 googleAnalyticsId:
 
+# When using skin.layout='portal' enable fathom analytics by setting the fathomId
+fathomId:
 
 
 speciesDotSize: 5
@@ -393,7 +397,7 @@ defaultareas:
       areaSqKm: 16322156.76
       bbox: [112, -44, 154, -9]
     - name: 'World'
-      fqs: []
+      fqs: ['*:*']
       wkt: 'POLYGON((-179.9999 -89.9999,179.9999 -89.9999,179.9999 89.9999,-179.9999 89.9999,-179.9999 -89.9999))'
       areaSqKm: 510000000
       bbox: [-180, -90, 180, 90]
@@ -641,11 +645,12 @@ environments:
           port: 8087
           use-forward-headers: true
         grails:
-          serverURL: "http://devt.ala.org.au:8087"
+          serverURL: "http://local.ala.org.au:8087"
         layersService:
-          url: "https://spatial-test.ala.org.au/ws"
+          url: "http://localhost:8081/ws"
+#          url: "https://spatial.ala.org.au/ws"
         geoserver:
-          url: 'https://spatial-test.ala.org.au/geoserver'
+          url: 'http://localhost:8079/geoserver'
     test:
     production:
         assets:

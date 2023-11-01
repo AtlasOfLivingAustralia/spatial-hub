@@ -21,15 +21,16 @@
             return {
                 getPhotos: function (bbox) {
                     var url = $SH.flickrUrl + $SH.flickrSearchPhotos
-                        + '&api_key=' + $SH.flickrApiKey + '&extras=' + encodeURIComponent($SH.flickrExtra)
-                        + '&tags=' + encodeURIComponent($SH.flickrTags)
-                        + '&geo_context=' + encodeURIComponent($SH.flickrGeoContext)
-                        + '&content_type=' + encodeURIComponent($SH.flickrContentType)
-                        + $SH.flickrFilter
+                        + '&api_key=' + $SH.flickrApiKey
                         + '&per_page=' + $SH.flickrNbrOfPhotosToDisplay
-                        + '&format=json&nojsoncallback=1&bbox=';
+                        + '&format=json&nojsoncallback=1&bbox=' + bbox;
+                    if ($SH.flickrExtra != '') url += '&extras=' + encodeURIComponent($SH.flickrExtra)
+                    if ($SH.flickrTags != '') url += '&tags=' + encodeURIComponent($SH.flickrTags)
+                    if ($SH.flickrGeoContext != '') url += '&geo_context=' + encodeURIComponent($SH.flickrGeoContext)
+                    if ($SH.flickrContentType != '') url += '&content_type=' + encodeURIComponent($SH.flickrContentType)
+                    if ($SH.flickrFilter != '') url += $SH.flickrFilter
 
-                    return $http.get(url + bbox, _httpDescription('getPhotos')).then(function (response) {
+                    return $http.get(url, _httpDescription('getPhotos')).then(function (response) {
                         return response.data;
                     });
                 },

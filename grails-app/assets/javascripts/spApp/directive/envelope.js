@@ -38,7 +38,7 @@
                                     input: {
                                         envelope: {
                                             constraints: {
-                                                'default': scope.getFq()
+                                                'defaultValue': scope.getFq()
                                             }
                                         }
                                     }

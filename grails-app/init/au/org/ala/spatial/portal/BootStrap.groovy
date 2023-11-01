@@ -243,10 +243,14 @@ class BootStrap {
 
         def mapOfLists = toMap(o)
 
-        for (def key : mapOfLists.keySet) {
-            mapOfLists[key] = toList(mapOfLists[key])
+        def result = [:]
+        mapOfLists.each { k, v ->
+            if (!k.contains('[')) { // exclude odd artifacts
+                result[k] = toList(v)
+            }
         }
 
-        return mapOfLists
+
+        return result
     }
 }

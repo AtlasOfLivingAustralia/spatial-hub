@@ -731,9 +731,12 @@
                                 var url = layer.layer.displaypath
                                 url = url.replace(/\?.*/, '')
 
+                                var source = 'analysis'
                                 if (layer.id.startsWith("el") || id.layertype == 'gridAsContextual') {
+                                    source = 'environmental'
                                     id.defaultStyle = layer.layer.name
                                 } else if (layer.id.startsWith("cl")) {
+                                    source = 'contextual'
                                     id.defaultStyle = layer.id
                                 }
 
@@ -751,14 +754,17 @@
                                     opacity: id.opacity / 100.0,
                                     url: url,
                                     layertype: id.layertype,
+                                    source: source,
                                     layerParams: {
                                         opacity: id.opacity / 100.0,
                                         layers: 'ALA:' + layer.layer.name,
                                         format: 'image/png',
-                                        transparent: true,
-                                        styles: style
+                                        transparent: true
                                     }
                                 };
+                                if (source != 'analysis' && !style) {
+                                    newLayer.layerParams.styles = style || id.id
+                                }
 
                                 if (id.layertype === 'scatterplotEnvelope') {
                                     var layer2 = LayersService.getLayer(id.layer2);

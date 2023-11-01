@@ -28,7 +28,7 @@
                             "description": $i18n(421,"Filetype."),
                             "type": "list",
                             "constraints": {
-                                "default": "Shapefile",
+                                "defaultValue": "Shapefile",
                                 "selection": "single",
                                 "content": [
                                     "Shapefile",

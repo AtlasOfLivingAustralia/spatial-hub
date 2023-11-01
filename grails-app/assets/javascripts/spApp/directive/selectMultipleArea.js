@@ -103,11 +103,29 @@
                                     a.splice(i, 1);
                                 }
                             }
+                            scope.pickInOutLayerName = "";
+                            scope.pickInOutLayerVisible = true;
                         };
 
+                        scope.updatePickInOutLayer = function () {
+                            if (!scope.pickInOutLayer) {
+                                scope.removeInOutLayer()
+                            }
+                        }
+
+                        scope.updatePickContextualLayer = function () {
+                            if (!scope.pickContextualLayer) {
+                                scope.removeContextualLayer()
+                            }
+                        }
+
+                        scope.removeInOut = true
                         scope.$watch('selectedInOutLayer.layers.length', function (newValue, oldValue) {
                             //remove all inOutLayers
-                            scope.removeInOutLayer();
+                            if (scope.removeInOut) {
+                                scope.removeInOutLayer();
+                            }
+                            scope.removeInOut = true;
 
                             //add selected
                             var a = scope.selectedInOutLayer.layers;
@@ -134,19 +152,19 @@
                                 };
                                 scope._selectedArea.area.push(areaOut);
 
+                                scope.removeInOut = false
                                 scope.selectedInOutLayer.layers.splice(0, scope.selectedInOutLayer.layers.length);
                             }
                         });
 
                         scope.updateSelection = function (area) {
-                            if (!area) {
-                                if (!scope.pickInOutLayer) {
-                                    scope.removeInOutLayer();
-                                }
-                                if (!scope.pickContextualLayer) {
-                                    scope.removeContextualLayer();
-                                }
-                            } else {
+                            if (!scope.pickInOutLayer) {
+                                scope.removeInOutLayer();
+                            }
+                            if (!scope.pickContextualLayer) {
+                                scope.removeContextualLayer();
+                            }
+                            if (area) {
                                 if (area.selected) {
                                     scope._selectedArea.area.push(area)
                                 } else {
@@ -172,11 +190,17 @@
                                     a.splice(i, 1);
                                 }
                             }
+                            scope.pickContextualLayerName = "";
+                            scope.pickContextualLayerVisible = true;
                         };
 
+                        scope.removeContextual = true
                         scope.$watch('selectedLayer.layers.length', function (newValue, oldValue) {
                             //remove all inOutLayers
-                            scope.removeContextualLayer();
+                            if (scope.removeContextual) {
+                                scope.removeContextualLayer();
+                            }
+                            scope.removeContextual = true;
 
                             //add selected
                             var a = scope.selectedLayer.layers;
@@ -196,6 +220,7 @@
                                 //TODO: Make the corresponding spatial-service change to recognise this aggregation.
                                 scope._selectedArea.area.push(area);
 
+                                scope.removeContextual = false
                                 scope.selectedLayer.layers.splice(0, scope.selectedLayer.layers.length);
                             }
                         });
