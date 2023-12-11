@@ -38,7 +38,7 @@
                     if ($SH.userId) {
                         params += "&user=" + $SH.userId
                     }
-                    return $http.get(this.url() + "/ws/speciesList" + params, _httpDescription('list')).then(function (response) {
+                    return $http.get($SH.baseUrl + "/portal/speciesList" + params, _httpDescription('list')).then(function (response) {
                         if (response.data.lists) {
                             return response.data.lists;
                         } else {
@@ -63,7 +63,7 @@
                 },
                 items: function (listId, params) {
                     params = params || {};
-                    return $http.get(this.url() + "/ws/speciesListItems/" + listId, _httpDescription('items', {
+                    return $http.get($SH.baseUrl + "/portal/speciesListItems/" + listId, _httpDescription('items', {
                         params: params,
                         withCredentials: true
                     })).then(function (response) {
