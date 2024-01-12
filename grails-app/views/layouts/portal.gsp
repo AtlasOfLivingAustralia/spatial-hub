@@ -89,7 +89,7 @@
                                         class="account-mobile hidden-md hidden-lg loginBtn mobile-login-btn"/>
                     </g:if>
                     <g:if test="${request.userPrincipal != null}">
-                        <a href="https://auth.ala.org.au/userdetails/myprofile/" role="button"
+                        <a href="${grailsApplication.config.userdetails.web.url+'profile'}" role="button"
                            class="account-mobile hidden-md hidden-lg myProfileBtn hideLoggedOut" title="My Account">
                             <svg xmlns="http://www.w3.org/2000/svg" width="25" height="18" viewBox="0 0 37 41">
                                 <defs>
@@ -105,11 +105,12 @@
                                       transform="translate(-596 -84)"></path>
                             </svg>
                         </a>
-                        <a href="${g.createLink(controller: "logout", action: "logout", absolute: true, params: [appUrl: request.requestURL])}"
-                           role="button"
-                           class="account-mobile hidden-md hidden-lg logoutBtn mobile-logout-btn" title="Logout link">
+
+                        <g:link url="${grailsApplication.config.grails.serverURL}/logout"  role="button"
+                                class="account-mobile hidden-md hidden-lg logoutBtn mobile-logout-btn" title="Logout link">
                             <i class="fas fa-sign-out"></i>
-                        </a>
+                        </g:link>
+
                     </g:if>
                     <button class="navbar-toggle collapsed collapse-trigger-button" type="button"
                             data-toggle="collapse" data-target="#navbarOuterWrapper" aria-controls="navbarOuterWrapper"
