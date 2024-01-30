@@ -202,6 +202,9 @@ From line 200 in build.gradle, you will find how we pass different test servers 
 
     ./gradlew :integrationTest -Dusername=xxxx -Dpassword=xxxxx
 
+If we use Firefox, Please check whether your Firefox version is compatible with Geb.
+We are using Geb 2.3, make sure the version of Firefox is <=120.
+
 Or 
 
     ./gradlew :integrationTest

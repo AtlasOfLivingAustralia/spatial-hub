@@ -1,9 +1,7 @@
 import geb.spock.GebSpec
 import page.SpatialHubHomePage
 
-class ToolComparePointsSpec extends GebSpec {
-
-    int pause = 3000
+class ToolComparePointsSpec extends SpatialGebSpec {
 
     def setup() {
         when:

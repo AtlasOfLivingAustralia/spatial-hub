@@ -11,6 +11,9 @@ class AddAreaModule extends ModalModule {
         newAreaWktTextarea { $("textarea[testTag='newAreaWKT']")}
         nextInNewAreaLegendBtn  { $("button[testTag='nextInNewAreaLegend']")}
 
+        newMergedAreaName { $("div[heading='Area name'] input") }
+        newMergedAreaDesc { $("div[heading='Area description'] textarea") }
+
         //radio options
         gazRadioBtn {$("input[type='radio'][value='gazetteer']")}
         bboxRadioBtn {$("input[type='radio'][value='drawBoundingBox']")}
@@ -89,4 +92,5 @@ class AddAreaModule extends ModalModule {
                 "angular.element(\"div[testTag='addAreaModal']\").scope().uploadFile([file]);")
 
     }
+
 }

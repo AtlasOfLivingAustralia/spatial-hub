@@ -1,20 +1,7 @@
 import geb.spock.GebSpec
 import page.SpatialHubHomePage
 
-class ToolCompareAreaSpec extends GebSpec {
-
-    int pause = 3000
-
-    def setup() {
-        when:
-        via SpatialHubHomePage
-
-        if (title.startsWith("ALA | Login"))
-            authModule.login()
-
-        then:
-        waitFor 20, { menuModule.isReady()}
-    }
+class ToolCompareAreaSpec extends SpatialGebSpec {
 
     def "compare area"(){
         when:

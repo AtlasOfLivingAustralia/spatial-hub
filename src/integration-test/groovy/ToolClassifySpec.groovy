@@ -1,19 +1,7 @@
 import geb.spock.GebSpec
 import page.SpatialHubHomePage
 
-class ToolClassifySpec extends GebSpec {
-
-    int pause = 3000
-    def setup() {
-        when:
-        via SpatialHubHomePage
-
-        if (title.startsWith("ALA | Login"))
-            authModule.login()
-
-        then:
-        waitFor 20, { menuModule.isReady()}
-    }
+class ToolClassifySpec extends SpatialGebSpec {
 
     def "classify"(){
         String title = "Classification of environmental layers in an area."
@@ -80,7 +68,7 @@ class ToolClassifySpec extends GebSpec {
         modalModule.nextBtn.click()
 
         then:
-        waitFor 10, { modalModule.title == title}
+        waitFor 120, { modalModule.title == title}
         waitFor 120, { modalModule.openNewWindow.displayed }
         waitFor 10, { modalModule.outputDoc.displayed }
         Thread.sleep(pause*2)

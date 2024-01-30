@@ -346,14 +346,12 @@ class PortalController {
 
     def postTask() {
         def userId = getValidUserId(params)
-
         if (!userId) {
             notAuthorised()
         } else {
             def json = request.JSON as Map
-
             Map headers = [apiKey: grailsApplication.config.api_key]
-
+            //Map headers = [Authorization: "Bearer ${webService.getTokenService().getAuthToken(true)}"]
             def r = hubWebService.postUrl("${grailsApplication.config.layersService.url}/tasks/create?" +
                     "userId=${userId}&sessionId=${params.sessionId}", json, headers)
 
@@ -361,6 +359,9 @@ class PortalController {
                 render [:] as JSON
             } else {
                 response.status = r.statusCode
+                if (response.status != 200) {
+                    log.error(r.text)
+                }
                 render JSON.parse(new String(r?.text ?: "{}")) as JSON
             }
         }

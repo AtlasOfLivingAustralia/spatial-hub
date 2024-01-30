@@ -4,9 +4,9 @@ import geb.Module
 
 class AuthModule extends Module {
     static content = {
-        username { $("#username") }
-        password { $("#password") }
-        submit { $("input[name=submit]") }
+        username { $("div.modal-content-desktop input#signInFormUsername") }
+        password { $("div.modal-content-desktop input#signInFormPassword") }
+        submit { $("div.modal-content-desktop input[name=signInSubmitButton]") }
     }
 
     void login() {

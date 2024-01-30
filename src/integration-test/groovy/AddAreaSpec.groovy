@@ -4,19 +4,7 @@ import page.SpatialHubHomePage
 import grails.testing.mixin.integration.Integration
 
 @Integration
-class AddAreaSpec extends GebSpec {
-    int pause = 1000
-
-    def setup() {
-        when:
-        via SpatialHubHomePage
-
-        if (title.startsWith("ALA | Login"))
-            authModule.login()
-
-        then:
-        waitFor 20, { menuModule.isReady() }
-    }
+class AddAreaSpec extends SpatialGebSpec {
 
     def "Draw BBox, circle and merge areas, log check"(){
         def logCount = 0;
@@ -118,6 +106,8 @@ class AddAreaSpec extends GebSpec {
         and:
         addAreaModule.createdAreasCheckbox[0].click()
         addAreaModule.createdAreasCheckbox[1].click()
+        addAreaModule.newMergedAreaName.value("my merged area")
+        addAreaModule.newMergedAreaDesc.value("new merged description")
         addAreaModule.nextBtn.click()
 
         then:
@@ -143,8 +133,8 @@ class AddAreaSpec extends GebSpec {
         addAreaModule.gazInput.value("Ben Lomond")
 
         then:
-        waitFor 10, {addAreaModule.gazAutoListCheckbox("IBRA 7 Subregions").displayed}
-        addAreaModule.gazAutoListCheckbox("IBRA 7 Subregions").click()
+        waitFor 10, {addAreaModule.gazAutoListCheckbox("IBRA 6 Regions").displayed}
+        addAreaModule.gazAutoListCheckbox("IBRA 6 Regions").click()
 
         waitFor 10, {addAreaModule.gazAutoList("Ben Lomond").displayed}
 
@@ -342,7 +332,5 @@ class AddAreaSpec extends GebSpec {
         then:
         Thread.sleep(pause)
     }
-
-
 
 }

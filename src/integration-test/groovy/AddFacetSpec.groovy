@@ -3,20 +3,8 @@
 import geb.spock.GebSpec
 import page.SpatialHubHomePage
 
-class AddFacetSpec extends GebSpec {
+class AddFacetSpec extends SpatialGebSpec {
 
-    int pause = 3000
-
-    def setup() {
-        when:
-        via SpatialHubHomePage
-
-        if (title.startsWith("ALA | Login"))
-            authModule.login()
-
-        then:
-        waitFor 20, { menuModule.isReady()  }
-    }
 
     def "Add facet"(){
         when:

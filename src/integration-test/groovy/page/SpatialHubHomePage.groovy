@@ -3,7 +3,8 @@ package page
 import geb.Page
 
 class SpatialHubHomePage extends Page {
-    static at = { title == "ALA | Login" || title.startsWith("Spatial Portal") }
+
+    static at = { title == "ALA | Login" || title.startsWith("Spatial Portal") || authModule.isCognitoAuth()}
 
     static content = {
         //Shared static submodules

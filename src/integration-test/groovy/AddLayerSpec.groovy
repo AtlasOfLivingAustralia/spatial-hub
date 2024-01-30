@@ -3,21 +3,7 @@
 import geb.spock.GebSpec
 import page.SpatialHubHomePage
 
-class AddLayerSpec extends GebSpec {
-
-    int pause = 3000
-    def env = driver.currentUrl.contains("test")?"test":"dev"
-
-    def setup() {
-        when:
-        via SpatialHubHomePage
-
-        if (title.startsWith("ALA | Login"))
-            authModule.login()
-
-        then:
-        waitFor 20, { menuModule.isReady()}
-    }
+class AddLayerSpec extends SpatialGebSpec {
 
     def "Add layer"(){
 

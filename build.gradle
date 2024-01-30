@@ -12,7 +12,7 @@ buildscript {
     }
 }
 
-version "2.1.0-SNAPSHOT"
+version "2.1.1-SNAPSHOT"
 group "au.org.ala"
 
 apply plugin:"eclipse"
@@ -86,6 +86,8 @@ dependencies {
     testImplementation "org.seleniumhq.selenium:selenium-support:3.141.59"
     testRuntimeOnly "org.seleniumhq.selenium:selenium-chrome-driver:3.141.59"
     testRuntimeOnly "org.seleniumhq.selenium:selenium-firefox-driver:3.141.59"
+    // Version>4 Needs geb-spock to pass system.property into test framework
+    testImplementation "org.gebish:geb-spock:$gebVersion"
 
     // Additional Plugins
     implementation 'dk.glasius:external-config:3.1.1'
@@ -112,6 +114,7 @@ dependencies {
 
     implementation "au.org.ala.plugins.grails:ala-charts-plugin:2.3.0-ANGULAR-SNAPSHOT"
     runtimeOnly 'org.grails.plugins:sandbox-hub:1.0'
+
 }
 
 // Set to true it needed only for development
@@ -175,7 +178,16 @@ webdriverBinaries {
 
 }
 
-tasks.getByName("integrationTest") {
+// Grails >4 requires this function pass system.property into test framework
+integrationTest.doFirst {
+    //pass test server by -DbaseUrl
+    //systemProperties System.getProperties().subMap(["baseUrl"])
+    //Does not work
+    //systemProperty "geb.build.baseUrl" , systemProperties["baseUrl"]
+    //systemProperty "geb.build.reportsDir", reporting.file("geb/$name")
+}
+
+tasks.named("integrationTest") {
     useJUnitPlatform()
     description = 'Runs integration tests.'
     group = 'verification'
@@ -185,8 +197,11 @@ tasks.getByName("integrationTest") {
     group JavaBasePlugin.VERIFICATION_GROUP
     systemProperty "geb.build.reportsDir", reporting.file("geb/$name")
     systemProperty "geb.env",  System.properties['driver']?:"firefox"  // firefox by default
-    // pass test server by -DbaseUrl
-    systemProperty "geb.build.baseUrl", System.properties['baseUrl'] ?: "http://devt.ala.org.au:8087"
+    systemProperty "baseUrl", System.properties["baseUrl"]
+    //Won't work. geb.build.baseUrl will be overwritten by local service AGAIN.
+    //Grails 4 may change the boot sequence (TBC)
+    //systemProperty "geb.build.baseUrl", System.properties["baseUrl"]
+
     //Store username and password into the default config file
     systemProperty "configFile",System.properties['configFile']?: "/data/spatial-hub/test/default.properties"
     //or pass with -Dusername, -Dpassword
