@@ -27,22 +27,22 @@
                             if (data.length) {
                                 for (var i = 0; i < data.length; i++) {
                                     scope.items.push({
-                                        dataResourceUid: data[i].dataResourceUid,
-                                        listName: data[i].listName,
+                                        dataResourceUid: data[i].id || data[i].dataResourceUid,
+                                        listName: data[i].listName || data[i].title,
                                         lastUpdated: data[i].lastUpdated,
-                                        itemCount: data[i].itemCount,
-                                        fullName: data[i].fullName,
+                                        itemCount: data[i].itemCount || data[i].rowCount,
+                                        fullName: data[i].fullName || data[i].owner || data[i].authority,
                                         isAuthoritative:data[i].isAuthoritative,
                                         selected: false
                                     })
                                 }
-                            } else if (data.dataResourceUid) {
+                            } else if (data.dataResourceUid || data.id) {
                                 scope.items.push({
-                                    dataResourceUid: data.dataResourceUid,
-                                    listName: data.listName,
+                                    dataResourceUid: data.id || data.dataResourceUid,
+                                    listName: data.listName || data.title,
                                     lastUpdated: data.lastUpdated,
-                                    itemCount: data.itemCount,
-                                    fullName: data.fullName,
+                                    itemCount: data.itemCount || data.rowCount,
+                                    fullName: data.fullName || dats.owner || data[i].authority,
                                     selected: false
                                 });
                             }
@@ -70,7 +70,12 @@
                         };
 
                         scope.itemUrl = function (item) {
-                            return ListsService.url() + '/speciesListItem/list/' + item.dataResourceUid
+                            if (ListsService.urlUi()) {
+                                // new species-lists as urlUi defined
+                                return ListsService.urlUi() + '/#/list/' + item.dataResourceUid
+                            } else {
+                                return ListsService.url() + '/speciesListItem/list/' + item.dataResourceUid
+                            }
                         };
 
                         scope.add = function (item) {

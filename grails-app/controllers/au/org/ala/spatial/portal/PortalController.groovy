@@ -376,7 +376,24 @@ class PortalController {
 
             def url = grailsApplication.config.lists.url
 
-            def r = webService.post("${url}/ws/speciesList/", json)
+            def r
+            if (grailsApplication.config.lists.useListWs) {
+                // format input
+                /*
+                    {
+                        "listName": name,
+                        "listItems": items,
+                        "description": description,
+                        "isPrivate": makePrivate,
+                        "listType": listType
+                    }
+                 */
+                r = webService.post("${url}/upload", json, null, ContentType.APPLICATION_JSON, false, true)
+
+                r = webService.post("${url}/ingest/${speciesListID}", json, null, ContentType.APPLICATION_JSON, false, true)
+            } else {
+                r = webService.post("${url}/ws/speciesList/", json)
+            }
 
             if (r == null) {
                 def status = response.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR)
@@ -400,7 +417,12 @@ class PortalController {
         } else {
             def url = grailsApplication.config.lists.url
 
-            def r = webService.get("${url}/ws/speciesListItems/" + params.id, [:], org.apache.http.entity.ContentType.APPLICATION_JSON, false, true, [:])
+            def r
+            if (grailsApplication.config.lists.useListWs) {
+                r = webService.get("${url}/speciesListItems/" + params.id, [:], org.apache.http.entity.ContentType.APPLICATION_JSON, false, true, [:])
+            } else {
+                r = webService.get("${url}/ws/speciesListItems/" + params.id, [:], org.apache.http.entity.ContentType.APPLICATION_JSON, false, true, [:])
+            }
 
             if (r == null) {
                 def status = response.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR)
@@ -424,7 +446,12 @@ class PortalController {
         } else {
             def url = grailsApplication.config.lists.url
 
-            def r = webService.get("${url}/ws/speciesList", [user: params.user ? userId : null, max: params.max], org.apache.http.entity.ContentType.APPLICATION_JSON, false, true, [:])
+            def r
+            if (grailsApplication.config.lists.useListWs) {
+                r = webService.get("${url}/speciesList/", [pageSize: params.max, page: params.page ?: 1], org.apache.http.entity.ContentType.APPLICATION_JSON, false, true, [:])
+            } else {
+                r = webService.get("${url}/ws/speciesList", [user: params.user ? userId : null, max: params.max], org.apache.http.entity.ContentType.APPLICATION_JSON, false, true, [:])
+            }
 
             if (r == null) {
                 def status = response.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR)

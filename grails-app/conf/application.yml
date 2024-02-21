@@ -28,7 +28,7 @@ i18n:
 layersService:
     url: 'https://spatial.ala.org.au/ws'
 geoserver:
-  url: 'https://spatial.ala.org.au/geoserver/web/'
+  url: 'https://spatial.ala.org.au/geoserver'
 
 info:
     app:
@@ -205,12 +205,22 @@ skin:
 
 
 lists:
+    useListWs: false
     url: 'https://lists.ala.org.au'
     threatenedSpeciesUrl: '/ws/speciesList/?isThreatened=eq:true&isAuthoritative=eq:true'
     invasiveSpeciesUrl: '/ws/speciesList/?isInvasive=eq:true&isAuthoritative=eq:true'
     facets: true
     migratoryDR: 'dr1005'
     iconicSpeciesDR: 'dr781'
+#lists:
+#    useListWs: true
+#    url: 'http://localhost:8080'
+#    urlUi: 'http://localhost:5173'
+#    threatenedSpeciesUrl: '/speciesList/?isThreatened=true&isAuthoritative=true&pageSize=1000'
+#    invasiveSpeciesUrl: '/speciesList/?isInvasive=true&isAuthoritative=true&pageSize=1000'
+#    facets: true
+#    migratoryDR: 'dr1005'
+#    iconicSpeciesDR: 'dr781'
 
 journalmap:
     url: 'https://www.journalmap.org'

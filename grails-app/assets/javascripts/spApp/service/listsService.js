@@ -27,15 +27,11 @@
                 list: function (q, max, offset, sort, order, user) {
                     var params = '';
                     if (q) params += "/" + encodeURIComponent(q);
-                    //TODO: investigate paging
-//                        if(q) params += '&q=' + encodeURIComponent(q);
-//                        if(max) params += '&max=' + max;
-//                        if(offset) params += '&offset=' + offset;
-//                        if(sort) params += '&sort=' + sort;
-//                        if(order) params += '&order=' + order;
-//                        if(user) params += '&user=' + user;
-                    params += "?" + "&max=2000";
+                    // The new species-lists has separate graphql query that is more UI friendly. In the meantime,
+                    // get everything, or an approximation of everything.
+                    params += "?max=20000";
                     if ($SH.userId) {
+                        // This is not used in the new species-lists. The purpose was to put lists by the current user at the top of the list.
                         params += "&user=" + $SH.userId
                     }
                     return $http.get($SH.baseUrl + "/portal/speciesList" + params, _httpDescription('list')).then(function (response) {
@@ -74,21 +70,13 @@
                     return cache.get(listId);
                 },
                 getItemsQ: function (listId) {
-                    // TODO: use 'species_list:' after biocache-service is redeployed
-                    //return $q.when('species_list:' + listId);
-
-                    if (scope.getItemsQCached(listId)) {
-                        return $q.when(scope.listToFq(scope.getItemsQCached(listId)))
-                    } else {
-                        return scope.items(listId, {includeKVP: true}).then(function (data) {
-                            cache.put(listId, data);
-
-                            return $q.when(scope.listToFq(data));
-                        });
-                    }
+                    return $q.when('species_list:' + listId);
                 },
                 url: function () {
                     return $SH.listsUrl
+                },
+                urlUi: function () {
+                    return $SH.listsUrlUi
                 },
                 listToFq: function (data) {
                     var terms = [];

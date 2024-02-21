@@ -29,6 +29,7 @@
         layersServiceUrl: '${config.layersService.url}',
         samplingUrl: '${config.sampling.url}',
         listsUrl: '${config.lists.url}',
+        listsUrlUi: '${config.lists.urlUi}',
         sandboxUrl: '${config.sandbox.url}',
         sandboxServiceUrl: '${config.sandboxService.url}',
         sandboxUiUrl: '${config.sandbox.uiUrl}',
