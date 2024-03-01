@@ -9,7 +9,6 @@ import org.apache.commons.lang.StringUtils
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.entity.ContentType
-import org.jasig.cas.client.util.CommonUtils
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.multipart.MultipartHttpServletRequest
 
@@ -378,19 +377,36 @@ class PortalController {
 
             def r
             if (grailsApplication.config.lists.useListWs) {
-                // format input
-                /*
-                    {
-                        "listName": name,
-                        "listItems": items,
-                        "description": description,
-                        "isPrivate": makePrivate,
-                        "listType": listType
-                    }
-                 */
-                r = webService.post("${url}/upload", json, null, ContentType.APPLICATION_JSON, false, true)
+                // create tmp file
+                File tmpFile = File.createTempFile("spatial-species-list-",".csv")
+                BufferedWriter fw = new BufferedWriter(new FileWriter(tmpFile))
+                fw.writeLine("taxonID")
+                for (String item : json.listItems.split(",")) {
+                    fw.writeLine(item)
+                }
+                fw.flush()
+                fw.close()
 
-                r = webService.post("${url}/ingest/${speciesListID}", json, null, ContentType.APPLICATION_JSON, false, true)
+                r = webService.postMultipart("${url}/upload", null, null, [file: tmpFile], ContentType.APPLICATION_JSON, false, true)
+
+                tmpFile.delete()
+
+                if (r.statusCode == 200) {
+                    def metadata = [
+                            file       : r.resp.localFile,
+                            title      : json.listName,
+                            description: json.description ?: json.listName,
+                            listType   : json.listType,
+                            region     : "AUS", // TODO: replicate species-lists behaviour, depends on species-lists issue #83
+                            licence    : "CC-BY", // TODO: replicate species-lists behaviour, depends on species-lists issue #83
+                            isPrivate  : json.isPrivate
+                    ]
+
+                    r = webService.post("${url}/ingest", metadata, [file: r.resp.localFile], ContentType.APPLICATION_JSON, false, true)
+
+                    // backward compatible id field
+                    r.resp.druid = r.resp.id
+                }
             } else {
                 r = webService.post("${url}/ws/speciesList/", json)
             }

@@ -70,12 +70,7 @@
                         };
 
                         scope.itemUrl = function (item) {
-                            if (ListsService.urlUi()) {
-                                // new species-lists as urlUi defined
-                                return ListsService.urlUi() + '/#/list/' + item.dataResourceUid
-                            } else {
-                                return ListsService.url() + '/speciesListItem/list/' + item.dataResourceUid
-                            }
+                            return ListsService.urlUi() + item.dataResourceUid
                         };
 
                         scope.add = function (item) {

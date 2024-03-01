@@ -349,7 +349,7 @@
                             {
                                 name: $i18n(372, "Migratory species - EPBC"),
                                 query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
-                                link: ListsService.url() + '/speciesListItem/list/' + $SH.migratoryDR,
+                                link: ListsService.urlUi() + $SH.migratoryDR,
                                 linkName: $i18n(373, "Full list"),
                                 extraQ: ["species_list_uid:" + $SH.migratoryDR],
                                 ignore: $SH.listsUrl === '' || $SH.migratoryDR === ''
@@ -357,7 +357,7 @@
                             {
                                 name: $i18n(374, "Australian iconic species"),
                                 query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
-                                link: ListsService.url() + '/speciesListItem/list/' + $SH.iconicSpeciesDR,
+                                link: ListsService.urlUi() + $SH.iconicSpeciesDR,
                                 linkName: $i18n(373, "Full list"),
                                 extraQ: ["species_list_uid:" + $SH.iconicSpeciesDR],
                                 ignore: $SH.listsUrl === '' || $SH.iconicSpeciesDR === ''

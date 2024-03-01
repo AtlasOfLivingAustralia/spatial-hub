@@ -212,6 +212,23 @@ lists:
     facets: true
     migratoryDR: 'dr1005'
     iconicSpeciesDR: 'dr781'
+    listTypes:
+      - id: 'OTHER'
+        label: "Other"
+      - id: 'SPECIES_CHARACTERS'
+        label: "Species characters list"
+      - id: 'CONSERVATION_LIST'
+        label: "Conservation list"
+      - id: 'SENSITIVE_LIST'
+        label: "Sensitive list of species"
+      - id: 'LOCAL_LIST'
+        label: "Local checklist"
+      - id: 'COMMON_TRAIT'
+        label: "Common trait of species"
+      - id: 'COMMON_HABITAT'
+        label: "Common habitat of species"
+      - id: 'TEST'
+        label: "Test list"
 #lists:
 #    useListWs: true
 #    url: 'http://localhost:8080'
@@ -221,6 +238,19 @@ lists:
 #    facets: true
 #    migratoryDR: 'dr1005'
 #    iconicSpeciesDR: 'dr781'
+#    listTypes:
+#      - id: 'CONSERVATION_LIST'
+#        label: "Conservation species list"
+#      - id: 'SENSITIVE_LIST'
+#        label: "Sensitive list"
+#      - id: 'INVASIVE'
+#        label: "Invasive species list"
+#      - id: 'COMMON_TRAIT'
+#        label: "Traits"
+#      - id: 'LOCAL_LIST'
+#        label: "Local checklist"
+#      - id: 'SPECIES_CHARACTERS'
+#        label: "Species characters"
 
 journalmap:
     url: 'https://www.journalmap.org'
