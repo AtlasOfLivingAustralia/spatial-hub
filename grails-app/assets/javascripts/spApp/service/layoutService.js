@@ -362,6 +362,7 @@
                                 "<tr><td>" + $i18n(347, "Description") + "</td><td>" + item.description + "</td></tr>" +
                                 "<tr><td>" + $i18n(348, "Area (sq km)") + "</td><td testTag='areaSize'>" + item.area_km.toFixed(2) + "</td></tr>" +
                                 "<tr><td>" + $i18n(349, "Extents") + "</td><td>" + b[0][0] + " " + b[0][1] + ", " +
+                                "<tr><td>" + $i18n(486, "Id") + "</td><td>" + item.id + "</td></tr>" +
                                 b[1][0] + " " + b[1][1] + "</td></tr>" + metadata + "</table>")
                         } else {
                             if (item.metadataUrl !== undefined) {
