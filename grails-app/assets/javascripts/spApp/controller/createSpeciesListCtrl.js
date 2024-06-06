@@ -47,7 +47,7 @@
                 $scope.newListName = $i18n(375, "My species list");
                 $scope.newListDescription = '';
                 $scope.newItems = '';
-                $scope.makePrivate = true; // new lists are private by default
+                $scope.makePrivate = false; // new lists cannot be private by default
                 $scope.newListType = $scope.listTypes[0]
 
                 $scope.selectedQ = {
@@ -156,7 +156,7 @@
                 $scope.addNewSpecies = function () {
                     ListsService.createList($scope.newListName, $scope.newListDescription, $scope.matchedGuids(), $scope.makePrivate, $scope.newListType.id).then(function (resp) {
                         if (resp.status >= 200 && resp.status < 300) {
-                            var json = JSON.parse(resp.data.text);
+                            var json = resp.data;
                             var druid = json.druid;
 
                             LoggerService.log("Create", "createSpeciesList", {

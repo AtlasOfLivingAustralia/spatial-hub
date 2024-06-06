@@ -126,33 +126,47 @@ endpoints:
     jmx:
         unique-names: true
 
+userdetails:
+    web:
+      url: 'https://auth.ala.org.au/userdetails/'
+    api:
+      url: 'https://api.ala.org.au/userdetails/'
+
 security:
-    cas:
-        uriFilterPattern: ['/alaAdmin/*', '/']
-        casServerName: 'https://auth-test.ala.org.au'
-        uriExclusionFilterPattern: ['/portal/q/.*','/portal/messages/.*','/portal/sessionCache/.*','/static/.*','/assets/.*']
-        authenticateOnlyIfCookieFilterPattern: ['/portal/config/*','/portal/i18n/*','/hub/*', '/log/*']
-        loginUrl: 'https://auth-test.ala.org.au/cas/login'
-        logoutUrl: 'https://auth-test.ala.org.au/cas/logout'
-        casServerUrlPrefix: 'https://auth-test.ala.org.au/cas'
-        bypass: false # set to true for non-ALA deployment
-        ignoreCase: true
-        renew: false
-        authCookieName: ALA-Auth
-        enabled: false
-    oidc:
-      enabled: true
-      discovery-uri: 'https://auth-test.ala.org.au/cas/oidc/.well-known'
-      clientId: 'change me'
-      secret: 'change me'
-      allowUnsignedIdTokens: true
-      scope: 'openid profile email ala roles'
-    jwt:
-      enabled: true
-      discoveryUri: https://auth-test.ala.org.au/cas/oidc/.well-known
-      fallbackToLegacyBehaviour: true
-
-
+  cas:
+    uriFilterPattern: ['/alaAdmin/*', '/']
+    casServerName: 'https://aws-auth.ala.org.au'
+    uriExclusionFilterPattern: ['/portal/q/.*','/portal/messages/.*','/portal/sessionCache/.*','/static/.*','/assets/.*']
+    authenticateOnlyIfCookieFilterPattern: ['/portal/*','/portal/config/*','/portal/i18n/*','/hub/*', '/log/*']
+    loginUrl: ' https://auth.ala.org.au/cas/login'
+    logoutUrl: ' https://auth.ala.org.au/cas/logout'
+    casServerUrlPrefix: 'https://aws-auth-test-2023.test.ala.org.au/cas'
+    bypass: false # set to true for non-ALA deployment
+    ignoreCase: true
+    renew: false
+    authCookieName: ALA-Auth-Test
+    enabled: false
+  oidc:
+    enabled: true
+    discoveryUri: 'https://cognito-idp.ap-southeast-2.amazonaws.com/ap-southeast-2_Auyv55MYO/.well-known/openid-configuration'
+    clientId: 'changeme'
+    secret: 'changme'
+    allowUnsignedIdTokens: true
+    #scope: 'openid profile email ala roles'
+    scope: 'openid profile email ala/attrs ala/roles'
+    roleAttribute: ala:role
+    logoutAction: cognito
+    alaUseridClaim: username
+    logoutUrl: https://auth-secure.ala.org.au/logout
+  jwt:
+    enabled: true
+    discoveryUri: 'https://cognito-idp.ap-southeast-2.amazonaws.com/ap-southeast-2_Auyv55MYO/.well-known/openid-configuration'
+    fallbackToLegacyBehaviour: true
+  core:
+    authCookieName: ALA-Auth-Test
+  cookie:
+    enabled: false
+    domain: .ala.org.au
 
 autocompleteUrl: 'https://bie.ala.org.au/ws/search/auto.jsonp'
 
@@ -177,9 +191,6 @@ bie:
 
 bieService:
     baseURL: 'https://bie.ala.org.au/ws'
-
-userdetails:
-    baseUrl: 'https://auth.ala.org.au/userdetails'
 
 favicon:
   url: 'https://www.ala.org.au/wp-content/themes/ala2011/images/favicon.ico'
@@ -645,10 +656,9 @@ environments:
           port: 8087
           use-forward-headers: true
         grails:
-          serverURL: "http://local.ala.org.au:8087"
+          serverURL: "http://localhost:8087"
         layersService:
           url: "http://localhost:8081/ws"
-#          url: "https://spatial.ala.org.au/ws"
         geoserver:
           url: 'http://localhost:8079/geoserver'
     test:

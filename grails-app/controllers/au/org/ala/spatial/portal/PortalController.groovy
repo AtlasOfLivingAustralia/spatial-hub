@@ -376,16 +376,7 @@ class PortalController {
 
             def url = grailsApplication.config.lists.url
 
-            def header = [:]
-            if (Holders.config.security.oidc.enabled) {
-                header.put("userId", userId)
-                header.put("X-ALA-userId", userId)
-                header.put("apiKey", grailsApplication.config.api_key)
-                //header.put('Cookie', 'ALA-Auth=' + URLEncoder.encode(authService.email, 'UTF-8'))
-            }
-
-            def r = hubWebService.urlResponse(HttpPost.METHOD_NAME, "${url}/ws/speciesList/", null, header,
-                    new StringRequestEntity((json as JSON).toString()), true)
+            def r = webService.post("${url}/ws/speciesList/", json)
 
             if (r == null) {
                 def status = response.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR)
@@ -394,10 +385,58 @@ class PortalController {
 
             def status = r.statusCode
             if (r.statusCode < 200 || r.statusCode > 300) {
-                r = [error: r.text  ]
+                r = [error: r.resp  ]
             }
 
-            render status: status, r as JSON
+            render status: status, r.resp as JSON
+        }
+    }
+
+    def speciesListItems() {
+        def userId = getValidUserId(params)
+
+        if (!userId) {
+            notAuthorised()
+        } else {
+            def url = grailsApplication.config.lists.url
+
+            def r = webService.get("${url}/ws/speciesListItems/" + params.id, [:], org.apache.http.entity.ContentType.APPLICATION_JSON, false, true, [:])
+
+            if (r == null) {
+                def status = response.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR)
+                r = [status: status, error: 'Unknown error when fetching list']
+            }
+
+            def status = r.statusCode
+            if (r.statusCode < 200 || r.statusCode > 300) {
+                r = [error: r.resp  ]
+            }
+
+            render status: status, r.resp as JSON
+        }
+    }
+
+    def speciesList() {
+        def userId = getValidUserId(params)
+
+        if (!userId) {
+            notAuthorised()
+        } else {
+            def url = grailsApplication.config.lists.url
+
+            def r = webService.get("${url}/ws/speciesList", [user: params.user ? userId : null, max: params.max], org.apache.http.entity.ContentType.APPLICATION_JSON, false, true, [:])
+
+            if (r == null) {
+                def status = response.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR)
+                r = [status: status, error: 'Unknown error when fetching list']
+            }
+
+            def status = r.statusCode
+            if (r.statusCode < 200 || r.statusCode > 300) {
+                r = [error: r.resp  ]
+            }
+
+            render status: status, r.resp as JSON
         }
     }
 
@@ -421,7 +460,6 @@ class PortalController {
                     json.fq[0] = json.q
                     json.q = tmp
                 } else if (json?.wkt || json?.qc) {
-                    log.error(getWkt(json?.wkt))
                     json.fq = [json.q]
                     json.q = '*:*'
                 } else {
