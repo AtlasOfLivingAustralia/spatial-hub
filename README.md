@@ -123,34 +123,6 @@ The dependent services point to other production servers by default
 ##### Fork [spatial-hub](https://github.com/AtlasOfLivingAustralia/spatial-hub), modify and deploy
 * Use when development of spatial-hub is expected. It can be used with with the other methods.
 
-##### Local files
-* Adding files local to deployment can add new layouts and resources.
-    
-    1. Add a new layout gsp to the ```/data/spatial-hub/views/layouts``` directory.
-        ```
-        /data/spatial-hub/views/layouts/myLayout.gsp
-        ```
-
-    1. Additional assets can be added to the ```/data/spatial-hub/assets``` directory.
-        ```
-        /data/spatial-hub/assets/css/externalCss.css
-        /data/spatial-hub/assets/js/externalJs.js
-        /data/spatial-hub/assets/img/externalImage.png
-        ```
-
-    1. Assets can be referenced within the new layout gsp.
-        ```
-        <asset:stylesheet src="css/externalCss.css" />
-        <asset:javascript src="js/externalJs.js" />
-        <asset:image src="img/externalImg.png" />
-        ```
-
-    1. Change config to use the new layout gsp.
-        ```
-        # edit /data/spatial-hub/config/spatial-hub-config.properties
-        skin.layout=myLayout
-        ```
-
 > **Note:**
 >
 > A forked [commonui-bs3](https://github.com/AtlasOfLivingAustralia/commonui-bs3) can be deployed to ```/data/spatial-hub/assets/``` and used with the config
