@@ -7,12 +7,11 @@ buildscript {
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
         classpath "gradle.plugin.com.github.erdi.webdriver-binaries:webdriver-binaries-gradle-plugin:2.7"
-        classpath "com.bertramlabs.plugins:asset-pipeline-gradle:3.4.6"
-//        classpath 'com.bertramlabs.plugins:asset-pipeline-core:3.2.4'
+        classpath("com.bertramlabs.plugins:asset-pipeline-gradle:3.4.6")
     }
 }
 
-version "2.1.0-SNAPSHOT"
+version "2.1.2-SNAPSHOT"
 group "au.org.ala"
 
 apply plugin:"eclipse"
@@ -93,8 +92,6 @@ dependencies {
     implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.4'
     implementation group: 'commons-io', name: 'commons-io', version: '2.6'
     implementation group: 'commons-lang', name: 'commons-lang', version: '2.6'
-
-    implementation group: "com.bertramlabs.plugins", name: "asset-pipeline-gradle", version: "3.4.6"
 
     //Angular profile wrapper needs
     assets 'com.craigburke.angular:angular-annotate-asset-pipeline:2.4.1'
