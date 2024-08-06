@@ -49,6 +49,8 @@ configurations {
 }
 
 dependencies {
+    implementation 'com.bertramlabs.plugins:asset-pipeline-core:3.4.6'
+    implementation 'com.bertramlabs.plugins:asset-pipeline-grails:3.4.6'
     developmentOnly("org.springframework.boot:spring-boot-devtools")
    // compile "org.springframework.boot:spring-boot-starter-logging"
     implementation "org.springframework.boot:spring-boot-autoconfigure"
@@ -171,6 +173,7 @@ webdriverBinaries {
         }
         geckodriver {
             version = '0.31.0'
+            architecture = 'ARM64'
         }
 
 }
