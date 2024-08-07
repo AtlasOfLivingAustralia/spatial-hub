@@ -96,8 +96,6 @@ dependencies {
     implementation group: 'commons-io', name: 'commons-io', version: '2.6'
     implementation group: 'commons-lang', name: 'commons-lang', version: '2.6'
 
-    implementation group: "com.bertramlabs.plugins", name: "asset-pipeline-gradle", version: "3.4.6"
-
     //Angular profile wrapper needs
     assets 'com.craigburke.angular:angular-annotate-asset-pipeline:2.4.1'
     //Fork version in Atlas
