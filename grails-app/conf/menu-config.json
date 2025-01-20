@@ -114,12 +114,7 @@
     "items": [
       {
         "name": "Points",
-        "open": "sandBox",
-        "params": {
-          "display": {
-            "size": "full"
-          }
-        }
+        "open": "addPoints"
       },
       {
         "name": "Species List",

@@ -225,6 +225,14 @@ sandbox:
 sandboxService:
     url: 'https://sandbox.ala.org.au/biocache-service'
 
+# Config to use spatial-service/pipelines instead of sandbox/biocache-store for uploading points.
+# - Read access to sandbox/biocache-store data is enabled when sandbox.url and sandboxService.url are set.
+# - Update menu-config.json to use `open: addPoints` instead of `open: sandBox`
+sandboxSpatial:
+    hubUrl: 'https://sandbox-test.ala.org.au/ala-hub'
+    serviceUrl: 'https://sandbox-test.ala.org.au/biocache-service'
+
+
 gazField: 'cl915'
 
 userObjectsField: 'cl1082'

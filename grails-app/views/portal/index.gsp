@@ -46,6 +46,8 @@
         sandboxUiUrl: '${config.sandbox.uiUrl}',
         sandboxUrls: ['${config.sandbox.url}'],
         sandboxServiceUrls: ['${config.sandboxService.url}'],
+        sandboxSpatialUiUrl: '${config.sandboxSpatial.hubUrl}',
+        sandboxSpatialServiceUrl: '${config.sandboxSpatial.serviceUrl}',
         gazField: '${config.gazField}',
         geoserverUrl: '${config.geoserver.url}',
         collectionsUrl: '${config.collections.url}',
