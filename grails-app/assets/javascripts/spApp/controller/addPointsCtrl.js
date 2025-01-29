@@ -7,7 +7,7 @@
      * @description
      *   Add points to the map using spatial-service's sandbox services
      */
-    angular.module('add-points-ctrl', ['map-service', 'layers-service', 'predefined-areas-service'])
+    angular.module('add-points-ctrl', ['map-service', 'layers-service', 'predefined-areas-service', 'ngSanitize'])
         .controller('AddPointsCtrl', ['LayoutService', '$scope', 'MapService', '$timeout', 'LayersService',
             '$uibModalInstance', 'PredefinedAreasService', 'BiocacheService', 'LoggerService', 'data',
             function (LayoutService, $scope, MapService, $timeout, LayersService, $uibModalInstance, PredefinedAreasService, BiocacheService, LoggerService, inputData) {
@@ -36,6 +36,8 @@
                 $scope.searchUploads = '';
                 $scope.sortType = 'date';
                 $scope.sortReverse = true;
+
+                $scope.instructions = $i18n(551, "Select a CSV or zipped CSV file.");
 
                 LayoutService.addToSave($scope);
 

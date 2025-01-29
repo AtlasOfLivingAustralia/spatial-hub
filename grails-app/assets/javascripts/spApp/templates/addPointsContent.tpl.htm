@@ -20,7 +20,7 @@
                                                                     ng-change="method='upload'">Upload CSV</label></div>
                                 <div class="checkbox"><label><input type="radio" ng-model="method"
                                                                     value="existing" name="addPoints_method"
-                                                                    ng-change="method='existing'">Previous upload</label></div>
+                                                                    ng-change="method='existing'; file=null">Previous upload</label></div>
                             </div>
                             <br/>
                         </div>
@@ -95,13 +95,11 @@
                 <div class="panel panel-default" ng-show="step == 'default' && method == 'upload'">
                     <div class="panel-default">
                         <div class="panel-heading">
-                            <h3 i18n="550" class="panel-title">Upload a CSV file with occurrences.</h3>
+                            <h3 i18n="550" class="panel-title">Upload a CSV file with occurrences</h3>
                         </div>
 
                         <div class="panel-body">
-                            <div i18n="551">
-                                Select a CSV or zipped CSV file. Please note that for the records in a data set to be effectively discoverable and able to be mapped it needs to meet a minimum set of standards. Data needs to include, at a minimum: scientificName/vernacularName to identify the organism and eventDate, decimalLatitude and decimalLongitude to indicate where and when the occurrence happened. The data needs to have a unique identifier column - either catalogNumber or occurrenceID with a unique value for each record. The number of columns must match the number of column headers (problems with this often indicate commas and/or line breaks in the fields). Additional fields will increase the usability of the data.
-                            </div>
+                            <div id="pointsUploadInstructions" ng-bind-html="instructions"></div>
                             <br/>
                             <div>
                                 <div class="btn-group btn-group-sm">
@@ -144,7 +142,7 @@
                         </div>
 
                         <div class="panel-body">
-                            <div>{{status}} : {{message}}</div>
+                            <div style="display: flex"><div class="inline-spinner" style="margin-right:10px" ng-show="status != 'finished' && status != ''"></div>{{message}}</div>
 
                             <div ng-show="errorMsg" style="color: red">{{ errorMsg }}</div>
                             <br/>
