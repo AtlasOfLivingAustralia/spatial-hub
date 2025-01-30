@@ -129,14 +129,9 @@
                 };
 
                 $scope.addQ = function (query) {
-                    BieService.guidLookup([query.q[0].replace('lsid:', '')]).then(function (list) {
-                        for (var i in list) {
-                            if (list.hasOwnProperty(i)) {
-                                $scope.getCount(list[i]);
-
-                                $scope.matchedItems.push(list[i])
-                            }
-                        }
+                    BieService.guidLookup(query.q[0].replace('lsid:', '')).then(function (result) {
+                        $scope.getCount(result);
+                        $scope.matchedItems.push(result);
                     });
                     speciesAutoComplete.value = ''
                 };

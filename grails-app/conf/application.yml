@@ -192,6 +192,9 @@ bie:
 bieService:
     baseURL: 'https://bie.ala.org.au/ws'
 
+namematching:
+    baseURL: 'https://namematching-ws.ala.org.au'
+
 favicon:
   url: 'https://www.ala.org.au/wp-content/themes/ala2011/images/favicon.ico'
 
