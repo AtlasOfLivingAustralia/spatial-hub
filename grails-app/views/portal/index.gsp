@@ -37,6 +37,7 @@
         custom_facets: ${(custom_facets as grails.converters.JSON).toString().encodeAsRaw()},
         bieUrl: '${config.bie.baseURL}',
         bieServiceUrl: '${config.bieService.baseURL}',
+        namematchingUrl: '${config.namematching.baseURL}',
         layersServiceUrl: '${config.layersService.url}',
         samplingUrl: '${config.sampling.url}',
         listsUrl: '${config.lists.url}',

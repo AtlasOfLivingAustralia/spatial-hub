@@ -4,12 +4,11 @@
      * @memberof spApp
      * @ngdoc service
      * @name BieService
-     * @param {service} $http angular html service
      * @description
-     *   Methods to interact with ALA BIE
+     *   Methods to interact with ALA BIE and Name Matching services
      */
     angular.module('bie-service', [])
-        .factory("BieService", ["$http", function ($http) {
+        .factory("BieService", ["$http", "$q", function ($http, $q) {
             var _httpDescription = function (method, httpconfig) {
                 if (httpconfig === undefined) {
                     httpconfig = {};
@@ -54,6 +53,10 @@
 
                 /**
                  * Bulk LSID lookup using taxon names
+                 *
+                 * Uses name matching service's /api/getGuidsForTaxa and /api/getAllByTaxonID because
+                 * /api/searchAllByClassification failed to return results for some names.
+                 *
                  * @memberof BieService
                  * @param {List} names List of taxon names to search
                  * @returns {Promise(List)} search results that will contain LSID if found
@@ -62,93 +65,94 @@
                  * Input:
                  * ["Macropus"]
                  *
-                 * Output:
+                 * Output (may contain additional fields):
                  * [{
                  *  "identifier": "urn:lsid:biodiversity.org.au:afd.taxon:b1d9bf29-648f-47e6-8544-2c2fbdf632b1",
-                 *  "guid": "urn:lsid:biodiversity.org.au:afd.taxon:b1d9bf29-648f-47e6-8544-2c2fbdf632b1",
-                 *  "parentGuid": "urn:lsid:biodiversity.org.au:afd.taxon:3281c966-5119-4146-89e5-3c874754f23a",
-                 *  "name": "Macropus",
-                 *  "nameComplete": "Macropus Shaw, 1790",
-                 *  "commonName": null,
-                 *  "commonNameSingle": null,
-                 *  "rank": "genus",
-                 *  "rankId": 6000,
+                 *  "searchTerm": "Macropus",
                  *  "acceptedConceptGuid": "urn:lsid:biodiversity.org.au:afd.taxon:b1d9bf29-648f-47e6-8544-2c2fbdf632b1",
-                 *  "acceptedConceptName": "Macropus",
-                 *  "taxonomicStatus": "accepted",
-                 *  "imageId": "274ed24e-481e-4532-bead-66fa479fb272",
-                 *  "imageUrl": "https://images.ala.org.au/image/proxyImage?imageId=274ed24e-481e-4532-bead-66fa479fb272",
-                 *  "thumbnailUrl": "https://images.ala.org.au/image/proxyImageThumbnail?imageId=274ed24e-481e-4532-bead-66fa479fb272",
-                 *  "largeImageUrl": "https://images.ala.org.au/image/proxyImageThumbnailLarge?imageId=274ed24e-481e-4532-bead-66fa479fb272",
-                 *  "smallImageUrl": "https://images.ala.org.au/image/proxyImageThumbnailLarge?imageId=274ed24e-481e-4532-bead-66fa479fb272",
-                 *  "imageMetadataUrl": "https://images.ala.org.au/ws/image/274ed24e-481e-4532-bead-66fa479fb272",
+                 *  "name": "Macropus",
                  *  "kingdom": "ANIMALIA",
-                 *  "phylum": "CHORDATA",
-                 *  "classs": "MAMMALIA",
-                 *  "order": "DIPROTODONTIA",
-                 *  "family": "MACROPODIDAE",
-                 *  "genus": null,
-                 *  "author": "Shaw, 1790",
-                 *  "linkIdentifier": null,
-                 *  "searchTerm": "Macropus"
+                 *  "family": "MACROPODIDAE"
                  *  }]
                  */
                 nameLookup: function (names) {
-                    return $http.post($SH.bieServiceUrl + "/species/lookup/bulk", {
-                        names: names,
-                        vernacular: true
-                    }, _httpDescription('nameLookup')).then(function (response) {
+                    return $http.post($SH.namematchingUrl + "/api/getGuidsForTaxa", names,
+                        _httpDescription('nameLookup2')).then(function (response) {
+
                         var list = response.data;
-                        for (var i in list) {
-                            if (list.hasOwnProperty(i)) {
-                                list[i].searchTerm = names[i]
-                            }
+
+                        // URL encode list
+                        var encodedIds = list.map(function (item) {
+                            return encodeURIComponent(item, "UTF-8");
+                        })
+
+                        // do batching because the URL gets too long
+                        var batchSize = 1;
+                        var promises = [];
+
+                        for (let i = 0; i < encodedIds.length; i += batchSize) {
+                            var batch = encodedIds.slice(i, i + batchSize);
+                            var taxonParam = "&taxonIDs=" + batch.join("&taxonIDs=");
+                            var promise = $http.post($SH.namematchingUrl + "/api/getAllByTaxonID?follow=true" + taxonParam, {}, _httpDescription('nameLookup2'))
+                                .then(function (response2) {
+                                    var list2 = response2.data;
+
+                                    for (var j in list2) {
+                                        if (list2.hasOwnProperty(j)) {
+                                            list2[j].name = list2[j].scientificName;
+                                            list2[j].searchTerm = names[i + Number(j)];
+                                            list2[j].acceptedConceptGuid = list[i + Number(j)];
+                                            list2[j].identifier = list[i + Number(j)];
+                                        }
+                                    }
+                                    return list2;
+                                });
+                            promises.push(promise);
                         }
-                        return list
+
+                        return $q.all(promises).then(function (results) {
+                            return [].concat.apply([], results); // Flatten the array of results
+                        });
                     });
+
                 },
 
                 /**
-                 * Bulk taxon information lookup using LSIDs
+                 * Single taxon information lookup using LSIDs. Uses name matching service.
+                 *
                  * @memberof BieService
-                 * @param {List} lsids List of LSIDs to search
-                 * @returns {Promise(List)} search results that will contain taxon information if found
+                 * @param {String} LSID to search
+                 * @returns {Promise} search results that will contain taxon information if found
                  *
                  * @example
                  * Input:
                  * ["http://id.biodiversity.org.au/instance/apni/852793"]
                  *
-                 * Ouput:
-                 * [{
-                 *  "guid": "http://id.biodiversity.org.au/instance/apni/852793",
-                 *  "name": "Eucalyptus subcaerulea",
-                 *  "scientificName": "Eucalyptus subcaerulea",
-                 *  "author": "K.D.Hill",
-                 *  "nameComplete": "Eucalyptus subcaerulea K.D.Hill",
-                 *  "rank": "species",
-                 *  "kingdom": null,
-                 *  "phylum": null,
-                 *  "classs": null,
-                 *  "order": null,
-                 *  "family": null,
-                 *  "genus": null,
-                 *  "datasetName": "APC",
-                 *  "datasetID": "dr5214",
-                 *  "acceptedConceptGuid": "http://id.biodiversity.org.au/instance/apni/852793",
-                 *  "searchTerm": "http://id.biodiversity.org.au/instance/apni/852793"
-                 *  }]
+                 * Output (may contain additional fields):
+                 * {
+                 *  "identifier": "urn:lsid:biodiversity.org.au:afd.taxon:b1d9bf29-648f-47e6-8544-2c2fbdf632b1",
+                 *  "searchTerm": "urn:lsid:biodiversity.org.au:afd.taxon:b1d9bf29-648f-47e6-8544-2c2fbdf632b1",
+                 *  "acceptedConceptGuid": "urn:lsid:biodiversity.org.au:afd.taxon:b1d9bf29-648f-47e6-8544-2c2fbdf632b1",
+                 *  "name": "Macropus",
+                 *  "kingdom": "ANIMALIA",
+                 *  "family": "MACROPODIDAE"
+                 *  }
                  */
-                guidLookup: function (guids) {
-                    return $http.post($SH.bieServiceUrl + "/species/guids/bulklookup", guids, _httpDescription('guidLookup')).then(function (response) {
-                        var list = response.data.searchDTOList;
-                        for (var i in list) {
-                            if (list.hasOwnProperty(i)) {
-                                list[i].searchTerm = guids[i];
-                                list[i].acceptedConceptGuid = list[i].guid
+                guidLookup: function (lsid) {
+                    return $http.post($SH.namematchingUrl + "/api/getAllByTaxonID?follow=true&taxonIDs=" + encodeURIComponent(lsid), {}, _httpDescription('nameLookup2'))
+                        .then(function (response2) {
+                            var list2 = response2.data;
+
+                            for (var j in list2) {
+                                if (list2.hasOwnProperty(j)) {
+                                    list2[j].name = list2[j].scientificName;
+                                    list2[j].searchTerm = lsid;
+                                    list2[j].acceptedConceptGuid = list2[j].taxonConceptID;
+                                    list2[j].identifier = list2[j].taxonConceptID;
+                                }
                             }
-                        }
-                        return list
-                    });
+                            return list2[[0]];
+                        });
                 }
             };
         }])
