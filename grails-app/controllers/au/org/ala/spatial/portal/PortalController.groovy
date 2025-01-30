@@ -440,6 +440,24 @@ class PortalController {
         }
     }
 
+    def speciesListInfo() {
+        def url = grailsApplication.config.lists.url
+
+        def r = webService.get("${url}/ws/speciesList/${params.listId}".toString(), null, org.apache.http.entity.ContentType.APPLICATION_JSON, false, true, [:])
+
+        if (r == null) {
+            def status = response.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR)
+            r = [status: status, error: 'Unknown error when fetching list']
+        }
+
+        def status = r.statusCode
+        if (r.statusCode < 200 || r.statusCode > 300) {
+            r = [error: r.resp  ]
+        }
+
+        render status: status, r.resp as JSON
+    }
+
     def q() {
         def json = (Map) request.JSON
 
