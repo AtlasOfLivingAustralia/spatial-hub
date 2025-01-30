@@ -170,8 +170,8 @@
                         var data = ListsService.getItemsQCached(species_list);
                         if (data === undefined) {
                             return ListsService.getItemsQ(species_list).then(function () {
-                                // species list info is now cached
-                                return scope.getFacets(dynamic, groups, species_list)
+                                // species list info is now cached, retry this function
+                                return scope.getGroupedFacets(dynamic, groups, species_list)
                             })
                         } else {
                             if (data.length > 0 && data[0].kvpValues && data[0].kvpValues.length > 0) {
@@ -256,8 +256,8 @@
                         var data = ListsService.getItemsQCached(species_list);
                         if (data === undefined) {
                             return ListsService.getItemsQ(species_list).then(function () {
-                                // species list info is now cached
-                                return scope.getFacets(dynamic, groups, species_list)
+                                // species list info is now cached, retry this function
+                                scope.getAllFacets(dynamic, list, species_list)
                             })
                         } else {
                             if (data.length > 0 && data[0].kvpValues && data[0].kvpValues.length > 0) {
