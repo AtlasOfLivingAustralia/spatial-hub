@@ -218,24 +218,6 @@
                     }
                 };
 
-                $scope.pointOfInterestCounts = function () {
-                    if ($scope.area.wkt !== undefined && $scope.area.wkt.length > 0) {
-                        return $http.get(LayersService.url() + "/intersect/poi/wkt?wkt=" + $scope.area.wkt + "&limit=9999999", $scope._httpDescription('pointsOfInterestCount')).then(function (response) {
-                            return $scope.setPoi(response.data)
-                        });
-                    } else if (($scope.area.pid + '').indexOf('~') < 0) {
-                        return $http.get(LayersService.url() + "/intersect/poi/wkt?pid=" + $scope.area.pid + "&limit=9999999", $scope._httpDescription('pointsOfInterestCount')).then(function (response) {
-                            return $scope.setPoi(response.data)
-                        });
-                    } else {
-                        var wkt = $scope.bboxToWkt($scope.area.bbox)
-                        return $http.get(LayersService.url() + "/intersect/poi/wkt?wkt=" + encodeURIComponent(wkt) + "&limit=9999999", $scope._httpDescription('pointsOfInterestCount')).then(function (response) {
-                            return $scope.setPoi(response.data)
-                        });
-                    }
-
-                };
-
                 $scope.items = [];
 
                 $scope.init = function (areaQ) {
@@ -391,9 +373,7 @@
                             $scope.checklistCounts().then(function () {
                                 $scope.distributionCounts().then(function () {
                                     $scope.journalMapDocumentCount().then(function () {
-                                        $scope.gazPointCounts().then(function () {
-                                            $scope.pointOfInterestCounts()
-                                        })
+                                        $scope.gazPointCounts()
                                     })
                                 })
                             })
