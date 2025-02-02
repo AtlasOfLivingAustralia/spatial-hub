@@ -352,16 +352,20 @@ class PortalController {
         } else {
             def json = request.JSON as Map
 
-            Map headers = [apiKey: grailsApplication.config.api_key]
+            Map params = [sessionId: params.sessionId]
+            for (def key : json.keySet()) {
+                if (key != 'sessionId') {
+                    params.put(key, String.valueOf(json[key]))
+                }
+            }
 
-            def r = hubWebService.postUrl("${grailsApplication.config.layersService.url}/tasks/create?" +
-                    "userId=${userId}&sessionId=${params.sessionId}", json, headers)
+            def r = webService.post("${grailsApplication.config.layersService.url}/tasks/create", null, params, ContentType.APPLICATION_JSON, false, true)
 
             if (r == null) {
                 render [:] as JSON
             } else {
                 response.status = r.statusCode
-                render JSON.parse(new String(r?.text ?: "{}")) as JSON
+                render r.resp as JSON
             }
         }
     }
@@ -762,5 +766,47 @@ class PortalController {
 
 
         return result
+    }
+
+    def postSandboxFile() {
+        def userId = getValidUserId(params)
+
+        if (!userId) {
+            notAuthorised()
+        } else {
+            MultipartFile mFile = ((MultipartHttpServletRequest) request).getFile('file')
+
+            // write mFile to temporary file with the same extension
+            File tempFile = File.createTempFile("sandbox", mFile.originalFilename.substring(mFile.originalFilename.lastIndexOf('.')))
+            mFile.transferTo(tempFile)
+
+            String ce = grailsApplication.config.character.encoding
+
+            String url = "${grailsApplication.config.layersService.url}/sandbox/upload?name=${URLEncoder.encode((String) params.name, ce)}"
+            def r = webService.postMultipart(url, null, null, [tempFile], ContentType.APPLICATION_JSON, false, true)
+
+            if (!r) {
+                render [:] as JSON
+            } else {
+                render r.resp as JSON, status: String.valueOf(r.statusCode)
+            }
+        }
+    }
+
+    def deleteSandboxFile(String id) {
+        def userId = getValidUserId(params)
+
+        if (!userId) {
+            notAuthorised()
+        } else {
+            def url = "${grailsApplication.config.layersService.url}/sandbox/delete?id=${id}"
+            def r = webService.delete(url, null, ContentType.APPLICATION_JSON, false, true)
+
+            if (!r) {
+                render [:] as JSON
+            } else {
+                render r.resp as JSON, status: String.valueOf(r.statusCode)
+            }
+        }
     }
 }

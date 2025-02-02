@@ -33,6 +33,7 @@
 //= require angular-slider/slider.js
 //= require angular-sortable/sortable.js
 //= require ng-file-upload/dist/ng-file-upload.min.js
+//= require angular-sanitize/angular-sanitize.min.js
 
 //bootbox
 //= require ngbootbox/dist/ngBootbox.min.js

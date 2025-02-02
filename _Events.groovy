@@ -28,7 +28,7 @@ def build(String baseDir) {
                  'angular-ui-bootstrap/dist/ui-bootstrap-csp.css', 'bootbox/dist/bootbox.min.js', 'jquery/dist/jquery.min.js',
                  'ng-file-upload/dist/ng-file-upload.js', 'ngbootbox/dist/ngBootbox.min.js',
                  'bootstrap/dist/', 'leaflet/dist/', 'leaflet-draw/dist/', 'leaflet-measure/dist/', 'proj4/dist/proj4.js',
-                 'proj4leaflet/src/proj4leaflet.js', 'lz-string/libs/lz-string.min.js']
+                 'proj4leaflet/src/proj4leaflet.js', 'lz-string/libs/lz-string.min.js', 'angular-sanitize/angular-sanitize.min.js']
     files.each { name ->
         def dst = new File(baseDir + '/grails-app/assets/node_modules/' + name)
         dst.getParentFile().mkdirs()

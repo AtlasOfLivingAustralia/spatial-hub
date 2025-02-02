@@ -388,7 +388,7 @@
                  * @param {List} fqs (Optional) additional fq terms
                  * @param {Integer} pageSize (Optional) page size (default=1)
                  * @param {Integer} offset (Optional) offset (default=0)
-                 * @param {Boolean} facet (Optional) include server default facets (default=false)
+                 * @param {String} facets (Optional) comma delimited facets (flimit is -1)
                  * @returns {Promise(Map)} search results
                  *
                  * @example
@@ -418,8 +418,8 @@
                  *  "activeFacetMap": {}
                  *  }
                  */
-                searchForOccurrences: function (query, fqs, pageSize, offset, facet) {
-                    facet = facet || false;
+                searchForOccurrences: function (query, fqs, pageSize, offset, facets) {
+                    facets = facets || "";
                     pageSize = pageSize === undefined ? 1 : pageSize;
                     offset = offset || 0;
                     var fqList = (fqs === undefined ? '' : '&fq=' + this.joinAndEncode(fqs));
@@ -427,11 +427,25 @@
                         if (response == null) {
                             return {}
                         }
-                        return $http.get(query.bs + "/occurrences/search?facet=" + facet + "&pageSize=" + pageSize + "&startIndex=" + offset + "&q=" + response.qid + fqList + '&sort=id', _httpDescription('searchForOccurrences')).then(function (response) {
+                        return $http.get(query.bs + "/occurrences/search?facets=" + facets + "&pageSize=" + pageSize + "&startIndex=" + offset + "&q=" + response.qid + fqList + '&sort=id', _httpDescription('searchForOccurrences')).then(function (response) {
                             if (response.data !== undefined) {
                                 return response.data;
                             }
                         })
+                    })
+                },
+                /**
+                 * Facet search for dataResourceUid for a given userId.
+                 *
+                 * @param userId user's id used to upload data resources
+                 * @param sandboxServiceUrl biocache-service URL for the sandbox
+                 * @returns {*}
+                 */
+                userUploads: function (userId, sandboxServiceUrl) {
+                    return $http.get(sandboxServiceUrl + "/occurrences/search?facets=data_resource_uid&flimit=-1&pageSize=0&q=user_id:" + userId, _httpDescription('userUploads')).then(function (response) {
+                        if (response.data !== undefined) {
+                            return response.data;
+                        }
                     })
                 },
                 /**
