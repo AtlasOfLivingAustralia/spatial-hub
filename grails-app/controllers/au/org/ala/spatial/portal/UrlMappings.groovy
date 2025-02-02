@@ -8,6 +8,9 @@ class UrlMappings {
 
         "/hub/$hub"(controller: "portal", action: "index")
 
+        "/sandbox"(controller: "portal", action: "postSandboxFile", method: "POST")
+        "/sandbox"(controller: "portal", action: "deleteSandboxFile", method: "DELETE")
+
         "/$controller/$action?/$id?(.$format)?" {
             constraints {
                 // apply constraints here
