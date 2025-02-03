@@ -12,7 +12,7 @@
             '$uibModalInstance', 'PredefinedAreasService', 'BiocacheService', 'LoggerService', 'data',
             function (LayoutService, $scope, MapService, $timeout, LayersService, $uibModalInstance, PredefinedAreasService, BiocacheService, LoggerService, inputData) {
 
-                $scope.inputData = inputData;
+                $scope.inputData = inputData || {}
 
                 $scope.enablePriorUploads = inputData.enablePriorUploads !== undefined ? inputData.enablePriorUploads : true
 
@@ -204,6 +204,7 @@
                                 bs: $SH.sandboxSpatialServiceUrl,
                                 ws: $SH.sandboxSpatialUiUrl
                             });
+                            $scope.$close();
                         } else {
                             $scope.addToMapAndClose();
                         }
