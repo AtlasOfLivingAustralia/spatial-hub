@@ -490,16 +490,16 @@ class PortalController {
                 json.wkt = getWkt(json?.wkt)
             }
 
-            def r = hubWebService.postUrl("${json.bs}/webportal/params", json)
+            def r = webService.post("${json.bs}/webportal/params", null, json, ContentType.TEXT_PLAIN, false, false)
 
             if (r.statusCode >= 400) {
                 log.error("Couldn't post $json to ${json.bs}/webportal/params, status code ${r.statusCode}, body: ${new String(r.text ?: "")}")
                 def result = ['error': "${r.statusCode} when calling ${json.bs}"]
                 render result as JSON, status: 500
             } else {
-                value = [qid: new String(r.text)] as JSON
+                value = [qid: new String(r.resp)] as JSON
 
-                if (r?.text) {
+                if (r?.resp) {
                     grailsCacheManager.getCache(portalService.caches.QID).put(json, value.toString())
                 }
 
