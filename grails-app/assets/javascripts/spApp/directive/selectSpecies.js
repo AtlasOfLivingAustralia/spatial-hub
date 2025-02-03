@@ -120,10 +120,18 @@
 
                         scope.openSandbox = function () {
                             $timeout(function () {
-                                LayoutService.openModal('sandBox', {
-                                    setQ: scope.setSandboxQ,
-                                    display: {size: 'full'}
-                                }, true, true)
+                                // open new spatial-service sandbox UI when enabled
+                                if ($SH.sandboxSpatialServiceUrl) {
+                                    LayoutService.openModal('addPoints', {
+                                        setQ: scope.setSandboxQ,
+                                        enablePriorUploads: false // disabled because it is available without opening addPoints UI
+                                    }, true, true)
+                                } else {
+                                    LayoutService.openModal('sandBox', {
+                                        setQ: scope.setSandboxQ,
+                                        display: {size: 'full'}
+                                    }, true, true)
+                                }
                             }, 0)
                         };
 

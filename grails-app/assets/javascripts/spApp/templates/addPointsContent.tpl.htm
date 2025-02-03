@@ -18,7 +18,7 @@
                                 <div class="checkbox"><label><input type="radio" ng-model="method"
                                                                     value="upload" name="addPoints_method"
                                                                     ng-change="method='upload'">Upload CSV</label></div>
-                                <div class="checkbox"><label><input type="radio" ng-model="method"
+                                <div class="checkbox" ng-show="enablePriorUploads"><label><input type="radio" ng-model="method"
                                                                     value="existing" name="addPoints_method"
                                                                     ng-change="method='existing'; file=null">Previous upload</label></div>
                             </div>

@@ -8,8 +8,8 @@
      *   Table of selectable sandbox uploaded layers
      */
     angular.module('sandbox-list-directive', ['lists-service', 'map-service'])
-        .directive('sandboxList', ['$http', '$timeout', 'SandboxService', 'MapService',
-            function ($http, $timeout, SandboxService, MapService) {
+        .directive('sandboxList', ['$http', '$timeout', 'SandboxService', 'MapService', 'BiocacheService',
+            function ($http, $timeout, SandboxService, MapService, BiocacheService) {
 
                 var sortType = 'updated';
                 var sortReverse = false;
@@ -61,9 +61,55 @@
                             MapService.add(scope.selection);
                         };
 
-                        SandboxService.list($SH.userId).then(function (data) {
-                            scope.setItems(data);
-                        });
+                        // add spatial-service sandbox uploads
+                        if ($SH.sandboxSpatialServiceUrl && $SH.sandboxSpatialServiceUrl !== '') {
+                            BiocacheService.userUploads($SH.userId, $SH.sandboxSpatialServiceUrl).then(function (data) {
+                                if (data.totalRecords === 0) {
+                                    return;
+                                }
+
+                                // add bs and ws to each item
+                                var items = data.facetResults[0].fieldResult;
+                                items.forEach(function (item) {
+                                    item.bs = $SH.sandboxSpatialServiceUrl;
+                                    item.ws = $SH.sandboxSpatialUiUrl;
+                                    // get dataset_name and last_load_date
+                                    BiocacheService.searchForOccurrences({
+                                        qid: item.fq, // skip qid registration for this one-off query
+                                        bs: item.bs,
+                                        ws: item.ws
+                                    }, [], 0, 0, 'datasetName,lastProcessedDate').then(function (data) {
+                                        if (data.totalRecords > 0) {
+                                            // handle facets returning in a different order
+                                            var order = data.facetResults[0].fieldName === 'datasetName' ? 0 : 1;
+                                            item.label = data.facetResults[order === 0 ? 0 : 1].fieldResult[0].label;
+                                            item.date = data.facetResults[order === 0 ? 1 : 0].fieldResult[0].label;
+
+                                            // format the date so that it is sortable. It is currently a string, e.g. "2010-11-01T00:00:00Z"
+                                            item.date = new Date(item.date).toISOString().slice(0, 10);
+
+                                            var a = item.fq.substring(item.fq.indexOf(":") + 1);
+                                            scope.sandboxItems.push({
+                                                ws: item.ws,
+                                                bs: item.bs,
+                                                uid: item.fq.substring(item.fq.indexOf(":") + 1),
+                                                name: item.label,
+                                                lastUpdated: item.date,
+                                                numberOfRecords: item.count,
+                                                selected: false
+                                            })
+                                        }
+                                    });
+                                });
+                            });
+                        }
+
+                        // add items from the deprecated sandbox
+                        if ($SH.sandboxServiceUrl && $SH.sandboxUrl) {
+                            SandboxService.list($SH.userId).then(function (data) {
+                                scope.setItems(data);
+                            });
+                        }
 
                         scope.$watch('sandboxItems', function () {
                         }, true);

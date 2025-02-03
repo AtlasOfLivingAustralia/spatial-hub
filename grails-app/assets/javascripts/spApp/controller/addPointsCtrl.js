@@ -14,8 +14,10 @@
 
                 $scope.inputData = inputData;
 
+                $scope.enablePriorUploads = inputData.enablePriorUploads !== undefined ? inputData.enablePriorUploads : true
+
                 $scope.step = 'default';
-                $scope.method = 'existing';
+                $scope.method = $scope.enablePriorUploads ? 'existing' : 'upload';
 
                 $scope.errorMsg = '';
 
@@ -195,7 +197,16 @@
                     if ($scope.errorMsg || $scope.status === 'error') {
                         $scope.$close();
                     } else if ($scope.status === 'finished') {
-                        $scope.addToMapAndClose();
+                        if ($scope.inputData.setQ !== undefined) {
+                            $scope.inputData.setQ({
+                                q: ['data_resource_uid:"' + $scope.dataResourceUid + '"'],
+                                name: $scope.datasetName,
+                                bs: $SH.sandboxSpatialServiceUrl,
+                                ws: $SH.sandboxSpatialUiUrl
+                            });
+                        } else {
+                            $scope.addToMapAndClose();
+                        }
                     } else {
                         $scope.step = 'uploading';
                         $scope.uploadingFile = true;
