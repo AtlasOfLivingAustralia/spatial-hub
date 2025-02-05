@@ -218,24 +218,6 @@
                     }
                 };
 
-                $scope.pointOfInterestCounts = function () {
-                    if ($scope.area.wkt !== undefined && $scope.area.wkt.length > 0) {
-                        return $http.get(LayersService.url() + "/intersect/poi/wkt?wkt=" + $scope.area.wkt + "&limit=9999999", $scope._httpDescription('pointsOfInterestCount')).then(function (response) {
-                            return $scope.setPoi(response.data)
-                        });
-                    } else if (($scope.area.pid + '').indexOf('~') < 0) {
-                        return $http.get(LayersService.url() + "/intersect/poi/wkt?pid=" + $scope.area.pid + "&limit=9999999", $scope._httpDescription('pointsOfInterestCount')).then(function (response) {
-                            return $scope.setPoi(response.data)
-                        });
-                    } else {
-                        var wkt = $scope.bboxToWkt($scope.area.bbox)
-                        return $http.get(LayersService.url() + "/intersect/poi/wkt?wkt=" + encodeURIComponent(wkt) + "&limit=9999999", $scope._httpDescription('pointsOfInterestCount')).then(function (response) {
-                            return $scope.setPoi(response.data)
-                        });
-                    }
-
-                };
-
                 $scope.items = [];
 
                 $scope.init = function (areaQ) {
@@ -262,7 +244,7 @@
                                 name: $i18n(365, "Number of species - spatially valid only"),
                                 query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
                                 map: false,
-                                extraQ: ["spatiallyValid:true"]
+                                extraQ: ["geospatial_kosher:true"]
                             },
                             {
                                 name: $i18n(366, "Number of endemic species"),
@@ -275,7 +257,7 @@
                                 endemic: true,
                                 query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
                                 map: false,
-                                extraQ: ["spatiallyValid:true"]
+                                extraQ: ["geospatial_kosher:true"]
                             }];
 
                         // TODO: move this into config and retrieve from $SH
@@ -289,7 +271,7 @@
                                 name: $i18n(368, "Occurrences - spatially valid only"),
                                 query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
                                 occurrences: true,
-                                extraQ: ["spatiallyValid:true"]
+                                extraQ: ["geospatial_kosher:true"]
                             },
                             {
                                 name: $i18n(356, "Expert distributions"),
@@ -391,9 +373,7 @@
                             $scope.checklistCounts().then(function () {
                                 $scope.distributionCounts().then(function () {
                                     $scope.journalMapDocumentCount().then(function () {
-                                        $scope.gazPointCounts().then(function () {
-                                            $scope.pointOfInterestCounts()
-                                        })
+                                        $scope.gazPointCounts()
                                     })
                                 })
                             })

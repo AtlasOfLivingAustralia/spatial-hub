@@ -53,20 +53,20 @@
                                 } else if (value.spatiallyValid) {
                                     //spatially-unknown && spatiallyValid
                                     //-> rule out of spatiallySuspect
-                                    scope.fqsOfSpeciesOptions.push('-spatiallyValid:false');
+                                    scope.fqsOfSpeciesOptions.push('-geospatial_kosher:false');
                                 }else if (value.spatiallySuspect) {
                                     //spatially-unknown && spatiallySuspect
                                     //-> rule out of spatiallyValid
-                                    scope.fqsOfSpeciesOptions.push('-spatiallyValid:true');
+                                    scope.fqsOfSpeciesOptions.push('-geospatial_kosher:true');
                                 }
                             } else {
                                 //spatially-valid and spatially-suspect
                                 if (value.spatiallyValid && value.spatiallySuspect) {
-                                    scope.fqsOfSpeciesOptions.push('spatiallyValid:*');
+                                    scope.fqsOfSpeciesOptions.push('geospatial_kosher:*');
                                 } else if (value.spatiallyValid) {
-                                    scope.fqsOfSpeciesOptions.push('spatiallyValid:true');
+                                    scope.fqsOfSpeciesOptions.push('geospatial_kosher:true');
                                 } else if (value.spatiallySuspect) {
-                                    scope.fqsOfSpeciesOptions.push('spatiallyValid:false');
+                                    scope.fqsOfSpeciesOptions.push('geospatial_kosher:false');
                                 }
                             }
 

@@ -1,14 +1,13 @@
 package au.org.ala.spatial.portal
 
 import grails.converters.JSON
-import org.apache.http.client.methods.HttpGet
 import grails.util.Holders
+import org.apache.http.entity.ContentType
 
 
 class BiocollectController {
-    def hubWebService
+    def webService
     def authService
-    def allowCalls = ["/nocas/geoService"]
     String biocollectUrl = Holders.config.biocollect.url
 
     /**
@@ -20,22 +19,24 @@ class BiocollectController {
         if (!authService.userId || !isAllowed(url)) {
             notAuthorised()
         } else {
-            def headers = [:]
-            headers.put ("apiKey",grailsApplication.config.api_key)
-            def r = hubWebService.urlResponse(HttpGet.METHOD_NAME, url, null, headers)
+            def r = webService.get(url, [:], ContentType.APPLICATION_JSON, false, true, [:])
             return r
         }
     }
 
     private boolean isAllowed(url) {
         if (url.startsWith(biocollectUrl)) {
-            //url.matches(".*(?i)(Nocas|test).*")
-            String pattern = ".*(?i)("+ allowCalls.join("|") +").*"
-            return url.matches(pattern)
+            // must be one of the allowed URLs
+            List items = Holders.config.biocollect.areaReport
+            for (def item : items) {
+                if (item.count && url.startsWith(item.count.replace("_geoSearchJSON_", ""))) {
+                    return true
+                }
+            }
+            return false;
         } else {
             return false
         }
-
     }
 
     private def notAuthorised() {

@@ -198,12 +198,10 @@ class PortalController {
      * null when not logged in
      */
     private def getValidUserId(params) {
-        //apiKey + userId (non-numeric) OR authenticated user
+        // find the authenticated user, or the default user
         def userId
         if (!Holders.config.security.oidc.enabled) {
             userId = portalService.DEFAULT_USER_ID
-        } else if (portalService.isValidApiKey(params.apiKey) && !StringUtils.isNumeric(params.userId)) {
-            userId = params.userId
         } else {
             userId = authService.userId
         }
@@ -290,26 +288,29 @@ class PortalController {
             notAuthorised()
         } else {
             def type = id
+
+            // write the file to disk
             MultipartFile mFile = ((MultipartHttpServletRequest) request).getFile('shapeFile')
-            def settings = [apiKey: grailsApplication.config.api_key]
 
             String ce = grailsApplication.config.character.encoding
 
-            def r = hubWebService.postUrl("${grailsApplication.config.layersService.url}/shape/upload/${type}?" +
+            String url = "${grailsApplication.config.layersService.url}/shape/upload/${type}?" +
                     "name=${URLEncoder.encode((String) params.name, ce)}&" +
-                    "description=${URLEncoder.encode((String) params.description, ce)}&" +
-                    "api_key=${grailsApplication.config.api_key}", null, settings, mFile);
+                    "description=${URLEncoder.encode((String) params.description, ce)}"
+
+            List files = [mFile]
+            def r = webService.post(url, null, null, files, ContentType.MULTIPART_FORM_DATA, false, true)
 
             if (!r) {
                 render [:] as JSON
             } else if (r.error || r.statusCode > 299) {
                 log.error("failed ${type} upload: ${r}")
-                def msg = JSON.parse(new String(r?.text ?: "{}"))
+                def msg = r.resp
                 Map error = [error: msg.error]
                 response.status = r.statusCode
                 render error as JSON
             } else {
-                def json = JSON.parse(new String(r?.text ?: "{}"))
+                def json = r.resp
                 def shapeFileId = json.id
                 def area = json.collect { key, value ->
                     if (key == 'shp_id') {
@@ -352,14 +353,8 @@ class PortalController {
         } else {
             def json = request.JSON as Map
 
-            Map params = [sessionId: params.sessionId]
-            for (def key : json.keySet()) {
-                if (key != 'sessionId') {
-                    params.put(key, String.valueOf(json[key]))
-                }
-            }
-
-            def r = webService.post("${grailsApplication.config.layersService.url}/tasks/create", null, params, ContentType.APPLICATION_JSON, false, true)
+            String url = "${grailsApplication.config.layersService.url}/tasks/create?userId=${userId}&sessionId=${params.sessionId}"
+            def r = webService.post(url, json, null, ContentType.APPLICATION_JSON, false, true)
 
             if (r == null) {
                 render [:] as JSON
@@ -495,16 +490,16 @@ class PortalController {
                 json.wkt = getWkt(json?.wkt)
             }
 
-            def r = hubWebService.postUrl("${json.bs}/webportal/params", json)
+            def r = webService.post("${json.bs}/webportal/params", null, json, ContentType.TEXT_PLAIN, false, false)
 
             if (r.statusCode >= 400) {
                 log.error("Couldn't post $json to ${json.bs}/webportal/params, status code ${r.statusCode}, body: ${new String(r.text ?: "")}")
                 def result = ['error': "${r.statusCode} when calling ${json.bs}"]
                 render result as JSON, status: 500
             } else {
-                value = [qid: new String(r.text)] as JSON
+                value = [qid: new String(r.resp)] as JSON
 
-                if (r?.text) {
+                if (r?.resp) {
                     grailsCacheManager.getCache(portalService.caches.QID).put(json, value.toString())
                 }
 

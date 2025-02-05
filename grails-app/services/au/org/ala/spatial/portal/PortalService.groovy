@@ -118,26 +118,6 @@ class PortalService {
 
     def validKeys = [] as Set
 
-    def isValidApiKey(key) {
-        if (key == null) {
-            return false
-        }
-
-        Boolean result = validKeys.contains(key)
-
-        if (result == null) {
-            String url = MessageFormat.format(grailsApplication.config.apiKeyCheckUrlTemplate.toString(), key)
-
-            result = key == grailsApplication.config.serviceKey || hubWebService.getUrl(url).contains('"valid":true')
-
-            if (result) {
-                validKeys.add(key)
-            }
-        }
-
-        return result
-    }
-
     def canProxy(url) {
         def predefined = url.toString().startsWith(Holders.config.layersService.url) ||
                 url.toString().startsWith(Holders.config.phylolink.url) ||

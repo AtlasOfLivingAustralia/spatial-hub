@@ -65,12 +65,12 @@
 
                         if (speciesOptions.spatiallyUnknown) {
                             if (speciesOptions.spatiallyValid && speciesOptions.spatiallySuspect) { /* do nothing */
-                            } else if (speciesOptions.spatiallyValid) q.push('-spatiallyValid:false');
-                            else if (speciesOptions.spatiallySuspect) q.push('-spatiallyValid:true');
+                            } else if (speciesOptions.spatiallyValid) q.push('-geospatial_kosher:false');
+                            else if (speciesOptions.spatiallySuspect) q.push('-geospatial_kosher:true');
                         } else {
-                            if (speciesOptions.spatiallyValid && speciesOptions.spatiallySuspect) q.push('spatiallyValid:*');
-                            else if (speciesOptions.spatiallyValid) q.push('spatiallyValid:true');
-                            else if (speciesOptions.spatiallySuspect) q.push('spatiallyValid:false');
+                            if (speciesOptions.spatiallyValid && speciesOptions.spatiallySuspect) q.push('geospatial_kosher:*');
+                            else if (speciesOptions.spatiallyValid) q.push('geospatial_kosher:true');
+                            else if (speciesOptions.spatiallySuspect) q.push('geospatial_kosher:false');
                         }
 
                         if (!speciesOptions.includeAbsences) {
