@@ -15,7 +15,7 @@
     <logger name="org.hibernate.orm.deprecation" level="ERROR"/>
     <logger name="org.grails.config.NavigableMap" level="ERROR"/>
 
-    <root level="info">
+    <root level="WARN">
         <appender-ref ref="STDOUT" />
     </root>
 </configuration>

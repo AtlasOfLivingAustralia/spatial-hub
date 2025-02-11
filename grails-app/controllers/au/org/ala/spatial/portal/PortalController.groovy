@@ -5,13 +5,13 @@ import grails.converters.JSON
 import grails.util.Holders
 import grails.web.http.HttpHeaders
 import org.apache.commons.httpclient.methods.StringRequestEntity
-import org.apache.commons.lang.StringUtils
 import org.apache.http.client.methods.HttpGet
-import org.apache.http.client.methods.HttpPost
+import org.apache.http.client.utils.URLEncodedUtils
 import org.apache.http.entity.ContentType
-import org.jasig.cas.client.util.CommonUtils
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.multipart.MultipartHttpServletRequest
+import org.apache.http.client.methods.HttpPost
+import org.apache.http.message.BasicNameValuePair
 
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
@@ -490,14 +490,28 @@ class PortalController {
                 json.wkt = getWkt(json?.wkt)
             }
 
-            def r = webService.post("${json.bs}/webportal/params", null, json, ContentType.TEXT_PLAIN, false, false)
+            def params = []
+            json.each { k, v ->
+                if (v instanceof List) {
+                    v.each { vv ->
+                        params.add(new BasicNameValuePair(String.valueOf(k), String.valueOf(vv)))
+                    }
+                } else {
+                    params.add(new BasicNameValuePair(String.valueOf(k), String.valueOf(v)))
+                }
+            }
+
+            def body = URLEncodedUtils.format(params, "UTF-8")
+
+            def r = webService.post("${json.bs}/webportal/params", body, null, ContentType.APPLICATION_FORM_URLENCODED, false, false)
 
             if (r.statusCode >= 400) {
                 log.error("Couldn't post $json to ${json.bs}/webportal/params, status code ${r.statusCode}, body: ${new String(r.text ?: "")}")
                 def result = ['error': "${r.statusCode} when calling ${json.bs}"]
                 render result as JSON, status: 500
             } else {
-                value = [qid: new String(r.resp)] as JSON
+                // The response is plain text and the webService returns it in a Map as the key of the only element
+                value = [qid: new String(((Map) r.resp).keySet().first())] as JSON
 
                 if (r?.resp) {
                     grailsCacheManager.getCache(portalService.caches.QID).put(json, value.toString())
