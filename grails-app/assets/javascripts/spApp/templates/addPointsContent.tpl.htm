@@ -22,7 +22,6 @@
                                                                     value="existing" name="addPoints_method"
                                                                     ng-change="method='existing'; file=null">Previous upload</label></div>
                             </div>
-                            <div i18n="564"  style="font-style: italic">Note: For large uploads, the number of records displayed may initially be lower than expected due to background processing. Please wait a few minutes while background processing takes place.</div>
                             <br/>
                         </div>
                     </div>
@@ -144,8 +143,7 @@
 
                         <div class="panel-body">
                             <div style="display: flex"><div class="inline-spinner" style="margin-right:10px" ng-show="status != 'finished' && status != ''"></div>{{message}}</div>
-
-                            <div i18n="565"  ng-show="status === 'finished'" style="font-style: italic">Note: For large uploads, the number of records displayed may initially be lower than expected due to background processing. Please wait a few minutes for the final count to update before attempting another upload.</div>
+                            <div i18n="564"  ng-show="status === 'finished'" style="font-style: italic">Note: For large uploads, the number of records displayed may initially be lower than expected due to background processing. Please wait a few minutes while background processing takes place.</div>
 
                             <div ng-show="errorMsg" style="color: red">{{ errorMsg }}</div>
                             <br/>

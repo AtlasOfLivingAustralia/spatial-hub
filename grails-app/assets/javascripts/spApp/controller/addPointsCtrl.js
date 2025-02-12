@@ -14,7 +14,7 @@
 
                 $scope.inputData = inputData || {}
 
-                $scope.enablePriorUploads = inputData.enablePriorUploads !== undefined ? inputData.enablePriorUploads : true
+                $scope.enablePriorUploads = $scope.inputData.enablePriorUploads !== undefined ? $scope.inputData.enablePriorUploads : true
 
                 $scope.step = 'default';
                 $scope.method = $scope.enablePriorUploads ? 'existing' : 'upload';
