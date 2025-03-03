@@ -8,6 +8,7 @@ import org.apache.commons.httpclient.methods.StringRequestEntity
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.client.utils.URLEncodedUtils
 import org.apache.http.entity.ContentType
+import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.multipart.MultipartHttpServletRequest
 import org.apache.http.client.methods.HttpPost
@@ -98,20 +99,15 @@ class PortalController {
                     config.spApp.each { k, v ->
                         spApp.put(k, v.class.newInstance(params.get(k, v)))
                     }
-                    if (params.get("lang")) {
-                        config.i18n?.currentRegion = params.get("lang")
-                    } else {
-                        config.i18n?.currentRegion = null;
-                    }
-
 
                     render(view: 'index',
-                            model: [config     : config,
-                                    userId     : userId,
-                                    userDetails: authService.userDetails(),
-                                    sessionId  : sessionService.newId(userId),
-                                    messagesAge: messageService.messagesAge,
-                                    hub        : hub,
+                            model: [config       : config,
+                                    language     : LocaleContextHolder.getLocale()?.getLanguage(),
+                                    userId       : userId,
+                                    userDetails  : authService.userDetails(),
+                                    sessionId    : sessionService.newId(userId),
+                                    messagesAge  : messageService.messagesAge,
+                                    hub          : hub,
                                     custom_facets: toMapOfLists(config.biocacheService.custom_facets)])
                 } else if (!authDisabled && userId == null) {
                     login()
@@ -700,7 +696,12 @@ class PortalController {
     }
 
     def embedExample() {
-        render(view: 'embedExample')
+        render(view: 'embedExample',
+                model: [config   : config,
+                        language : LocaleContextHolder.getLocale()?.getLanguage(),
+                        userId   : userId,
+                        sessionId: sessionService.newId(userId),
+                ])
     }
 
     private def toList(Object o) {

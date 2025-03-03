@@ -22,8 +22,6 @@ grails:
         upload:
             maxFileSize: 10000000
             maxRequestSize: 10000000
-i18n:
-  region: 'default'
 
 layersService:
     url: 'https://spatial.ala.org.au/ws'
