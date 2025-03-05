@@ -34,7 +34,7 @@
                  */
                 save: function (name, isPublic, data, mintDoi) {
                     if (mintDoi === undefined) mintDoi = false;
-                    return $http.post($SH.layersServiceUrl + "/workflow/save", {
+                    return $http.post($SH.baseUrl + "/workflow/save", {
                         description: name,
                         isPublic: isPublic,
                         metadata: data,
@@ -43,15 +43,15 @@
                 },
 
                 search: function (searchTerm, start, limit) {
-                    return $http.get($SH.layersServiceUrl + "/workflow/search?q=" + searchTerm + "&start=" + start + "&limit=" + limit, _httpDescription("search"))
+                    return $http.get($SH.baseUrl + "/workflow/search?q=" + searchTerm + "&start=" + start + "&limit=" + limit, _httpDescription("search"))
                 },
 
                 get: function (id) {
-                    return $http.get($SH.layersServiceUrl + "/workflow/show/" + id + "?workflow=true", _httpDescription("get"))
+                    return $http.get($SH.baseUrl + "/workflow/show/" + id + "?workflow=true", _httpDescription("get"))
                 },
 
                 delete: function (id) {
-                    return $http.get($SH.layersServiceUrl + "/workflow/delete/" + id, _httpDescription("delete"))
+                    return $http.get($SH.baseUrl + "/workflow/delete/" + id, _httpDescription("delete"))
                 },
 
                 cleanup: function (workflow) {

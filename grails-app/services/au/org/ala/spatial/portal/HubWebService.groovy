@@ -105,15 +105,6 @@ class HubWebService {
             if (contentType) {
                 call.setRequestHeader(HttpHeaders.CONTENT_TYPE, contentType)
             }
-            //Todo Test of supporting UserPrincipal
-            def user = authService.userId
-            if (user) {
-                call.addRequestHeader((String) grailsApplication.config.app.http.header.userId, user)
-                call.addRequestHeader("apiKey", (String) grailsApplication.config.api_key)
-                call.addRequestHeader(HttpHeaders.COOKIE, 'ALA-Auth=' +
-                        URLEncoder.encode(authService.userDetails().email,
-                                (String) grailsApplication.config.character.encoding))
-            }
 
             client.executeMethod(call)
         } catch (IOException e) {
