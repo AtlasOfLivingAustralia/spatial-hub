@@ -138,7 +138,7 @@ security:
     authenticateOnlyIfCookieFilterPattern: ['/portal/*','/portal/config/*','/portal/i18n/*','/hub/*', '/log/*', '/workflow/*']
     loginUrl: ' https://auth.ala.org.au/cas/login'
     logoutUrl: ' https://auth.ala.org.au/cas/logout'
-    casServerUrlPrefix: 'https://aws-auth-test-2023.test.ala.org.au/cas'
+    casServerUrlPrefix: 'https://auth.ala.org.au/cas'
     bypass: false # set to true for non-ALA deployment
     ignoreCase: true
     renew: false
