@@ -296,7 +296,7 @@
         <div class="form-group row" id="helpdebug2"
              ng-show="selected.layer.layertype == 'species' && selected.layer.colorType!='grid'">
             <label i18n="136" style="float:left;width:70px" for="size">Size</label>
-            <div style="float:left;width:200px" id="size" ui-slider min="1" max="15"
+            <div style="float:left;width:200px;margin-left: 30px" id="size" ui-slider min="1" max="15"
                  ng-model="selected.layer.size"></div>
             <span style="float:left;width:15px;height:15px;"></span>
             <span style="float:left">{{selected.layer.size}}</span>
@@ -305,7 +305,7 @@
         <div class="form-group row" style="padding-top:5px">
             <label i18n="137" style="float:left;width:70px" for="opacity">Opacity</label>
 
-            <div style="float:left;width:200px" id="opacity" ui-slider min="0" max="100"
+            <div style="float:left;width:200px;margin-left: 30px" id="opacity" ui-slider min="0" max="100"
                  ng-model="selected.layer.opacity"></div>
             <span style="float:left;width:15px;height:15px;"></span>
             <span style="float:left">{{selected.layer.opacity}}%</span>
