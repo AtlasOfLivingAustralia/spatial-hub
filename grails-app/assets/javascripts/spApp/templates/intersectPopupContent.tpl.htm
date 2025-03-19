@@ -62,6 +62,10 @@
                 <div i18n="72" class="col-sm-6">Layer</div>
                 <div class="col-sm-6">{{oc.layername}}</div>
             </div>
+            <div class="row" ng-show="oc.vernacularName">
+                <div i18n="547" class="col-sm-6">Vernacular name</div>
+                <div class="col-sm-6">{{oc.vernacularName}}</div>
+            </div>
             <div class="row" ng-show="oc.scientificName">
                 <div i18n="101" class="col-sm-6">Scientific name</div>
                 <div class="col-sm-6"><a ng-href="{{olist.config.bieUrl}}/species/{{oc.speciesGuid}}"
