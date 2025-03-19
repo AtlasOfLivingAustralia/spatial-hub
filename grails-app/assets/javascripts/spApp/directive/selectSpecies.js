@@ -120,10 +120,18 @@
 
                         scope.openSandbox = function () {
                             $timeout(function () {
-                                LayoutService.openModal('sandBox', {
-                                    setQ: scope.setSandboxQ,
-                                    display: {size: 'full'}
-                                }, true, true)
+                                // open new spatial-service sandbox UI when enabled
+                                if ($SH.sandboxSpatialServiceUrl) {
+                                    LayoutService.openModal('addPoints', {
+                                        setQ: scope.setSandboxQ,
+                                        enablePriorUploads: false // disabled because it is available without opening addPoints UI
+                                    }, true, true)
+                                } else {
+                                    LayoutService.openModal('sandBox', {
+                                        setQ: scope.setSandboxQ,
+                                        display: {size: 'full'}
+                                    }, true, true)
+                                }
                             }, 0)
                         };
 
@@ -251,23 +259,23 @@
                                     } else if (scope.spatiallyValid) {
                                         //  spatially-unknown && spatiallyValid
                                         //  Solution -> rule out of spatiallySuspect
-                                        gs = ['-spatiallyValid:false'];
+                                        gs = ['-geospatial_kosher:false'];
                                     } else if (scope.spatiallySuspect) {
                                         //  spatially-unknown && spatiallySuspect
                                         //  -> rule out of spatiallyValid
-                                        gs = ['-spatiallyValid:true'];
+                                        gs = ['-geospatial_kosher:true'];
                                     } else {
                                         //return records without spatial
-                                        gs = ['-spatiallyValid:*'];
+                                        gs = ['-geospatial_kosher:*'];
                                     }
                                 } else {
                                     //spatially-valid and spatially-suspect
                                     if (scope.spatiallyValid && scope.spatiallySuspect) {
-                                        gs = ['spatiallyValid:*'];
+                                        gs = ['geospatial_kosher:*'];
                                     } else if (scope.spatiallyValid){
-                                        gs = ['spatiallyValid:true'];
+                                        gs = ['geospatial_kosher:true'];
                                     } else if (scope.spatiallySuspect){
-                                        gs = ['spatiallyValid:false'];
+                                        gs = ['geospatial_kosher:false'];
                                     } else {
                                         // No records returned by default
                                     }

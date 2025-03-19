@@ -27,14 +27,14 @@
                 list: function (q, max, offset, sort, order, user) {
                     var params = '';
                     if (q) params += "/" + encodeURIComponent(q);
-                    //TODO: investigate paging
+                    //TODO: investigate paging, or keep increasing max
 //                        if(q) params += '&q=' + encodeURIComponent(q);
 //                        if(max) params += '&max=' + max;
 //                        if(offset) params += '&offset=' + offset;
 //                        if(sort) params += '&sort=' + sort;
 //                        if(order) params += '&order=' + order;
 //                        if(user) params += '&user=' + user;
-                    params += "?" + "&max=2000";
+                    params += "?" + "&max=20000";
                     if ($SH.userId) {
                         params += "&user=" + $SH.userId
                     }
@@ -74,16 +74,13 @@
                     return cache.get(listId);
                 },
                 getItemsQ: function (listId) {
-                    // TODO: use 'species_list:' after biocache-service is redeployed
-                    //return $q.when('species_list:' + listId);
-
                     if (scope.getItemsQCached(listId)) {
-                        return $q.when(scope.listToFq(scope.getItemsQCached(listId)))
+                        return scope.getListFq(listId);
                     } else {
                         return scope.items(listId, {includeKVP: true}).then(function (data) {
                             cache.put(listId, data);
 
-                            return $q.when(scope.listToFq(data));
+                            return scope.getListFq(listId);
                         });
                     }
                 },
@@ -110,10 +107,25 @@
                         }
                     }
                     if (terms.length > 0) {
+                        terms[0] = "(" + terms[0];
                         terms[terms.length - 1] += ")";
                     }
                     return terms.join(" OR ");
-                }
+                },
+                getListFq: function (listId) {
+                    return $http.get($SH.baseUrl + "/portal/speciesListInfo?listId=" + listId, _httpDescription('getListInfo')).then(function (response) {
+                        if (response.data.isAuthoritative) {
+                            // list is indexed
+                            return $q.when('species_list_uid:' + listId)
+                        } else {
+                            // list is not indexed, can be very slow (minutes)
+                            return $q.when('species_list:' + listId)
+                        }
+                    }).catch(function () {
+                        // for a user's private lists, can be very slow (minutes)
+                        return $q.when('species_list:' + listId);
+                    });
+                },
             };
 
             return scope;

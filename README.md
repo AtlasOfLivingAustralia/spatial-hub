@@ -19,7 +19,6 @@ The dependent services point to other production servers by default
 
 ### Minimum configurations in external config file:
 
-        api_key: xxxxxxxxx-d184-4276-afc2-6ece17176d7c
         google:
             apikey: xxxxxxxx
 
@@ -32,8 +31,6 @@ The dependent services point to other production servers by default
     googleAnalyticsId: "xxxxxxxx"
     google:
         apikey: "xxxxxxxxxxxxxx"
-    
-    api_key: xxxxxxxxxxxxxxxxx
     
     layersService:
         url: "https://spatial-test.ala.org.au/ws"

@@ -83,28 +83,17 @@
                                 //If the list is authoritative, Biocache builds index against species_list_uid (over night)
                                 //We should use q=species_list_uid:drxxxx
                                 if (found.isAuthoritative) {
-
                                     scope._custom()({
                                         q: ["species_list_uid:" + found.dataResourceUid],
                                         name: found.listName,
                                         species_list: found.dataResourceUid
                                     })
                                 } else {
-                                    //q=qid:xxxxxxxxxx
-                                    ListsService.getItemsQ(found.dataResourceUid).then(function (data) {
-                                        //example: (lsid:xxxx OR lsid:xxxx)
-                                        var items = data.split(" OR ");
-                                        var query = data;
-                                        var limit = 200;
-                                        if (items.length > limit ) {
-                                            alert("Note: only the first 200 names will be used when when adding species to the map (for user-uploaded checklists)");
-                                            query = items.slice(0,limit).join(" OR ") +")";
-                                        }
-                                        scope._custom()({
-                                            q: [query],
-                                            name: found.listName,
-                                            species_list: found.dataResourceUid
-                                        })
+                                    scope._custom()({
+                                        // list not indexed, can be very slow (minutes)
+                                        q: ["species_list:" + found.dataResourceUid],
+                                        name: found.listName,
+                                        species_list: found.dataResourceUid
                                     })
                                 }
 
