@@ -183,19 +183,6 @@
                     return $q.when(true)
                 };
 
-                $scope.poi = [];
-                $scope.setPoi = function (data) {
-                    $scope.poi = data;
-                    for (var k in $scope.items) {
-                        if ($scope.items.hasOwnProperty(k)) {
-                            if ($i18n(361, "Points of interest") === $scope.items[k].name) {
-                                $scope.items[k].value = data.length
-                            }
-                        }
-                    }
-                    return $q.when(true)
-                };
-
                 $scope.biocollectCounts = function (idx) {
                     if ($SH.biocollectReport && $SH.biocollectReport.length > idx) {
                         var bbox = $scope.area.bbox
@@ -298,10 +285,6 @@
                             {
                                 name: $i18n(360, "Gazetteer Points"),
                                 mapGaz: true,
-                                value: ''
-                            },
-                            {
-                                name: $i18n(361, "Points of interest"),
                                 value: ''
                             },
                             {

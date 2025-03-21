@@ -76,7 +76,7 @@
             '${config.collections.url}/**',
             '${config.phylolink.url}/**'
         ],
-        i18n: '${config.i18n?.region?:"default"}',
+        i18n: '${language:"default"}',
         editable: ${params.edit?:'false'}
     };
 

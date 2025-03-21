@@ -4,10 +4,10 @@ import au.org.ala.ws.service.WebService
 import grails.converters.JSON
 import grails.util.Holders
 import grails.web.http.HttpHeaders
-import org.apache.commons.httpclient.methods.StringRequestEntity
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.client.utils.URLEncodedUtils
 import org.apache.http.entity.ContentType
+import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.multipart.MultipartHttpServletRequest
 import org.apache.http.client.methods.HttpPost
@@ -98,20 +98,15 @@ class PortalController {
                     config.spApp.each { k, v ->
                         spApp.put(k, v.class.newInstance(params.get(k, v)))
                     }
-                    if (params.get("lang")) {
-                        config.i18n?.currentRegion = params.get("lang")
-                    } else {
-                        config.i18n?.currentRegion = null;
-                    }
-
 
                     render(view: 'index',
-                            model: [config     : config,
-                                    userId     : userId,
-                                    userDetails: authService.userDetails(),
-                                    sessionId  : sessionService.newId(userId),
-                                    messagesAge: messageService.messagesAge,
-                                    hub        : hub,
+                            model: [config       : config,
+                                    language     : LocaleContextHolder.getLocale()?.getLanguage(),
+                                    userId       : userId,
+                                    userDetails  : authService.userDetails(),
+                                    sessionId    : sessionService.newId(userId),
+                                    messagesAge  : messageService.messagesAge,
+                                    hub          : hub,
                                     custom_facets: toMapOfLists(config.biocacheService.custom_facets)])
                 } else if (!authDisabled && userId == null) {
                     login()
@@ -299,7 +294,7 @@ class PortalController {
                     "description=${URLEncoder.encode((String) params.description, ce)}"
 
             List files = [mFile]
-            def r = webService.post(url, null, null, files, ContentType.MULTIPART_FORM_DATA, false, true)
+            def r = webService.postMultipart(url, null, null, files, ContentType.APPLICATION_JSON, false, true)
 
             if (!r) {
                 render [:] as JSON
@@ -310,9 +305,8 @@ class PortalController {
                 response.status = r.statusCode
                 render error as JSON
             } else {
-                def json = r.resp
-                def shapeFileId = json.id
-                def area = json.collect { key, value ->
+                def shapeFileId = null
+                def area = r.resp.collect { key, value ->
                     if (key == 'shp_id') {
                         shapeFileId = value
                         null
@@ -335,13 +329,13 @@ class PortalController {
         } else{
             def json = request.JSON as Map
             json.user_id = userId
-            Map headers = [apiKey: grailsApplication.config.api_key]
+
             String url = "${grailsApplication.config.layersService.url}/shape/upload/shp/" +
                     "${json.shpId}/featureIndex"
-            def r = hubWebService.urlResponse(HttpPost.METHOD_NAME, url, null, headers,
-                    new StringRequestEntity((json as JSON).toString()))
+            def r = webService.post(url, json, null, ContentType.APPLICATION_JSON, false, true)
+
             response.status = r.statusCode
-            render JSON.parse(new String(r?.text ?: "{}")) as JSON
+            render r.resp as JSON
         }
     }
 
@@ -700,7 +694,12 @@ class PortalController {
     }
 
     def embedExample() {
-        render(view: 'embedExample')
+        render(view: 'embedExample',
+                model: [config   : config,
+                        language : LocaleContextHolder.getLocale()?.getLanguage(),
+                        userId   : userId,
+                        sessionId: sessionService.newId(userId),
+                ])
     }
 
     private def toList(Object o) {

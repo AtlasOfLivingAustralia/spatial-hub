@@ -93,9 +93,9 @@
                         scope.zoom = function () {
                             var minLat, maxLat, minLng, maxLng;
                             for (var i = 0; i < scope.points.length; i++) {
-                                var coords = scope.points[i].geometry.split(" ");
-                                var lat = coords[1];
-                                var lng = coords[0].substring(6);
+                                var point = wellknown.parse(scope.points[i].geometry);
+                                var lat = point.coordinates[1];
+                                var lng = point.coordinates[0];
                                 if (i == 0 || minLat > lat) minLat = lat;
                                 if (i == 0 || maxLat < lat) maxLat = lat;
                                 if (i == 0 || minLng > lng) minLng = lng;
