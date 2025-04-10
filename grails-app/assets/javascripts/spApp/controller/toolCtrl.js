@@ -348,7 +348,7 @@
                     } else if (value.type === 'list' && value.constraints.selection !== 'single') {
                         return $scope.values[i].length === 0
                     } else if (value.type === 'text') {
-                        return $scope.values[i] < value.constraints.min || $scope.values[i] > value.constraints.max
+                        return $scope.values[i] < value.constraints.min || $scope.values[i] > value.constraints.max || $scope.values[i] === undefined || $scope.values[i].length === 0
                     } else if (value.type === 'speciesOptions') {
                         return false
                     } else if (value.type === 'facet') {

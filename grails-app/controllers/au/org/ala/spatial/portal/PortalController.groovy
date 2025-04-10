@@ -299,7 +299,7 @@ class PortalController {
                     "description=${URLEncoder.encode((String) params.description, ce)}"
 
             List files = [mFile]
-            def r = webService.post(url, null, null, files, ContentType.MULTIPART_FORM_DATA, false, true)
+            def r = webService.postMultipart(url, null, null, files, ContentType.APPLICATION_JSON, false, true)
 
             if (!r) {
                 render [:] as JSON
@@ -335,13 +335,11 @@ class PortalController {
         } else{
             def json = request.JSON as Map
             json.user_id = userId
-            Map headers = [apiKey: grailsApplication.config.api_key]
             String url = "${grailsApplication.config.layersService.url}/shape/upload/shp/" +
                     "${json.shpId}/featureIndex"
-            def r = hubWebService.urlResponse(HttpPost.METHOD_NAME, url, null, headers,
-                    new StringRequestEntity((json as JSON).toString()))
+            def r = webService.post(url, json, null, ContentType.APPLICATION_JSON, false, true)
             response.status = r.statusCode
-            render JSON.parse(new String(r?.text ?: "{}")) as JSON
+            render r.resp as JSON
         }
     }
 

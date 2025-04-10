@@ -46,7 +46,7 @@
             <tbody>
             <tr ng-repeat="workflow in workflows | orderBy:sortType:sortReverse | filter:workflowFilter">
                 <td>
-                    <button i18n="507" class="button btn-xs" ng-click="loadWorkflow(workflow.id)">Load</button>
+                    <button i18n="507" class="button btn-xs" ng-click="loadWorkflow(workflow.id)">Details</button>
                 </td>
                 <td>{{workflow.id}}</td>
                 <td>{{workflow.name}}</td>

@@ -15,7 +15,7 @@ class LogController {
      * @return
      */
     def index() {
-        String url = "${grailsApplication.config.layersService.url}/log/"
+        String url = "${grailsApplication.config.layersService.url}/log"
 
         Map map = [data: (request.JSON as Map)]
         def r = webService.post(url, map, null, ContentType.APPLICATION_JSON, false, true)
