@@ -1,14 +1,10 @@
 package au.org.ala.spatial.portal
 
-import au.org.ala.ws.service.WebService
 import grails.converters.JSON
 import org.apache.http.entity.ContentType
 
 class WorkflowController {
     def webService
-    def authService
-
-    WebService webService
 
     static allowedMethods = [
             save: 'POST',
