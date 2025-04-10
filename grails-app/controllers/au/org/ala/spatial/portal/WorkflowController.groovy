@@ -5,6 +5,8 @@ import grails.converters.JSON
 import org.apache.http.entity.ContentType
 
 class WorkflowController {
+    def webService
+    def authService
 
     WebService webService
 

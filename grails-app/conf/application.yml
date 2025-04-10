@@ -22,8 +22,6 @@ grails:
         upload:
             maxFileSize: 10000000
             maxRequestSize: 10000000
-i18n:
-  region: 'default'
 
 layersService:
     url: 'https://spatial.ala.org.au/ws'
@@ -49,7 +47,7 @@ spring:
             max-request-size: 50MB
     server:
         session:
-            timeout: 7200 # seconds, 2 hours
+            timeout: 43200 # seconds, 12 hours
         tomcat:
             port-header: 'X-Forwarded-Port'
             protocol-header: 'X-Forwarded-Proto'
@@ -137,10 +135,10 @@ security:
     uriFilterPattern: ['/alaAdmin/*', '/']
     casServerName: 'https://aws-auth.ala.org.au'
     uriExclusionFilterPattern: ['/portal/q/.*','/portal/messages/.*','/portal/sessionCache/.*','/static/.*','/assets/.*']
-    authenticateOnlyIfCookieFilterPattern: ['/portal/*','/portal/config/*','/portal/i18n/*','/hub/*', '/log/*']
+    authenticateOnlyIfCookieFilterPattern: ['/portal/*','/portal/config/*','/portal/i18n/*','/hub/*', '/log/*', '/workflow/*']
     loginUrl: ' https://auth.ala.org.au/cas/login'
     logoutUrl: ' https://auth.ala.org.au/cas/logout'
-    casServerUrlPrefix: 'https://aws-auth-test-2023.test.ala.org.au/cas'
+    casServerUrlPrefix: 'https://auth.ala.org.au/cas'
     bypass: false # set to true for non-ALA deployment
     ignoreCase: true
     renew: false
