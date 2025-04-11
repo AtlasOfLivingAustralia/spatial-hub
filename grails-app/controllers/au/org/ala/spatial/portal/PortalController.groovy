@@ -305,7 +305,10 @@ class PortalController {
                 response.status = r.statusCode
                 render error as JSON
             } else {
-                def shapeFileId = null
+                def shapeFileId
+                if (r?.resp?.id) {
+                    shapeFileId = r.resp.id
+                }
                 def area = r.resp.collect { key, value ->
                     if (key == 'shp_id') {
                         shapeFileId = value
@@ -812,7 +815,13 @@ class PortalController {
             if (!r) {
                 render [:] as JSON
             } else {
-                render r.resp as JSON, status: String.valueOf(r.statusCode)
+                response.status = r.statusCode
+                if (r.statusCode >= 400) {
+                    def resp = [error: "failed to delete"]
+                    render resp as JSON
+                } else {
+                    render r.resp as JSON
+                }
             }
         }
     }
