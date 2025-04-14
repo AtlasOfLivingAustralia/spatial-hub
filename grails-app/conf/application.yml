@@ -22,8 +22,6 @@ grails:
         upload:
             maxFileSize: 10000000
             maxRequestSize: 10000000
-i18n:
-  region: 'default'
 
 layersService:
     url: 'https://spatial.ala.org.au/ws'
@@ -49,7 +47,7 @@ spring:
             max-request-size: 50MB
     server:
         session:
-            timeout: 7200 # seconds, 2 hours
+            timeout: 43200 # seconds, 12 hours
         tomcat:
             port-header: 'X-Forwarded-Port'
             protocol-header: 'X-Forwarded-Proto'
@@ -137,10 +135,10 @@ security:
     uriFilterPattern: ['/alaAdmin/*', '/']
     casServerName: 'https://aws-auth.ala.org.au'
     uriExclusionFilterPattern: ['/portal/q/.*','/portal/messages/.*','/portal/sessionCache/.*','/static/.*','/assets/.*']
-    authenticateOnlyIfCookieFilterPattern: ['/portal/*','/portal/config/*','/portal/i18n/*','/hub/*', '/log/*']
+    authenticateOnlyIfCookieFilterPattern: ['/portal/*','/portal/config/*','/portal/i18n/*','/hub/*', '/log/*', '/workflow/*']
     loginUrl: ' https://auth.ala.org.au/cas/login'
     logoutUrl: ' https://auth.ala.org.au/cas/logout'
-    casServerUrlPrefix: 'https://aws-auth-test-2023.test.ala.org.au/cas'
+    casServerUrlPrefix: 'https://auth.ala.org.au/cas'
     bypass: false # set to true for non-ALA deployment
     ignoreCase: true
     renew: false
@@ -157,7 +155,6 @@ security:
     roleAttribute: ala:role
     logoutAction: cognito
     alaUseridClaim: username
-    logoutUrl: https://auth-secure.ala.org.au/logout
   jwt:
     enabled: true
     discoveryUri: 'https://cognito-idp.ap-southeast-2.amazonaws.com/ap-southeast-2_Auyv55MYO/.well-known/openid-configuration'
@@ -192,6 +189,9 @@ bie:
 bieService:
     baseURL: 'https://bie.ala.org.au/ws'
 
+namematching:
+    baseURL: 'https://namematching-ws.ala.org.au'
+
 favicon:
   url: 'https://www.ala.org.au/wp-content/themes/ala2011/images/favicon.ico'
 
@@ -224,6 +224,14 @@ sandbox:
 
 sandboxService:
     url: 'https://sandbox.ala.org.au/biocache-service'
+
+# Config to use spatial-service/pipelines instead of sandbox/biocache-store for uploading points.
+# - Read access to sandbox/biocache-store data is enabled when sandbox.url and sandboxService.url are set.
+# - Update menu-config.json to use `open: addPoints` instead of `open: sandBox`
+sandboxSpatial:
+    hubUrl: 'https://sandbox-test.ala.org.au/ala-hub'
+    serviceUrl: 'https://sandbox-test.ala.org.au/biocache-service'
+
 
 gazField: 'cl915'
 
@@ -308,9 +316,6 @@ cache:
 phylolink:
     url: 'https://phylolink.ala.org.au'
 
-apiKeyCheckUrlTemplate: 'https://auth.ala.org.au/apikey/ws/check?apikey={0}'
-api_key: 'change me'
-
 character:
     encoding: UTF-8
 
@@ -319,16 +324,17 @@ http:
       timeout: 10000
     timeout: 10000
 
-biocollect:
-  loginUrl: 'https://biocollect.ala.org.au'
-  url: 'https://biocollect.ala.org.au'
-  areaReport:
-    - name: 'Citizen science projects'
-      count: "https://biocollect.ala.org.au/acsa/nocas/geoService?max=0&geoSearchJSON=_geoSearchJSON_"
-      link: "https://biocollect.ala.org.au/acsa#geoSearch%3D_geoSearchEncoded_"
-    - name: 'Merit Projects'
-      count: "https://biocollect.ala.org.au/merit/nocas/geoService?max=0&geoSearchJSON=_geoSearchJSON_"
-      link: "https://biocollect.ala.org.au/merit?geoSearchJSON=_geoSearchJSON_"
+# This does not work with the current biocollect version
+#biocollect:
+#  loginUrl: 'https://biocollect.ala.org.au'
+#  url: 'https://biocollect.ala.org.au'
+#  areaReport:
+#    - name: 'Citizen science projects'
+#      count: "https://biocollect.ala.org.au/acsa/nocas/geoService?max=0&geoSearchJSON=_geoSearchJSON_"
+#      link: "https://biocollect.ala.org.au/acsa#geoSearch%3D_geoSearchEncoded_"
+#    - name: 'Merit Projects'
+#      count: "https://biocollect.ala.org.au/merit/nocas/geoService?max=0&geoSearchJSON=_geoSearchJSON_"
+#      link: "https://biocollect.ala.org.au/merit?geoSearchJSON=_geoSearchJSON_"
 
 bccvl:
     login:

@@ -4,14 +4,14 @@ import au.org.ala.ws.service.WebService
 import grails.converters.JSON
 import grails.util.Holders
 import grails.web.http.HttpHeaders
-import org.apache.commons.httpclient.methods.StringRequestEntity
-import org.apache.commons.lang.StringUtils
 import org.apache.http.client.methods.HttpGet
-import org.apache.http.client.methods.HttpPost
+import org.apache.http.client.utils.URLEncodedUtils
 import org.apache.http.entity.ContentType
-import org.jasig.cas.client.util.CommonUtils
+import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.multipart.MultipartHttpServletRequest
+import org.apache.http.client.methods.HttpPost
+import org.apache.http.message.BasicNameValuePair
 
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
@@ -98,20 +98,15 @@ class PortalController {
                     config.spApp.each { k, v ->
                         spApp.put(k, v.class.newInstance(params.get(k, v)))
                     }
-                    if (params.get("lang")) {
-                        config.i18n?.currentRegion = params.get("lang")
-                    } else {
-                        config.i18n?.currentRegion = null;
-                    }
-
 
                     render(view: 'index',
-                            model: [config     : config,
-                                    userId     : userId,
-                                    userDetails: authService.userDetails(),
-                                    sessionId  : sessionService.newId(userId),
-                                    messagesAge: messageService.messagesAge,
-                                    hub        : hub,
+                            model: [config       : config,
+                                    language     : LocaleContextHolder.getLocale()?.getLanguage(),
+                                    userId       : userId,
+                                    userDetails  : authService.userDetails(),
+                                    sessionId    : sessionService.newId(userId),
+                                    messagesAge  : messageService.messagesAge,
+                                    hub          : hub,
                                     custom_facets: toMapOfLists(config.biocacheService.custom_facets)])
                 } else if (!authDisabled && userId == null) {
                     login()
@@ -198,12 +193,10 @@ class PortalController {
      * null when not logged in
      */
     private def getValidUserId(params) {
-        //apiKey + userId (non-numeric) OR authenticated user
+        // find the authenticated user, or the default user
         def userId
         if (!Holders.config.security.oidc.enabled) {
             userId = portalService.DEFAULT_USER_ID
-        } else if (portalService.isValidApiKey(params.apiKey) && !StringUtils.isNumeric(params.userId)) {
-            userId = params.userId
         } else {
             userId = authService.userId
         }
@@ -290,28 +283,33 @@ class PortalController {
             notAuthorised()
         } else {
             def type = id
+
+            // write the file to disk
             MultipartFile mFile = ((MultipartHttpServletRequest) request).getFile('shapeFile')
-            def settings = [apiKey: grailsApplication.config.api_key]
 
             String ce = grailsApplication.config.character.encoding
 
-            def r = hubWebService.postUrl("${grailsApplication.config.layersService.url}/shape/upload/${type}?" +
+            String url = "${grailsApplication.config.layersService.url}/shape/upload/${type}?" +
                     "name=${URLEncoder.encode((String) params.name, ce)}&" +
-                    "description=${URLEncoder.encode((String) params.description, ce)}&" +
-                    "api_key=${grailsApplication.config.api_key}", null, settings, mFile);
+                    "description=${URLEncoder.encode((String) params.description, ce)}"
+
+            List files = [mFile]
+            def r = webService.postMultipart(url, null, null, files, ContentType.APPLICATION_JSON, false, true)
 
             if (!r) {
                 render [:] as JSON
             } else if (r.error || r.statusCode > 299) {
                 log.error("failed ${type} upload: ${r}")
-                def msg = JSON.parse(new String(r?.text ?: "{}"))
+                def msg = r.resp
                 Map error = [error: msg.error]
                 response.status = r.statusCode
                 render error as JSON
             } else {
-                def json = JSON.parse(new String(r?.text ?: "{}"))
-                def shapeFileId = json.id
-                def area = json.collect { key, value ->
+                def shapeFileId
+                if (r?.resp?.id) {
+                    shapeFileId = r.resp.id
+                }
+                def area = r.resp.collect { key, value ->
                     if (key == 'shp_id') {
                         shapeFileId = value
                         null
@@ -334,13 +332,12 @@ class PortalController {
         } else{
             def json = request.JSON as Map
             json.user_id = userId
-            Map headers = [apiKey: grailsApplication.config.api_key]
+
             String url = "${grailsApplication.config.layersService.url}/shape/upload/shp/" +
                     "${json.shpId}/featureIndex"
-            def r = hubWebService.urlResponse(HttpPost.METHOD_NAME, url, null, headers,
-                    new StringRequestEntity((json as JSON).toString()))
+            def r = webService.post(url, json, null, ContentType.APPLICATION_JSON, false, true)
             response.status = r.statusCode
-            render JSON.parse(new String(r?.text ?: "{}")) as JSON
+            render r.resp as JSON
         }
     }
 
@@ -352,16 +349,14 @@ class PortalController {
         } else {
             def json = request.JSON as Map
 
-            Map headers = [apiKey: grailsApplication.config.api_key]
-
-            def r = hubWebService.postUrl("${grailsApplication.config.layersService.url}/tasks/create?" +
-                    "userId=${userId}&sessionId=${params.sessionId}", json, headers)
+            String url = "${grailsApplication.config.layersService.url}/tasks/create?userId=${userId}&sessionId=${params.sessionId}"
+            def r = webService.post(url, json, null, ContentType.APPLICATION_JSON, false, true)
 
             if (r == null) {
                 render [:] as JSON
             } else {
                 response.status = r.statusCode
-                render JSON.parse(new String(r?.text ?: "{}")) as JSON
+                render r.resp as JSON
             }
         }
     }
@@ -440,6 +435,24 @@ class PortalController {
         }
     }
 
+    def speciesListInfo() {
+        def url = grailsApplication.config.lists.url
+
+        def r = webService.get("${url}/ws/speciesList/${params.listId}".toString(), null, org.apache.http.entity.ContentType.APPLICATION_JSON, false, true, [:])
+
+        if (r == null) {
+            def status = response.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR)
+            r = [status: status, error: 'Unknown error when fetching list']
+        }
+
+        def status = r.statusCode
+        if (r.statusCode < 200 || r.statusCode > 300) {
+            r = [error: r.resp  ]
+        }
+
+        render status: status, r.resp as JSON
+    }
+
     def q() {
         def json = (Map) request.JSON
 
@@ -473,16 +486,30 @@ class PortalController {
                 json.wkt = getWkt(json?.wkt)
             }
 
-            def r = hubWebService.postUrl("${json.bs}/webportal/params", json)
+            def params = []
+            json.each { k, v ->
+                if (v instanceof List) {
+                    v.each { vv ->
+                        params.add(new BasicNameValuePair(String.valueOf(k), String.valueOf(vv)))
+                    }
+                } else {
+                    params.add(new BasicNameValuePair(String.valueOf(k), String.valueOf(v)))
+                }
+            }
+
+            def body = URLEncodedUtils.format(params, "UTF-8")
+
+            def r = webService.post("${json.bs}/webportal/params", body, null, ContentType.APPLICATION_FORM_URLENCODED, false, false)
 
             if (r.statusCode >= 400) {
                 log.error("Couldn't post $json to ${json.bs}/webportal/params, status code ${r.statusCode}, body: ${new String(r.text ?: "")}")
                 def result = ['error': "${r.statusCode} when calling ${json.bs}"]
                 render result as JSON, status: 500
             } else {
-                value = [qid: new String(r.text)] as JSON
+                // The response is plain text and the webService returns it in a Map as the key of the only element
+                value = [qid: new String(((Map) r.resp).keySet().first())] as JSON
 
-                if (r?.text) {
+                if (r?.resp) {
                     grailsCacheManager.getCache(portalService.caches.QID).put(json, value.toString())
                 }
 
@@ -669,7 +696,12 @@ class PortalController {
     }
 
     def embedExample() {
-        render(view: 'embedExample')
+        render(view: 'embedExample',
+                model: [config   : config,
+                        language : LocaleContextHolder.getLocale()?.getLanguage(),
+                        userId   : userId,
+                        sessionId: sessionService.newId(userId),
+                ])
     }
 
     private def toList(Object o) {
@@ -744,5 +776,53 @@ class PortalController {
 
 
         return result
+    }
+
+    def postSandboxFile() {
+        def userId = getValidUserId(params)
+
+        if (!userId) {
+            notAuthorised()
+        } else {
+            MultipartFile mFile = ((MultipartHttpServletRequest) request).getFile('file')
+
+            // write mFile to temporary file with the same extension
+            File tempFile = File.createTempFile("sandbox", mFile.originalFilename.substring(mFile.originalFilename.lastIndexOf('.')))
+            mFile.transferTo(tempFile)
+
+            String ce = grailsApplication.config.character.encoding
+
+            String url = "${grailsApplication.config.layersService.url}/sandbox/upload?name=${URLEncoder.encode((String) params.name, ce)}"
+            def r = webService.postMultipart(url, null, null, [tempFile], ContentType.APPLICATION_JSON, false, true)
+
+            if (!r) {
+                render [:] as JSON
+            } else {
+                render r.resp as JSON, status: String.valueOf(r.statusCode)
+            }
+        }
+    }
+
+    def deleteSandboxFile(String id) {
+        def userId = getValidUserId(params)
+
+        if (!userId) {
+            notAuthorised()
+        } else {
+            def url = "${grailsApplication.config.layersService.url}/sandbox/delete?id=${id}"
+            def r = webService.delete(url, null, ContentType.APPLICATION_JSON, false, true)
+
+            if (!r) {
+                render [:] as JSON
+            } else {
+                response.status = r.statusCode
+                if (r.statusCode >= 400) {
+                    def resp = [error: "failed to delete"]
+                    render resp as JSON
+                } else {
+                    render r.resp as JSON
+                }
+            }
+        }
     }
 }

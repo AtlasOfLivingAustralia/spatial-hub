@@ -37,6 +37,7 @@
         custom_facets: ${(custom_facets as grails.converters.JSON).toString().encodeAsRaw()},
         bieUrl: '${config.bie.baseURL}',
         bieServiceUrl: '${config.bieService.baseURL}',
+        namematchingUrl: '${config.namematching.baseURL}',
         layersServiceUrl: '${config.layersService.url}',
         samplingUrl: '${config.sampling.url}',
         listsUrl: '${config.lists.url}',
@@ -46,6 +47,8 @@
         sandboxUiUrl: '${config.sandbox.uiUrl}',
         sandboxUrls: ['${config.sandbox.url}'],
         sandboxServiceUrls: ['${config.sandboxService.url}'],
+        sandboxSpatialUiUrl: '${config.sandboxSpatial.hubUrl}',
+        sandboxSpatialServiceUrl: '${config.sandboxSpatial.serviceUrl}',
         gazField: '${config.gazField}',
         geoserverUrl: '${config.geoserver.url}',
         collectionsUrl: '${config.collections.url}',
@@ -74,9 +77,7 @@
         baseLayers: ${(config.startup.baselayers as grails.converters.JSON).toString().encodeAsRaw()},
         defaultBaseLayer: '${config.startup.baselayer.default}',
 
-        <g:if test="${config.i18n?.currentRegion}">
-        i18n: '${config.i18n?.currentRegion}',
-        </g:if>
+        i18n: '${language}',
 
         <g:if test="${config.flickr.url}">
         flickrUrl: '${config.flickr.url}',

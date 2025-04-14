@@ -679,11 +679,12 @@
                                 }).addTo(map);
                             }
 
-                            if ($SH.biocollectUrl) {
-                                new L.Control.Poi({
-                                    togglePoi: $scope.togglePoi
-                                }).addTo(map);
-                            }
+                            // does not work with the current biocollect version
+                            // if ($SH.biocollectUrl) {
+                            //     new L.Control.Poi({
+                            //         togglePoi: $scope.togglePoi
+                            //     }).addTo(map);
+                            // }
 
                             var measureControl = new L.Control.Measure({
                                 position: 'topleft',
@@ -728,18 +729,20 @@
                                 if (e.target.imagesControl && e.target.imagesControl._images_state) {
                                     $scope.addImagesToMap();
                                 }
-                                if (e.target.poiControl && e.target.poiControl._poi_state) {
-                                    $scope.addPoiToMap();
-                                }
+                                // does not work with the current biocollect version
+                                // if (e.target.poiControl && e.target.poiControl._poi_state) {
+                                //     $scope.addPoiToMap();
+                                // }
                             });
 
                             map.on('zoomend', function (e) {
                                 if (e.target.imagesControl && e.target.imagesControl._images_state) {
                                     $scope.addImagesToMap();
                                 }
-                                if (e.target.poiControl && e.target.poiControl._poi_state) {
-                                    $scope.addPoiToMap();
-                                }
+                                // does not work with the current biocollect version
+                                // if (e.target.poiControl && e.target.poiControl._poi_state) {
+                                //     $scope.addPoiToMap();
+                                // }
                             });
 
                             $scope.bounds.southWest.lng = map.getBounds().getWest();

@@ -1,6 +1,7 @@
 (function (angular) {
     'use strict';
     /**
+     * @deprecated
      * @memberof spApp
      * @ngdoc service
      * @name SandboxService
@@ -26,12 +27,6 @@
                  * @memberof SandboxService
                  * @param {string} userId
                  * @returns {List} list of sandbox uploads
-                 *
-                 * TODO: collections is unaware of sandbox instances so some validation should occur
-                 *
-                 * @example:
-                 * Output:
-                 *  [TODO: example]
                  */
                 list: function (userId) {
                     var urlProxy = $SH.baseUrl + "/collection/list?alaId=" + userId

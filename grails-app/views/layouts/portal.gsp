@@ -1,36 +1,32 @@
 <!DOCTYPE html>
 <html lang="en-AU">
 <head>
-    <g:if test="${config == null}">
-        <g:set var="config" value="${grailsApplication.config}"/>
-    </g:if>
-
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="app.version" content="${g.meta(name: 'info.app.version')}"/>
     <meta name="app.build" content="${g.meta(name: 'info.app.build')}"/>
-    <meta name="description" content="${config.skin?.orgNameLong ?: 'Atlas of Living Australia'}"/>
-    <meta name="author" content="${config.skin?.orgNameLong ?: 'Atlas of Living Australia'}">
+    <meta name="description" content="${grailsApplication.config.skin?.orgNameLong?:'Atlas of Living Australia'}"/>
+    <meta name="author" content="${grailsApplication.config.skin?.orgNameLong?:'Atlas of Living Australia'}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Favicon -->
-    <link href="${config.skin.favicon}" rel="shortcut icon" type="image/x-icon"/>
+    <link href="${grailsApplication.config.favicon.url}" rel="shortcut icon"  type="image/x-icon"/>
 
     <title><g:layoutTitle/></title>
     <g:layoutHead/>
     <asset:stylesheet href="application.css" />
-    <g:if test="${config.fathomId != null && config.fathomId != ''}">
-        <script src="https://cdn.usefathom.com/script.js" data-site="${config.fathomId}" defer></script>
+    <g:if test="${grailsApplication.config.fathomId != null && grailsApplication.config.fathomId != ''}">
+        <script src="https://cdn.usefathom.com/script.js" data-site="${grailsApplication.config.fathomId}" defer></script>
     </g:if>
 
 </head>
 
 <body class="${pageProperty(name: 'body.class')}" id="${pageProperty(name: 'body.id')}"
       onload="${pageProperty(name: 'body.onload')}">
-<g:set var="fluidLayout" value="${pageProperty(name: 'meta.fluidLayout') ?: config.skin.fluidLayout}"/>
+<g:set var="fluidLayout" value="${pageProperty(name: 'meta.fluidLayout') ?: grailsApplication.config.skin.fluidLayout}"/>
 <g:set var="loginStatus" value="${request.userPrincipal ? 'signedIn' : 'signedOut'}"/>
 <g:set var="hideLoggedOut" value="${request.userPrincipal ? '' : 'hidden'}"/>
 
 <!-- Header -->
-<g:set var="headerVisiblity" value="${(config.skin.header && config.spApp.header) ? '' : 'hidden'}"/>
+<g:set var="headerVisiblity" value="${(grailsApplication.config.skin.header && grailsApplication.config.spApp.header) ? '' : 'hidden'}"/>
 
 <div id="wrapper-navbar" itemscope="" itemtype="http://schema.org/WebSite" class="${headerVisiblity}">
     <a class="skip-link sr-only sr-only-focusable" href="#INSERT_CONTENT_ID_HERE">Skip to content</a>
@@ -58,7 +54,7 @@
                            onclick="$('#sessionsButton')[0].click()"
                            data-toggle="dropdown" role="button"
                            aria-expanded="false">Load</a>
-                        <g:if test="config.workflow.enabled">
+                        <g:if test="grailsApplication.config.workflow.enabled">
                             <a href="#" class="save-load"
                                onclick="$('#workflowsButton')[0].click()"
                                data-toggle="dropdown" role="button"
@@ -341,7 +337,7 @@
         </div><!-- .container -->
         <div class="container-fluid">
             <div id="autocompleteSearchALA" class="collapse">
-                <form method="get" action="${config.bie.baseURL}${config.bie.searchPath}" class="search-form">
+                <form method="get" action="${grailsApplication.config.bie.baseURL}${grailsApplication.config.bie.searchPath}" class="search-form">
                     <div class="space-between">
                         <input id="autocompleteHeader" type="text" name="q"
                                placeholder="Search species, datasets, and more..." class="search-input"
@@ -395,7 +391,7 @@
 <asset:javascript src="commonui-bs3-2019.js"/>
 
 <!-- Google Analytics -->
-<g:if test="${config.googleAnalyticsId != null && config.googleAnalyticsId != ''}">
+<g:if test="${grailsApplication.config.googleAnalyticsId != null && grailsApplication.config.googleAnalyticsId != ''}">
     <script>
         (function (i, s, o, g, r, a, m) {
             i['GoogleAnalyticsObject'] = r;
@@ -408,7 +404,7 @@
             a.src = g;
             m.parentNode.insertBefore(a, m)
         })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
-        ga('create', '${config.googleAnalyticsId}', 'auto');
+        ga('create', '${grailsApplication.config.googleAnalyticsId}', 'auto');
         ga('send', 'pageview');
     </script>
 </g:if>

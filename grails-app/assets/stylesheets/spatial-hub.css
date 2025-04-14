@@ -560,6 +560,14 @@ form.banner {
     left: 50%;
 }
 
+.inline-spinner {
+    background: url(../images/spinner.gif);
+    background-repeat: no-repeat;
+    background-size: 16px 16px;
+    height: 16px;
+    width: 16px;
+}
+
 #legend {
     margin-right:0px;
 }

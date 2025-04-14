@@ -556,7 +556,59 @@
                         }
                     }
                     return result;
+                },
+                /**
+                 * Upload an sandbox file. zip (csv) or csv
+                 * @memberof LayersService
+                 * @param {File} file
+                 * @param {string} datasetName name of the dataset
+                 * @returns {Promise(Map)} in progress uploaded csv info
+                 */
+                uploadSandboxFile: function (file, datasetName) {
+                    var uploadURL = $SH.baseUrl + "/sandbox?name=" + encodeURI(datasetName);
+
+                    file.upload = Upload.upload({
+                        url: uploadURL,
+                        data: {file: file}
+                    });
+
+                    return file.upload;
+                },
+                /**
+                 * Get sandbox list
+                 * @memberof LayersService
+                 * @param {string} userId
+                 * @returns {Promise(List)} list of sandbox uploads
+                 */
+                listSandbox: function (userId) {
+                    var urlProxy = $SH.sandboxBiocacheServiceUrl + "/occurrences/search?q=userId:" + userId + "&pageSize=0&facets=raw_datasetName";
+                    return $http.get(urlProxy, _httpDescription('listSandbox', {})).then(function (response) {
+                        return response.data;
+                    });
+                },
+                /**
+                 * Get sandbox upload status
+                 * @memberof LayersService
+                 * @param {string} statusUrl
+                 * @returns {Promise(Map)} status of the upload
+                 */
+                getSandboxUploadStatus: function (statusUrl) {
+                    return $http.get(statusUrl, _httpDescription('getUploadStatus')).then(function (response) {
+                        return response.data;
+                    });
+                },
+                /**
+                 * Delete a sandbox upload, by dataResourceUid. Only applies to the spatial-service sandbox.
+                 * @memberof LayersService
+                 * @param {string} dataResourceUid
+                 * @returns {Promise(Map)} status of the delete
+                 */
+                deleteSandboxUpload: function (dataResourceUid) {
+                    return $http.delete($SH.baseUrl + "/sandbox?id=" + dataResourceUid, _httpDescription('deleteSandboxUpload')).then(function (response) {
+                        return response.data;
+                    });
                 }
+
             }
 
             return thiz;

@@ -183,11 +183,13 @@
 
                                         } else {
                                             LayersService.getObject(data.data.id).then(function (data) {
-                                                data.data.layertype = 'area';
-                                                data.data.wkt = $scope.selectedArea.wkt;
-                                                MapService.zoomToExtents(data.data.bbox);
-                                                MapService.add(data.data);
-                                                $scope.$close()
+                                                LayersService.getWkt(data.data.id).then(function (wkt) {
+                                                    data.data.layertype = 'area';
+                                                    data.data.wkt = wkt.data;
+                                                    MapService.zoomToExtents(data.data.bbox);
+                                                    MapService.add(data.data);
+                                                    $scope.$close()
+                                                })
                                             })
                                         }
                                     }, function(error) {

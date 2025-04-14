@@ -1,0 +1,164 @@
+<div class="modal-header">
+    <button i18n="1" type="button" class="close" ng-click="$close()">×</button>
+    <h4 i18n="560"  class="modal-title" testTag="modalTitle">Import Points</h4>
+</div>
+
+<div class="modal-body" testTag="addPointsModal">
+    <div class="row">
+        <div class="col-md-12">
+            <form class="form-horizontal">
+                <div class="panel panel-default" ng-show="step == 'default'">
+                    <div class="panel-default">
+                        <div class="panel-heading">
+                            <h3 i18n="558"  class="panel-title">Select method</h3>
+                        </div>
+
+                        <div class="panel-body">
+                            <div>
+                                <div class="checkbox"><label><input type="radio" ng-model="method"
+                                                                    value="upload" name="addPoints_method"
+                                                                    ng-change="method='upload'">Upload CSV</label></div>
+                                <div class="checkbox" ng-show="enablePriorUploads"><label><input type="radio" ng-model="method"
+                                                                    value="existing" name="addPoints_method"
+                                                                    ng-change="method='existing'; file=null">Previous upload</label></div>
+                            </div>
+                            <br/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-default" ng-show="step == 'default' && method == 'existing'">
+                    <div class="panel-default">
+                        <div class="panel-heading">
+                            <h3 i18n="561"  class="panel-title">Your uploads</h3>
+                        </div>
+
+                        <div class="panel-body">
+                            <div>
+                                <table class="table table-striped layers-table" name="uploads">
+                                    <caption>
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" placeholder="Filter"
+                                                           ng-model="searchUploads">
+                                                    <div class="input-group-addon"><i class="fa fa-search"></i></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </caption>
+                                    <thead>
+                                    <tr>
+                                        <th >
+                                            <a href="#" ng-click="sortType = 'label'; sortReverse = !sortReverse">
+                                                <span i18n="151" >Name</span>
+                                            </a>
+                                        </th>
+                                        <th >
+                                            <a href="#" ng-click="sortType = 'date'; sortReverse = !sortReverse">
+                                                <span i18n="470" >Date</span>
+                                            </a>
+                                        </th>
+                                        <th class="text-center" >
+                                            <a href="#" ng-click="sortType = 'count'; sortReverse = !sortReverse">
+                                                <span i18n="557" >Records</span>
+                                            </a>
+                                        </th>
+                                        <th ></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody style="height:300px;overflow:auto">
+                                    <tr ng-repeat="item in uploadsList | orderBy:sortType:sortReverse | filter:searchFilter">
+                                        <td class="td-vertical-align table-text-ellipsis" style="width:300px">
+                                            {{ item.label }}</a></td>
+                                        <td class="td-vertical-align" >{{ item.date }}</td>
+                                        <td class="td-vertical-align text-center" >{{ item.count | number }}</td>
+                                        <td  class="td-vertical-align text-right">
+                                            <button class="btn btn-default btn-xs" ng-click="delete(item)" ng-show="!item.old" style="margin-right: 10px">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                            <a i18n="563" target="_blank" style="margin-right: 10px"
+                                               href="{{item.ws}}/occurrences/search?q={{item.fq}}&disableAllQualityFilters=true">View Records
+                                            </a>
+                                            <button i18n="70" class="btn btn-default btn-xs" ng-click="addToMap(item)" ng-disabled="item.addedToMap">
+                                                Add to map
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-default" ng-show="step == 'default' && method == 'upload'">
+                    <div class="panel-default">
+                        <div class="panel-heading">
+                            <h3 i18n="550" class="panel-title">Upload a CSV file with occurrences</h3>
+                        </div>
+
+                        <div class="panel-body">
+                            <div id="pointsUploadInstructions" ng-bind-html="instructions"></div>
+                            <br/>
+                            <div>
+                                <div class="btn-group btn-group-sm">
+                                    <input type="file" id="file" name="file" ng-model="file"
+                                           ngf-max-size="maxFileSize"
+                                           ngf-select="uploadFile($newFiles)">
+                                </div>
+
+                                <uib-progressbar ng-show="uploadingFile"
+                                                 animate="true" value="uploadProgress" type="info"
+                                                 class="progress-striped" title="{{uploadProgress}}">
+                                </uib-progressbar>
+                            </div>
+                            <br/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-default" ng-show="step == 'default' && method == 'upload'">
+                    <div class="panel-default">
+                        <div class="panel-heading">
+                            <h3 i18n="562"  class="panel-title">Update the dataset name</h3>
+                        </div>
+
+                        <div class="panel-body">
+                            <div>
+                                Dataset name
+                                <input type="text" class="form-control" ng-model="datasetName" value="My dataset name" testTag="datasetName" maxlength="200"/>
+                            </div>
+
+                            <br/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-default" ng-show="step == 'uploading'">
+                    <div class="panel-default">
+                        <div class="panel-heading">
+                            <h3 i18n="556"  class="panel-title">Importing</h3>
+                        </div>
+
+                        <div class="panel-body">
+                            <div style="display: flex"><div class="inline-spinner" style="margin-right:10px" ng-show="status != 'finished' && status != ''"></div>{{message}}</div>
+                            <div i18n="564"  ng-show="status === 'finished'" style="font-style: italic">Note: For large uploads, the number of records displayed may initially be lower than expected due to background processing. Please wait a few minutes while background processing takes place.</div>
+
+                            <div ng-show="errorMsg" style="color: red">{{ errorMsg }}</div>
+                            <br/>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button i18n="45" class="btn btn-default" type="button" ng-click="$close()" name="cancel">Cancel</button>
+    <button i18n="39" class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="isDisabled()" name="next" ng-show="step != 'uploading'">Next &gt;
+    </button>
+    <button i18n="276" class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="isDisabled()" ng-show="step == 'uploading'">Finished &gt;
+    </button>
+</div>

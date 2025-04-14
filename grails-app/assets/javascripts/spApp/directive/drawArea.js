@@ -151,13 +151,15 @@
                                     LayersService.createFromWkt(scope.selectedArea.wkt, scope.areaName, '').then(function (data) {
                                         LoggerService.log("Create", scope.type, {pid: data.data.id, wkt: ''})
                                         LayersService.getObject(data.data.id).then(function (data) {
-                                            data.data.layertype = 'area';
-                                            data.data.wkt = scope.wkt;
-                                            MapService.add(data.data);
+                                            LayersService.getWkt(data.data.id).then(function (wkt) {
+                                                data.data.layertype = 'area';
+                                                data.data.wkt = wkt.data;
+                                                MapService.add(data.data);
 
-                                            scope.deleteDrawing();
-                                            LayoutService.closePanel();
-                                            MapService.zoomToExtents(data.data.bbox);
+                                                scope.deleteDrawing();
+                                                LayoutService.closePanel();
+                                                MapService.zoomToExtents(data.data.bbox);
+                                            })
                                         })
                                     })
                                 }
