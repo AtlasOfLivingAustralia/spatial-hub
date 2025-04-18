@@ -1,3 +1,25 @@
+function hideTimelinePlaceholder() {
+    var timelineWidgetPlaceholder = document.getElementById("timelineWidgetPlaceholder")
+    timelineWidgetPlaceholder.style.display = "none";
+}
+
+function hideTimelineWidget(){
+    var timelineWidgetPlaceholder = document.getElementById("timelineWidget")
+    timelineWidgetPlaceholder.style.display = "none";
+    showTimelinePlaceholder()
+}
+
+function showTimelinePlaceholder() {
+    var timelineWidgetPlaceholder = document.getElementById("timelineWidgetPlaceholder")
+    timelineWidgetPlaceholder.style.display = "block";
+}
+
+function showTimelineWidget(){
+    var timelineWidgetPlaceholder = document.getElementById("timelineWidget")
+    timelineWidgetPlaceholder.style.display = "block";
+    hideTimelinePlaceholder()
+}
+
 /*
  * Copyright (C) 2016 Atlas of Living Australia
  * All Rights Reserved.
@@ -48,6 +70,7 @@
                         ];
 
                     scope.onPlay = function () {
+                        showTimelineWidget();
                         var s = scope._selected.layer.playback;
 
                         LoggerService.log("View", "timeSeriesPlayback", {
@@ -96,6 +119,7 @@
                     };
 
                     scope.onPause = function () {
+                        hideTimelineWidget();
                         var s = scope._selected.layer.playback;
                         if (s.play) {
                             s.stop = s.play = false;

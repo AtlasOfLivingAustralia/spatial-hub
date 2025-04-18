@@ -55,14 +55,17 @@
             <div class="col-sm-4">
                 <label i18n="172">Year range</label>
             </div>
-            <div class="col-sm-7 padding-top-5">
+            <div id="timelineWidgetPlaceholder" class="col-sm-7 padding-top-5" >
+                <span i18n="565" style="font-style: italic">press Play to start/resume animation series</span>
+            </div>
+            <div id="timelineWidget" class="col-sm-7 padding-top-5" style="display: none">
                 <div ui-slider ng-model="_selected.layer.playback.yearRange" range="true"
                      min="{{_selected.layer.yearMin}}" max="{{_selected.layer.yearMax}}" disabled="true"></div>
             </div>
         </div>
         <div class="row">
             <div class="col-sm-4"></div>
-            <div class="col-sm-8 text-center"><label>{{_selected.layer.playback.yearRange[0]}} -
+            <div class="col-sm-8 text-right"><label>{{_selected.layer.playback.yearRange[0]}} -
                 {{_selected.layer.playback.yearRange[1]}}</label></div>
         </div>
     </div>
