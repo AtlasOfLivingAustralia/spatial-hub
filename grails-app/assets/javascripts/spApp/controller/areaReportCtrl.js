@@ -232,19 +232,6 @@
                                 query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
                                 map: false,
                                 extraQ: ["geospatial_kosher:true"]
-                            },
-                            {
-                                name: $i18n(366, "Number of endemic species"),
-                                endemic: true,
-                                query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
-                                map: false
-                            },
-                            {
-                                name: $i18n(429, "Number of endemic species - spatially valid only"),
-                                endemic: true,
-                                query: {q: areaQ.q, bs: areaQ.bs, ws: areaQ.ws, wkt: areaQ.wkt, qid: areaQ.qid},
-                                map: false,
-                                extraQ: ["geospatial_kosher:true"]
                             }];
 
                         // TODO: move this into config and retrieve from $SH
@@ -272,19 +259,6 @@
                             {
                                 name: $i18n(358, "Checklist species distributions"),
                                 list: $scope.checklists,
-                                value: ''
-                            },
-                            {
-                                name: $i18n(357, "JournalMap articles"),
-                                list: $scope.journalMap,
-                                link: $SH.journalMapUrl,
-                                linkName: $i18n(369, "JournalMap"),
-                                value: '',
-                                ignore: $SH.journalMapUrl === ''
-                            },
-                            {
-                                name: $i18n(360, "Gazetteer Points"),
-                                mapGaz: true,
                                 value: ''
                             },
                             {
