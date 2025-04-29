@@ -12,7 +12,7 @@ buildscript {
     }
 }
 
-version "2.2.0"
+version "2.2.1-SNAPSHOT"
 group "au.org.ala"
 
 apply plugin:"eclipse"
@@ -209,6 +209,18 @@ tasks.withType(Test) {
 assets {
     minifyJs = true
     minifyCss = true
+}
+
+bootWar {
+    from('src/main/resources/META-INF/context.xml') {
+        into 'META-INF'
+    }
+}
+
+war {
+    from('src/main/resources/META-INF/context.xml') {
+        into 'META-INF'
+    }
 }
 
 // Refer to FieldCapture: https://github.com/AtlasOfLivingAustralia/fieldcapture/blob/feature/grails4/gradle/publish.gradle
