@@ -9,7 +9,7 @@ buildscript {
         classpath "gradle.plugin.com.github.erdi.webdriver-binaries:webdriver-binaries-gradle-plugin:2.7"
         classpath "com.bertramlabs.plugins:asset-pipeline-gradle:3.4.6"
 //        classpath 'com.bertramlabs.plugins:asset-pipeline-core:3.2.4'
-    }`
+    }
 }
 
 version "2.2.1"
