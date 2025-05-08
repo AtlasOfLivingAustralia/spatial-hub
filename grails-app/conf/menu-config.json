@@ -39,10 +39,6 @@
         "open": "ToolAreaReportService"
       },
       {
-        "name": "Area Report - PDF",
-        "open": "AreaReport"
-      },
-      {
         "name": "Scatterplot - single",
         "open": "ScatterplotCreate"
       },
