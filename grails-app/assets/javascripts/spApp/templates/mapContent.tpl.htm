@@ -35,4 +35,20 @@
             </div>
         </li>
     </ul>
+    <!-- Quick links start-->
+    <div ng-show="controlVisibility()">
+        <li>
+            <a href="#" ng-click="openTool('ToolAddSpeciesService')">Add occurrences to map</a>
+        </li>
+        <li>
+            <a href="#" ng-click="openModal('addArea')">Add area to map</a>
+        </li>
+        <li>
+            <a href="#" ng-click="openTool('ToolAddLayerService')">Add layer to map</a>
+        </li>
+        <li>
+            <a href="#" ng-click="openTool('ToolAddFacetService')">Add facet to map</a>
+        </li>
+    </div>
+    <!-- Quick links end-->
 </div>
