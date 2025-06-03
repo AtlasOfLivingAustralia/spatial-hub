@@ -120,7 +120,18 @@
                             }
 
                             scope.select(selection)
-                        }
+                        },
+
+                        scope.openModal = function (type, data) {
+                            LayoutService.clear();
+                            LayoutService.openModal(type, data)
+                        };
+
+                    scope.openTool = function (type) {
+                        scope.openModal('tool', {processName: type})
+                    };
+
+
                 }
             };
         }])
