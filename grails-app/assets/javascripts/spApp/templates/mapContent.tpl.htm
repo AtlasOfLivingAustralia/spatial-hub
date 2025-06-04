@@ -16,6 +16,36 @@
                ng-click="zoom(item);$event.stopPropagation();"></i>
         </li>
     </ul>
+    <!-- Quick links start-->
+    <div>
+        <table>
+            <tr>
+                <td>
+                    <a href="#" ng-click="openTool('ToolAddSpeciesService')">
+                        <img ng-src="{{baseUrl}}/assets/add-occurrence.svg" alt="Add occurrences to map"/>
+                    </a>
+                </td>
+                <td>
+                    <a href="#" ng-click="openModal('addArea')">
+                        <img ng-src="{{baseUrl}}/assets/add-area.svg" alt="Add area to map"/>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a href="#" ng-click="openTool('ToolAddLayerService')">
+                        <img ng-src="{{baseUrl}}/assets/add-layer.svg" alt="Add layer to map"/>
+                    </a>
+                </td>
+                <td>
+                    <a href="#" ng-click="openTool('ToolAddFacetService')">
+                        <img ng-src="{{baseUrl}}/assets/add-facet.svg" alt="Add facet to map"/>
+                    </a>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <!-- Quick links end-->
     <ul class="list-group layer-list">
         <li class="list-group-item" ng-click="select(undefined)" style="border-radius: 0px;" ng-if="config.mapOptions"
             ng-class="{ 'layer-selected' : isSelected(item) }">
@@ -35,20 +65,4 @@
             </div>
         </li>
     </ul>
-    <!-- Quick links start-->
-    <div>
-        <li>
-            <a href="#" ng-click="openTool('ToolAddSpeciesService')">Add occurrences to map</a>
-        </li>
-        <li>
-            <a href="#" ng-click="openModal('addArea')">Add area to map</a>
-        </li>
-        <li>
-            <a href="#" ng-click="openTool('ToolAddLayerService')">Add layer to map</a>
-        </li>
-        <li>
-            <a href="#" ng-click="openTool('ToolAddFacetService')">Add facet to map</a>
-        </li>
-    </div>
-    <!-- Quick links end-->
 </div>
