@@ -1,0 +1,16 @@
+.icon-overlay {
+  position: relative;
+  display: inline-block;
+}
+
+.icon-overlay .overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 0.5em;
+  color: red; /* or white, or your theme */
+}
+
+.icon-overlay:hover {
+  filter: brightness(85%);
+}
