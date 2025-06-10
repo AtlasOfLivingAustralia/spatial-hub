@@ -1,16 +1,23 @@
-.icon-overlay {
-  position: relative;
+.svg-wrapper {
   display: inline-block;
+  position: relative;
+  padding: 10px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
 }
 
-.icon-overlay .overlay {
-  position: absolute;
-  top: 0;
-  right: 0;
-  font-size: 0.5em;
-  color: red; /* or white, or your theme */
+.svg-wrapper:hover {
+  background-color: #eee; /* grey highlight */
+  cursor: pointer;
 }
 
-.icon-overlay:hover {
-  filter: brightness(85%);
+.svg-wrapper svg {
+  width: 32px;
+  height: 32px;
+  fill: #333; /* icon color */
+  transition: fill 0.3s ease;
+}
+
+.svg-wrapper:hover svg {
+  fill: #000; /* darker on hover */
 }
