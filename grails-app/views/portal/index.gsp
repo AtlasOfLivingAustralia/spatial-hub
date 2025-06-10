@@ -257,6 +257,7 @@
 
 </script>
 <asset:javascript src="application.js"/>
+<asset:stylesheet href="fa-icons-overlay.css"/>
 
 <sp-app></sp-app>
 </body>
