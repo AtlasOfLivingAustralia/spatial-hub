@@ -7,8 +7,8 @@
      * @description
      *    Panel displaying the map
      */
-    angular.module('sp-map-directive', ['map-service', 'layout-service', 'layers-service']).directive('spMap', ['$timeout', 'MapService', 'LayoutService', 'LayersService', 'KeepAliveService',
-        function ($timeout, MapService, LayoutService, LayersService, KeepAliveService) {
+    angular.module('sp-map-directive', ['map-service', 'layout-service', 'layers-service']).directive('spMap', ['$timeout', 'MapService', 'LayoutService', 'LayersService', 'KeepAliveService', '$q',
+        function ($timeout, MapService, LayoutService, LayersService, KeepAliveService, $q) {
             if ($SH.userId) {
                 KeepAliveService.start();
             }
@@ -23,6 +23,30 @@
                     scope.list = MapService.mappedLayers;
 
                     scope.sortingLog = [];
+
+                    scope.addBWK = function() {
+                        var layerId = $SH.bwk;
+                        return scope.addLayer(layerId);
+                    }
+
+                    scope.addLandbouw = function() {
+                        var layerId = $SH.landbouw;
+                        return scope.addLayer(layerId);
+                    }
+
+                    scope.addVhga = function() {
+                        var layerId = $SH.vhga;
+                        return scope.addLayer(layerId);
+                    }
+
+                    scope.addLayer = function (layerId) {
+                        var promises = [];
+                        var item = LayersService.convertFieldIdToMapLayer(layerId, true)
+                        item.log = false
+                        console.log("ksh-debug. adding layer " + layerId);
+                        promises.push(MapService.add(item))
+                        return $q.all(promises)
+                    }
 
                     scope.info = function (url, title, notes) {
                         scope.$parent.openIframe(url, title, notes)
