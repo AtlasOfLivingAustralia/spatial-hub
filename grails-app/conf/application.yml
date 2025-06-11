@@ -672,8 +672,10 @@ environments:
     production:
         assets:
           bundle: true
+    local:
+        quickLinksLayers:
+          bwk: el10102
+          landbouw: el10102
+          vhga: el10102
 
-quickLinksLayers:
-  bwk: el10102
-  landbouw: el10102
-  vhga: el10102
+
