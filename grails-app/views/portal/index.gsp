@@ -216,7 +216,11 @@
          */
         , workflowFilters: ${(config.workflow.speciesFilters as grails.converters.JSON).toString().encodeAsRaw()}
 
-        , maxUploadSize: ${config.grails.controllers.upload.maxFileSize}
+        , maxUploadSize: ${config.grails.controllers.upload.maxFileSize},
+
+        bwk: '${config.quickLinksLayers.bwk}',
+        landbouw: '${config.quickLinksLayers.landbouw}',
+        vhga: '${config.quickLinksLayers.vhga}'
     };
 
     if (!$SH.i18n) {

@@ -63,6 +63,53 @@
             </tr>
         </table>
     </div>
+  <div>
+    <table align="center">
+      <tr>
+        <td style="padding: 4px">
+          <a href="#" ng-click="addBWK()" alt="Add BWK layer to the map" title="Add BWK layer to the map">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+              <!-- Map Pin Background -->
+              <path fill="#4CAF50" d="M32 2C18.75 2 8 12.75 8 26c0 12.25 13.5 26.25 21.16 33.6a3.4 3.4 0 004.68 0C42.5 52.25 56 38.25 56 26 56 12.75 45.25 2 32 2z"/>
+              <!-- Leaf Element -->
+              <path fill="#FFF" d="M33 17c-5 1-9 5-9 10 0 2.5 1.5 5.5 4 6s6-2 6-5v-1c0-1 .5-2 1-2.5s1.5-1.5 2-2.5c1-2 0-4.5-2-5s-3 .5-4 1.5z"/>
+              <!-- Optional subtle grid -->
+              <path fill="none" stroke="#A5D6A7" stroke-width="1" d="M20 24h24M24 20v24"/>
+            </svg>
+          </a>
+        </td>
+        <td style="padding: 4px">
+          <a href="#" ng-click="addLandbouw()" alt="Add Landbouw layer to the map" title="Add Landbouw layer to the map">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+              <!-- Background -->
+              <rect x="2" y="2" width="60" height="60" rx="6" ry="6" fill="#8BC34A" stroke="#558B2F" stroke-width="2"/>
+
+              <!-- Field lines to simulate agricultural parcels -->
+              <line x1="2" y1="22" x2="62" y2="22" stroke="#33691E" stroke-width="1.5"/>
+              <line x1="2" y1="42" x2="62" y2="42" stroke="#33691E" stroke-width="1.5"/>
+
+              <line x1="22" y1="2" x2="22" y2="62" stroke="#33691E" stroke-width="1.5"/>
+              <line x1="42" y1="2" x2="42" y2="62" stroke="#33691E" stroke-width="1.5"/>
+            </svg>
+          </a>
+        </td>
+        <td style="padding: 4px">
+          <a href="#" ng-click="addVhga()" alt="Add Vlaamse Hydrografische Atlas layer to the map" title="Add Vlaamse Hydrografische Atlas layer to the map">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+              <!-- Background -->
+              <rect x="2" y="2" width="60" height="60" rx="8" ry="8" fill="#E3F2FD" stroke="#1976D2" stroke-width="2"/>
+
+              <!-- Water stream lines -->
+              <path d="M10 20 C20 10, 40 10, 50 20" stroke="#2196F3" stroke-width="2" fill="none"/>
+              <path d="M10 30 C25 20, 35 20, 50 30" stroke="#2196F3" stroke-width="2" fill="none"/>
+              <path d="M10 40 C20 30, 40 30, 50 40" stroke="#2196F3" stroke-width="2" fill="none"/>
+              <path d="M10 50 C25 40, 35 40, 50 50" stroke="#2196F3" stroke-width="2" fill="none"/>
+            </svg>
+          </a>
+        </td>
+      </tr>
+    </table>
+  </div>
     <!-- Quick links end-->
     <ul class="list-group layer-list">
         <li class="list-group-item" ng-click="select(undefined)" style="border-radius: 0px;" ng-if="config.mapOptions"
