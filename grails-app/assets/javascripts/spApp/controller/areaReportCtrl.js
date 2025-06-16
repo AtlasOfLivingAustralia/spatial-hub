@@ -307,7 +307,7 @@
                         });
 
                         $.each(['Algae', 'Amphibians', 'Angiosperms', 'Animals', 'Arthropods', 'Bacteria', 'Birds',
-                            'Bryophytes', 'Chromista', 'Crustaceans', 'Dicots', 'FernsAndAllies', 'Fishes', 'Fungi',
+                            'Bryophytes', 'Chromista', 'Crustaceans', 'Dicots', 'fernsAndAllies', 'Fish', 'Former Fishes', 'Fungi',
                             'Gymnosperms', 'Insects', 'Mammals', 'Molluscs', 'Monocots', 'Plants', 'Protozoa', 'Reptiles'], function (i, v) {
                             $scope.items.push({
                                 name: v,
