@@ -22,6 +22,10 @@ grails:
         upload:
             maxFileSize: 10000000
             maxRequestSize: 10000000
+    cache:
+      ehcache:
+        config: classpath:ehcache.xml
+        #ehcacheXmlLocation = 'classpath:ehcache.xml'
 
 layersService:
     url: 'https://spatial.ala.org.au/ws'

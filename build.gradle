@@ -69,6 +69,7 @@ dependencies {
     implementation "org.grails.plugins:events"
     implementation "org.grails.plugins:gsp"
     implementation "io.micronaut:micronaut-inject-groovy"
+    implementation "org.ehcache:ehcache:3.8.1"
     console "org.grails:grails-console"
     profile "org.grails.profiles:web"
     runtimeOnly "org.glassfish.web:el-impl:2.1.2-b03"

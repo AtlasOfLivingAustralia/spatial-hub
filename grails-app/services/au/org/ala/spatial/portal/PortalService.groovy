@@ -19,15 +19,12 @@ import grails.converters.JSON
 import grails.plugin.cache.Cacheable
 import grails.util.Holders
 
-import java.text.MessageFormat
-
 /**
  * Helper class for invoking other ALA web services.
  */
 class PortalService {
 
     def grailsApplication
-    def hubWebService
 
     static final DEFAULT_USER_ID = -1
 
@@ -53,33 +50,8 @@ class PortalService {
         uri.toString()
     }
 
-    def updateListQueries() {
-        if (grailsApplication.config.lists.url != '') {
-            try {
-                def joinStr = ' OR '
-                def threatenedUrl =
-                        "${grailsApplication.config.lists.url}${grailsApplication.config.lists.threatenedSpeciesUrl}"
-                def threatened = JSON.parse(hubWebService.getUrl(threatenedUrl, null, false)) as Map
-                def threatenedJoined = threatened.lists*.dataResourceUid.join(joinStr)
-                def threatenedQ = "species_list_uid:(${threatenedJoined})"
-                if (threatenedJoined) {
-                    grailsApplication.config.threatenedQ = threatenedQ
-                }
 
-                def invasiveUrl = "${grailsApplication.config.lists.url}${grailsApplication.config.lists.invasiveSpeciesUrl}"
-                def invasive = JSON.parse(hubWebService.getUrl(invasiveUrl, null, false)) as Map
-                def invasiveJoined = invasive.lists*.dataResourceUid.join(joinStr)
-                def invasiveQ = "species_list_uid:(${invasiveJoined})"
-                if (invasiveJoined) {
-                    grailsApplication.config.invasiveQ = invasiveQ
-                }
-            } catch (err) {
-                log.error("failed to init threatened or invasives lists", err)
-            }
-        }
-    }
-
-   @Cacheable('configCache')
+    @Cacheable('configCache')
     def getConfig(type, showDefault, hub) {
         def config
         def defaultFile = type + '-config.json'

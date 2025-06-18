@@ -55,7 +55,6 @@ class BootStrap {
         addExternalViews()
         addExternalAssets(servletContext)
 
-        portalService.updateListQueries()
     }
 
     def addExternalViews = {

@@ -71,6 +71,7 @@ class PortalController {
     def authService
     def grailsCacheManager
     def portalService
+    def speciesListCacheService
 
     def index() {
         def userId = getValidUserId(params)
@@ -107,6 +108,8 @@ class PortalController {
                                     sessionId    : sessionService.newId(userId),
                                     messagesAge  : messageService.messagesAge,
                                     hub          : hub,
+                                    threatenedQ  : speciesListCacheService.getThreatenedQ(),
+                                    invasiveQ   : speciesListCacheService.getInvasiveQ(),
                                     custom_facets: toMapOfLists(config.biocacheService.custom_facets)])
                 } else if (!authDisabled && userId == null) {
                     login()
@@ -144,7 +147,6 @@ class PortalController {
             render status: HttpURLConnection.HTTP_UNAUTHORIZED, model: [config: grailsApplication.config]
         } else {
             messageService.updateMessages()
-            portalService.updateListQueries()
 
             grailsCacheManager.getCache(portalService.caches.QID).clear()
             grailsCacheManager.getCache(portalService.caches.PROXY).clear()
