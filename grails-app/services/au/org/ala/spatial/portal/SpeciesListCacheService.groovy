@@ -21,7 +21,8 @@ class SpeciesListCacheService {
                 }
                 return threatenedQ
             } catch (err) {
-                log.error("failed to construct threatened lists", err)
+                log.error("Failed to fetch threatened species lists query in threatenedQCache. Caching empty value. Next cache refresh attempt will occur in 15 minutes", err)
+                return ''
             }
         }
     }
@@ -40,7 +41,8 @@ class SpeciesListCacheService {
                 }
                 return invasiveQ
             } catch (err) {
-                log.error("failed to construct invasives lists", err)
+                log.error("Failed to fetch species lists query in invasiveQCache. Caching empty value. Next cache refresh attempt will occur in 15 minutes", err)
+                return ''
             }
         }
     }
