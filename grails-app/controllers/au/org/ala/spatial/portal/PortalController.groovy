@@ -151,6 +151,8 @@ class PortalController {
             grailsCacheManager.getCache(portalService.caches.QID).clear()
             grailsCacheManager.getCache(portalService.caches.PROXY).clear()
             grailsCacheManager.getCache('configCache').clear()
+            grailsCacheManager.getCache('threatenedQCache').clear()
+            grailsCacheManager.getCache('invasiveQCache').clear()
 
             def r = [message: 'caches cleared']
             render r as JSON
