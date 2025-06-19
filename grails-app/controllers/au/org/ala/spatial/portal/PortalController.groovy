@@ -108,8 +108,8 @@ class PortalController {
                                     sessionId    : sessionService.newId(userId),
                                     messagesAge  : messageService.messagesAge,
                                     hub          : hub,
-                                    threatenedQ  : speciesListCacheService.getThreatenedQ(),
-                                    invasiveQ   : speciesListCacheService.getInvasiveQ(),
+                                    threatenedQ  : speciesListCacheService.getThreatenedQValue(),
+                                    invasiveQ   : speciesListCacheService.getInvasiveQValue(),
                                     custom_facets: toMapOfLists(config.biocacheService.custom_facets)])
                 } else if (!authDisabled && userId == null) {
                     login()
