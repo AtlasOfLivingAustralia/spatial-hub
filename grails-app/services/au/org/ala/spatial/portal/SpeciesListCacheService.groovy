@@ -7,7 +7,7 @@ class SpeciesListCacheService {
     def hubWebService
     def grailsCacheManager
 
-    def getThreatenedQ() {
+    def getThreatenedQValue() {
         if (grailsApplication.config.lists.url == '') {
             log.warn("No species lists URL configured in application. Threatened species lists query for threatenedQCache is therefore set to empty value.")
             return ''
@@ -21,7 +21,7 @@ class SpeciesListCacheService {
                 def threatened = JSON.parse(hubWebService.getUrl(threatenedUrl, null, false)) as Map
                 def threatenedJoined = threatened.lists*.dataResourceUid.join(' OR ')
                 if (threatenedJoined) {
-                    threatenedQ = "species_list_uid:(${threatenedJoined})"
+                    def threatenedQ = "species_list_uid:(${threatenedJoined})"
                     grailsCacheManager.getCache("threatenedQCache").put("threatenedQ", threatenedQ) // update cache
                     return threatenedQ
                 }
@@ -33,7 +33,7 @@ class SpeciesListCacheService {
         return cachedThreatenedQ
     }
 
-    def getInvasiveQ() {
+    def getInvasiveQValue() {
         if (grailsApplication.config.lists.url == '') {
             log.warn("No species lists URL configured in application. Threatened species lists query for threatenedQCache is therefore set to empty value.")
             return ''
@@ -47,7 +47,7 @@ class SpeciesListCacheService {
                 def invasive = JSON.parse(hubWebService.getUrl(invasiveUrl, null, false)) as Map
                 def invasiveJoined = invasive.lists*.dataResourceUid.join(' OR ')
                 if (invasiveJoined) {
-                    invasiveQ = "species_list_uid:(${invasiveJoined})"
+                    def invasiveQ = "species_list_uid:(${invasiveJoined})"
                     grailsCacheManager.getCache("invasiveQCache").put("invasiveQ", invasiveQ) // update cache
                     return invasiveQ
                 }
