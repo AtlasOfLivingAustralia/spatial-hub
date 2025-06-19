@@ -14,7 +14,7 @@ class SpeciesListCacheService {
         }
 
         log.info("Refreshing the threatened species lists query for threatenedQCache")
-        def cachedThreatenedQ = grailsCacheManager.getCache("threatenedQCache").get("threatenedQ")
+        def cachedThreatenedQ = grailsCacheManager.getCache("threatenedQCache").get("threatenedQ")?.get()
         if (!cachedThreatenedQ) {
             try {
                 def threatenedUrl = "${grailsApplication.config.lists.url}${grailsApplication.config.lists.threatenedSpeciesUrl}"
@@ -40,7 +40,7 @@ class SpeciesListCacheService {
         }
 
         log.info("Refreshing the invasive species lists query for invasiveQCache")
-        def cachedInvasiveQ = grailsCacheManager.getCache("invasiveQCache").get("invasiveQ")
+        def cachedInvasiveQ = grailsCacheManager.getCache("invasiveQCache").get("invasiveQ")?.get()
         if (!cachedInvasiveQ) {
             try {
                 def invasiveUrl = "${grailsApplication.config.lists.url}${grailsApplication.config.lists.invasiveSpeciesUrl}"
