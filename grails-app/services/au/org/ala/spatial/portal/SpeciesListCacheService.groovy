@@ -13,16 +13,16 @@ class SpeciesListCacheService {
             return ''
         }
 
-        log.info("Refreshing the threatened species lists query for threatenedQCache")
         def cachedThreatenedQ = grailsCacheManager.getCache("threatenedQCache").get("threatenedQ")?.get()
         if (!cachedThreatenedQ) {
+            log.info("Refreshing threatenedQCache")
             try {
                 def threatenedUrl = "${grailsApplication.config.lists.url}${grailsApplication.config.lists.threatenedSpeciesUrl}"
                 def threatened = JSON.parse(hubWebService.getUrl(threatenedUrl, null, false)) as Map
                 def threatenedJoined = threatened.lists*.dataResourceUid.join(' OR ')
                 if (threatenedJoined) {
                     def threatenedQ = "species_list_uid:(${threatenedJoined})"
-                    grailsCacheManager.getCache("threatenedQCache").put("threatenedQ", threatenedQ) // update cache
+                    grailsCacheManager.getCache("threatenedQCache").put("threatenedQ", threatenedQ) // refresh cache
                     return threatenedQ
                 }
             } catch (err) {
@@ -39,16 +39,16 @@ class SpeciesListCacheService {
             return ''
         }
 
-        log.info("Refreshing the invasive species lists query for invasiveQCache")
         def cachedInvasiveQ = grailsCacheManager.getCache("invasiveQCache").get("invasiveQ")?.get()
         if (!cachedInvasiveQ) {
+            log.info("Refreshing invasiveQCache")
             try {
                 def invasiveUrl = "${grailsApplication.config.lists.url}${grailsApplication.config.lists.invasiveSpeciesUrl}"
                 def invasive = JSON.parse(hubWebService.getUrl(invasiveUrl, null, false)) as Map
                 def invasiveJoined = invasive.lists*.dataResourceUid.join(' OR ')
                 if (invasiveJoined) {
                     def invasiveQ = "species_list_uid:(${invasiveJoined})"
-                    grailsCacheManager.getCache("invasiveQCache").put("invasiveQ", invasiveQ) // update cache
+                    grailsCacheManager.getCache("invasiveQCache").put("invasiveQ", invasiveQ) // refresh cache
                     return invasiveQ
                 }
             } catch (err) {
