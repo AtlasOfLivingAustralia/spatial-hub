@@ -80,12 +80,13 @@
                             "family": "Macropodidae",
                             "occCount": 147560
                         },
+
                  */
                 search: function (term, spinner) {
                     //show only this species spinner
                     spinner.addClass('species-spinner');
 
-                    var url = $SH.biocacheServiceUrl + "/autocomplete/search?q=" + term;
+                    var url = $SH.bieServiceUrl + "/search/auto?q=" + encodeURIComponent(term) + "&idxType=TAXON";
                     lastUrl = url;
 
                     return $http.get(url, _httpDescription('search')).then(function (response) {

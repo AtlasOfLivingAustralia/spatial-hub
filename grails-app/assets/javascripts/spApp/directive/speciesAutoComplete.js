@@ -21,15 +21,11 @@
                         var a = iElement.autocomplete({
                             source: function (searchTerm, response) {
                                 SpeciesAutoCompleteService.search(searchTerm.term, iElement).then(function (data) {
-                                    response($.map(data.searchResults.results, function (item, idx) {
-                                        var distributions = item.distributionsCount > 0 ? ' +' + item.distributionsCount + ' ' + $i18n(393, "expert distribution(s)") : '';
-                                        var checklists = item.checklistsCount > 0 ? ' +' + item.checklistsCount + ' ' + $i18n(394, "checklist(s)") : '';
-                                        var tracks = item.tracksCount > 0 ? ' +' + item.tracksCount + ' ' + $i18n(395, "track(s)") : '';
-
+                                    response($.map(data.autoCompleteList, function (item, idx) {
                                         return {
                                             label: item.name,
-                                            info: item.rank + (item.commonNameSingle ? ' ' + item.commonNameSingle : ' ') +
-                                            ' - ' + item.occCount + ' ' + $i18n(396, "found") + distributions + checklists + tracks,
+                                            info: item.rankString + (item.commonName ? ' ' + item.commonName : ' ') +
+                                            ' - ' + item.occurrenceCount + ' ' + $i18n(396, "found"),
                                             value: item
                                         }
                                     }))
