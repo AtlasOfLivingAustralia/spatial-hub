@@ -21,7 +21,7 @@
                         var a = iElement.autocomplete({
                             source: function (searchTerm, response) {
                                 SpeciesAutoCompleteService.search(searchTerm.term, iElement).then(function (data) {
-                                    response($.map(data.response.docs, function (item, idx) {
+                                    response($.map(data.searchResults.results, function (item, idx) {
 
                                         return {
                                             label: item.scientificName,
