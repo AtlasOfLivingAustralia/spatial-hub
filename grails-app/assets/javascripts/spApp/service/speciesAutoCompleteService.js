@@ -87,7 +87,7 @@
                     spinner.addClass('species-spinner');
 
                     const url = $SH.bieServiceUrl + "/search?q="
-                        + encodeURIComponent(`*${term}*`)
+                        + encodeURIComponent(`*"${term}"*`)
                         + "&fq=" + encodeURIComponent("idxtype:TAXON")
                         + "&fq=" + encodeURIComponent("occurrenceCount:[1 TO *]")
                         + "&pageSize=10&sort=score&dir=desc";
