@@ -21,10 +21,11 @@
                         var a = iElement.autocomplete({
                             source: function (searchTerm, response) {
                                 SpeciesAutoCompleteService.search(searchTerm.term, iElement).then(function (data) {
-                                    response($.map(data.autoCompleteList, function (item, idx) {
+                                    response($.map(data.response.docs, function (item, idx) {
+
                                         return {
-                                            label: item.name,
-                                            info: item.rankString + (item.commonName ? ' ' + item.commonName : ' ') +
+                                            label: item.scientificName,
+                                            info: item.rank + (item.commonNameSingle ? ' ' + item.commonNameSingle : ' ') +
                                             ' - ' + item.occurrenceCount + ' ' + $i18n(396, "found"),
                                             value: item
                                         }

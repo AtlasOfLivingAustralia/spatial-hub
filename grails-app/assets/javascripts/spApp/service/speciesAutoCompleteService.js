@@ -86,7 +86,11 @@
                     //show only this species spinner
                     spinner.addClass('species-spinner');
 
-                    var url = $SH.bieServiceUrl + "/search/auto?q=" + encodeURIComponent(term) + "&idxType=TAXON";
+                    var url = $SH.bieServiceUrl + "/search?q="
+                        + encodeURIComponent(`*${term}*`)
+                        + "&fq=" + encodeURIComponent("idxtype:TAXON")
+                        + "&fq=" + encodeURIComponent("occurrenceCount:[1 TO *]")
+                        + "&pageSize=10&sort=score&dir=desc"));
                     lastUrl = url;
 
                     return $http.get(url, _httpDescription('search')).then(function (response) {
