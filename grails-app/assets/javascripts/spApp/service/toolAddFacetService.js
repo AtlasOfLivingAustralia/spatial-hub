@@ -91,7 +91,7 @@
                         q: q,
                         bs: $SH.biocacheServiceUrl,
                         ws: $SH.biocacheUrl
-                    }, area, newName).then(function (data) {
+                    }, [area], newName).then(function (data) {
                         if (data == null) {
                             return $q.when(false)
                         } else {
