@@ -24,26 +24,15 @@
 
             var scope = {
 
-                list: function (q, max, offset, sort, order, user) {
-                    var params = '';
-                    if (q) params += "/" + encodeURIComponent(q);
-                    //TODO: investigate paging, or keep increasing max
-//                        if(q) params += '&q=' + encodeURIComponent(q);
-//                        if(max) params += '&max=' + max;
-//                        if(offset) params += '&offset=' + offset;
-//                        if(sort) params += '&sort=' + sort;
-//                        if(order) params += '&order=' + order;
-//                        if(user) params += '&user=' + user;
-                    params += "?" + "&max=20000";
-                    if ($SH.userId) {
-                        params += "&user=" + $SH.userId
-                    }
+                list: function (q, max, offset, sort, order) {
+                    var params = '?';
+                    if(q) params += 'q=' + encodeURIComponent(q);
+                    if(max) params += '&max=' + max;
+                    if(offset) params += '&offset=' + offset;
+                    if(sort) params += '&sort=' + sort;
+                    if(order) params += '&order=' + order;
                     return $http.get($SH.baseUrl + "/portal/speciesList" + params, _httpDescription('list')).then(function (response) {
-                        if (response.data.lists) {
-                            return response.data.lists;
-                        } else {
-                            return response.data;
-                        }
+                        return response.data;
                     });
                 },
                 createList: function (name, description, items, makePrivate, listType) {

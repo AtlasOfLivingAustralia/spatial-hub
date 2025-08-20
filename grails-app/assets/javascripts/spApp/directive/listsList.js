@@ -11,8 +11,6 @@
         .directive('listsList', ['$http', '$timeout', 'ListsService', 'MapService', 'LayoutService',
             function ($http, $timeout, ListsService, MapService, LayoutService) {
 
-                var sortType = 'updated';
-                var sortReverse = false;
                 return {
                     templateUrl: '/spApp/listsList.htm',
                     scope: {
@@ -22,8 +20,42 @@
                         scope.items = [];
 
                         scope.searchLists = '';
+                        scope.pageSize = 20;
+                        scope.page = 1;
+                        scope.total = '';
+                        scope.sortType = '';
+                        scope.sortReverse = false;
+                        scope.lastSearch = scope.searchLists + scope.sortType + scope.sortReverse;
+                        scope.isLoading = true;
 
                         scope.setItems = function (data) {
+                            let newItems = [];
+                            if (data.length) {
+                                for (var i = 0; i < data.length; i++) {
+                                    newItems.push({
+                                        dataResourceUid: data[i].dataResourceUid,
+                                        listName: data[i].listName,
+                                        lastUpdated: data[i].lastUpdated,
+                                        itemCount: data[i].itemCount,
+                                        fullName: data[i].fullName,
+                                        isAuthoritative:data[i].isAuthoritative,
+                                        selected: false
+                                    })
+                                }
+                            } else if (data.dataResourceUid) {
+                                newItems.push({
+                                    dataResourceUid: data.dataResourceUid,
+                                    listName: data.listName,
+                                    lastUpdated: data.lastUpdated,
+                                    itemCount: data.itemCount,
+                                    fullName: data.fullName,
+                                    selected: false
+                                });
+                            }
+                            scope.items = newItems;
+                        };
+
+                        scope.appendItems = function (data) {
                             if (data.length) {
                                 for (var i = 0; i < data.length; i++) {
                                     scope.items.push({
@@ -52,11 +84,52 @@
                             MapService.add(scope.selection);
                         };
 
-                        ListsService.list().then(function (data) {
-                            scope.setItems(data);
-                        });
+                        scope.fetchLists = function () {
+                            let thisSearch = scope.searchLists + scope.sortType + scope.sortReverse;
+                            if (scope.lastSearch !== thisSearch) {
+                                scope.items = [];
+                                scope.page = 1;
+                                scope.lastSearch = thisSearch;
+                            }
 
-                        scope.$watch('searchLists', function () {
+                            scope.isLoading = true;
+                            ListsService.list(scope.searchLists, scope.pageSize, (scope.page - 1) * scope.pageSize, scope.sortType, scope.sortReverse ? "asc" : "desc").then(function (data) {
+                                scope.total = data.listCount;
+                                scope.setItems(data.lists);
+
+                                // if there was another search running this may already be false
+                                scope.isLoading = false;
+                            });
+                        }
+
+                        scope.fetchMore = function () {
+                            scope.page += 1;
+                            scope.lastSearch = scope.searchLists + scope.sortType + scope.sortReverse;
+                            scope.isLoading = true;
+
+                            ListsService.list(scope.searchLists, scope.pageSize, (scope.page - 1) * scope.pageSize, scope.sortType, scope.sortReverse ? "asc" : "desc").then(function (data) {
+                                scope.appendItems(data.lists);
+
+                                // if there was another search running this may already be false
+                                scope.isLoading = false;
+                            });
+                        }
+
+                        scope.searchAgain = function () {
+                            scope.page = 1;
+                            scope.isLoading = true;
+                            scope.items = [];
+                            scope.fetchLists();
+                        }
+
+                        scope.searchListsTimeout;
+                        scope.$watchGroup(['searchLists', 'sortType', 'sortReverse'], function () {
+                            if (scope.searchListsTimeout) {
+                                $timeout.cancel(scope.searchListsTimeout);
+                            }
+                            scope.searchListsTimeout = $timeout(function () {
+                                scope.fetchLists();
+                            }, 300); // 300ms debounce
                         }, true);
 
                         scope.selection = {};
