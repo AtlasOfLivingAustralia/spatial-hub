@@ -8,7 +8,16 @@
      *   Select dropdown of biocache lifeforms
      */
     angular.module('lifeform-select-directive', []).directive('lifeformSelect',
-        ['BiocacheService', function (biocacheService) {
+        ['BiocacheService', '$http', function (biocacheService, $http) {
+            var _httpDescription = function (method, httpconfig) {
+                if (httpconfig === undefined) {
+                    httpconfig = {};
+                }
+                httpconfig.service = 'LifeformSelect';
+                httpconfig.method = method;
+
+                return httpconfig;
+            };
             return {
                 scope: {
                     _custom: '&onCustom'
@@ -20,12 +29,12 @@
                         scope._custom()(JSON.parse(selectedItem))
                     };
 
-                    biocacheService.facetGeneral('species_group', biocacheService.newQuery(), -1, 0).then(function (data) {
-                        $.each(data[0].fieldResult, function (idx, item) {
+                    return $http.get($SH.baseUrl + "/portal/lifeforms", _httpDescription('lifeform')).then(function (response) {
+                        $.each(response.data, function (idx, item) {
                             item.query = biocacheService.newQuery([item.fq], item.label);
                             scope.list.push(item)
                         });
-                    })
+                    });
                 }
             };
         }])
