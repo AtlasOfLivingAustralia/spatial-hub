@@ -1,6 +1,6 @@
 language: groovy
 jdk:
-- openjdk11
+- openjdk17
 sudo: false
 branches:
   only:
