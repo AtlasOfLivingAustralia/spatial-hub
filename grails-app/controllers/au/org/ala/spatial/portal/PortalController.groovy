@@ -419,7 +419,7 @@ class PortalController {
         } else {
             def url = grailsApplication.config.lists.url
 
-            def r = webService.get("${url}/ws/speciesList", [user: params.user ? userId : null, max: params.max], org.apache.http.entity.ContentType.APPLICATION_JSON, false, true, [:])
+            def r = webService.get("${url}/ws/speciesList", [user: params.user ? userId : null, max: params.max, offset: params.offset ?: 0, max: params.max ?: 100, q: params.q ?: '', sort: params.sort ?: '', order: params.order ?: 'asc'], org.apache.http.entity.ContentType.APPLICATION_JSON, false, true, [:])
 
             if (r == null) {
                 def status = response.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR)
@@ -824,5 +824,9 @@ class PortalController {
                 }
             }
         }
+    }
+
+    def lifeforms() {
+        render portalService.getLifeforms() as JSON
     }
 }

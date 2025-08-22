@@ -19,6 +19,7 @@ import grails.converters.JSON
 import grails.plugin.cache.Cacheable
 import grails.util.Holders
 
+import javax.annotation.PostConstruct
 import java.text.MessageFormat
 
 /**
@@ -32,6 +33,11 @@ class PortalService {
     static final DEFAULT_USER_ID = -1
 
     def caches = [QID: 'qid', PROXY: 'proxy', FLICKR_LICENCES: 'flickr']
+
+    @PostConstruct
+    def init() {
+        getLifeforms()
+    }
 
     def rebuildParameters(Map params, boolean returnWithAmpersand) {
         StringBuilder uri = new StringBuilder()
@@ -147,5 +153,19 @@ class PortalService {
         } else {
             [:] + grailsApplication.config
         }
+    }
+
+    List lifeforms = new ArrayList<String>() // unlikely to change, cache forever
+    def getLifeforms() {
+        if (lifeforms.isEmpty()) {
+            def url = "${grailsApplication.config.biocacheService.url}/occurrence/facets?facets=species_group&flimit=-1"
+            def json = hubWebService.getUrl(url, null, false)
+            if (json) {
+                def data = JSON.parse(json)
+                lifeforms = new ArrayList(data.fieldResult[0])
+            }
+        }
+
+        return lifeforms
     }
 }
