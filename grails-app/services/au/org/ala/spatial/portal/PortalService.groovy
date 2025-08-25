@@ -159,10 +159,14 @@ class PortalService {
     def getLifeforms() {
         if (lifeforms.isEmpty()) {
             def url = "${grailsApplication.config.biocacheService.url}/occurrence/facets?facets=species_group&flimit=-1"
-            def json = hubWebService.getUrl(url, null, false)
-            if (json) {
-                def data = JSON.parse(json)
-                lifeforms = new ArrayList(data.fieldResult[0])
+            try {
+                def json = hubWebService.getUrl(url, null, false)
+                if (json) {
+                    def data = JSON.parse(json)
+                    lifeforms = new ArrayList(data.fieldResult[0])
+                }
+            } catch (err) {
+                log.error("failed to get lifeforms: " + url, err)
             }
         }
 
