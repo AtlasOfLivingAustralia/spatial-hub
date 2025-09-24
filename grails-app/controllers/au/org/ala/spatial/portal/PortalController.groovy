@@ -6,12 +6,13 @@ import grails.util.Holders
 import grails.web.http.HttpHeaders
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.client.utils.URLEncodedUtils
-import org.apache.http.entity.ContentType
 import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.multipart.MultipartHttpServletRequest
+import org.apache.http.entity.ContentType;
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.message.BasicNameValuePair
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
@@ -21,7 +22,7 @@ import java.util.zip.ZipInputStream
  */
 class PortalController {
 
-    WebService webService
+    WebService  webService
 
     def propertiesService
 
@@ -388,8 +389,9 @@ class PortalController {
                 tmpFile.delete()
 
                 if (r.statusCode == 200) {
+                    String speciesFileOnLists = r.resp.localFile
                     def metadata = [
-                            //file       : r.resp.localFile,
+                            file       : speciesFileOnLists,
                             title      : json.listName,
                             description: json.description ?: json.listName,
                             listType   : json.listType,
@@ -397,10 +399,15 @@ class PortalController {
                             licence    : "CC-BY", // TODO: replicate species-lists behaviour, depends on species-lists issue #83
                             isPrivate  : json.isPrivate
                     ]
-                    String speciesFileOnLists = r.resp.localFile
-                    r = webService.post("${url}/ingest", null, [file: speciesFileOnLists, speciesList: metadata])
 
-                    // backward compatible id field
+
+                    r= webService.post(
+                            "${url}/ingest",
+                            null,
+                             metadata,
+                            ContentType.APPLICATION_JSON,
+                    )
+
                     r.resp.druid = r.resp.id
                 }
             } else {

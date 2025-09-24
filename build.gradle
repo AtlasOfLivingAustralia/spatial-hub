@@ -75,6 +75,7 @@ dependencies {
     runtimeOnly "com.h2database:h2"
     runtimeOnly "org.apache.tomcat:tomcat-jdbc"
     runtimeOnly "javax.xml.bind:jaxb-api:2.3.0"
+    implementation 'org.apache.httpcomponents:httpmime:4.5.13'
 
     testImplementation "org.mockito:mockito-core"
     testImplementation "org.grails:grails-web-testing-support"
