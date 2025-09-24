@@ -27,15 +27,11 @@
                 list: function (q, max, offset, sort, order, user) {
                     var params = '';
                     if (q) params += "/" + encodeURIComponent(q);
-                    //TODO: investigate paging, or keep increasing max
-//                        if(q) params += '&q=' + encodeURIComponent(q);
-//                        if(max) params += '&max=' + max;
-//                        if(offset) params += '&offset=' + offset;
-//                        if(sort) params += '&sort=' + sort;
-//                        if(order) params += '&order=' + order;
-//                        if(user) params += '&user=' + user;
-                    params += "?" + "&max=20000";
+                    // The new species-lists has separate graphql query that is more UI friendly. In the meantime,
+                    // get everything, or an approximation of everything.
+                    params += "?max=20000";
                     if ($SH.userId) {
+                        // This is not used in the new species-lists. The purpose was to put lists by the current user at the top of the list.
                         params += "&user=" + $SH.userId
                     }
                     return $http.get($SH.baseUrl + "/portal/speciesList" + params, _httpDescription('list')).then(function (response) {
@@ -74,18 +70,27 @@
                     return cache.get(listId);
                 },
                 getItemsQ: function (listId) {
-                    if (scope.getItemsQCached(listId)) {
-                        return scope.getListFq(listId);
-                    } else {
-                        return scope.items(listId, {includeKVP: true}).then(function (data) {
-                            cache.put(listId, data);
+                    //todo: verify which branch has the correct code
+                    //Most likely the one from 468-species-lists
+                    //From master
+                    // if (scope.getItemsQCached(listId)) {
+                    //     return scope.getListFq(listId);
+                    // } else {
+                    //     return scope.items(listId, {includeKVP: true}).then(function (data) {
+                    //         cache.put(listId, data);
+                    //
+                    //         return scope.getListFq(listId);
+                    //     });
+                    // }
 
-                            return scope.getListFq(listId);
-                        });
-                    }
+                    //From 468-species-lists
+                    return $q.when('species_list:' + listId);
                 },
                 url: function () {
                     return $SH.listsUrl
+                },
+                urlUi: function () {
+                    return $SH.listsUrlUi
                 },
                 listToFq: function (data) {
                     var terms = [];

@@ -33,16 +33,7 @@
 
                 $scope.maxFileSize = $SH.maxUploadSize;
 
-                $scope.listTypes = [
-                    {id: 'OTHER', label: "Other"},
-                    {id: 'SPECIES_CHARACTERS', label: "Species characters list"},
-                    {id: 'CONSERVATION_LIST', label: "Conservation list"},
-                    {id: 'SENSITIVE_LIST', label: "Sensitive list of species"},
-                    {id: 'LOCAL_LIST', label: "Local checklist"},
-                    {id: 'COMMON_TRAIT', label: "Common trait of species"},
-                    {id: 'COMMON_HABITAT', label: "Common habitat of species"},
-                    {id: 'TEST', label: "Test list"}
-                ]
+                $scope.listTypes = $SH.listTypes;
 
                 $scope.newListName = $i18n(375, "My species list");
                 $scope.newListDescription = '';

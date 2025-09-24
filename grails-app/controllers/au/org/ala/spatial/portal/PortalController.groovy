@@ -371,7 +371,41 @@ class PortalController {
 
             def url = grailsApplication.config.lists.url
 
-            def r = webService.post("${url}/ws/speciesList/", json)
+            def r
+            if (grailsApplication.config.lists.useListWs) {
+                // create tmp file
+                File tmpFile = File.createTempFile("spatial-species-list-",".csv")
+                BufferedWriter fw = new BufferedWriter(new FileWriter(tmpFile))
+                fw.writeLine("taxonID")
+                for (String item : json.listItems.split(",")) {
+                    fw.writeLine(item)
+                }
+                fw.flush()
+                fw.close()
+
+                r = webService.postMultipart("${url}/upload", null, null, [file: tmpFile], ContentType.APPLICATION_JSON, false, true)
+
+                tmpFile.delete()
+
+                if (r.statusCode == 200) {
+                    def metadata = [
+                            //file       : r.resp.localFile,
+                            title      : json.listName,
+                            description: json.description ?: json.listName,
+                            listType   : json.listType,
+                            region     : "AUS", // TODO: replicate species-lists behaviour, depends on species-lists issue #83
+                            licence    : "CC-BY", // TODO: replicate species-lists behaviour, depends on species-lists issue #83
+                            isPrivate  : json.isPrivate
+                    ]
+                    String speciesFileOnLists = r.resp.localFile
+                    r = webService.post("${url}/ingest", null, [file: speciesFileOnLists, speciesList: metadata])
+
+                    // backward compatible id field
+                    r.resp.druid = r.resp.id
+                }
+            } else {
+                r = webService.post("${url}/ws/speciesList/", json)
+            }
 
             if (r == null) {
                 def status = response.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR)
@@ -394,9 +428,12 @@ class PortalController {
             notAuthorised()
         } else {
             def url = grailsApplication.config.lists.url
-
-            def r = webService.get("${url}/ws/speciesListItems/" + params.id, [:], org.apache.http.entity.ContentType.APPLICATION_JSON, false, true, [:])
-
+            def r
+            if (grailsApplication.config.lists.useListWs) {
+                r = webService.get("${url}/speciesListItems/" + params.id, [:], org.apache.http.entity.ContentType.APPLICATION_JSON, false, true, [:])
+            } else {
+                r = webService.get("${url}/ws/speciesListItems/" + params.id, [:], org.apache.http.entity.ContentType.APPLICATION_JSON, false, true, [:])
+            }
             if (r == null) {
                 def status = response.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR)
                 r = [status: status, error: 'Unknown error when fetching list']
@@ -419,8 +456,12 @@ class PortalController {
         } else {
             def url = grailsApplication.config.lists.url
 
-            def r = webService.get("${url}/ws/speciesList", [user: params.user ? userId : null, max: params.max], org.apache.http.entity.ContentType.APPLICATION_JSON, false, true, [:])
-
+            def r
+            if (grailsApplication.config.lists.useListWs) {
+                r = webService.get("${url}/speciesList", [pageSize: (params.max ?: 1000) as Integer, page: (params.page ?: 1) as Integer], org.apache.http.entity.ContentType.APPLICATION_JSON, false, true, [:])
+            } else {
+                r = webService.get("${url}/ws/speciesList", [user: params.user ? userId : null, max: params.max], org.apache.http.entity.ContentType.APPLICATION_JSON, false, true, [:])
+            }
             if (r == null) {
                 def status = response.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR)
                 r = [status: status, error: 'Unknown error when fetching list']

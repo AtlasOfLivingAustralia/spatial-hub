@@ -203,14 +203,54 @@ skin:
   orgNameLong: 'Atlas of Living Australia'
   favicon: 'https://www.ala.org.au/app/uploads/2019/01/cropped-favicon-32x32.png'
 
-
+#todo check different urls used on V2 an V1
 lists:
+    useListWs: false
     url: 'https://lists.ala.org.au'
     threatenedSpeciesUrl: '/ws/speciesList/?isThreatened=eq:true&isAuthoritative=eq:true'
     invasiveSpeciesUrl: '/ws/speciesList/?isInvasive=eq:true&isAuthoritative=eq:true'
     facets: true
     migratoryDR: 'dr1005'
     iconicSpeciesDR: 'dr781'
+    listTypes:
+      - id: 'OTHER'
+        label: "Other"
+      - id: 'SPECIES_CHARACTERS'
+        label: "Species characters list"
+      - id: 'CONSERVATION_LIST'
+        label: "Conservation list"
+      - id: 'SENSITIVE_LIST'
+        label: "Sensitive list of species"
+      - id: 'LOCAL_LIST'
+        label: "Local checklist"
+      - id: 'COMMON_TRAIT'
+        label: "Common trait of species"
+      - id: 'COMMON_HABITAT'
+        label: "Common habitat of species"
+      - id: 'TEST'
+        label: "Test list"
+#lists:
+#    useListWs: true
+#    url: 'http://localhost:8080'
+#    urlUi: 'http://localhost:5173'
+#    threatenedSpeciesUrl: '/speciesList/?isThreatened=true&isAuthoritative=true&pageSize=1000'
+#    invasiveSpeciesUrl: '/speciesList/?isInvasive=true&isAuthoritative=true&pageSize=1000'
+#    facets: true
+#    migratoryDR: 'dr1005'
+#    iconicSpeciesDR: 'dr781'
+#    listTypes:
+#      - id: 'CONSERVATION_LIST'
+#        label: "Conservation species list"
+#      - id: 'SENSITIVE_LIST'
+#        label: "Sensitive list"
+#      - id: 'INVASIVE'
+#        label: "Invasive species list"
+#      - id: 'COMMON_TRAIT'
+#        label: "Traits"
+#      - id: 'LOCAL_LIST'
+#        label: "Local checklist"
+#      - id: 'SPECIES_CHARACTERS'
+#        label: "Species characters"
 
 journalmap:
     url: 'https://www.journalmap.org'
@@ -238,20 +278,19 @@ gazField: 'cl915'
 userObjectsField: 'cl1082'
 
 biocache:
-    url: 'https://biocache-databox.ala.org.au'
+  url: "https://biocache.ala.org.au"
 
 biocacheService:
-    url: 'https://biocache-ws-test.ala.org.au/ws'
-    #Facets to ignore in the biocache grouped/facets service
-    default_facets_ignored: 'data_resource_uid,data_provider_uid,species,collection_uid,institution_code_name,institution_uid,uncertainty'
-    custom_facets:
-      Attribution:
-        - Data Provider;data_provider
-        - Collection;collection_name
-        - Data Resource;data_resource
-        - Institution;institution_name
-      Occurrence:
-        - Year;occurrence_year
+  url: "https://biocache-ws.ala.org.au/ws"
+  #Facets to ignore in the biocache grouped/facets service
+  default_facets_ignored: "data_resource_uid,data_provider_uid,species,collection_uid,institution_code_name,institution_uid,uncertainty"
+  custom_facets:
+    Attribution: ['Data Provider;data_provider', 'Collection;collection_name', 'Data Resource;data_resource', 'Institution;institution_name']
+    Location: ['Coordinate Uncertainty;coordinate_uncertainty']
+    Occurrence: ['Year;occurrence_year']
+
+biocollect:
+  url: "https://biocollect.ala.org.au"
 
 sampling:
     url: 'https://sampling.ala.org.au/sampling-service'
