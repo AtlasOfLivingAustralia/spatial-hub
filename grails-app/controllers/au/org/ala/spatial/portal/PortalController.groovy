@@ -12,8 +12,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest
 import org.apache.http.entity.ContentType;
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.message.BasicNameValuePair
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 
@@ -404,7 +402,7 @@ class PortalController {
                     r= webService.post(
                             "${url}/ingest",
                             null,
-                             metadata,
+                            metadata,
                             ContentType.APPLICATION_JSON,
                     )
 

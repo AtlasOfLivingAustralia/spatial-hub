@@ -41,7 +41,7 @@
         layersServiceUrl: '${config.layersService.url}',
         samplingUrl: '${config.sampling.url}',
         listsUrl: '${config.lists.url}',
-        listsUrlUi: '${config.lists.urlUi + (config.lists.useListWs ? "/#/list/" : "/speciesListItem/list/")}',
+        listsUrlUi: '${config.lists.urlUi + (config.lists.useListWs ? "/list/" : "/speciesListItem/list/")}',
         listsFacets: ${config.lists.facets},
         listTypes: ${(config.lists.listTypes as grails.converters.JSON).toString().encodeAsRaw()},
         sandboxUrl: '${config.sandbox.url}',

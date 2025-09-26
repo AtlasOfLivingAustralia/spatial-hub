@@ -207,6 +207,7 @@ skin:
 lists:
     useListWs: false
     url: 'https://lists.ala.org.au'
+    urlUi: 'https://lists.ala.org.au'
     threatenedSpeciesUrl: '/ws/speciesList/?isThreatened=eq:true&isAuthoritative=eq:true'
     invasiveSpeciesUrl: '/ws/speciesList/?isInvasive=eq:true&isAuthoritative=eq:true'
     facets: true
@@ -704,6 +705,10 @@ environments:
           serverURL: "http://localhost:8087"
         layersService:
           url: "http://localhost:8081/ws"
+        lists:
+          useListWs: true
+          url: 'https://lists-ws.test.ala.org.au/v2'
+          urlUi: 'https://lists.test.ala.org.au'
         geoserver:
           url: 'http://localhost:8079/geoserver'
     test:
