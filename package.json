@@ -40,7 +40,7 @@
     "angular-sanitize": "1.5.8",
     "bootbox": "^5.0.1",
     "bootstrap": "3.4.1",
-    "chromedriver": "89.0.0",
+    "chromedriver": "140.0.4",
     "htmlparser2": "3.9.2",
     "leaflet": "0.7.7",
     "leaflet-draw": "0.2.4",
