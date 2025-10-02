@@ -1,15 +1,18 @@
 <div class="">
     <div class="">
         <div class="">
-            <table class="table table-striped fixed-head layers-table" style="width:480px" name="speciesList">
+            <table class="table table-striped fixed-head layers-table" style="width:600px" name="speciesList">
                 <caption>
                     <div class="row">
-                        <div class="col-sm-6">
+                        <div class="col-sm-8">
                             <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Filter"
+                                <input type="text" class="form-control" placeholder="Search"
                                        ng-model="searchLists" name="searchInSpeciesList">
-                                <div class="input-group-addon"><i class="fa fa-search"></i></div>
+                                <div class="input-group-addon" ng-click="searchAgain()"><i class="fa fa-search"></i></div>
                             </div>
+                        </div>
+                        <div class="col-sm-4" style="padding-top: 7px;">
+                            <span style="color: black;">Showing {{items.length}} of {{total}}</span>
                         </div>
                     </div>
                 </caption>
@@ -32,18 +35,18 @@
                         <span ng-show="sortType == 'lastUpdated' && sortReverse"
                               class="glyphicon glyphicon-chevron-up"></span>
                     </a></th>
-                    <th class="text-center" style="width:70px">
-                        <a href="#" ng-click="sortType = 'itemCount'; sortReverse = !sortReverse">
+                    <th class="text-center" style="width:90px">
+                        <a href="#" ng-click="sortType = 'count'; sortReverse = !sortReverse">
                             <span i18n="281">Species</span>
-                            <span ng-show="sortType == 'itemCount' && !sortReverse"
+                            <span ng-show="sortType == 'count' && !sortReverse"
                                   class="glyphicon glyphicon-chevron-down"></span>
-                            <span ng-show="sortType == 'itemCount' && sortReverse"
+                            <span ng-show="sortType == 'count' && sortReverse"
                                   class="glyphicon glyphicon-chevron-up"></span>
                         </a></th>
                 </tr>
                 </thead>
                 <tbody style="height:300px;overflow:auto">
-                <tr ng-repeat="item in items | orderBy:sortType:sortReverse | filter:searchLists">
+                <tr ng-repeat="item in items">
                     <td style="width:10px" class="td-vertical-align text-center"><input type="checkbox"
                                                                                         ng-model="item.selected"
                                                                                         ng-click="select(item)"></td>
@@ -56,6 +59,10 @@
                 </tr>
                 </tbody>
             </table>
+            <button class="btn btn-default margin-top-5" ng-click="fetchMore()"
+                    ng-disabled="items.length == total || isLoading">
+                <span i18n="565">Load more {{isLoading}}</span>
+            </button>
         </div>
     </div>
 </div>

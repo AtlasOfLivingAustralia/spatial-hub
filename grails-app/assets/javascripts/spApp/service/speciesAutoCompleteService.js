@@ -85,7 +85,7 @@
                     //show only this species spinner
                     spinner.addClass('species-spinner');
 
-                    var url = $SH.biocacheServiceUrl + "/autocomplete/search?q=" + term;
+                    var url = $SH.biocacheServiceUrl + "/autocomplete/search?q=" + term + "&simplified=true";
                     lastUrl = url;
 
                     return $http.get(url, _httpDescription('search')).then(function (response) {
