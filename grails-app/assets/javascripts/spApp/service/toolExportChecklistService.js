@@ -33,7 +33,7 @@
                                     "absentOption": true
                                 }
                             }],
-                        "description": $i18n(426,"Export a species list.")
+                        "description": $i18n(426,"Export an area checklist.")
                     },
 
                     downloading: false,
