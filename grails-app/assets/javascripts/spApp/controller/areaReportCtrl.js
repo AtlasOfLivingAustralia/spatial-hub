@@ -436,7 +436,7 @@
 
                 $scope.list = function (item) {
                     if (item.endemic !== undefined){
-                        BiocacheService.speciesListEndemic(item.query, item.extraQ, {}).then(function (data) {
+                        BiocacheService.speciesListEndemic(item.query, item.extraQ, undefined, {}).then(function (data) {
                             LayoutService.openModal('csv', {
                                 title: item.name,
                                 csv: data,
