@@ -94,9 +94,11 @@
                             var fids = '';
                             LayersService.getLayers().then(function (response) {
                                 $.map(response.data, function (field) {
-                                    if (fids.length > 0)
-                                        fids = fids + ',';
-                                    fids = fids + field.id;
+                                    if (field.indb) {
+                                        if (fids.length > 0)
+                                            fids = fids + ',';
+                                        fids = fids + field.id;
+                                    }
                                 });
 
                                 //sample
