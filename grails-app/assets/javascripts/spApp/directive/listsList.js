@@ -33,7 +33,7 @@
                             if (data.length) {
                                 for (var i = 0; i < data.length; i++) {
                                     newItems.push({
-                                        dataResourceUid: data[i].dataResourceUid,
+                                        dataResourceUid: data[i].dataResourceUid || data[i].id,
                                         listName: data[i].listName,
                                         lastUpdated: data[i].lastUpdated,
                                         itemCount: data[i].itemCount,
@@ -44,7 +44,7 @@
                                 }
                             } else if (data.dataResourceUid) {
                                 newItems.push({
-                                    dataResourceUid: data.dataResourceUid,
+                                    dataResourceUid: data.dataResourceUid || data.id,
                                     listName: data.listName,
                                     lastUpdated: data.lastUpdated,
                                     itemCount: data.itemCount,
@@ -143,7 +143,7 @@
                         };
 
                         scope.itemUrl = function (item) {
-                            return ListsService.url() + '/speciesListItem/list/' + item.dataResourceUid
+                            return ListsService.urlUi() + item.dataResourceUid
                         };
 
                         scope.add = function (item) {
@@ -162,12 +162,31 @@
                                         species_list: found.dataResourceUid
                                     })
                                 } else {
-                                    scope._custom()({
-                                        // list not indexed, can be very slow (minutes)
-                                        q: ["species_list:" + found.dataResourceUid],
-                                        name: found.listName,
-                                        species_list: found.dataResourceUid
-                                    })
+                                    if (found.dataResourceUid.startsWith("dr")) {
+                                        // public list
+                                        scope._custom()({
+                                            // list not indexed, can be very slow (minutes)
+                                            q: ["species_list:" + found.dataResourceUid],
+                                            name: found.listName,
+                                            species_list: found.dataResourceUid
+                                        })
+                                    } else {
+                                        // private list, first 200 names only
+                                        ListsService.getItemsQ(found.dataResourceUid).then(function (data) {
+                                            var items = data.split(" OR ");
+                                            var query = data;
+                                            var limit = 200;
+                                            if (items.length > limit ) {
+                                                alert("Note: only the first 200 names will be used when when adding species to the map (for user-uploaded and private checklists)");
+                                                query = items.slice(0,limit).join(" OR ") +")";
+                                            }
+                                            scope._custom()({
+                                                q: [query],
+                                                name: found.listName,
+                                                species_list: found.dataResourceUid
+                                            })
+                                        })
+                                    }
                                 }
 
                             }

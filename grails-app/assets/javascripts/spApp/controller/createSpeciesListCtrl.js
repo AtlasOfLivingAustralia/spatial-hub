@@ -33,22 +33,15 @@
 
                 $scope.maxFileSize = $SH.maxUploadSize;
 
-                $scope.listTypes = [
-                    {id: 'OTHER', label: "Other"},
-                    {id: 'SPECIES_CHARACTERS', label: "Species characters list"},
-                    {id: 'CONSERVATION_LIST', label: "Conservation list"},
-                    {id: 'SENSITIVE_LIST', label: "Sensitive list of species"},
-                    {id: 'LOCAL_LIST', label: "Local checklist"},
-                    {id: 'COMMON_TRAIT', label: "Common trait of species"},
-                    {id: 'COMMON_HABITAT', label: "Common habitat of species"},
-                    {id: 'TEST', label: "Test list"}
-                ]
+                $scope.listTypes = $SH.listTypes;
+                $scope.listLicences = $SH.listLicences || [];
 
                 $scope.newListName = $i18n(375, "My species list");
                 $scope.newListDescription = '';
                 $scope.newItems = '';
-                $scope.makePrivate = false; // new lists cannot be private by default
-                $scope.newListType = $scope.listTypes[0]
+                $scope.makePrivate = true;
+                $scope.newListType = $scope.listTypes[0];
+                $scope.newListLicence = (($scope.listLicences || []) && $scope.listLicences.length > 0) ? $scope.listLicences[0] : [];
 
                 $scope.selectedQ = {
                     q: []
@@ -149,7 +142,8 @@
                 };
 
                 $scope.addNewSpecies = function () {
-                    ListsService.createList($scope.newListName, $scope.newListDescription, $scope.matchedGuids(), $scope.makePrivate, $scope.newListType.id).then(function (resp) {
+                    ListsService.createList($scope.newListName, $scope.newListDescription, $scope.matchedGuids(), $scope.makePrivate, $scope.newListType.id,
+                        $scope.newListLicence && $scope.newListLicence.id ? $scope.newListLicence.id : null).then(function (resp) {
                         if (resp.status >= 200 && resp.status < 300) {
                             var json = resp.data;
                             var druid = json.druid;

@@ -361,6 +361,7 @@ class PortalController {
         }
     }
 
+    // This service may timeout if list loading takes a long time, e.g. large lists
     def postSpeciesList() {
         def userId = getValidUserId(params)
 
@@ -371,7 +372,57 @@ class PortalController {
 
             def url = grailsApplication.config.lists.url
 
-            def r = webService.post("${url}/ws/speciesList/", json)
+            def r
+            if (grailsApplication.config.lists.version == 1) {
+                r = webService.post("${url}/ws/speciesList/", json)
+            } else {
+                // create tmp file
+                File tmpFile = File.createTempFile("spatial-species-list-",".csv")
+                BufferedWriter fw = new BufferedWriter(new FileWriter(tmpFile))
+                fw.writeLine("taxonID")
+                for (String item : json.listItems.split(",")) {
+                    fw.writeLine(item)
+                }
+                fw.flush()
+                fw.close()
+
+                r = webService.postMultipart("${url}/v2/upload", null, null, [file: tmpFile], ContentType.APPLICATION_JSON, false, true)
+
+                tmpFile.delete()
+
+                if (r.statusCode == 200) {
+                    def metadata = [
+                            file       : r.resp.localFile,
+                            title      : json.listName,
+                            description: json.description ?: json.listName,
+                            listType   : json.listType,
+                            licence    : json.listLicence,
+                            isPrivate  : json.isPrivate
+                    ]
+
+                    r = webService.post("${url}/v2/ingest", null, metadata, ContentType.APPLICATION_JSON, false, true)
+
+                    // backward compatible id field
+                    r.resp.druid = r.resp.id
+
+                    // wait for /v2/ingest/{id}/progress to complete by polling every 3 seconds
+                    def completed = false
+                    while (!completed) {
+                        sleep(3000)
+                        def progressResp = webService.get("${url}/v2/ingest/${r.resp.id}/progress", null, ContentType.APPLICATION_JSON, false, true, [:])
+                        if (progressResp?.statusCode == 200) {
+                            if (progressResp?.resp?.completed) {
+                                completed = true
+                            } else {
+                                // error detection goes here
+                            }
+                        } else {
+                            log.error("failed to get progress for list ${r.resp.id}, status code ${progressResp?.statusCode}, body: ${progressResp?.resp}")
+                            break
+                        }
+                    }
+                }
+            }
 
             if (r == null) {
                 def status = response.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR)
@@ -380,7 +431,7 @@ class PortalController {
 
             def status = r.statusCode
             if (r.statusCode < 200 || r.statusCode > 300) {
-                r = [error: r.resp  ]
+                r = [error: r.resp]
             }
 
             render status: status, r.resp as JSON
