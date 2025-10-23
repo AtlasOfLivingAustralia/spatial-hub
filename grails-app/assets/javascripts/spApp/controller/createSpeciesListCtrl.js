@@ -39,7 +39,8 @@
                 $scope.newListName = $i18n(375, "My species list");
                 $scope.newListDescription = '';
                 $scope.newItems = '';
-                $scope.makePrivate = true;
+                $scope.makePrivate = ListsService.version() > 1;
+                $scope.listsVersion = ListsService.version();
                 $scope.newListType = $scope.listTypes[0];
                 $scope.newListLicence = (($scope.listLicences || []) && $scope.listLicences.length > 0) ? $scope.listLicences[0] : [];
 

@@ -28,6 +28,7 @@
         bieServiceUrl: '${config.bieService.baseURL}',
         layersServiceUrl: '${config.layersService.url}',
         samplingUrl: '${config.sampling.url}',
+        listsVersion: ${config.lists.version},
         listsUrl: '${config.lists.url}',
         listsUrlUi: '${(config.lists.urlUi ?: config.lists.url) + (config.lists.version == 2 ? "/list/" : "/speciesListItem/list/")}',
         listsFacets: ${config.lists.facets},

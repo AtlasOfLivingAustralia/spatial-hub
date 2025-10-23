@@ -80,6 +80,9 @@
                 urlUi: function () {
                     return $SH.listsUrlUi
                 },
+                version: function () {
+                    return $SH.listsVersion
+                },
                 listToFq: function (data) {
                     var terms = [];
                     for (var i in data) {
