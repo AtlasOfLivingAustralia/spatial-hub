@@ -38,7 +38,7 @@
                         return $http.get(LayersService.url() + "/journalMap/search?wkt=" + $scope.area.wkt, $scope._httpDescription('journalmapCount')).then(function (response) {
                             return $scope.setJournalMapCount(response.data)
                         });
-                    } else if (!($scope.area.pid.indexOf('~'))) {
+                    } else if ($scope.area.pid.indexOf('~') < 0) {
                         return $http.get(LayersService.url() + "/journalMap/search?pid=" + $scope.area.pid, $scope._httpDescription('journalmapCount')).then(function (response) {
                             return $scope.setJournalMapCount(response.data)
                         });
