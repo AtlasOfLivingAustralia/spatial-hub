@@ -165,17 +165,25 @@
                     return $q.when(true)
                 };
                 $scope.gazPointCounts = function () {
-                    if ($scope.area.wkt !== undefined && $scope.area.wkt.length > 0) {
-                        return $http.get(LayersService.url() + "/objects/inarea/" + LayersService.gazField() + "?wkt=" + $scope.area.wkt + "&limit=9999999", $scope._httpDescription('gazetteerCounts')).then(function (response) {
+                    if ($scope.area.pid && ($scope.area.pid + '').indexOf('~') < 0) {
+                        return $http.get(LayersService.url() + "/intersect/object/" + LayersService.gazField() + "/" + $scope.area.pid, $scope._httpDescription('gazetteerCounts')).then(function (response) {
                             return $scope.setGazCount(response.data)
                         });
-                    } else if (($scope.area.pid + '').indexOf('~') < 0) {
-                        return $http.get(LayersService.url() + "/objects/inarea/" + LayersService.gazField() + "?pid=" + $scope.area.pid + "&limit=9999999", $scope._httpDescription('gazetteerCounts')).then(function (response) {
+                    } else if ($scope.area.wkt !== undefined && $scope.area.wkt.length > 0) {
+                        return $http.post(
+                            LayersService.url() + "/intersect/wkt/" + LayersService.gazField(),
+                            $scope.area.wkt,
+                            $scope._httpDescription('gazetteerCounts')
+                        ).then(function (response) {
                             return $scope.setGazCount(response.data)
                         });
                     } else {
                         var wkt = $scope.bboxToWkt($scope.area.bbox)
-                        return $http.get(LayersService.url() + "/objects/inarea/" + LayersService.gazField() + "?wkt=" + encodeURIComponent(wkt) + "&limit=9999999", $scope._httpDescription('gazetteerCounts')).then(function (response) {
+                        return $http.post(
+                            LayersService.url() + "/intersect/wkt/" + LayersService.gazField(),
+                            wkt,
+                            $scope._httpDescription('gazetteerCounts')
+                        ).then(function (response) {
                             return $scope.setGazCount(response.data)
                         });
                     }
