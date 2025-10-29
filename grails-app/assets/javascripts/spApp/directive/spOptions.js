@@ -77,6 +77,7 @@
                         };
 
                         scope.select = function (key) {
+                            scope.selection.name = key;
                             MapService.setBaseMap(key)
                         };
 

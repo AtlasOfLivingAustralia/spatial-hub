@@ -20,20 +20,28 @@
                                 "constraints": {
                                     "min": 1,
                                     "max": 1,
-                                    "defaultToWorld": true
+                                    "defaultToWorld": false
                                 }
                             },
                             {
                                 "description": $i18n(411,"Species options."),
+                                "type": "species",
+                                "constraints": {
+                                    "speciesOption": "allSpecies"
+                                }
+                            },
+                            {
+                                "description": $i18n(566,"Other options."),
                                 "type": "speciesOptions",
                                 "constraints": {
+                                    "spatialValidity": false,
                                     "areaIncludes": false,
-                                    "kosherIncudes": true,
+                                    "kosherIncudes": false,
                                     "endemicIncludes": true,
-                                    "absentOption": true
+                                    "absentOption": false
                                 }
                             }],
-                        "description": $i18n(426,"Export a species list.")
+                        "description": $i18n(426,"Export an area checklist.")
                     },
 
                     downloading: false,
@@ -46,7 +54,8 @@
 
                     execute: function (inputs) {
                         var area = inputs[0];
-                        var speciesOptions = inputs[1];
+                        var species = inputs[1];
+                        var speciesOptions = inputs[2];
 
                         var q = [];
                         var wkt = undefined;
@@ -63,19 +72,7 @@
                             return
                         }
 
-                        if (speciesOptions.spatiallyUnknown) {
-                            if (speciesOptions.spatiallyValid && speciesOptions.spatiallySuspect) { /* do nothing */
-                            } else if (speciesOptions.spatiallyValid) q.push('-geospatial_kosher:false');
-                            else if (speciesOptions.spatiallySuspect) q.push('-geospatial_kosher:true');
-                        } else {
-                            if (speciesOptions.spatiallyValid && speciesOptions.spatiallySuspect) q.push('geospatial_kosher:*');
-                            else if (speciesOptions.spatiallyValid) q.push('geospatial_kosher:true');
-                            else if (speciesOptions.spatiallySuspect) q.push('geospatial_kosher:false');
-                        }
-
-                        if (!speciesOptions.includeAbsences) {
-                            q.push($SH.fqExcludeAbsent)
-                        }
+                        q.push(...species.q);
 
                         var query = BiocacheService.newQuery(q, '', wkt);
 
@@ -95,7 +92,7 @@
                                 timeout: _this.cancelDownload.promise
                             };
 
-                            future = speciesOptions.includeEndemic ? BiocacheService.speciesListEndemic(query, undefined, config) :
+                            future = speciesOptions.includeEndemic ? BiocacheService.speciesListEndemic(query, undefined, species.q, config) :
                                 BiocacheService.speciesList(query, undefined, config);
 
                             future.then(function (data) {
@@ -104,7 +101,7 @@
                             })
                         } else {
                             if (_this.cancelDownload) _this.cancelDownload.resolve();
-                            future = _this.endemic ? BiocacheService.speciesListEndemicUrl(query) :
+                            future = speciesOptions.includeEndemic ? BiocacheService.speciesListEndemicUrl(query, undefined, species.q) :
                                 BiocacheService.speciesListUrl(query);
 
                             future.then(function (url) {

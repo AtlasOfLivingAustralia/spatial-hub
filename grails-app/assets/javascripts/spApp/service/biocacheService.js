@@ -167,6 +167,7 @@
                  * @memberof BiocacheService
                  * @param {Query} query Biocache query
                  * @param {List} fqs (Optional) additional fq terms
+                 * @param {q} parentQ query (list containing q and fq terms) for the parent area (Optional). Typically this would be the query + fqs but without the area restriction.
                  * @returns {Promise(String)} CSV of endemic species list
                  *
                  * @example
@@ -187,8 +188,8 @@
                  *  Notamacropus agilis jardinii|urn:lsid:biodiversity.org.au:afd.taxon:bfe816bf-2b7e-47cb-87f8-ac386af751ab||Animalia|Macropodidae"    Notamacropus agilis jardinii    (De Vis, 1884)    subspecies    ANIMALIA    CHORDATA    MAMMALIA    DIPROTODONTIA    MACROPODIDAE    Notamacropus        451
                  *  ```
                  */
-                speciesListEndemic: function (query, fqs, config) {
-                    return this.speciesListEndemicUrl(query, fqs).then(function (url) {
+                speciesListEndemic: function (query, fqs, parentQ, config) {
+                    return this.speciesListEndemicUrl(query, fqs, parentQ).then(function (url) {
                         if (url == null) {
                             return $q.when('')
                         }
@@ -202,6 +203,7 @@
                  * @memberof BiocacheService
                  * @param {Query} query Biocache query
                  * @param {List} fqs (Optional) additional fq terms
+                 * @param {q} parentQ query (list containing q and fq terms) for the parent area (Optional). Typically this would be the query + fqs but without the area restriction.
                  * @returns {Promise(String)} GET URL to endemic species list CSV
                  *
                  * @example
@@ -218,10 +220,15 @@
                  * Output:
                  *  "http://biocache.ala.org.au/ws/explore/endemic/species/1234.csv?facets=names_and_lsid&lookup=true&count=true&lists=true"
                  */
-                speciesListEndemicUrl: function (query, fqs) {
+                speciesListEndemicUrl: function (query, fqs, parentQ) {
                     var q;
                     if (fqs !== undefined) q = this.newLayerAddFq(query, fqs, '');
                     else q = query;
+
+                    var parentSearchTerms = '';
+                    if (parentQ !== undefined && parentQ.length > 0) {
+                        parentSearchTerms = "&q=" + this.joinAndEncode(parentQ);
+                    }
 
                     if (q == null) {
                         return $q.when(false)
@@ -230,7 +237,7 @@
                             if (response == null) {
                                 return $q.when(null)
                             } else {
-                                return query.bs + "/explore/endemic/species/" + response.qid.replace("qid:", "") + ".csv?facets=names_and_lsid&lookup=true&count=true&lists=true";
+                                return query.bs + "/explore/endemic/species/" + response.qid.replace("qid:", "") + ".csv?facets=names_and_lsid&lookup=true&count=true&lists=true" + parentSearchTerms;
                             }
                         })
                     }

@@ -11,7 +11,7 @@
  * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
- * 
+ *
  * Created by Temi on 2019-06-24.
  */
 (function (angular) {
@@ -35,6 +35,15 @@
                         charts: $SH.config.charts,
                         chartControls: false,
                         $i18n: $i18n
+                    };
+
+                    // Remove previous chart if exists
+                    for (let idx in config.charts) {
+                        delete config.charts[idx].chart;
+                        delete config.charts[idx].datastructure;
+                        delete config.charts[idx].sliderFq;
+                        delete config.charts[idx].maxValue;
+                        delete config.charts[idx].divId;
                     };
 
                     ALA.BiocacheCharts('charts', config);

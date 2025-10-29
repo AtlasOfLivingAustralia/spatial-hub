@@ -463,7 +463,7 @@ projections:
         code: 'EPSG:3857' # leaflet supported, uses startup lat,lon,zoom
 # Uncomment to include these additional projections
     "4326":
-      label: 'World Geodetic System 1984'
+      label: 'WGS84 - Unprojected'
       definition:
         code: 'EPSG:4326' # leaflet supported, uses startup lat,lon,zoom
     "3031":
