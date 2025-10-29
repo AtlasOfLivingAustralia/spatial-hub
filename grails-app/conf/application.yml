@@ -26,7 +26,7 @@ grails:
 layersService:
     url: 'https://spatial.ala.org.au/ws'
 geoserver:
-  url: 'https://spatial.ala.org.au/geoserver/web/'
+  url: 'https://spatial.ala.org.au/geoserver'
 
 info:
     app:
@@ -211,6 +211,69 @@ lists:
     facets: true
     migratoryDR: 'dr1005'
     iconicSpeciesDR: 'dr781'
+    version: 1
+    listTypes:
+      - id: 'COMMON_HABITAT'
+        label: "Common habitat of species"
+      - id: 'COMMON_TRAIT'
+        label: "Common trait of species"
+      - id: 'CONSERVATION_LIST'
+        label: "Conservation list"
+      - id: 'LOCAL_LIST'
+        label: "Local checklist"
+      - id: 'OTHER'
+        label: "Other"
+      - id: 'SENSITIVE_LIST'
+        label: "Sensitive list of species"
+      - id: 'SPECIES_CHARACTERS'
+        label: "Species characters list"
+      - id: 'TEST'
+        label: "Test list"
+
+    # Example config for new lists service, set version=2 to use
+#   version: 2
+#   url: 'http://localhost:8080'
+#   urlUi: 'http://localhost:5173'
+#   threatenedSpeciesUrl: '/v1/speciesList?isThreatened=true&isAuthoritative=true&max=1000'
+#   invasiveSpeciesUrl: '/v1/speciesList?isInvasive=true&isAuthoritative=true&max=1000'
+#   listTypes:
+#     - id: 'COMMON_HABITAT'
+#       label: "Common habitat list"
+#     - id: 'COMMON_TRAIT'
+#       label: "Common traits list"
+#     - id: 'CONSERVATION_LIST'
+#       label: "Conservation species list"
+#     - id: 'INVASIVE'
+#       label: "Invasive species list"
+#     - id: 'LOCAL_LIST'
+#       label: "Local checklist"
+#     - id: 'OTHER'
+#       label: "Other List"
+#     - id: 'PROFILE'
+#       label: "Profile List"
+#     - id: 'SENSITIVE_LIST'
+#       label: "Sensitive list"
+#     - id: 'SPECIES_CHARACTERS'
+#       label: "Species characters"
+#     - id: 'TEST'
+#       label: "Testing List"
+#   listLicences:
+#    - id: "CC0"
+#      label: "Creative Commons Zero"
+#    - id: "CC-BY"
+#      label: "Creative Commons By Attribution"
+#    - id: "CC-BY-NC"
+#      label: "Creative Commons By Attribution-Noncommercial"
+#    - id: "CC-BY-NC-ND"
+#      label: "Creative Commons By Attribution-Noncommercial-Noderivatives"
+#    - id: "CC-BY-NC-SA"
+#      label: "Creative Commons By Attribution-Noncommercial-Sharealike"
+#    - id: "CC-BY-ND"
+#      label: "Creative Commons By Attribution-Noderivatives"
+#    - id: "CC-BY-SA"
+#      label: "Creative Commons By Attribution-Sharealike"
+
+
 
 journalmap:
     url: 'https://www.journalmap.org'
