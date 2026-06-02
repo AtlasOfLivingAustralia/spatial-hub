@@ -446,7 +446,9 @@ class PortalController {
         } else {
             def url = grailsApplication.config.lists.url
 
-            def r = webService.get("${url}/ws/speciesListItems/" + params.id, [:], org.apache.http.entity.ContentType.APPLICATION_JSON, false, true, [:])
+            // Temporary workaround for new lists is to set ?max=1000. Keeps it reasonable for biocache-service
+            // and is more reasonable than the new default 10.
+            def r = webService.get("${url}/ws/speciesListItems/" + params.id + "?max=1000", [:], org.apache.http.entity.ContentType.APPLICATION_JSON, false, true, [:])
 
             if (r == null) {
                 def status = response.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR)
