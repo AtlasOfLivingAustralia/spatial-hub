@@ -388,7 +388,7 @@
 <asset:deferredScripts/>
 
 <asset:javascript src="commonui-bs3-2019/js/application.min.js"/>
-<asset:javascript src="commonui-bs5-2019.js"/>
+<asset:javascript src="commonui-bs3-2019.js"/>
 
 <!-- Google Analytics -->
 <g:if test="${grailsApplication.config.googleAnalyticsId != null && grailsApplication.config.googleAnalyticsId != ''}">
