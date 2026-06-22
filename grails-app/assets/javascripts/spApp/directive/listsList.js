@@ -42,7 +42,7 @@
                                         selected: false
                                     })
                                 }
-                            } else if (data.dataResourceUid) {
+                            } else if (data.dataResourceUid || data.id) {
                                 newItems.push({
                                     dataResourceUid: data.dataResourceUid || data.id,
                                     listName: data.listName,
@@ -69,7 +69,7 @@
                                         selected: false
                                     })
                                 }
-                            } else if (data.dataResourceUid) {
+                            } else if (data.dataResourceUid || data.id) {
                                 scope.items.push({
                                     dataResourceUid: data.dataResourceUid || data.id,
                                     listName: data.listName,
