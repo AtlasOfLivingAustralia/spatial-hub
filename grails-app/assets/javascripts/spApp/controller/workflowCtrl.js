@@ -4,7 +4,7 @@
      * @memberof spApp
      * @ngdoc controller
      * @name WorkflowCtrl
-     * @description
+     * @description Controller for managing and playing back spatial workflows.
      */
     angular.module('workflow-ctrl', [])
         .controller('WorkflowCtrl', ['$scope', 'MapService', '$timeout', 'LayoutService', '$uibModalInstance',

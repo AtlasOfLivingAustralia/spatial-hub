@@ -23,7 +23,7 @@
                         scope.pageSize = 20;
                         scope.page = 1;
                         scope.total = '';
-                        scope.sortType = '';
+                        scope.sortType = 'lastUpdated';
                         scope.sortReverse = false;
                         scope.lastSearch = scope.searchLists + scope.sortType + scope.sortReverse;
                         scope.isLoading = true;
@@ -42,13 +42,14 @@
                                         selected: false
                                     })
                                 }
-                            } else if (data.dataResourceUid) {
+                            } else if (data.dataResourceUid || data.id) {
                                 newItems.push({
                                     dataResourceUid: data.dataResourceUid || data.id,
                                     listName: data.listName,
                                     lastUpdated: data.lastUpdated,
                                     itemCount: data.itemCount,
                                     fullName: data.fullName,
+                                    isAuthoritative: data.isAuthoritative,
                                     selected: false
                                 });
                             }
@@ -59,7 +60,7 @@
                             if (data.length) {
                                 for (var i = 0; i < data.length; i++) {
                                     scope.items.push({
-                                        dataResourceUid: data[i].dataResourceUid,
+                                        dataResourceUid: data[i].dataResourceUid || data[i].id,
                                         listName: data[i].listName,
                                         lastUpdated: data[i].lastUpdated,
                                         itemCount: data[i].itemCount,
@@ -68,13 +69,14 @@
                                         selected: false
                                     })
                                 }
-                            } else if (data.dataResourceUid) {
+                            } else if (data.dataResourceUid || data.id) {
                                 scope.items.push({
-                                    dataResourceUid: data.dataResourceUid,
+                                    dataResourceUid: data.dataResourceUid || data.id,
                                     listName: data.listName,
                                     lastUpdated: data.lastUpdated,
                                     itemCount: data.itemCount,
                                     fullName: data.fullName,
+                                    isAuthoritative: data.isAuthoritative,
                                     selected: false
                                 });
                             }
