@@ -34,22 +34,22 @@
                                 for (var i = 0; i < data.length; i++) {
                                     newItems.push({
                                         dataResourceUid: data[i].dataResourceUid || data[i].id,
-                                        listName: data[i].listName,
+                                        listName: data[i].listName || data[i].title,
                                         lastUpdated: data[i].lastUpdated,
-                                        itemCount: data[i].itemCount,
-                                        fullName: data[i].fullName,
-                                        isAuthoritative:data[i].isAuthoritative,
+                                        itemCount: data[i].itemCount || data[i].rowCount,
+                                        fullName: data[i].fullName || data[i].ownerName,
+                                        isAuthoritative: data[i].isAuthoritative || data[i].authoritative,
                                         selected: false
                                     })
                                 }
                             } else if (data.dataResourceUid || data.id) {
                                 newItems.push({
                                     dataResourceUid: data.dataResourceUid || data.id,
-                                    listName: data.listName,
+                                    listName: data.listName || data.title,
                                     lastUpdated: data.lastUpdated,
-                                    itemCount: data.itemCount,
-                                    fullName: data.fullName,
-                                    isAuthoritative: data.isAuthoritative,
+                                    itemCount: data.itemCount || data.rowCount,
+                                    fullName: data.fullName || data.ownerName,
+                                    isAuthoritative: data.isAuthoritative || data.authoritative,
                                     selected: false
                                 });
                             }
@@ -61,22 +61,22 @@
                                 for (var i = 0; i < data.length; i++) {
                                     scope.items.push({
                                         dataResourceUid: data[i].dataResourceUid || data[i].id,
-                                        listName: data[i].listName,
+                                        listName: data[i].listName || data[i].title,
                                         lastUpdated: data[i].lastUpdated,
-                                        itemCount: data[i].itemCount,
-                                        fullName: data[i].fullName,
-                                        isAuthoritative:data[i].isAuthoritative,
+                                        itemCount: data[i].itemCount || data[i].rowCount,
+                                        fullName: data[i].fullName || data[i].ownerName,
+                                        isAuthoritative: data[i].isAuthoritative || data[i].authoritative,
                                         selected: false
                                     })
                                 }
                             } else if (data.dataResourceUid || data.id) {
                                 scope.items.push({
                                     dataResourceUid: data.dataResourceUid || data.id,
-                                    listName: data.listName,
+                                    listName: data.listName || data.title,
                                     lastUpdated: data.lastUpdated,
-                                    itemCount: data.itemCount,
-                                    fullName: data.fullName,
-                                    isAuthoritative: data.isAuthoritative,
+                                    itemCount: data.itemCount || data.rowCount,
+                                    fullName: data.fullName || data.ownerName,
+                                    isAuthoritative: data.isAuthoritative || data.authoritative,
                                     selected: false
                                 });
                             }
