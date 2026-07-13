@@ -472,7 +472,16 @@ class PortalController {
         } else {
             def url = grailsApplication.config.lists.url
 
-            def r = webService.get("${url}/ws/speciesList", [user: userId, offset: params.offset ?: 0, max: params.max ?: 100, q: params.q ?: '', sort: params.sort ?: '', order: params.order ?: 'asc'], org.apache.http.entity.ContentType.APPLICATION_JSON, false, true, [:])
+            int max = (params.max ?: 100) as int
+            int offset = (params.offset ?: 0) as int
+            int page = (offset ? offset.intdiv(max) : 0) + 1
+
+            def r
+            if (grailsApplication.config.lists.version == 1) {
+                r = webService.get("${url}/ws/speciesList", [user: userId, offset: offset, max: max, q: params.q ?: '', sort: params.sort ?: '', order: params.order ?: 'asc'], org.apache.http.entity.ContentType.APPLICATION_JSON, false, true, [:])
+            } else {
+                r = webService.get("${url}/v2/speciesList", [page: page, pageSize: max, q: params.q ?: '', sort: params.sort ?: '', order: params.order ?: 'asc'], org.apache.http.entity.ContentType.APPLICATION_JSON, false, true, [:])
+            }
 
             if (r == null) {
                 def status = response.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR)
