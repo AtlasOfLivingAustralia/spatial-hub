@@ -27,7 +27,7 @@
   "devDependencies": {
     "angular-jsdoc": "^1.5.0",
     "angular-template": "2.1.4",
-    "jsdoc": "^3.5.5"
+    "jsdoc": "^3.6.6"
   },
   "dependencies": {
     "angular": "1.5.8",
