@@ -7,7 +7,7 @@ test.describe('hub', () => {
     page.on('pageerror', (e) => errors.push(e.message));
     await login(page);
     await expect(page.locator('.leaflet-container').first()).toBeVisible();
-    await expect(page.getByText('Add to map').first()).toBeVisible();
+    await expect(page.getByText(/Add to map|Añadir al mapa/).first()).toBeVisible();
     expect(errors).toEqual([]);
   });
 });

@@ -15,9 +15,10 @@
             "given_name": "E2E",
             "family_name": "Tester",
             "role": [
-              "ROLE_USER"
+              "ROLE_USER",
+              "ROLE_ADMIN"
             ],
-            "ala:role": "ROLE_USER",
+            "ala:role": "ROLE_ADMIN",
             "sub": "e2e@example.org",
             "client_id": "e2e",
             "scope": "openid profile email"

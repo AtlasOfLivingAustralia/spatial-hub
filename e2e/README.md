@@ -36,3 +36,14 @@ Notes
 `.github/workflows/e2e.yml` builds the hub and a spatial-service checkout from source, layers the wars on the released images
 (`ci/Dockerfile.*`), starts this stack and runs the tests. It runs on pushes to the aggregated branches and on demand
 (`workflow_dispatch`: service repository and branch).
+
+## Against a real deployment (CI with CAS)
+
+```bash
+BASE_URL=https://<portal> E2E_REMOTE=1 E2E_USER=<user> E2E_PASSWORD=<password> npx playwright test
+```
+
+`E2E_REMOTE=1` runs only the read-only smoke specs (`stack.api`, `hub.ui`, `locale-es.ui`): the others create areas
+and tasks and need the synthetic fixtures of the local stack. `E2E_USER` / `E2E_PASSWORD` fill the provider's login
+form (CAS); take them from the CI credentials, never commit them. Without `E2E_PASSWORD` the helper assumes the mock
+OIDC of the local stack. Use `E2E_TOKEN` for API calls that need a bearer token.

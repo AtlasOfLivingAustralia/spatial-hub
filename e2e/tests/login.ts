@@ -1,12 +1,25 @@
 import { Page } from '@playwright/test';
 
-// The stack runs a mock OIDC provider: any user name signs in. Against a real deployment
-// set E2E_USER / E2E_PASSWORD and extend this helper for that provider's login form.
+// Signs in and waits for the map. Two providers:
+//  - the local stack's mock OIDC: any user name signs in (no password);
+//  - a real deployment (CAS/OIDC login form): set E2E_USER and E2E_PASSWORD (from the CI credentials; never
+//    committed). The helper fills the first username/password form it finds.
 export async function login(page: Page, user = process.env.E2E_USER || 'e2e') {
   await page.goto('/');
-  if (new URL(page.url()).pathname.endsWith('/authorize')) {
-    await page.fill('input[name=username]', user);
-    await page.click('input[type=submit]');
+  const password = process.env.E2E_PASSWORD;
+  const form = page.locator('input[name=username], #username').first();
+  // the hub redirects to the provider's login page when there is no session
+  await form.waitFor({ state: 'visible', timeout: 15_000 }).catch(() => undefined);
+  if (await form.isVisible().catch(() => false)) {
+    if (password) {
+      await form.fill(user);
+      await page.locator('input[name=password], #password').first().fill(password);
+      await page.locator('button[type=submit], input[type=submit], input[name=submit]').first().click();
+    } else {
+      // mock provider
+      await form.fill(user);
+      await page.click('input[type=submit]');
+    }
   }
   await page.waitForSelector('.leaflet-container', { timeout: 60_000 });
 }

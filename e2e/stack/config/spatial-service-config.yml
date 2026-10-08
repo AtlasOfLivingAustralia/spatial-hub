@@ -1,6 +1,7 @@
 # e2e stack: spatial-service behind nginx at http://e2e.localhost:18080/ws
 grails.serverURL: http://e2e.localhost:18080/ws
 grails.app.context: /ws
+grails.assets.url: http://e2e.localhost:18080/ws/assets/
 data:
   dir: /data/spatial-data
 geoserver:
@@ -27,7 +28,7 @@ userObjectsField: cl1083
 auth.admin_role: ROLE_ADMIN
 app.http.header.userId: X-ALA-userId
 headerAndFooter:
-  baseURL: https://datos.gbif.es/brand-2025-vite
+  baseURL: https://www.test.ala.org.au/commonui-bs5-2019
   version: "2"
 security:
   cas:
