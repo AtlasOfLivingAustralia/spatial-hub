@@ -42,6 +42,5 @@ test('inventory of visible texts per screen (es)', async ({ page }, testInfo) =>
     }
   }
   fs.writeFileSync(testInfo.outputPath('inventory.json'), JSON.stringify(inventory, null, 1));
-  fs.writeFileSync('/tmp/claude-1000/inventory-es.json', JSON.stringify(inventory, null, 1));
   expect(Object.keys(inventory).length).toBeGreaterThan(5);
 });
