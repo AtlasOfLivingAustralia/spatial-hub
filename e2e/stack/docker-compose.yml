@@ -53,7 +53,7 @@ services:
     volumes:
       - ./fixtures/grids:/grids:ro
       - spatial_data:/data/spatial-data
-    command: ["sh", "-c", "mkdir -p /data/spatial-data/layer && cp -f /grids/* /data/spatial-data/layer/ && chown -R 1000:1000 /data/spatial-data"]
+    command: ["sh", "-c", "mkdir -p /data/spatial-data/layer /data/spatial-data/standard_layer/0.5 && cp -f /grids/* /data/spatial-data/layer/ && cp -f /grids/* /data/spatial-data/standard_layer/0.5/ && chown -R 1000:1000 /data/spatial-data"]
     restart: "no"
 
   biocache:
