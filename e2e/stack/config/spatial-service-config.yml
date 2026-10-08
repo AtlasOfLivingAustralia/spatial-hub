@@ -16,7 +16,7 @@ dataSource:
   password: layers
 shpResolutions: [0.5, 0.25, 0.1, 0.05]
 grdResolutions: [0.5, 0.25, 0.1, 0.05, 0.01]
-biocacheServiceUrl: https://registros-ws.gbif.es
+biocacheServiceUrl: http://biocache:8080
 biocacheUrl: https://registros.gbif.es
 slave.enable: true
 service.enable: true

@@ -1,0 +1,20 @@
+[General]
+Title=e2e_temp
+[GeoReference]
+Projection=GEOGRAPHIC
+Datum=WGS84
+Mapunits=DEGREES
+Columns=168
+Rows=136
+MinX=112.0
+MaxX=154.0
+MinY=-44.0
+MaxY=-10.0
+ResolutionX=0.25
+ResolutionY=0.25
+[Data]
+DataType=FLT4BYTES
+MinValue=13.25
+MaxValue=26.75
+NoDataValue=-9999
+Units=degrees C
