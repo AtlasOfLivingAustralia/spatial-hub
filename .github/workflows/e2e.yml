@@ -62,13 +62,17 @@ jobs:
 
       - name: Install Playwright
         working-directory: e2e
+        timeout-minutes: 10
+        # no --with-deps: it runs apt-get update, which hung for 26 minutes on the runner's Ubuntu mirror; the runner image
+        # already has the libraries Chromium needs
         run: |
           npm ci || npm install
-          npx playwright install --with-deps chromium
+          npx playwright install chromium
           echo "127.0.0.1 e2e.localhost" | sudo tee -a /etc/hosts
 
       - name: Start the stack
         working-directory: e2e
+        timeout-minutes: 15
         env:
           SPATIAL_HUB_IMAGE: spatial-hub:e2e
           SPATIAL_SERVICE_IMAGE: spatial-service:e2e
@@ -84,6 +88,7 @@ jobs:
 
       - name: Run the tests
         working-directory: e2e
+        timeout-minutes: 20
         run: npx playwright test
 
       - name: Stack logs
