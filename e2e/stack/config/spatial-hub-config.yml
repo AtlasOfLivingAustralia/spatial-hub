@@ -65,7 +65,7 @@ layersService:
   url: http://e2e.localhost:18080/ws
 lists:
   useListWs: false
-  url: https://lists.ala.org.au
+  url: http://e2e.localhost:18080/biocache
   threatenedSpeciesUrl: /ws/speciesList/?isThreatened=eq:true&isAuthoritative=eq:true
   invasiveSpeciesUrl: /ws/speciesList/?isInvasive=eq:true&isAuthoritative=eq:true
   facets: true
@@ -85,7 +85,7 @@ userObjectsField: cl1083
 biocache:
   url: https://biocache.ala.org.au
 biocacheService:
-  url: https://biocache-ws.ala.org.au/ws
+  url: http://e2e.localhost:18080/biocache
   default_facets_ignored: data_resource_uid,data_provider_uid,species,collection_uid,institution_code_name,institution_uid,uncertainty
   custom_facets:
     Attribution:
