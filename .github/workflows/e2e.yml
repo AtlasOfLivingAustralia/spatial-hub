@@ -1,0 +1,102 @@
+name: e2e
+
+# Builds the hub and the service from source, starts e2e/stack with them and runs the Playwright tests.
+# Runs on the aggregated branches of a fork (every fix together) and on demand for any branch of the hub and the service.
+on:
+  push:
+    branches: [spatial-hub-es-dev, test/e2e-playwright]
+  workflow_dispatch:
+    inputs:
+      service_repo:
+        description: spatial-service repository
+        default: living-atlases/spatial-service
+      service_ref:
+        description: spatial-service branch or tag
+        default: spatial-service-es-dev
+
+env:
+  SERVICE_REPO: ${{ inputs.service_repo || vars.E2E_SERVICE_REPO || 'living-atlases/spatial-service' }}
+  SERVICE_REF: ${{ inputs.service_ref || vars.E2E_SERVICE_REF || 'spatial-service-es-dev' }}
+
+jobs:
+  e2e:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ env.SERVICE_REPO }}
+          ref: ${{ env.SERVICE_REF }}
+          path: spatial-service
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
+
+      - name: Build the hub war (compiled GSPs are required)
+        run: ./gradlew clean compileGroovyPages bootWar -x test --no-daemon
+
+      - name: Build the service war
+        working-directory: spatial-service
+        run: ./gradlew bootWar -x test --no-daemon
+
+      - name: Build the images
+        run: |
+          mkdir -p /tmp/img/hub /tmp/img/service
+          cp "$(ls build/libs/*.war | grep -v plain | head -1)" /tmp/img/hub/app.war
+          cp "$(ls spatial-service/build/libs/*.war | grep -v plain | head -1)" /tmp/img/service/app.war
+          cp e2e/ci/Dockerfile.hub /tmp/img/hub/Dockerfile
+          cp e2e/ci/Dockerfile.service /tmp/img/service/Dockerfile
+          docker build -t spatial-hub:e2e /tmp/img/hub
+          docker build -t spatial-service:e2e /tmp/img/service
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: e2e/package-lock.json
+
+      - name: Install Playwright
+        working-directory: e2e
+        run: |
+          npm ci || npm install
+          npx playwright install --with-deps chromium
+          echo "127.0.0.1 e2e.localhost" | sudo tee -a /etc/hosts
+
+      - name: Start the stack
+        working-directory: e2e
+        env:
+          SPATIAL_HUB_IMAGE: spatial-hub:e2e
+          SPATIAL_SERVICE_IMAGE: spatial-service:e2e
+        run: |
+          docker compose -p spatial-e2e -f stack/docker-compose.yml up -d
+          for i in $(seq 1 90); do
+            tasks=$(curl -s http://e2e.localhost:18080/ws/tasks/capabilities | grep -c ScatterplotCreate || true)
+            hub=$(curl -s -o /dev/null -w '%{http_code}' http://e2e.localhost:18080/ || true)
+            [ "$tasks" != 0 ] && [ "$hub" = 302 ] && exit 0
+            sleep 5
+          done
+          echo "stack did not become ready"; docker compose -p spatial-e2e -f stack/docker-compose.yml ps; exit 1
+
+      - name: Run the tests
+        working-directory: e2e
+        run: npx playwright test
+
+      - name: Stack logs
+        if: failure()
+        working-directory: e2e
+        run: docker compose -p spatial-e2e -f stack/docker-compose.yml logs --no-color --tail 300 spatial-hub spatial-service > ../stack-logs.txt || true
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: |
+            e2e/playwright-report
+            e2e/test-results
+            stack-logs.txt
+          retention-days: 14

@@ -21,5 +21,18 @@ npm run stack:down
 Notes
 - Build the hub war with `./gradlew clean compileGroovyPages bootWar` (otherwise the war has no compiled GSPs).
 - `stack/config/spatial-hub-config.yml` is ala-install's template rendered with ALA public defaults plus the e2e overrides.
-- The layers database starts empty: tests that need layers must create them (`/ws/layers` is empty by default).
-- Biocache and the other ALA services are the public ones; flows that need records need network access.
+- Test data lives in the stack, not in the tests: ALA's states layer cl22 (`stack/fixtures/make-states.py`), two synthetic
+  environmental grids whose values are linear in lat/lon (`stack/fixtures/make-grids.py`) and a biocache stand-in
+  (`stack/biocache-stub/stub.py`, behind nginx at `/biocache/`). Expected values in the tests are computed independently
+  of the code under test.
+- Nothing needs the network except pulling images and the OpenStreetMap tiles of the map.
+- Against a real deployment set `BASE_URL` and `E2E_TOKEN` (API tests); the stub-based tests (scatterplot, AOO/EOO, area report)
+  only make sense on the local stack.
+- `tests/locale-es.ui.spec.ts` walks the menus and dialogs with a Spanish browser and writes `inventory.json`
+  (every visible text per screen) next to the test results.
+
+## CI
+
+`.github/workflows/e2e.yml` builds the hub and a spatial-service checkout from source, layers the wars on the released images
+(`ci/Dockerfile.*`), starts this stack and runs the tests. It runs on pushes to the aggregated branches and on demand
+(`workflow_dispatch`: service repository and branch).
