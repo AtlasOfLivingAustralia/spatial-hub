@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Minimal biocache-service stand-in for the e2e stack. Serves what the scatterplot task needs: POST /qid (stores the
-query, returns a numeric id), GET /qid/<id>, GET /occurrences/facets/download (lat_long), GET /occurrences/search
+query, returns a numeric id), GET /qid/<id>, GET /occurrences/facets/download (lat_long values, header only for other facets), GET /occurrence/facets (empty), GET /occurrences/search
 (totalRecords only) and GET /webportal/occurrences.gz for a fixed set of points at 0.25 degree
 cell centres, so tests can predict the sampled grid values. A qid with a wkt restricts the points to the wkt's bounding
 box. Every other path answers 200 with an empty JSON object."""
@@ -52,11 +52,16 @@ class H(BaseHTTPRequestHandler):
         elif u.path.endswith('/occurrences/facets/download'):
             q = parse_qs(u.query).get('q', [''])[0]
             wkt = QIDS.get(q[4:], {}).get('wkt') if q.startswith('qid:') else None
-            self.reply(''.join('"%s,%s"\n' % (r[1], r[0]) for r in rows(wkt)[1:]).encode(), 'text/csv')  # "lat,lon"
+            if parse_qs(u.query).get('facets', [''])[0] == 'lat_long':
+                self.reply(''.join('"%s,%s"\n' % (r[1], r[0]) for r in rows(wkt)[1:]).encode(), 'text/csv')  # "lat,lon"
+            else:  # any other facet: no values, like biocache for a query without records (just the header line)
+                self.reply(b'"Species Name","Taxon Rank","Common Name","Kingdom","Phylum","Class","Order","Family","Genus","Species","Scientific Name","Count"\n', 'text/csv')
         elif u.path.endswith('/occurrences/search'):
             q = parse_qs(u.query).get('q', [''])[0]
             wkt = QIDS.get(q[4:], {}).get('wkt') if q.startswith('qid:') else None
             self.reply(json.dumps({'totalRecords': len(rows(wkt)) - 1}).encode(), 'application/json')
+        elif u.path.endswith('/occurrence/facets'):
+            self.reply(b'[]', 'application/json')
         elif '/qid/' in u.path:
             self.reply(json.dumps(QIDS.get(u.path.rsplit('/', 1)[1], {})).encode(), 'application/json')
         else:
