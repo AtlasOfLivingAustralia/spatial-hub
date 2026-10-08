@@ -14,8 +14,12 @@
             "username": "e2e@example.org",
             "given_name": "E2E",
             "family_name": "Tester",
-            "role": ["ROLE_USER"],
-            "ala:role": "ROLE_USER"
+            "role": [
+              "ROLE_USER"
+            ],
+            "ala:role": "ROLE_USER",
+            "sub": "e2e@example.org",
+            "client_id": "e2e"
           }
         }
       ]

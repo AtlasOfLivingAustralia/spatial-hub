@@ -29,3 +29,22 @@ app.http.header.userId: X-ALA-userId
 headerAndFooter:
   baseURL: https://datos.gbif.es/brand-2025-vite
   version: "2"
+security:
+  cas:
+    enabled: false
+    disableCAS: true
+    bypass: true
+  oidc:
+    enabled: true
+    discovery-uri: http://e2e.localhost:18081/default/.well-known/openid-configuration
+    clientId: e2e
+    secret: e2e
+    scope: 'openid profile email'
+    allowUnsignedIdTokens: true
+    alaUseridClaim: username
+  jwt:
+    enabled: true
+    discoveryUri: http://e2e.localhost:18081/default/.well-known/openid-configuration
+    fallbackToLegacyBehaviour: true
+  core:
+    roleAttribute: role

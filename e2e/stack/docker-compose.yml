@@ -11,7 +11,8 @@ services:
       POSTGRES_USER: layers
       POSTGRES_PASSWORD: layers
     volumes:
-      - ./postgres/init_layersdb.sql:/docker-entrypoint-initdb.d/init_layersdb.sql:ro
+      - ./postgres/init_layersdb.sql:/docker-entrypoint-initdb.d/10-init_layersdb.sql:ro
+      - ./postgres/fixtures-states.sql:/docker-entrypoint-initdb.d/20-fixtures-states.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U layers -d layersdb"]
       interval: 5s

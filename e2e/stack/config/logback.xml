@@ -3,5 +3,6 @@
     <encoder><pattern>%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern></encoder>
   </appender>
   <logger name="au.org.ala" level="INFO"/>
+  <logger name="au.org.ala.ws.security" level="DEBUG"/><logger name="org.pac4j" level="DEBUG"/><logger name="au.org.ala.web" level="DEBUG"/>
   <root level="WARN"><appender-ref ref="STDOUT"/></root>
 </configuration>
