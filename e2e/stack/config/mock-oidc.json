@@ -7,7 +7,7 @@
       "tokenExpiry": 3600,
       "requestMappings": [
         {
-          "requestParam": "scope",
+          "requestParam": "grant_type",
           "match": "*",
           "claims": {
             "email": "e2e@example.org",
@@ -19,7 +19,8 @@
             ],
             "ala:role": "ROLE_USER",
             "sub": "e2e@example.org",
-            "client_id": "e2e"
+            "client_id": "e2e",
+            "scope": "openid profile email"
           }
         }
       ]

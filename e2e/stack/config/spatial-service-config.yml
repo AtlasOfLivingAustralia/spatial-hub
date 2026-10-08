@@ -22,7 +22,7 @@ slave.enable: true
 service.enable: true
 spatialService.url: http://e2e.localhost:18080/ws
 spatialHubUrl: http://e2e.localhost:18080
-gazField: cl2123
+gazField: cl22
 userObjectsField: cl1083
 auth.admin_role: ROLE_ADMIN
 app.http.header.userId: X-ALA-userId
