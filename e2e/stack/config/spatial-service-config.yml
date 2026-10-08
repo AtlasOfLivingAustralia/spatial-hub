@@ -1,0 +1,31 @@
+# e2e stack: spatial-service behind nginx at http://e2e.localhost:18080/ws
+grails.serverURL: http://e2e.localhost:18080/ws
+grails.app.context: /ws
+data:
+  dir: /data/spatial-data
+geoserver:
+  url: http://geoserver:8080/geoserver
+  username: admin
+  password: geoserver
+  canDeploy: true
+  remote:
+    geoserver_data_dir: /data/geoserver_data_dir
+dataSource:
+  url: jdbc:postgresql://postgres:5432/layersdb
+  username: layers
+  password: layers
+shpResolutions: [0.5, 0.25, 0.1, 0.05]
+grdResolutions: [0.5, 0.25, 0.1, 0.05, 0.01]
+biocacheServiceUrl: https://registros-ws.gbif.es
+biocacheUrl: https://registros.gbif.es
+slave.enable: true
+service.enable: true
+spatialService.url: http://e2e.localhost:18080/ws
+spatialHubUrl: http://e2e.localhost:18080
+gazField: cl2123
+userObjectsField: cl1083
+auth.admin_role: ROLE_ADMIN
+app.http.header.userId: X-ALA-userId
+headerAndFooter:
+  baseURL: https://datos.gbif.es/brand-2025-vite
+  version: "2"

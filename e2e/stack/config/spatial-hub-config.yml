@@ -1,0 +1,201 @@
+# e2e stack hub config: ala-install's spatial-hub template rendered with ALA public defaults,
+# plus overrides for the local origin and the mock OIDC provider. Regenerate: see e2e/README.md
+grails.serverURL: http://e2e.localhost:18080
+grails.app.context: /
+grails.assets.bundle: false
+grails.assets.minifyJs: false
+googleAnalyticsId: ''
+google:
+  apikey: e2e-no-key
+api_key: null
+i18n:
+  region: default
+security:
+  cas:
+    enabled: false
+    casServerName: http://e2e.localhost:18081
+    casServerUrlPrefix: http://e2e.localhost:18081/cas
+    loginUrl: http://e2e.localhost:18081/cas/login
+    logoutUrl: http://e2e.localhost:18081/cas/logout
+    bypass: true
+    disableCAS: true
+    gateway: false
+  oidc:
+    enabled: true
+    discoveryUri: http://e2e.localhost:18081/default/.well-known/openid-configuration
+    clientId: e2e
+    secret: e2e
+    scope: openid profile email
+    allowUnsignedIdTokens: true
+    alaUseridClaim: username
+    roleAttribute: role
+  jwt:
+    enabled: false
+autocompleteUrl: https://bie-ws.ala.org.au/ws/search/auto.jsonp
+auth:
+  admin_role: ROLE_ADMIN
+app:
+  http:
+    header:
+      userId: X-ALA-userId
+headerAndFooter:
+  baseURL: https://www.ala.org.au/commonui-bs3
+  version: '2'
+ala.baseURL: https://www.ala.org.au
+bie.baseURL: https://bie.ala.org.au
+bie.searchPath: /search
+bieService:
+  baseURL: https://bie-ws.ala.org.au/ws
+namematching:
+  baseURL: https://namematching-ws.ala.org.au
+userdetails:
+  baseUrl: https://auth.ala.org.au/userdetails
+favicon:
+  url: https://www.ala.org.au/wp-content/themes/ala2011/images/favicon.ico
+layersService:
+  url: http://e2e.localhost:18080/ws
+lists:
+  useListWs: false
+  url: https://lists.ala.org.au
+  threatenedSpeciesUrl: /ws/speciesList/?isThreatened=eq:true&isAuthoritative=eq:true
+  invasiveSpeciesUrl: /ws/speciesList/?isInvasive=eq:true&isAuthoritative=eq:true
+  facets: true
+  migratoryDR: dr1005
+  iconicSpeciesDR: dr781
+journalmap:
+  url: https://www.journalmap.org/
+collections:
+  url: https://collections.ala.org.au
+sandbox:
+  url: https://sandbox.ala.org.au/ala-hub
+  uiUrl: https://sandbox.ala.org.au
+sandboxService:
+  url: https://sandbox.ala.org.au/biocache-service
+gazField: cl2123
+userObjectsField: cl1083
+biocache:
+  url: https://biocache.ala.org.au
+biocacheService:
+  url: https://biocache-ws.ala.org.au/ws
+  default_facets_ignored: data_resource_uid,data_provider_uid,species,collection_uid,institution_code_name,institution_uid,uncertainty
+  custom_facets:
+    Attribution:
+    - Data Provider;data_provider
+    - Collection;collection_name
+    - Data Resource;data_resource
+    - Institution;institution_name
+    Location:
+    - Coordinate Uncertainty;coordinate_uncertainty
+    Occurrence:
+    - Year;occurrence_year
+sampling:
+  url: https://sampling.ala.org.au/sampling-service
+geoserver:
+  url: http://e2e.localhost:18080/geoserver
+flickr:
+  url: https://api.flickr.com/services/rest/?method=
+  searchPhotos: flickr.photos.search
+  licensesData:
+    licenses:
+      license:
+      - id: '0'
+        name: All Rights Reserved
+        url: ''
+      - id: '4'
+        name: Attribution License
+        url: https://creativecommons.org/licenses/by/2.0/
+      - id: '6'
+        name: Attribution-NoDerivs License
+        url: https://creativecommons.org/licenses/by-nd/2.0/
+      - id: '3'
+        name: Attribution-NonCommercial-NoDerivs License
+        url: https://creativecommons.org/licenses/by-nc-nd/2.0/
+      - id: '2'
+        name: Attribution-NonCommercial License
+        url: https://creativecommons.org/licenses/by-nc/2.0/
+      - id: '1'
+        name: Attribution-NonCommercial-ShareAlike License
+        url: https://creativecommons.org/licenses/by-nc-sa/2.0/
+      - id: '5'
+        name: Attribution-ShareAlike License
+        url: https://creativecommons.org/licenses/by-sa/2.0/
+      - id: '7'
+        name: No known copyright restrictions
+        url: https://www.flickr.com/commons/usage/
+      - id: '8'
+        name: United States Government Work
+        url: http://www.usa.gov/copyright.shtml
+      - id: '9'
+        name: Public Domain Dedication (CC0)
+        url: https://creativecommons.org/publicdomain/zero/1.0/
+      - id: '10'
+        name: Public Domain Mark
+        url: https://creativecommons.org/publicdomain/mark/1.0/
+    stat: ok
+  apiKey: null
+  secret: null
+  tags: null
+  extra: geo,date_taken,owner_name,license,url_t,url_s,url_m,title
+  contentType: null
+  geoContext: null
+  filter: '&text=landscape'
+  nbrOfPhotosToDisplay: 15
+sessions:
+  dir: /spatial-hub/sessions
+admin_role: ROLE_ADMIN
+skin.orgNameLong: Atlas of Living Australia
+skin.orgNameShort: ALA
+skin.layout: portal
+grails.controllers.upload.maxFileSize: 524288000
+grails.controllers.upload.maxRequestSize: 524288000
+speciesDotSize: 5
+speciesDotOpacity: 60
+logger:
+  baseUrl: https://logger.ala.org.au/service
+phylolink:
+  url: https://phylolink.ala.org.au
+apiKeyCheckUrlTemplate: https://auth.ala.org.au/apikey/ws/check?apikey={0}
+biocollect:
+  url: https://biocollect.ala.org.au
+bccvl:
+  login:
+    url: https://app.bccvl.org.au/bccvl/oauth2/authorize?client_id=F031d7ce-abb0-11e6-a678-0242ac120005&response_type=token&redirect_uri=
+  post:
+    url: https://app.bccvl.org.au/API/dm/v1/import_ala_data
+keep:
+  alive:
+    timeout:
+      ms: 10000
+startup:
+  lat: -25
+  lng: 131
+  zoom: 4
+  baselayer:
+    default: osm
+defaultareas:
+- name: ''
+  fqs:
+  - longitude:[ TO ]
+  - latitude:[ TO ]
+  wkt: POLYGON(( ,  ,  ,  ,  ))
+  areaSqKm: null
+  bbox: null
+- name: World
+  fqs:
+  - longitude:[-180 TO 180]
+  - latitude:[-90 TO 90]
+  wkt: POLYGON((-180 -90.0,180.0 -90.0,180.0 90.0,-180 90.0,-180 -90.0))
+  areaSqKm: 510000000
+  bbox:
+  - -180
+  - -90
+  - 180
+  - 90
+allowProxy:
+  server: data.auscover.org.au;data.auscover.org.au:80;geoserver.imos.org.au;www.ga.gov.au/gis;geofabric.bom.gov.au
+wms:
+  intersect: true
+fq:
+  excludeAbsent: -occurrence_status_s:absent
+projection:
+  default: 3857

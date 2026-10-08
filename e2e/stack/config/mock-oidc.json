@@ -1,0 +1,24 @@
+{
+  "interactiveLogin": true,
+  "httpServer": "NettyWrapper",
+  "tokenCallbacks": [
+    {
+      "issuerId": "default",
+      "tokenExpiry": 3600,
+      "requestMappings": [
+        {
+          "requestParam": "scope",
+          "match": "*",
+          "claims": {
+            "email": "e2e@example.org",
+            "username": "e2e@example.org",
+            "given_name": "E2E",
+            "family_name": "Tester",
+            "role": ["ROLE_USER"],
+            "ala:role": "ROLE_USER"
+          }
+        }
+      ]
+    }
+  ]
+}
