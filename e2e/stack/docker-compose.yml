@@ -46,6 +46,13 @@ services:
     entrypoint: ["sh", "/init/init.sh"]
     restart: "no"
 
+  # the translations ala-i18n ships (same image la-docker-compose uses); docker fills the volume from the image on first use
+  i18n:
+    image: livingatlases/ala-i18n:latest
+    volumes:
+      - i18n_data:/opt/atlas/i18n
+    restart: "no"
+
   # synthetic environmental grids (fixtures/make-grids.py) into the data volume, owned by the service user
   grids-init:
     image: alpine:3.20
@@ -77,10 +84,12 @@ services:
     depends_on:
       geoserver-init: {condition: service_completed_successfully}
       biocache: {condition: service_started}
+      i18n: {condition: service_completed_successfully}
       grids-init: {condition: service_completed_successfully}
     volumes:
       - ./config/spatial-service-config.yml:/data/spatial-service/config/spatial-service-config.yml:ro
       - ./config/logback.xml:/data/spatial-service/config/logback.xml:ro
+      - i18n_data:/opt/atlas/i18n:ro
       - geoserver_data:/data/geoserver_data_dir
       - spatial_data:/data/spatial-data
     environment:
@@ -103,10 +112,14 @@ services:
   spatial-hub:
     image: ${SPATIAL_HUB_IMAGE:-livingatlases/spatial-hub:3.2.1}
     extra_hosts: ["e2e.localhost:host-gateway"]
-    depends_on: [spatial-service, oidc]
+    depends_on:
+      spatial-service: {condition: service_started}
+      oidc: {condition: service_started}
+      i18n: {condition: service_completed_successfully}
     volumes:
       - ./config/spatial-hub-config.yml:/data/spatial-hub/config/spatial-hub-config.yml:ro
       - ./config/logback.xml:/data/spatial-hub/config/logback.xml:ro
+      - i18n_data:/opt/atlas/i18n:ro
     environment:
       JAVA_OPTS: -Xmx1g -Dlogging.config=/data/spatial-hub/config/logback.xml -Dspring.config.additional-location=/data/spatial-hub/config/ -Dspring.config.name=application,spatial-hub-config
 
@@ -121,3 +134,4 @@ services:
 volumes:
   geoserver_data:
   spatial_data:
+  i18n_data:
