@@ -13,8 +13,11 @@ export async function login(page: Page, user = process.env.E2E_USER || 'e2e') {
   if (await form.isVisible().catch(() => false)) {
     if (password) {
       await form.fill(user);
-      await page.locator('input[name=password], #password').first().fill(password);
-      await page.locator('button[type=submit], input[type=submit], input[name=submit]').first().click();
+      const pass = page.locator('input[name=password], #password').first();
+      await pass.fill(password);
+      // Enter in the password field submits the login form itself: a generic submit selector would
+      // also match the search button of the branding header (it sent us to /search?q=).
+      await pass.press('Enter');
     } else {
       // mock provider
       await form.fill(user);
