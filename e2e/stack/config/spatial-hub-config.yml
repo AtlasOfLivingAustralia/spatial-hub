@@ -76,10 +76,13 @@ journalmap:
 collections:
   url: https://collections.ala.org.au
 sandbox:
-  url: https://sandbox.ala.org.au/ala-hub
-  uiUrl: https://sandbox.ala.org.au
+  url: http://e2e.localhost:18080/biocache
+  uiUrl: http://e2e.localhost:18080/biocache
 sandboxService:
-  url: https://sandbox.ala.org.au/biocache-service
+  url: http://e2e.localhost:18080/biocache
+sandboxSpatial:
+  hubUrl: http://e2e.localhost:18080/biocache
+  serviceUrl: http://e2e.localhost:18080/biocache
 gazField: cl22
 userObjectsField: cl1083
 biocache:
@@ -150,7 +153,7 @@ flickr:
   filter: '&text=landscape'
   nbrOfPhotosToDisplay: 15
 sessions:
-  dir: /spatial-hub/sessions
+  dir: /data/spatial-hub/sessions
 admin_role: ROLE_ADMIN
 skin.orgNameLong: Atlas of Living Australia
 skin.orgNameShort: ALA

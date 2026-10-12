@@ -6,7 +6,7 @@ const baseURL = process.env.BASE_URL || 'http://e2e.localhost:18080';
 // E2E_REMOTE=1 (a real deployment, e.g. the CI one with CAS): only the read-only smoke specs. The others create
 // areas/tasks and rely on the synthetic fixtures of the local stack (states layer, grids), so they must not run there.
 const remoteIgnore = process.env.E2E_REMOTE
-  ? [/area\./, /aoo-eoo/, /envelope/, /scatterplot/, /area-report/, /contextual-layer/]
+  ? [/area[.-]/, /aoo-eoo/, /envelope/, /scatterplot/, /contextual-layer/, /session/, /predict/]
   : undefined;
 
 export default defineConfig({

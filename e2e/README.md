@@ -47,3 +47,19 @@ BASE_URL=https://<portal> E2E_REMOTE=1 E2E_USER=<user> E2E_PASSWORD=<password> n
 and tasks and need the synthetic fixtures of the local stack. `E2E_USER` / `E2E_PASSWORD` fill the provider's login
 form (CAS); take them from the CI credentials, never commit them. Without `E2E_PASSWORD` the helper assumes the mock
 OIDC of the local stack. Use `E2E_TOKEN` for API calls that need a bearer token.
+
+## What the specs cover (so nobody has to try it by hand on every release or PR)
+
+| Spec | Flow |
+|---|---|
+| `area.ui`, `area-drawing.ui` | draw a bounding box, point and radius, polyline with buffer, polygon |
+| `area-import.ui` | import a KML and a zipped shapefile (fixtures in `tests/fixtures`, regenerate with `make-fixtures.sh`) |
+| `session.ui` | save a session and open its link: the area is back |
+| `scatterplot.*`, `scatterplot-area.ui` | scatterplot on all species, on all species inside an imported area |
+| `scatterplot-area-pid.api` | #281: species restricted to an area by pid (`Unknown geometry type: <pid>`) |
+| `aoo-eoo.api`, `area-report.api`, `envelope.api`, `contextual-layer.api` | the tasks and contextual layers through the API |
+| `predict.api` | Maxent; needs `maxent.jar` (not redistributed), skipped unless `E2E_MAXENT=1` |
+
+The stack has no network: the sandbox/species-list services of the "Add species" dialog are not available, so the
+specs use the dialogs that need only the stub (the scatterplot dialog selects the area and the species itself).
+Leaflet.draw needs `mousemove` between clicks: `tests/areas.ts` moves the mouse in steps.

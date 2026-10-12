@@ -59,7 +59,10 @@ class H(BaseHTTPRequestHandler):
         elif u.path.endswith('/occurrences/search'):
             q = parse_qs(u.query).get('q', [''])[0]
             wkt = QIDS.get(q[4:], {}).get('wkt') if q.startswith('qid:') else None
-            self.reply(json.dumps({'totalRecords': len(rows(wkt)) - 1}).encode(), 'application/json')
+            body = {'totalRecords': len(rows(wkt)) - 1}
+            if 'data_resource_uid' in parse_qs(u.query).get('facets', ['']):  # the sandbox listing of the species dialog: no uploads
+                body = {'totalRecords': 0, 'facetResults': [{'fieldName': 'data_resource_uid', 'fieldResult': []}]}
+            self.reply(json.dumps(body).encode(), 'application/json')
         elif u.path.endswith('/occurrence/facets'):
             self.reply(b'[]', 'application/json')
         elif '/qid/' in u.path:
