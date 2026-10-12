@@ -60,7 +60,27 @@ services:
     volumes:
       - ./fixtures/grids:/grids:ro
       - spatial_data:/data/spatial-data
-    command: ["sh", "-c", "mkdir -p /data/spatial-data/layer /data/spatial-data/standard_layer/0.5 && cp -f /grids/* /data/spatial-data/layer/ && cp -f /grids/* /data/spatial-data/standard_layer/0.5/ && chown -R 1000:1000 /data/spatial-data"]
+    command: ["sh", "-c", "mkdir -p /data/spatial-data/layer /data/spatial-data/standard_layer/0.5 && cp -f /grids/* /data/spatial-data/layer/ && cp -f /grids/* /data/spatial-data/standard_layer/0.5/ && for e in grd gri; do cp -f /grids/e2e_temp.$$e /data/spatial-data/standard_layer/0.5/el9001.$$e; cp -f /grids/e2e_rain.$$e /data/spatial-data/standard_layer/0.5/el9002.$$e; done && chown -R 1000:1000 /data/spatial-data"]
+    restart: "no"
+
+  # maxent.jar for the Predict task, from the same place and version as ala-install's spatial-service role (not
+  # redistributed here). A failed download only means Predict cannot run: the other specs do not need it.
+  # ala-install pins 3.4.3, which fails here with "ClassCastException: [D cannot be cast to [F" in Extractor.extractSample
+  # (3.4.1, 3.3.3k and 3.4.4 run the same inputs), so the stack defaults to 3.4.4; MAXENT_VERSION=3.4.3 reproduces it.
+  maxent-init:
+    image: alpine:3.20
+    user: root
+    environment:
+      MAXENT_VERSION: ${MAXENT_VERSION:-3.4.4}
+    volumes:
+      - spatial_data:/data/spatial-data
+    command:
+      - sh
+      - -c
+      - |
+        d=/data/spatial-data/modelling/maxent; mkdir -p $$d
+        [ -s $$d/maxent.jar ] || wget -q -O $$d/maxent.jar "https://raw.githubusercontent.com/mrmaxent/Maxent/master/ArchivedReleases/$$MAXENT_VERSION/maxent.jar" || { echo "maxent.jar not downloaded: Predict will not run"; rm -f $$d/maxent.jar; }
+        chown -R 1000:1000 /data/spatial-data/modelling
     restart: "no"
 
   biocache:
@@ -86,6 +106,7 @@ services:
       biocache: {condition: service_started}
       i18n: {condition: service_completed_successfully}
       grids-init: {condition: service_completed_successfully}
+      maxent-init: {condition: service_completed_successfully}
     volumes:
       - ./config/spatial-service-config.yml:/data/spatial-service/config/spatial-service-config.yml:ro
       - ./config/logback.xml:/data/spatial-service/config/logback.xml:ro

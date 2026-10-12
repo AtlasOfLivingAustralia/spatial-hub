@@ -58,7 +58,7 @@ OIDC of the local stack. Use `E2E_TOKEN` for API calls that need a bearer token.
 | `scatterplot.*`, `scatterplot-area.ui` | scatterplot on all species, on all species inside an imported area |
 | `scatterplot-area-pid.api` | #281: species restricted to an area by pid (`Unknown geometry type: <pid>`) |
 | `aoo-eoo.api`, `area-report.api`, `envelope.api`, `contextual-layer.api` | the tasks and contextual layers through the API |
-| `predict.api` | Maxent; needs `maxent.jar` (not redistributed), skipped unless `E2E_MAXENT=1` |
+| `predict.api` | Maxent; the stack downloads `maxent.jar` (3.4.4, see the note in `stack/docker-compose.yml`); runs with `E2E_MAXENT=1` |
 
 The stack has no network: the sandbox/species-list services of the "Add species" dialog are not available, so the
 specs use the dialogs that need only the stub (the scatterplot dialog selects the area and the species itself).

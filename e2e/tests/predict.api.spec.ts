@@ -2,9 +2,10 @@ import { test, expect } from '@playwright/test';
 import { runTask } from './tasks';
 import { box } from './stub-data';
 
-// Predict (Maxent) end to end on the stub points and the synthetic grids. Maxent is a separate jar that is not
-// redistributed here: put it in the service data dir (<data.dir>/modelling/maxent/maxent.jar, mount it in
-// stack/docker-compose.yml) and run with E2E_MAXENT=1. Without it the task cannot run, so the spec is skipped.
+// Predict (Maxent) end to end on the stub points and the synthetic grids. maxent.jar is not redistributed here: the
+// stack's maxent-init service downloads it (like ala-install does) into <data.dir>/modelling/maxent. That needs network,
+// so the spec only runs with E2E_MAXENT=1. Maxent 3.4.3 (ala-install's default) fails on these inputs with
+// "ClassCastException: [D cannot be cast to [F"; the stack uses 3.4.4 (MAXENT_VERSION=3.4.3 reproduces the failure).
 test.skip(!process.env.E2E_MAXENT, 'needs maxent.jar in the service data dir (set E2E_MAXENT=1)');
 
 test('predict with Maxent finishes and returns the model outputs', async ({ request }) => {
@@ -15,7 +16,7 @@ test('predict with Maxent finishes and returns the model outputs', async ({ requ
     {
       area: [{ type: 'wkt', wkt: box(112, -44, 154, -10), name: 'e2e maxent area' }],
       species: { q: ['*:*'], bs: 'http://biocache:8080', name: 'Eucalyptus e2e' },
-      layer: 'el9001,el9002',
+      layer: ['el9001', 'el9002'],
       resolution: '0.5',
       jackknife: false,
       responseCurves: false,
