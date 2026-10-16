@@ -195,8 +195,7 @@ describe('Util data types', function () {
         expect(Util.inferDataTypeFromValue(value)).toBe(expected);
     });
 
-    // isNaN('') is false, so an empty value is taken as a number
-    it.fails('does not infer a type for an empty value', function () {
+    it('does not infer a type for an empty value', function () {
         expect(Util.inferDataTypeFromValue('')).toBeUndefined();
     });
 

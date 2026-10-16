@@ -376,7 +376,9 @@ var Util = {
 
     inferDataTypeFromValue: function (value) {
         var number;
-        if (!isNaN(value)) {
+        if (value === null || ('' + value).trim() === '') {
+            return undefined;
+        } else if (!isNaN(value)) {
             number = parseFloat(value);
             if (Number.isInteger(number))
                 return 'int';
