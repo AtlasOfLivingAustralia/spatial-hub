@@ -84,8 +84,7 @@ describe('Util.wrappedToWkt', function () {
             .toBe('MULTIPOLYGON (((0 0, 1 1, 1 0, 0 0)), ((5 5, 6 6, 6 5, 5 5)))');
     });
 
-    // wrappedToWkt assigns `wkt` without declaring it, so it creates a global (and throws in strict mode).
-    it.fails('does not leak a global variable', function () {
+    it('does not leak a global variable', function () {
         delete globalThis.wkt;
         Util.wrappedToWkt([[[0, 0], [1, 0], [1, 1], [0, 0]]]);
 

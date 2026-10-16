@@ -146,7 +146,7 @@ var Util = {
      * @param obj
      */
     wrappedToWkt: function (processedCoordinates) {
-        wkt = 'MULTIPOLYGON (';
+        var wkt = 'MULTIPOLYGON (';
 
         for (var i = 0; i < processedCoordinates.length; i++) {
             if (i > 0) {
