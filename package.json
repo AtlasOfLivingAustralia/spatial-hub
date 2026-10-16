@@ -26,8 +26,11 @@
   "license": "MPL-2.0",
   "devDependencies": {
     "angular-jsdoc": "^1.5.0",
+    "angular-mocks": "1.5.8",
     "angular-template": "2.1.4",
-    "jsdoc": "^3.5.5"
+    "jsdoc": "^3.5.5",
+    "jsdom": "^30.1.1",
+    "vitest": "^5.0.2"
   },
   "dependencies": {
     "angular": "1.5.8",
@@ -52,6 +55,7 @@
     "x2js": "^3.2.1"
   },
   "scripts": {
+    "test": "vitest run",
     "jsdoc": "node_modules/jsdoc/jsdoc.js --configure node_modules/angular-jsdoc/common/conf.json --template node_modules/angular-jsdoc/angular-template/ --destination build/resources/main/public/docs --readme README.md --recurse grails-app/assets/javascripts/spApp"
   }
 }

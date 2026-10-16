@@ -179,6 +179,16 @@ Example [embedExample.html](embedExample.html) (TODO: finish implementation)
 
 ## Tests
 
+### JavaScript unit tests
+
+The front-end (`grails-app/assets/javascripts/spApp`) has unit tests in `src/test/js`, run with
+[Vitest](https://vitest.dev) in jsdom with angular-mocks (Node 22 or later):
+
+    npm install
+    npm test
+
+### Integration tests
+
 The build is setup to work with Firefox and Chrome.
 
 Have a look at the `build.gradle` and the `src/test/resources/GebConfig.groovy` file.
