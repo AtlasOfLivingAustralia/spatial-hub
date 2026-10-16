@@ -262,6 +262,16 @@
                         } else {
                             if (data.length > 0 && data[0].kvpValues && data[0].kvpValues.length > 0) {
                                 properties = {};
+                                // infer the data type of each key from its first non blank value
+                                var dataTypes = {};
+                                for (var k in data) {
+                                    var kvp = data[k].kvpValues;
+                                    for (var i in kvp) {
+                                        if (kvp[i].key && dataTypes[kvp[i].key] === undefined) {
+                                            dataTypes[kvp[i].key] = Util.inferDataTypeFromValue(kvp[i].value);
+                                        }
+                                    }
+                                }
                                 // convert kvp to usable map
                                 var map = {};
                                 for (var k in data) {
@@ -276,17 +286,17 @@
                                             }
                                             map[kvp[i].key].values[kvp[i].value].listOfSpecies.push(data[k]);
                                             if (!properties[kvp[i].key]) {
-                                                property = Util.inferDataTypeFromValue(kvp[i].value);
-                                                kvp[i].value = Util.castValue(kvp[i].value, property);
-                                                properties[kvp[i].key] = property = {dataType: property, min:kvp[i].value, max: kvp[i].value};
+                                                properties[kvp[i].key] = {dataType: dataTypes[kvp[i].key]};
                                             }
+                                            property = properties[kvp[i].key];
 
-                                            kvp[i].value = Util.castValue(kvp[i].value, properties[kvp[i].key].dataType);
-                                            if (Util.isFacetOfRangeDataType(properties[kvp[i].key].dataType)) {
-                                                if (properties[kvp[i].key].min > kvp[i].value)
-                                                    properties[kvp[i].key].min = kvp[i].value;
-                                                if (properties[kvp[i].key].max < kvp[i].value)
-                                                    properties[kvp[i].key].max = kvp[i].value;
+                                            kvp[i].value = Util.castValue(kvp[i].value, property.dataType);
+                                            // blank values cast to NaN (or an invalid date) and do not count for the range
+                                            if (Util.isFacetOfRangeDataType(property.dataType) && !isNaN(kvp[i].value)) {
+                                                if (property.min === undefined || property.min > kvp[i].value)
+                                                    property.min = kvp[i].value;
+                                                if (property.max === undefined || property.max < kvp[i].value)
+                                                    property.max = kvp[i].value;
                                             }
                                         }
                                     }
