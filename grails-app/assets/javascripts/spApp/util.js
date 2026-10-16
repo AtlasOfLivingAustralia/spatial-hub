@@ -245,7 +245,7 @@ var Util = {
         var copy = src instanceof Array ? [] : {}
         for (var i in src) {
             if ((i + '').indexOf('_') != 0 && typeof src[i] !== "function") {
-                if ($.isArray(src[i]) || typeof src[i] === "object") {
+                if ($.isArray(src[i]) || (src[i] !== null && typeof src[i] === "object")) {
                     copy[i] = Util.deepCopy(src[i])
                 } else {
                     copy[i] = src[i]

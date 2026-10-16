@@ -116,8 +116,7 @@ describe('Util.deepCopy', function () {
         expect(Array.isArray(copy.b)).toBe(true);
     });
 
-    // typeof null is 'object', so null values are copied as {}
-    it.fails('keeps null values', function () {
+    it('keeps null values', function () {
         expect(Util.deepCopy({a: null})).toEqual({a: null});
     });
 });
