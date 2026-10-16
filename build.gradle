@@ -14,6 +14,7 @@ plugins {
     id "eclipse"
     id "maven-publish"
     id "application"
+    id "jacoco"
 }
 
 war {
@@ -125,6 +126,9 @@ task _Events {
     }
 }
 
+// -PskipEvents skips npm install, jsdoc and the template i18n processing, e.g. to only run the unit tests
+_Events.onlyIf { !project.hasProperty('skipEvents') }
+
 // the tasks used here for dependsOn may be incomplete/incorrect
 assetCompile.dependsOn(_Events)
 compileGroovy.dependsOn(_Events)
@@ -153,8 +157,10 @@ ext {
     drivers = ["firefox", "chrome", "chromeHeadless"]
 }
 
-webdriverBinaries {
-    driverUrlsConfiguration = resources.text.fromFile('geb-repo-arm64.json') // (2)
+// geb-repo-arm64.json only lists ARM64 drivers. On other architectures GebConfig uses the npm chromedriver.
+if (System.getProperty('os.arch') == 'aarch64') {
+    webdriverBinaries {
+        driverUrlsConfiguration = resources.text.fromFile('geb-repo-arm64.json') // (2)
 
         chromedriver {
             version = '101.0.4951.41'
@@ -163,7 +169,7 @@ webdriverBinaries {
         geckodriver {
             version = '0.31.0'
         }
-
+    }
 }
 
 tasks.getByName("integrationTest") {
@@ -188,6 +194,7 @@ tasks.getByName("integrationTest") {
 
 
 tasks.withType(Test) {
+    useJUnitPlatform()
     maxHeapSize = "1g"
     jvmArgs '-XX:MaxMetaspaceSize=512m'
     testLogging {
@@ -196,6 +203,14 @@ tasks.withType(Test) {
     }
 }
 
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}
 
 assets {
     minifyJs = true
