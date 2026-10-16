@@ -6,6 +6,8 @@ beforeAll(function () {
     loadSpApp('service/layerDistancesService.js');
     loadSpApp('service/workflowService.js');
     loadSpApp('service/biocacheService.js');
+    loadSpApp('util.js');
+    loadSpApp('service/facetAutoCompleteService.js');
 });
 
 function service(module, name, values) {
@@ -84,8 +86,7 @@ describe('i18nService', function () {
         expect(i18n.v('a b')).toBe('x');
     });
 
-    // String.replace(" ", "_") only replaces the first space
-    it.fails('handles keys with several spaces', function () {
+    it('handles keys with several spaces', function () {
         i18n.set('a b c', 'value');
 
         expect(i18n.map['a_b_c']).toBe('value');
@@ -171,5 +172,65 @@ describe('BiocacheService.joinAndEncode', function () {
 
     it('returns a string unchanged', function () {
         expect(biocache.joinAndEncode('a:1')).toBe('a:1');
+    });
+});
+
+describe('FacetAutoCompleteService species list facets', function () {
+    var facets, $rootScope;
+
+    function listFacets(items) {
+        facets = service('facet-auto-complete-service', 'FacetAutoCompleteService', {
+            BiocacheService: {},
+            ListsService: {
+                getItemsQCached: function () { return items; },
+                listToFq: function (species) { return species.length + ' species'; }
+            }
+        });
+        angular.mock.inject(function (_$rootScope_) {
+            $rootScope = _$rootScope_;
+        });
+        $SH.listsFacets = true;
+        $SH.default_facets_ignored = [];
+
+        var result;
+        facets.getAllFacets({data: []}, [], 'dr1').then(function (expanded) {
+            result = expanded;
+        });
+        $rootScope.$apply();
+        return result;
+    }
+
+    function species(name, kvp) {
+        return {name: name, kvpValues: Object.keys(kvp).map(function (key) { return {key: key, value: kvp[key]}; })};
+    }
+
+    it('takes the data type from the first non blank value', function () {
+        var expanded = listFacets([
+            species('a', {length: ''}),
+            species('b', {length: '  '}),
+            species('c', {length: '2'}),
+            species('d', {length: '9'})
+        ]);
+
+        expect(expanded.length).toBe(1);
+        expect(expanded[0].dataType).toBe('int');
+        // the ranges go from the min to the max of the non blank values
+        var ranges = Object.keys(expanded[0].species_list_facet).filter(function (key) { return key.indexOf(' TO ') > 0; });
+        expect(ranges[0]).toBe('2 TO 2');
+        expect(ranges[ranges.length - 1]).toMatch(/ TO 9$/);
+        expect(expanded[0].species_list_facet['2 TO 2'].listOfSpecies.map(function (s) { return s.name; })).toEqual(['c']);
+    });
+
+    it('leaves a key with only blank values without a data type', function () {
+        var expanded = listFacets([species('a', {notes: ''}), species('b', {notes: null})]);
+
+        expect(expanded[0].dataType).toBeUndefined();
+    });
+
+    it('keeps string keys as they were', function () {
+        var expanded = listFacets([species('a', {habit: 'tree'}), species('b', {habit: ''}), species('c', {habit: 'shrub'})]);
+
+        expect(expanded[0].dataType).toBe('string');
+        expect(Object.keys(expanded[0].species_list_facet).sort()).toEqual(['', 'shrub', 'tree']);
     });
 });

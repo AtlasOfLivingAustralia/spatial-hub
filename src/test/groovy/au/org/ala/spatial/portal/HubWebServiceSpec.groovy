@@ -3,7 +3,6 @@ package au.org.ala.spatial.portal
 import com.sun.net.httpserver.HttpExchange
 import com.sun.net.httpserver.HttpServer
 import grails.testing.services.ServiceUnitTest
-import spock.lang.PendingFeature
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -131,7 +130,6 @@ class HubWebServiceSpec extends Specification implements ServiceUnitTest<HubWebS
     }
 
     // the JDK server sends 'Content-type', header names are case insensitive
-    @PendingFeature(reason = "the Content-Type and Content-Encoding response headers are looked up case sensitively")
     void "text, JSON and gzipped text responses are returned as text"() {
         expect:
         service.getUrl("${baseUrl}/echo") == 'ok'
