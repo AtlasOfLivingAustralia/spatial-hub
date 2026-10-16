@@ -323,7 +323,7 @@ var Util = {
             lower,
             decimalBuffer;
 
-        numberOfIntervals = $SH.numberOfIntervalsForRangeData || 7;
+        numberOfIntervals = numberOfIntervals || $SH.numberOfIntervalsForRangeData || 7;
         precision = precision || 6;
         decimalBuffer = Math.pow(10, -1*precision);
 
@@ -349,7 +349,7 @@ var Util = {
             lower,
             intBuffer = 1;
 
-        numberOfIntervals = $SH.numberOfIntervalsForRangeData || 7;
+        numberOfIntervals = numberOfIntervals || $SH.numberOfIntervalsForRangeData || 7;
 
         if((Number.isFinite(min) && Number.isFinite(max)) && (max >= min)){
             interval = parseInt((max - min + 1) / numberOfIntervals);

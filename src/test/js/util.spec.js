@@ -180,8 +180,7 @@ describe('Util ranges', function () {
         expect(Util.getRangeBetweenTwoNumber(0, 0.7).length).toBe(7);
     });
 
-    // numberOfIntervals is always replaced by $SH.numberOfIntervalsForRangeData || 7
-    it.fails('honours the numberOfIntervals argument', function () {
+    it('honours the numberOfIntervals argument', function () {
         expect(Util.getRangeBetweenTwoInteger(1, 10, 2)).toEqual([[1, 5], [6, 10]]);
     });
 });
