@@ -38,7 +38,7 @@
                  *  "one"
                  */
                 v: function (k) {
-                    var key = ("" + k).replace(" ", "_");
+                    var key = ("" + k).replace(/ /g, "_");
                     if (map[key] !== undefined) {
                         return map[key]
                     } else {
@@ -52,7 +52,7 @@
                  * @param {string} value replacement text
                  */
                 set: function (k, v) {
-                    k = ('' + k).replace(" ", "_");
+                    k = ('' + k).replace(/ /g, "_");
 
                     map[k] = v;
                 },
@@ -63,7 +63,7 @@
                  * @param {string} value replacement text
                  */
                 commit: function (k, v) {
-                    k = ('' + k).replace(" ", "_");
+                    k = ('' + k).replace(/ /g, "_");
 
                     map[k] = v;
 

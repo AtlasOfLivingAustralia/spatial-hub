@@ -84,8 +84,7 @@ describe('i18nService', function () {
         expect(i18n.v('a b')).toBe('x');
     });
 
-    // String.replace(" ", "_") only replaces the first space
-    it.fails('handles keys with several spaces', function () {
+    it('handles keys with several spaces', function () {
         i18n.set('a b c', 'value');
 
         expect(i18n.map['a_b_c']).toBe('value');
