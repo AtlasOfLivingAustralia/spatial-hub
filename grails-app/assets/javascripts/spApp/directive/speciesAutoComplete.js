@@ -27,7 +27,8 @@
                                         var tracks = item.tracksCount > 0 ? ' +' + item.tracksCount + ' ' + $i18n(395, "track(s)") : '';
 
                                         return {
-                                            label: item.name,
+                                            // the author tells apart homonyms and names with different authors
+                                            label: item.author ? item.name + ' ' + item.author : item.name,
                                             info: item.rank + (item.commonNameSingle ? ' ' + item.commonNameSingle : ' ') +
                                             ' - ' + item.occCount + ' ' + $i18n(396, "found") + distributions + checklists + tracks,
                                             value: item

@@ -59,10 +59,10 @@ describe('speciesAutoComplete directive', function () {
         return items;
     }
 
-    it('lists the matching names with rank, common name and counts', function () {
+    it('lists the matching names with their author, rank, common name and counts', function () {
         var items = search('vanessa');
 
-        expect(items.map(function (i) { return i.label; })).toEqual(['Vanessa atalanta', 'Plantae']);
+        expect(items.map(function (i) { return i.label; })).toEqual(['Vanessa atalanta (Linnaeus, 1758)', 'Plantae']);
         expect(items[0].info).toBe('species Red Admiral - 12 found');
         expect(items[1].info).toBe('kingdom  - 3 found +2 checklist(s)');
     });
