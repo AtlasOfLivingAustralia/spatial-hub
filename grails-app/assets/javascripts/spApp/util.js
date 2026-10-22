@@ -146,7 +146,7 @@ var Util = {
      * @param obj
      */
     wrappedToWkt: function (processedCoordinates) {
-        wkt = 'MULTIPOLYGON (';
+        var wkt = 'MULTIPOLYGON (';
 
         for (var i = 0; i < processedCoordinates.length; i++) {
             if (i > 0) {
@@ -245,7 +245,7 @@ var Util = {
         var copy = src instanceof Array ? [] : {}
         for (var i in src) {
             if ((i + '').indexOf('_') != 0 && typeof src[i] !== "function") {
-                if ($.isArray(src[i]) || typeof src[i] === "object") {
+                if ($.isArray(src[i]) || (src[i] !== null && typeof src[i] === "object")) {
                     copy[i] = Util.deepCopy(src[i])
                 } else {
                     copy[i] = src[i]
@@ -323,7 +323,7 @@ var Util = {
             lower,
             decimalBuffer;
 
-        numberOfIntervals = $SH.numberOfIntervalsForRangeData || 7;
+        numberOfIntervals = numberOfIntervals || $SH.numberOfIntervalsForRangeData || 7;
         precision = precision || 6;
         decimalBuffer = Math.pow(10, -1*precision);
 
@@ -349,7 +349,7 @@ var Util = {
             lower,
             intBuffer = 1;
 
-        numberOfIntervals = $SH.numberOfIntervalsForRangeData || 7;
+        numberOfIntervals = numberOfIntervals || $SH.numberOfIntervalsForRangeData || 7;
 
         if((Number.isFinite(min) && Number.isFinite(max)) && (max >= min)){
             interval = parseInt((max - min + 1) / numberOfIntervals);
@@ -376,7 +376,9 @@ var Util = {
 
     inferDataTypeFromValue: function (value) {
         var number;
-        if (!isNaN(value)) {
+        if (value === null || ('' + value).trim() === '') {
+            return undefined;
+        } else if (!isNaN(value)) {
             number = parseFloat(value);
             if (Number.isInteger(number))
                 return 'int';

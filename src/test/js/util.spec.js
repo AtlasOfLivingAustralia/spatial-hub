@@ -84,8 +84,7 @@ describe('Util.wrappedToWkt', function () {
             .toBe('MULTIPOLYGON (((0 0, 1 1, 1 0, 0 0)), ((5 5, 6 6, 6 5, 5 5)))');
     });
 
-    // wrappedToWkt assigns `wkt` without declaring it, so it creates a global (and throws in strict mode).
-    it.fails('does not leak a global variable', function () {
+    it('does not leak a global variable', function () {
         delete globalThis.wkt;
         Util.wrappedToWkt([[[0, 0], [1, 0], [1, 1], [0, 0]]]);
 
@@ -117,8 +116,7 @@ describe('Util.deepCopy', function () {
         expect(Array.isArray(copy.b)).toBe(true);
     });
 
-    // typeof null is 'object', so null values are copied as {}
-    it.fails('keeps null values', function () {
+    it('keeps null values', function () {
         expect(Util.deepCopy({a: null})).toEqual({a: null});
     });
 });
@@ -182,8 +180,7 @@ describe('Util ranges', function () {
         expect(Util.getRangeBetweenTwoNumber(0, 0.7).length).toBe(7);
     });
 
-    // numberOfIntervals is always replaced by $SH.numberOfIntervalsForRangeData || 7
-    it.fails('honours the numberOfIntervals argument', function () {
+    it('honours the numberOfIntervals argument', function () {
         expect(Util.getRangeBetweenTwoInteger(1, 10, 2)).toEqual([[1, 5], [6, 10]]);
     });
 });
@@ -198,8 +195,7 @@ describe('Util data types', function () {
         expect(Util.inferDataTypeFromValue(value)).toBe(expected);
     });
 
-    // isNaN('') is false, so an empty value is taken as a number
-    it.fails('does not infer a type for an empty value', function () {
+    it('does not infer a type for an empty value', function () {
         expect(Util.inferDataTypeFromValue('')).toBeUndefined();
     });
 

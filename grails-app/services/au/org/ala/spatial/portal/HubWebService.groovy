@@ -226,12 +226,12 @@ class HubWebService {
 
             def data
             try {
-                def ct = responseHeaders['Content-Type']
+                def ct = call.getResponseHeader(HttpHeaders.CONTENT_TYPE)?.value
                 if (ct && !ct.toString().startsWith('image') &&
                         (ct.toString().startsWith("text") || ct.toString().startsWith("application/json"))) {
 
                     def is
-                    if (responseHeaders["Content-Encoding"] == "gzip") {
+                    if (call.getResponseHeader(HttpHeaders.CONTENT_ENCODING)?.value == "gzip") {
                         is = new GZIPInputStream(new ByteArrayInputStream(call.getResponseBody()))
                     } else{
                         is  = new ByteArrayInputStream(call.getResponseBody())
