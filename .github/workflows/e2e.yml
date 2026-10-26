@@ -78,13 +78,7 @@ jobs:
           SPATIAL_SERVICE_IMAGE: spatial-service:e2e
         run: |
           docker compose -p spatial-e2e -f stack/docker-compose.yml up -d
-          for i in $(seq 1 90); do
-            tasks=$(curl -s http://e2e.localhost:18080/ws/tasks/capabilities | grep -c ScatterplotCreate || true)
-            hub=$(curl -s -o /dev/null -w '%{http_code}' http://e2e.localhost:18080/ || true)
-            [ "$tasks" != 0 ] && [ "$hub" = 302 ] && exit 0
-            sleep 5
-          done
-          echo "stack did not become ready"; docker compose -p spatial-e2e -f stack/docker-compose.yml ps; exit 1
+          stack/wait-ready.sh || { docker compose -p spatial-e2e -f stack/docker-compose.yml ps; exit 1; }
 
       - name: Run the tests
         working-directory: e2e

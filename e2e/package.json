@@ -3,7 +3,7 @@
   "private": true,
   "description": "Browser and API end-to-end tests for spatial-hub / spatial-service (own package.json: the root one stays dependency-free)",
   "scripts": {
-    "stack:up": "docker compose -f stack/docker-compose.yml up -d --wait",
+    "stack:up": "docker compose -f stack/docker-compose.yml up -d --wait && stack/wait-ready.sh",
     "stack:down": "docker compose -f stack/docker-compose.yml down -v",
     "test": "playwright test",
     "test:api": "playwright test --project=api"

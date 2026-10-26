@@ -19,6 +19,9 @@ npm run stack:down
 ```
 
 Notes
+- `npm run stack:up` ends with `stack/wait-ready.sh`, which waits for the hub's login redirect, the task
+  capabilities and a 401 from an authenticated endpoint. Until the service has its JWT config, that endpoint
+  answers 500 while the rest already looks up, and whatever spec runs first fails with "An error has occurred".
 - Build the hub war with `./gradlew clean compileGroovyPages bootWar` (otherwise the war has no compiled GSPs).
 - `stack/config/spatial-hub-config.yml` is ala-install's template rendered with ALA public defaults plus the e2e overrides.
 - Test data lives in the stack, not in the tests: ALA's states layer cl22 (`stack/fixtures/make-states.py`), two synthetic
@@ -32,6 +35,12 @@ Notes
   (every visible text per screen) next to the test results.
 
 ## CI
+
+The suite expects a service with the area and geometry fixes of our fork: on `AtlasOfLivingAustralia/develop`
+the area of a polygon with a hole and of a multipolygon and the AOO cells come out wrong, and the geometry of
+several objects in one call and the zipped shapefile of an envelope area answer 400.
+`scatterplot-area-pid.api` needs the #281 fix (ALA #282), merged in develop and not yet in
+`spatial-service-es-dev`.
 
 `.github/workflows/e2e.yml` builds the hub and a spatial-service checkout from source, layers the wars on the released images
 (`ci/Dockerfile.*`), starts this stack and runs the tests. It runs on pushes to the aggregated branches and on demand
