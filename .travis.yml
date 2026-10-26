@@ -22,8 +22,8 @@ before_install:
   - nvm install 15.5.0
   - npm -dd install
 script:
-  - echo "skipping tests"
   - ./gradlew war
+  - ./gradlew test -PskipEvents
 after_success:
   - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && travis_retry ./gradlew publish'
 env:
