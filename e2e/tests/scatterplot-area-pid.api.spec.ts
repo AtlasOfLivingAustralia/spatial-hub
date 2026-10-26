@@ -27,6 +27,10 @@ async function scatterplot(request: APIRequestContext, area: unknown[], speciesW
 
 test.describe('species restricted to an area by pid (#281)', () => {
   test('the area pid as species wkt, with the area', async ({ request }) => {
+    // Pending until the service under test carries the fix (merged in develop as
+    // AtlasOfLivingAustralia/spatial-service#282): as `@PendingFeature` does for the unit tests, the run stays
+    // green while the bug is there and turns red, asking for this line to go, once the service is fixed.
+    test.fail();
     test.setTimeout(150_000);
     const pid = await uploadArea(request, tasmania);
     const status = await scatterplot(request, [{ pid }], pid);
