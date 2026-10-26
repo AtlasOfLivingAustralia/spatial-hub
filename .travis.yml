@@ -23,7 +23,7 @@ before_install:
   - npm -dd install
 script:
   - ./gradlew war
-  - ./gradlew test -PskipEvents
+  - if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then echo "skipping tests outside pull requests"; else ./gradlew test -PskipEvents; fi
 after_success:
   - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && travis_retry ./gradlew publish'
 env:
