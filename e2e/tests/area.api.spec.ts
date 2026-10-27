@@ -40,7 +40,7 @@ test.describe('user areas from WKT', () => {
 
   test('a polygon with a hole counts the hole out', async ({ request }) => {
     const outer = rect(-30, -26, 130, 134);
-    const hole = `(131 -27,131 -29,133 -29,133 -27,131 -27)`; // clockwise inside a counter-clockwise shell
+    const hole = `(131 -27,133 -27,133 -29,131 -29,131 -27)`; // clockwise inside a counter-clockwise shell
     const id = await upload(request, `POLYGON(${outer},${hole})`);
     near(await areaKm2(request, id), rectKm2(-30, -26, 130, 134) - rectKm2(-29, -27, 131, 133));
   });
