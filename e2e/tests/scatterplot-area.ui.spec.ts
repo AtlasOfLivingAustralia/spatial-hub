@@ -3,7 +3,10 @@ import { login } from './login';
 import { shot } from './shots';
 import { importAreaFile } from './areas';
 
-// Regression for AtlasOfLivingAustralia/spatial-service#281: a scatterplot on species restricted to an area failed with "Unknown geometry type: <pid>" (the hub sends the area pid as the layer's wkt).
+// The scatterplot of all species inside an imported area, the browser flow that used to be checked by hand.
+// It does not cover AtlasOfLivingAustralia/spatial-service#281: "all species" sends no wkt (only a mapped
+// species layer does, through layerToQuery in selectSpecies.js), so the area pid as the species wkt is covered
+// by scatterplot-area-pid.api.
 test('scatterplot on all species restricted to an imported area', async ({ page }, testInfo) => {
   test.setTimeout(Number(process.env.E2E_SLOW_TIMEOUT) || 240_000);
   await login(page);
