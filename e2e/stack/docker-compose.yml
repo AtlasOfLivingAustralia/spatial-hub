@@ -1,5 +1,6 @@
 # Self-contained spatial stack for the e2e tests: PostGIS + GeoServer + spatial-service + spatial-hub
-# behind one nginx origin (http://localhost:${E2E_PORT:-18080}): / -> hub, /ws -> service, /geoserver -> GeoServer.
+# behind one nginx origin (http://e2e.localhost:18080): / -> hub, /ws -> service, /geoserver -> GeoServer.
+# The ports are fixed: both application configs advertise 18080 (and the mock OIDC 18081), so they cannot be moved here alone.
 # Images are overridable so the same stack tests a release or a branch build:
 #   SPATIAL_SERVICE_IMAGE, SPATIAL_HUB_IMAGE (defaults: published 3.x images)
 name: spatial-e2e
@@ -96,7 +97,7 @@ services:
     volumes:
       - ./config/mock-oidc.json:/config/mock-oidc.json:ro
     ports:
-      - "${E2E_OIDC_PORT:-18081}:8080"
+      - "18081:8080"
 
   spatial-service:
     image: ${SPATIAL_SERVICE_IMAGE:-livingatlases/spatial-service:3.1.0}
@@ -148,7 +149,7 @@ services:
     image: nginx:1.30-alpine
     depends_on: [spatial-hub, spatial-service, geoserver]
     ports:
-      - "${E2E_PORT:-18080}:80"
+      - "18080:80"
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
 
