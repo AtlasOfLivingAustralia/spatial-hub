@@ -1,0 +1,51 @@
+# e2e stack: spatial-service behind nginx at http://e2e.localhost:18080/ws
+grails.serverURL: http://e2e.localhost:18080/ws
+grails.app.context: /ws
+grails.assets.url: http://e2e.localhost:18080/ws/assets/
+data:
+  dir: /data/spatial-data
+geoserver:
+  url: http://geoserver:8080/geoserver
+  username: admin
+  password: geoserver
+  canDeploy: true
+  remote:
+    geoserver_data_dir: /data/geoserver_data_dir
+dataSource:
+  url: jdbc:postgresql://postgres:5432/layersdb
+  username: layers
+  password: layers
+shpResolutions: [0.5, 0.25, 0.1, 0.05]
+grdResolutions: [0.5, 0.25, 0.1, 0.05, 0.01]
+biocacheServiceUrl: http://biocache:8080
+biocacheUrl: https://registros.gbif.es
+slave.enable: true
+service.enable: true
+spatialService.url: http://e2e.localhost:18080/ws
+spatialHubUrl: http://e2e.localhost:18080
+gazField: cl22
+userObjectsField: cl1083
+auth.admin_role: ROLE_ADMIN
+app.http.header.userId: X-ALA-userId
+headerAndFooter:
+  baseURL: https://www.test.ala.org.au/commonui-bs5-2019
+  version: "2"
+security:
+  cas:
+    enabled: false
+    disableCAS: true
+    bypass: true
+  oidc:
+    enabled: true
+    discovery-uri: http://e2e.localhost:18081/default/.well-known/openid-configuration
+    clientId: e2e
+    secret: e2e
+    scope: 'openid profile email'
+    allowUnsignedIdTokens: true
+    alaUseridClaim: username
+  jwt:
+    enabled: true
+    discoveryUri: http://e2e.localhost:18081/default/.well-known/openid-configuration
+    fallbackToLegacyBehaviour: true
+  core:
+    roleAttribute: role

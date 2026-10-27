@@ -1,0 +1,4 @@
+# spatial-service image for the e2e stack: the released image with the war built from the checked out branch
+ARG BASE=livingatlases/spatial-service:3.1.0
+FROM ${BASE}
+COPY --chown=spatial-service:spatial-service app.war /opt/atlas/spatial-service/app.war

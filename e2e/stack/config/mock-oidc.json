@@ -1,0 +1,30 @@
+{
+  "interactiveLogin": true,
+  "httpServer": "NettyWrapper",
+  "tokenCallbacks": [
+    {
+      "issuerId": "default",
+      "tokenExpiry": 3600,
+      "requestMappings": [
+        {
+          "requestParam": "grant_type",
+          "match": "*",
+          "claims": {
+            "email": "e2e@example.org",
+            "username": "e2e@example.org",
+            "given_name": "E2E",
+            "family_name": "Tester",
+            "role": [
+              "ROLE_USER",
+              "ROLE_ADMIN"
+            ],
+            "ala:role": "ROLE_ADMIN",
+            "sub": "e2e@example.org",
+            "client_id": "e2e",
+            "scope": "openid profile email"
+          }
+        }
+      ]
+    }
+  ]
+}
