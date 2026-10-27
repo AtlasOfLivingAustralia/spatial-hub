@@ -17,8 +17,11 @@ async function scatterplot(request: APIRequestContext, wkt: string) {
   const species = JSON.parse(status.output.find((o: any) => o.name === 'species').file);
   return { id, species };
 }
-const near = (actual: number[][], expected: number[][]) =>
+const near = (actual: number[][], expected: number[][]) => {
+  // the lengths first: without them a service that drops extents would pass by returning nothing
+  expect(actual.map((r) => r.length)).toEqual(expected.map((r) => r.length));
   actual.flat().forEach((v, i) => expect(v).toBeCloseTo(expected.flat()[i], 2));
+};
 
 test.describe('scatterplot task', () => {
   test('sampled grid values span the whole stub dataset, and the plot image is a PNG', async ({ request }) => {
