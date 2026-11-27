@@ -1,22 +1,25 @@
 name: e2e
 
 # Builds the hub and the service from source, starts e2e/stack with them and runs the Playwright tests.
-# Runs on the aggregated branches of a fork (every fix together) and on demand for any branch of the hub and the service.
+# Runs on pushes and pull requests to develop, against the develop branch of spatial-service, and on demand for any
+# branch of the hub and the service.
 on:
   push:
-    branches: [spatial-hub-es-dev, test/e2e-playwright]
+    branches: [develop]
+  pull_request:
+    branches: [develop]
   workflow_dispatch:
     inputs:
       service_repo:
         description: spatial-service repository
-        default: living-atlases/spatial-service
+        default: AtlasOfLivingAustralia/spatial-service
       service_ref:
         description: spatial-service branch or tag
-        default: spatial-service-es-dev
+        default: develop
 
 env:
-  SERVICE_REPO: ${{ inputs.service_repo || vars.E2E_SERVICE_REPO || 'living-atlases/spatial-service' }}
-  SERVICE_REF: ${{ inputs.service_ref || vars.E2E_SERVICE_REF || 'spatial-service-es-dev' }}
+  SERVICE_REPO: ${{ inputs.service_repo || vars.E2E_SERVICE_REPO || 'AtlasOfLivingAustralia/spatial-service' }}
+  SERVICE_REF: ${{ inputs.service_ref || vars.E2E_SERVICE_REF || 'develop' }}
 
 jobs:
   e2e:

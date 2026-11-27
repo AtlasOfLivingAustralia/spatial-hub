@@ -36,16 +36,10 @@ Notes
 
 ## CI
 
-The suite expects a service with the area and geometry fixes of our fork: on `AtlasOfLivingAustralia/develop`
-the area of a polygon with a hole and of a multipolygon and the AOO cells come out wrong, and the geometry of
-several objects in one call and the zipped shapefile of an envelope area answer 400.
-`scatterplot-area-pid.api` needs the #281 fix (ALA #282), merged in develop and not yet in
-`spatial-service-es-dev`, so it carries a `test.fail()`: like `@PendingFeature` in the unit tests, the run stays
-green while the bug is there and turns red, asking for that line to go, once the service under test is fixed.
-
 `.github/workflows/e2e.yml` builds the hub and a spatial-service checkout from source, layers the wars on the released images
-(`ci/Dockerfile.*`), starts this stack and runs the tests. It runs on pushes to the aggregated branches and on demand
-(`workflow_dispatch`: service repository and branch).
+(`ci/Dockerfile.*`), starts this stack and runs the tests. It runs on pushes and pull requests to `develop`, against
+`AtlasOfLivingAustralia/spatial-service@develop`, and on demand (`workflow_dispatch`: service repository and branch).
+The repository variables `E2E_SERVICE_REPO` and `E2E_SERVICE_REF` change the default service.
 
 ## Against a real deployment (CI with CAS)
 
